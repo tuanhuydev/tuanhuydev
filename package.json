@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install"
   },
   "dependencies": {
+    "husky": "^8.0.3",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sass": "^1.58.0",
     "sharp": "^0.31.3"
   },
   "devDependencies": {
