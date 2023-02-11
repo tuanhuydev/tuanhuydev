@@ -1,4 +1,4 @@
-import { ObjectType } from "../interfaces/base";
+import { ObjectType } from "@shared/interfaces/base";
 
 export const EMPTY_OBJECT: ObjectType = {};
 export const EMPTY_STRING: string = "";
