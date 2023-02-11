@@ -1,13 +1,13 @@
 import Head from 'next/head'
 
-export default function Post() {
+export default function Article() {
   return (
     <div>
     <Head>
-        <title>@tuanhuydev - Post title</title>
+        <title>@tuanhuydev - Article title</title>
     </Head>
     <main>
-       Single Post
+       Single Article
     </main>
 </div>
   )
