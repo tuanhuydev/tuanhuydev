@@ -1,9 +1,9 @@
-import "../styles/globals.css";
+import "@frontend/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
-import WithProvider from "../components/hocs/WithProvider";
-import { DEFAULT_THEME } from "../configs/contanst";
-import { reflectTheme } from "../utils/dom";
+import WithProvider from "@frontend/components/hocs/WithProvider";
+import { DEFAULT_THEME } from "@shared/configs/contanst";
+import { reflectTheme } from "@shared/utils/dom";
 
 
 
