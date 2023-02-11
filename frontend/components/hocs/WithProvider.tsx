@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createContext } from "react";
-import { EMPTY_OBJECT } from "../../configs/contanst";
-import { ComponentProps } from "../../interfaces/base";
+import { EMPTY_OBJECT } from "@shared/configs/contanst";
+import { ComponentProps } from "@shared/interfaces/base";
 
 export interface ProviderProps extends ComponentProps {
   context: any;

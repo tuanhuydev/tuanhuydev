@@ -1,4 +1,4 @@
-import { ComponentProps } from "../../interfaces/base";
+import { ComponentProps } from "@shared/interfaces/base";
 import Footer from "../Footer";
 import Navbar from "./Navbar";
 

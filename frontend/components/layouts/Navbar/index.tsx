@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useContext } from "react";
-import { DEFAULT_THEME } from "../../../configs/contanst";
-import { reflectTheme } from "../../../utils/dom";
+import { DEFAULT_THEME } from "@shared/configs/contanst";
+import { reflectTheme } from "@shared/utils/dom";
 import { AppContext } from "../../hocs/WithProvider";
 import styles from "./styles.module.scss";
 
