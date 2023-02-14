@@ -1,32 +1,28 @@
 import Link from "next/link";
 import { useContext } from "react";
-import { DEFAULT_THEME } from "@shared/configs/contanst";
-import { reflectTheme } from "@shared/utils/dom";
-import { AppContext } from "../../hocs/WithProvider";
+import { DEFAULT_THEME, STORAGE_KEY } from "@shared/configs/constants";
+import { reflectTheme, updateLocalStorage } from "@shared/utils/dom";
+import { AppContext } from "../hocs/WithProvider";
 import styles from "./styles.module.scss";
+import React from "react";
 
 export default function Navbar() {
+  // Hooks
   const { context, setContext } = useContext(AppContext);
 
-  const { theme, themeKey } = context;
+  const { theme } = context;
 
   const switchTheme = () => {
     const newThemeValue = theme === DEFAULT_THEME ? "dark" : DEFAULT_THEME;
-    setContext((prevContext: any) => ({
-      ...prevContext,
-      theme: newThemeValue,
-    }));
-    updateLocalStorage(newThemeValue);
+    setContext({ theme: newThemeValue });
+    updateLocalStorage(STORAGE_KEY, newThemeValue);
     reflectTheme(newThemeValue);
   };
-
-  const updateLocalStorage = (themeValue: string) => {
-    localStorage.setItem(themeKey, themeValue);
-  };
-
   return (
-    <header className="flex items-center justify-between py-2">
-      <h1 className="dark:text-white font-bold md:text-2xl">@tuanhuydev</h1>
+    <header className="flex items-center justify-between py-2 sticky top-0 bg-white dark:bg-slate-900">
+      <div className="dark:text-white font-bold md:text-2xl flex items-center">
+        <h1 className="ml-4 line-height-1">tuanhuydev</h1>
+      </div>
       <div className="flex items-center">
         <ul className="hidden md:flex md:justify-between">
           <li className="mr-3.5 cursor-pointer rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
