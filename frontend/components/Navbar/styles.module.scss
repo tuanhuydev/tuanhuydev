@@ -1,4 +1,5 @@
 @import "https://unpkg.com/open-props/easings.min.css";
+
   .toggle {
     --size: 2rem;
     --icon-fill: #0f172a;
@@ -35,9 +36,14 @@
     }
     &.dark {
       .icon {
+        .moon,
+        .sun {
+          fill: #FFF;
+        }
         .sun {
           transform: scale(1.5);
         }
+
         .beams {
           opacity: 0;
         }
@@ -45,10 +51,7 @@
         .moon  > circle {
           transform: translateX(-7px);
         }
-        .moon, 
-        .sun {
-          fill: white;
-        }
+
       }
     }
   

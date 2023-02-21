@@ -7,7 +7,15 @@ module.exports = {
     "./frontend/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': [''],
+        'mono': ['']
+      },
+      minHeight: {
+        '1/2': 'half',
+      }
+    },
   },
   plugins: [],
 }
