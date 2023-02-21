@@ -1,7 +1,20 @@
+# Docker files
 Dockerfile
 .dockerignore
+
+# Dependencies
 node_modules
+
+# Logs
 npm-debug.log
 README.md
 .next
+
+# Git history
 .git
+
+# Test directory
+__tests__
+
+# Local history
+.history
