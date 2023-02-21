@@ -1,0 +1,18 @@
+.cta {
+    svg {
+        transition: transform 0.2s;
+        transition-delay: 0.1s;
+        transform: rotate(0);
+        fill: white;
+    }
+    &.dark {
+        svg {
+            fill: black;
+        }
+    }
+  &:hover {
+    svg {
+      transform: rotate(90deg);
+    }
+  }
+}
