@@ -19,7 +19,8 @@
       "@frontend/*": ["frontend/*"],
       "@backend/*": ["backend/*"],
       "@shared/*": ["shared/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@pages/*": ["pages/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
