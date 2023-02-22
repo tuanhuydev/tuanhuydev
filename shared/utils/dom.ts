@@ -15,7 +15,8 @@ export const updateLocalStorage = (key: string, value: any) => {
 export const getThemeValue = (): string => {
   if (localStorage.getItem(STORAGE_KEY))
     return localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
+
+  return window && window?.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : DEFAULT_THEME;
 };
