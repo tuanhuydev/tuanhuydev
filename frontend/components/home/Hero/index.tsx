@@ -12,11 +12,12 @@ export default function Hero() {
   const { theme } = context;
 
   const graphicStyles =
-    "text-slate-400 font-medium dark:text-white m-auto rounded-md hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-900 p-2 transition duration-150 ease-out hover:ease-in";
+    "text-slate-400 font-medium dark:text-white m-auto rounded-md bg-slate-100 text-slate-900 dark:bg-slate-900 p-2 transition duration-150 ease-out hover:ease-in";
   return (
     <section
       className="grid grid-cols-12 gap-y-8 lg:gap-0 py-10 md:py-24 content-center"
       id="about-me"
+      style={{ height: 'calc(100vh - 56px)' }}
     >
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
         <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 tracking-tight dark:text-white">
@@ -89,7 +90,7 @@ export default function Hero() {
             #PHP Laravel
           </li>
           <li
-            className={`${graphicStyles} col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
+            className={`m-auto rounded-md p-2 transition duration-150 ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
           >
             <Image
               src={Avatar}

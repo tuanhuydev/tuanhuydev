@@ -19,9 +19,11 @@ export default function Navbar() {
     reflectTheme(newThemeValue);
   };
   return (
-    <header className="flex items-center justify-between py-2 sticky top-0 bg-white dark:bg-slate-900">
+    <header className="flex items-center justify-between py-2 sticky top-0 bg-white dark:bg-slate-900 z-10">
       <div className="dark:text-white font-bold md:text-2xl flex items-center">
-        <h1 className="ml-4 line-height-1">tuanhuydev</h1>
+        <Link href={"/"}>
+          <h1 className="ml-4 line-height-1 hover:underline cursor-pointer">#tuanhuydev</h1>
+        </Link>
       </div>
       <div className="flex items-center">
         <ul className="hidden md:flex md:justify-between">
