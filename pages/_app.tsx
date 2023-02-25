@@ -1,12 +1,15 @@
 import "@frontend/styles/globals.css";
 import type { AppProps } from "next/app";
 import WithProvider from "@frontend/components/hocs/WithProvider";
+import { ChakraProvider } from '@chakra-ui/react'
 
 function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <WithProvider context={{ theme: 'light' }}>
-      <Component {...pageProps} />
+      <ChakraProvider>
+        <Component {...pageProps} />
+      </ChakraProvider>
     </WithProvider>
   );
 }

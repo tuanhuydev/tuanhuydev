@@ -3,9 +3,10 @@ import Head from "next/head";
 import BaseLayout from "@frontend/components/layouts/BaseLayout";
 import Hero from "@frontend/components/home/Hero";
 import Experience from "@frontend/components/home/Experience";
-
+import Contact from "@frontend/components/home/Contact";
 
 const Home: NextPage = () => {
+
   return (
     <div>
       <Head>
@@ -15,7 +16,7 @@ const Home: NextPage = () => {
       <BaseLayout>
         <Hero />
         <Experience />
-        <section>Contact</section>
+        <Contact />
       </BaseLayout>
     </div>
   );
