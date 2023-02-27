@@ -6,22 +6,23 @@ import Link from "next/link";
 import styles from "./styles.module.scss";
 import { AppContext } from "@frontend/components/hocs/WithProvider";
 
+const matrixTypoStyles =
+  "font-medium text-slate-600 dark:text-white text-xs sm:text-base";
+const graphicStyles = `${matrixTypoStyles} m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
+
 export default function Hero() {
   const { context } = useContext(AppContext);
 
   const { theme } = context;
-
-  const graphicStyles =
-    "text-slate-400 font-medium dark:text-white m-auto rounded-md bg-slate-100 text-slate-900 dark:bg-slate-900 p-2 transition duration-150 ease-out hover:ease-in";
   return (
     <section
-      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-10 md:py-24 content-center"
+      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-10 md:py-24 px-2 content-center"
       id="about-me"
-      style={{ height: 'calc(100vh - 56px)' }}
+      style={{ height: "calc(100vh - 56px)" }}
     >
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
         <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 tracking-tight dark:text-white">
-          &#60;Developer &#47;&#62; <br />
+          <span className="break-keep">&#60;Developer &#47;&#62;</span> <br />
           to solve problems
         </h1>
         <div className="relative mb-6">
@@ -46,24 +47,26 @@ export default function Hero() {
           <strong>yours</strong>.😀&#128077;
           <br />
         </div>
-        <Link href="#experience" scroll={false}>
-          <h5
-            className={`inline-flex items-center self-start rounded-full bg-slate-700 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold ${styles.cta} ${styles[theme]}`}
-          >
-            My proudly accomplishments
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="16"
-              viewBox="0 96 960 960"
-              width="16"
-              className="ml-2"
+        <Link href="#experience" scroll={false} legacyBehavior>
+          <a rel="noopener noreferrer">
+            <h5
+              className={`inline-flex items-center self-start rounded-full bg-slate-700 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold ${styles.cta} ${styles[theme]}`}
             >
-              <path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
-            </svg>
-          </h5>
+              My proudly accomplishments
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="16"
+                viewBox="0 96 960 960"
+                width="16"
+                className="ml-2"
+              >
+                <path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
+              </svg>
+            </h5>
+          </a>
         </Link>
       </div>
-      <div className="col-start-1 lg:col-start-7 col-span-full">
+      <div className="col-start-1 col-span-full lg:col-start-7 relative overflow-hidden sm:overflow-visible">
         <ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6">
           <li className={`${graphicStyles} col-start-1 col-span-4`}>
             #Web Development
