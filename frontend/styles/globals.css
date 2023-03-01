@@ -22,7 +22,6 @@ a {
 
 * {
   box-sizing: border-box;
-  -webkit-text-size-adjust: auto;
 }
 
 .truncate {
