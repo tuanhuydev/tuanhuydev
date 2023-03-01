@@ -25,7 +25,7 @@ describe("Home page test suit", () => {
       </WithProvider>
     );
 
-    const heading = screen.queryByText("#tuanhuydev");
+    const heading = screen.queryByText("tuanhuydev");
     expect(heading).toBeInTheDocument();
   });
 });

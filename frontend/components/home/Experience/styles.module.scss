@@ -1,13 +1,13 @@
 .card {
   --image-size: 14rem;
   --image-size-hover: 8rem;
-  --transition: all 0.25s ease-in;
-  transition: all 250ms ease-in;
+  --transition: all 250ms ease-in-out;
+  transition: var(--transition);
 
   .image {
     width: var(--image-size);
     height: var(--image-size);
-    transition: all 0.25s ease-in;
+    transition: var(--transition);
     transform: translate3d(var(--card-size) / 2, var(--card-size) / 2, 0);
   }
   .time {
@@ -23,7 +23,7 @@
     transition-delay: 250ms;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.25s ease-in-out;
+    transition: visibility 250ms ease-in, opacity 250ms ease-in;
   }
 
   &:hover {
