@@ -9,7 +9,8 @@ export const EMPTY_OBJECT: ObjectType = {};
 export const EMPTY_STRING: string = "";
 
 export const DEFAULT_THEME: string = "light";
-export const STORAGE_KEY: string = "theme-preference";
+export const STORAGE_THEME_KEY: string = "theme-preference";
+export const STORAGE_PLAYSOUND_KEY: string = 'sound-preference';
 
 export const MOCK_PROJECTS = [
   {
@@ -47,7 +48,7 @@ export const MOCK_PROJECTS = [
     description:
       "PulseMS is a complex all-in-one management system providing powerful features to manage resources, budget, and planning for the enterprise.",
     time: "2020-2021",
-    technicals: ['ReactJS', 'Redux', 'Bryntum', 'PHP Laravel']
+    technicals: ['ReactJS', 'Redux', 'Bryntum', 'Laravel']
   },
   {
     image: CTIProject,

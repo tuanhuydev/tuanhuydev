@@ -4,9 +4,9 @@ import BaseLayout from "@frontend/components/layouts/BaseLayout";
 import Hero from "@frontend/components/home/Hero";
 import Experience from "@frontend/components/home/Experience";
 import Contact from "@frontend/components/home/Contact";
+import React from "react";
 
 const Home: NextPage = () => {
-
   return (
     <div>
       <Head>
@@ -17,9 +17,13 @@ const Home: NextPage = () => {
         <Hero />
         <Experience />
         <Contact />
+        <audio id="audio" src="/assets/sounds/click.wav">
+          Your browser does not support the
+          <code>audio</code> element.
+        </audio>
       </BaseLayout>
     </div>
   );
 };
 
-export default Home;
+export default React.memo(Home, () => false);
