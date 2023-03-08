@@ -7,8 +7,8 @@ import styles from "./styles.module.scss";
 import { AppContext } from "@frontend/components/hocs/WithProvider";
 
 const matrixTypoStyles =
-  "font-medium text-slate-600 dark:text-white text-xs sm:text-base";
-const graphicStyles = `${matrixTypoStyles} m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
+  "font-medium text-slate-700 dark:text-white text-xs sm:text-base";
+const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
 export default function Hero() {
   const { context } = useContext(AppContext);
@@ -50,7 +50,7 @@ export default function Hero() {
         <Link href="#experience" scroll={false} legacyBehavior>
           <a rel="noopener noreferrer">
             <h5
-              className={`inline-flex items-center self-start rounded-full bg-slate-700 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold ${styles.cta} ${styles[theme]}`}
+              className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold transition ease-in ${styles.cta} ${styles[theme]}`}
             >
               My proudly accomplishments
               <svg
@@ -93,7 +93,7 @@ export default function Hero() {
             #PHP Laravel
           </li>
           <li
-            className={`m-auto rounded-md p-2 transition duration-150 ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
+            className={`m-auto rounded-md p-2 transition ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
           >
             <Image
               src={Avatar}

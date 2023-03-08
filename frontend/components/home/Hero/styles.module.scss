@@ -3,11 +3,11 @@
         transition: transform 0.2s;
         transition-delay: 0.1s;
         transform: rotate(0);
-        fill: white;
+        fill: var(--slate-50);
     }
     &.dark {
         svg {
-            fill: black;
+            fill: var(--slate-900);
         }
     }
   &:hover {
