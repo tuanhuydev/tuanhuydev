@@ -14,7 +14,10 @@ module.exports = {
       },
       minHeight: {
         '1/2': 'half',
-      }
+      },
+      colors: {
+        'primary': "#172733",
+      },
     },
   },
   plugins: [],

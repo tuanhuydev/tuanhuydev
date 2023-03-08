@@ -1,9 +1,6 @@
 @import "https://unpkg.com/open-props/easings.min.css";
 .sound {
   fill: var(--icon-fill);
-  &.dark {
-    fill: white;
-  }
 }
 
 .toggle {
@@ -40,11 +37,6 @@
   }
   &.dark {
     .icon {
-      .moon,
-      .sun,
-      .sound {
-        fill: #fff;
-      }
       .sun {
         transform: scale(1.5);
       }

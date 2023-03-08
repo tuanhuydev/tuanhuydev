@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "variables.css";
+@import "helpers.css";
+
 html,
 body {
   padding: 0;
