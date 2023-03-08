@@ -46,7 +46,7 @@ export default function Contact() {
               <Link href="mailto: tuanhuydev@gmail.com" legacyBehavior>
                 <a
                   target="_blank"
-                  className="border-2 p-3 rounded-md flex items-center justify-center bg-white dark:border-transparent border-slate-100 hover:bg-slate-100"
+                  className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out"
                 >
                   <Image
                     src={EmailIcon}
@@ -59,7 +59,7 @@ export default function Contact() {
               <Link href="https://github.com/tuanhuydev" legacyBehavior>
                 <a
                   target="_blank"
-                  className="border-2 p-3 rounded-md flex items-center justify-center bg-white dark:border-transparent border-slate-100 hover:bg-slate-100"
+                  className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out"
                 >
                   <Image
                     src={GithubIcon}
@@ -75,7 +75,7 @@ export default function Contact() {
               >
                 <a
                   target="_blank"
-                  className="border-2 p-3 rounded-md flex items-center justify-center bg-white dark:border-transparent border-slate-100 hover:bg-slate-100"
+                  className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out"
                 >
                   <Image
                     src={LinkedInIcon}

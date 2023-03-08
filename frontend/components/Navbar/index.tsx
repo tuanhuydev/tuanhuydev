@@ -14,6 +14,9 @@ import { AppContext } from "../hocs/WithProvider";
 import styles from "./styles.module.scss";
 import React from "react";
 
+const buttonStyles =
+  "rounded-md drop-shadow bg-white dark:drop-shadow-none dark:bg-slate-50 dark:hover:bg-slate-300 transition ease-in";
+
 function Navbar() {
   // Hooks
   const { context, setContext } = useContext(AppContext);
@@ -35,8 +38,8 @@ function Navbar() {
   };
 
   return (
-    <header className="flex items-center justify-between py-2 bg-white dark:bg-slate-900 px-4 md:px-0">
-      <div className="dark:text-white font-bold text-xl md:text-2xl flex items-center">
+    <header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-4 md:px-0">
+      <div className="text-primary dark:text-slate-50 font-bold text-xl md:text-2xl flex items-center">
         <Link href={"/"} legacyBehavior>
           <a className="line-height-1 hover:underline cursor-pointer">
             #<h1 className="inline">tuanhuydev</h1>
@@ -54,7 +57,7 @@ function Navbar() {
           </li>
         </ul> */}
         <button
-          className={`rounded-md border-2 border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900 dark:text-white p-2 mr-2 md:mr-3`}
+          className={`${buttonStyles} p-2 mr-2 md:mr-3`}
           onClick={toggleSound}
         >
           {playSound ? (
@@ -80,7 +83,7 @@ function Navbar() {
           )}
         </button>
         <button
-          className={`${styles.toggle} ${styles[theme]} rounded-md border-2 border-slate-100 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-900 dark:text-white p-2 mr-2 md:mr-7`}
+          className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7`}
           title="Toggles light & dark"
           aria-live="polite"
           onClick={switchTheme}
@@ -117,7 +120,7 @@ function Navbar() {
           </svg>
         </button>
         <Link href={"#contact"} legacyBehavior>
-          <a className="rounded-full bg-stone-900 text-white dark:bg-white dark:text-stone-900 text-white px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+          <a className="rounded-full bg-stone-900 drop-shadow-md text-white dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-medium px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
             Contact
           </a>
         </Link>
