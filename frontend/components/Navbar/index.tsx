@@ -63,9 +63,9 @@ function Navbar() {
           {playSound ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="24"
+              height="18"
               viewBox="0 96 960 960"
-              width="24"
+              width="18"
               className={`${styles.sound} ${styles[theme]}`}
             >
               <path d="M560 925v-62q97-28 158.5-107.5T780 575q0-101-61-181T560 287v-62q124 28 202 125.5T840 575q0 127-78 224.5T560 925ZM120 696V456h160l200-200v640L280 696H120Zm420 48V407q55 17 87.5 64T660 576q0 57-33 104t-87 64Z" />
@@ -73,9 +73,9 @@ function Navbar() {
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="24"
+              height="18"
               viewBox="0 96 960 960"
-              width="24"
+              width="18"
               className={`${styles.sound} ${styles[theme]}`}
             >
               <path d="M813 1000 681 868q-28 20-60.5 34.5T553 925v-62q23-7 44.5-15.5T638 825L473 659v237L273 696H113V456h156L49 236l43-43 764 763-43 44Zm-36-232-43-43q20-34 29.5-72t9.5-78q0-103-60-184.5T553 287v-62q124 28 202 125.5T833 575q0 51-14 100t-42 93ZM643 634l-90-90V414q47 22 73.5 66t26.5 96q0 15-2.5 29.5T643 634ZM473 464 369 360l104-104v208Z" />
@@ -91,8 +91,8 @@ function Navbar() {
           <svg
             className={styles.icon}
             aria-hidden="true"
-            width="24"
-            height="24"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
           >
             <mask className={styles.moon} id="moon-mask">
@@ -120,7 +120,7 @@ function Navbar() {
           </svg>
         </button>
         <Link href={"#contact"} legacyBehavior>
-          <a className="rounded-full bg-stone-900 drop-shadow-md text-white dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-medium px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+          <a className="rounded-full bg-stone-900 drop-shadow-md text-white dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
             Contact
           </a>
         </Link>

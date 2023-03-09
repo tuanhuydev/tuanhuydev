@@ -58,10 +58,8 @@ function BaseLayout(props: ComponentProps) {
   }, [setContext]);
 
   return (
-    <main className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 font-sans relative">
-      <div
-        className={`${gridItems} row-start-1 sticky top-0 z-10`}
-      >
+    <main className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d">
+      <div className={`${gridItems} row-start-1 sticky top-0 z-10`}>
         <Navbar />
       </div>
       <div className={`${gridItems} row-start-2 relative`}>
