@@ -27,6 +27,9 @@
     "sharp": "^0.31.3"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^17.4.4",
+    "commitlint": "^17.4.4",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/node": "18.7.18",
