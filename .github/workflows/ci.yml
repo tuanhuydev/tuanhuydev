@@ -1,7 +1,10 @@
-name: Development
-on: ["pull_request"]
+name: tuanhuy.dev CI
+on: 
+  pull_request:
+  push:
 jobs:
   commitlint:
+    if: github.on == 'pull_request'
     name: Validate Commit
     runs-on: ubuntu-latest
     steps:
