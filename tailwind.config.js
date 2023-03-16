@@ -8,6 +8,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      height: {
+        'screen-d': '100dvh'
+      },
+      minHeight: {
+        'screen-d': '100dvh'
+      },
       fontFamily: {
         'sans': [''],
         'mono': ['']
