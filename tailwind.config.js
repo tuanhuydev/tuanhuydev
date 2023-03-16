@@ -15,8 +15,8 @@ module.exports = {
         'screen-d': '100dvh'
       },
       fontFamily: {
-        'sans': [''],
-        'mono': ['']
+        'sans': ['Source Sans Pro, sans-serif'],
+        'mono': ['Spline Sans Mono, monospace']
       },
       minHeight: {
         '1/2': 'half',

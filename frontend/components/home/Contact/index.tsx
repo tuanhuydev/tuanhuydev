@@ -22,7 +22,7 @@ export default function Contact() {
             </span>{" "}
             <br />
             <span className="text-slate-900 dark:text-slate-100 break-keep">
-              &#60;RightOne &#47;&#62;
+              &#60;RightOne&#47;&#62;
             </span>
           </h3>
         </div>

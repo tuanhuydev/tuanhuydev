@@ -23,7 +23,7 @@ jobs:
           git config --global user.email 'tuanhuydev@gmail.com'
 
       - name: Release version
-        run: npm run release:minor
+        run: npm run release:major
 
       - name: Push to origin
         run: | 

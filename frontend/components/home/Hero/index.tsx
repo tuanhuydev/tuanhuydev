@@ -21,9 +21,9 @@ export default function Hero() {
       style={{ height: "calc(100vh - 56px)" }}
     >
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
-        <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 tracking-tight dark:text-white">
-          <span className="break-keep">&#60;Developer &#47;&#62;</span> <br />
-          to solve problems
+        <h1 className="font-mono font-bold mb-3 tracking-tight dark:text-white">
+          <span className="break-keep tracking-tighter text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span> <br />
+          <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
         </h1>
         <div className="relative mb-6">
           <h2 className="font-medium text-2xl mr-2 inline dark:text-white">
