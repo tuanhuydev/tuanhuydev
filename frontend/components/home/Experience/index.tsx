@@ -12,7 +12,7 @@ export default function Experience() {
   return (
     <section id="experience" className="py-10 md:py-24 px-2">
       <h1 className="font-mono text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 tracking-tight dark:text-white pt-14 pb-7">
-        &#60;Experience &#47;&#62;
+        &#60;Experience&#47;&#62;
       </h1>
       <div className="cards flex flex-wrap gap-8">
         {MOCK_PROJECTS.map((project: ObjectType) => (
