@@ -1,9 +1,6 @@
 @import "https://unpkg.com/open-props/easings.min.css";
 .sound {
   fill: var(--icon-fill);
-  &.dark {
-    fill: white;
-  }
 }
 
 .toggle {
@@ -15,8 +12,6 @@
   -webkit-tap-highlight-color: transparent;
 
   .icon {
-    inline-size: 100%;
-    block-size: 100%;
     stroke-linecap: round;
 
     // Align moon, sun, beams to layers
@@ -42,11 +37,6 @@
   }
   &.dark {
     .icon {
-      .moon,
-      .sun,
-      .sound {
-        fill: #fff;
-      }
       .sun {
         transform: scale(1.5);
       }

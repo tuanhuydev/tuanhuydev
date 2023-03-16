@@ -7,8 +7,8 @@ import styles from "./styles.module.scss";
 import { AppContext } from "@frontend/components/hocs/WithProvider";
 
 const matrixTypoStyles =
-  "font-medium text-slate-600 dark:text-white text-xs sm:text-base";
-const graphicStyles = `${matrixTypoStyles} m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
+  "font-medium text-slate-700 dark:text-white text-xs sm:text-base";
+const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
 export default function Hero() {
   const { context } = useContext(AppContext);
@@ -21,9 +21,9 @@ export default function Hero() {
       style={{ height: "calc(100vh - 56px)" }}
     >
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
-        <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 tracking-tight dark:text-white">
-          <span className="break-keep">&#60;Developer &#47;&#62;</span> <br />
-          to solve problems
+        <h1 className="font-mono font-bold mb-3 tracking-tight dark:text-white">
+          <span className="break-keep tracking-tighter text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span> <br />
+          <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
         </h1>
         <div className="relative mb-6">
           <h2 className="font-medium text-2xl mr-2 inline dark:text-white">
@@ -50,7 +50,7 @@ export default function Hero() {
         <Link href="#experience" scroll={false} legacyBehavior>
           <a rel="noopener noreferrer">
             <h5
-              className={`inline-flex items-center self-start rounded-full bg-slate-700 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold ${styles.cta} ${styles[theme]}`}
+              className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold transition ease-in ${styles.cta} ${styles[theme]}`}
             >
               My proudly accomplishments
               <svg
@@ -66,7 +66,7 @@ export default function Hero() {
           </a>
         </Link>
       </div>
-      <div className="col-start-1 col-span-full lg:col-start-7 relative overflow-hidden sm:overflow-visible">
+      <div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden overflow-x-hidden h-max sm:overflow-visible">
         <ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6">
           <li className={`${graphicStyles} col-start-1 col-span-4`}>
             #Web Development
@@ -93,7 +93,7 @@ export default function Hero() {
             #PHP Laravel
           </li>
           <li
-            className={`m-auto rounded-md p-2 transition duration-150 ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
+            className={`m-auto rounded-md p-2 transition ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}
           >
             <Image
               src={Avatar}

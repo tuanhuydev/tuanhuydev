@@ -1,25 +1,28 @@
 import { MOCK_PROJECTS } from "@shared/configs/constants";
 import { ObjectType } from "@shared/interfaces/base";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./styles.module.scss";
 import Image from "next/image";
+import { AppContext } from "@frontend/components/hocs/WithProvider";
 
 export default function Experience() {
+  const { context } = useContext(AppContext);
+  const { theme } = context;
   return (
     <section id="experience" className="py-10 md:py-24 px-2">
       <h1 className="font-mono text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 tracking-tight dark:text-white pt-14 pb-7">
-        &#60;Experience &#47;&#62;
+        &#60;Experience&#47;&#62;
       </h1>
       <div className="cards flex flex-wrap gap-8">
         {MOCK_PROJECTS.map((project: ObjectType) => (
           <div
-            className={`${styles.card} items-center relative p-3 h-96 w-full hover:w-full md:w-80 md:hover:w-96 max-w-full border-2 border-slate-200 dark:border-slate-700 dark:text-white rounded-md`}
+            className={`${styles.card} ${styles[theme]} shadow-200 items-center relative p-3 h-96 w-full hover:w-full md:w-80 md:hover:w-96 max-w-full border-2 border-transparent dark:border-slate-700 dark:text-white rounded-md`}
             key={project.title}
           >
             <div className="flex min-w-0 justify-between">
               <div
-                className={`${styles.image} mr-3 shrink-0 relative flex items-center justify-center rounded-xl bg-slate-50`}
+                className={`${styles.image} drop-shadow-md dark:drop-shadow-none mr-3 shrink-0 relative flex items-center justify-center rounded-xl bg-slate-100`}
               >
                 {project?.image && (
                   <Image
