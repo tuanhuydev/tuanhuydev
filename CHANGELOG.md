@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 =======
->>>>>>> Stashed changes
 ### Features
 
 * **ci:** github actions setup ([5001d54](https://github.com/tuanhuydev/tuanhuydev/commit/5001d54785b2c9588377a7c328180e21c4efe341))
