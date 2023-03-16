@@ -15,8 +15,7 @@ import Footer from "../Footer";
 import { AppContext } from "../hocs/WithProvider";
 import Navbar from "../Navbar";
 
-const gridItems =
-  "col-span-full md:col-start-2 xl:col-start-3 md:col-span-10 xl:col-span-8";
+const gridItems = "col-span-full md:col-start-2 md:col-span-10";
 
 function BaseLayout(props: ComponentProps) {
   const { setContext } = useContext(AppContext);
