@@ -1,13 +1,7 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-### 0.1.1 (2023-03-16)
-
 ## 0.1.0 (2023-03-01)
-
-
-=======
 ### Features
 
 * **ci:** github actions setup ([5001d54](https://github.com/tuanhuydev/tuanhuydev/commit/5001d54785b2c9588377a7c328180e21c4efe341))
