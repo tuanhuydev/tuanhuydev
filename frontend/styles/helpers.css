@@ -1,7 +1,7 @@
 .shadow-200 {
-    box-shadow: 2px 2px 1rem var(--slate-200);
+	box-shadow: 2px 2px 1rem var(--slate-200);
 }
 
 .shadow-300 {
-    box-shadow: 2px 2px 1.5rem var(--slate-300);
+	box-shadow: 2px 2px 1.5rem var(--slate-300);
 }
