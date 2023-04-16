@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -28,6 +29,7 @@ model User {
   id        String   @unique @db.Uuid
   name      String   @db.VarChar(50)
   email     String   @unique @db.VarChar(50)
+	password  String   @db.VarChar(255) @default("0")
   posts     Post[]
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @db.Timestamp(6)
