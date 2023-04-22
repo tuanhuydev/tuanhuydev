@@ -1,5 +1,5 @@
 // Reference to the issue https://github.com/prisma/prisma/issues/13672
-import { PrismaClient } from '../../node_modules/.prisma/client';
+import { PrismaClient } from '.prisma/client';
 
 /**
  * Initialize connection to DB
