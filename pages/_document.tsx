@@ -7,6 +7,8 @@ function Document() {
 			<Head>
 				<link rel="icon" href="/favicon.ico" />
 				<link rel="manifest" href="/site.webmanifest" />
+				<meta name="robots" content="all" />
+				<meta name="google" content="notranslate" />
 			</Head>
 			<body>
 				<Main />
