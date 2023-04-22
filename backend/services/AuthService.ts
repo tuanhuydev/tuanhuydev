@@ -1,8 +1,13 @@
-import { ACCESS_TOKEN_SECRET } from '@shared/commons/constants/encryption';
+import {
+	ACCESS_TOKEN_LIFE,
+	ACCESS_TOKEN_SECRET,
+	REFRESH_TOKEN_LIFE,
+	REFRESH_TOKEN_SECRET,
+} from '@shared/commons/constants/encryption';
 import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
 import { SALT_ROUNDS } from '@shared/configs/constants';
-import prismaClient from '@shared/configs/prismaClient';
+import prismaClient from '@backend/prismaClient';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 class AuthService {
@@ -26,11 +31,14 @@ class AuthService {
 		};
 
 		const token = jwt.sign(tokenData, ACCESS_TOKEN_SECRET, {
-			algorithm: 'RS256',
-			expiresIn: 60 * 60,
+			expiresIn: ACCESS_TOKEN_LIFE,
 		});
 
-		// generate token
+		const refreshToken = jwt.sign({ email }, REFRESH_TOKEN_SECRET, {
+			expiresIn: REFRESH_TOKEN_LIFE,
+		});
+
+		return { token, refreshToken };
 	}
 
 	forgotPassword(email: string) {

@@ -1,10 +1,10 @@
-import type { NextApiResponse, NextPage } from 'next';
+import type { NextPage } from 'next';
 import Head from 'next/head';
 import BaseLayout from '@frontend/components/layouts/BaseLayout';
 import Hero from '@frontend/components/home/Hero';
 import Experience from '@frontend/components/home/Experience';
 import Contact from '@frontend/components/home/Contact';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const Home: NextPage = () => {
 	return (

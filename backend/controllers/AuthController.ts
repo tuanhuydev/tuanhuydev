@@ -7,10 +7,11 @@ class AuthController {
 	async signIn(req: NextApiRequest, res: NextApiResponse) {
 		try {
 			const { email, password } = req.body;
-			const isAuth = await AuthService.signIn(email, password);
-			return res.status(HTTP_CODE.SUCCESS).json({ token: isAuth });
+			const auth = await AuthService.signIn(email, password);
+			return res.status(HTTP_CODE.SUCCESS).json(auth);
 		} catch (error) {
-			return (error as NotFoundError).getApiResponse(res);
+			console.log(error);
+			return (error as NotFoundError)?.getApiResponse(res);
 		}
 	}
 }
