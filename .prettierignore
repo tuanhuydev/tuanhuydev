@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+
+
+# build
+build
+dist
+
+
+# aftifacts
+.husky
+.next
+.github
+
+*.lock
+package.*
+
+# assets
+public
+assets
+
+# history
+.history
