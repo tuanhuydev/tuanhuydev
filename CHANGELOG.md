@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/tuanhuydev/tuanhuydev/compare/v0.1.0...v0.1.2) (2023-05-21)
+
+### Features
+
+- **backend:** authentication flow ([34aaf2c](https://github.com/tuanhuydev/tuanhuydev/commit/34aaf2c45d0974bbccb4ab033ed07547ee72cf8c))
+- **backend:** authentication flow ([9b3869c](https://github.com/tuanhuydev/tuanhuydev/commit/9b3869cb0cbf94faa9dcb65eeab42ffa6bbca5b2))
+- **be:** backend setup ([a881dc7](https://github.com/tuanhuydev/tuanhuydev/commit/a881dc739af336ba58af821db4603854bad14c53))
+- **seo:** initialize sitemap ([9576287](https://github.com/tuanhuydev/tuanhuydev/commit/9576287dd103eba6896ba19fbb486e7d09051362))
+- **system:** custom fonts installed ([95bc82a](https://github.com/tuanhuydev/tuanhuydev/commit/95bc82acb4fc80ad686506c65af8646ddf8e8b0b))
+- **system:** setup google tools ([0de6987](https://github.com/tuanhuydev/tuanhuydev/commit/0de698702eb61275d8d3f151ea27c71fac2aac23))
+
+### Bug Fixes
+
+- **component:** navbar buttons should have consistent size ([7cc8063](https://github.com/tuanhuydev/tuanhuydev/commit/7cc80636f227810aa6ed2885291d458b51aea217))
+- **grid:** adjust grid setting home page ([a7fc419](https://github.com/tuanhuydev/tuanhuydev/commit/a7fc419c1aa5c3b01cc880da36c5681f093bc826))
+
 ## 0.1.0 (2023-03-01)
 
 ### Features
