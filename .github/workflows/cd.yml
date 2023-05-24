@@ -22,16 +22,16 @@ jobs:
           git config --global user.name 'tuanhuydev'
           git config --global user.email 'tuanhuydev@gmail.com'
 
-      - name: Release version
-        run: npm run release:major
+      # - name: Release version
+      #   run: npm run release:major
 
-      - name: Push to origin
-        run: | 
-          echo "The current branch is ${GITHUB_REF##*/}"
-          git push --follow-tags origin ${GITHUB_REF##*/}
+      # - name: Push to origin
+      #   run: | 
+      #     echo "The current branch is ${GITHUB_REF##*/}"
+      #     git push --follow-tags origin ${GITHUB_REF##*/}
 
-      - name: Push tag to GitHub
-        run: git push --follow-tags origin ${GITHUB_REF##*/}
+      # - name: Push tag to GitHub
+      #   run: git push --follow-tags origin ${GITHUB_REF##*/}
   build:
     if: github.event.pull_request.merged == true
     name: Docker build

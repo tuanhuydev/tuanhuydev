@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### 0.1.6 (2023-05-23)
+### 0.1.7 (2023-05-24)
 
+### 0.1.6 (2023-05-23)
 
 ### Features
 
-* **seo:** initialize sitemap ([744d8fd](https://github.com/tuanhuydev/tuanhuydev/commit/744d8fd2f8da14965cb97fabe61e898961029f62))
+- **seo:** initialize sitemap ([744d8fd](https://github.com/tuanhuydev/tuanhuydev/commit/744d8fd2f8da14965cb97fabe61e898961029f62))
 
 ### 0.1.5 (2023-05-23)
 
