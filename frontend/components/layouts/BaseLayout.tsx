@@ -1,15 +1,6 @@
-import {
-	STORAGE_PLAYSOUND_KEY,
-	STORAGE_THEME_KEY,
-} from '@shared/configs/constants';
+import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { ComponentProps } from '@shared/interfaces/base';
-import {
-	getThemeValue,
-	updateLocalStorage,
-	reflectTheme,
-	getSoundValue,
-	reflectSound,
-} from '@shared/utils/dom';
+import { getThemeValue, setLocalStorage, reflectTheme, getSoundValue, reflectSound } from '@shared/utils/dom';
 import { useContext, useEffect, memo } from 'react';
 import Footer from '../Footer';
 import { AppContext } from '../hocs/WithProvider';
@@ -25,21 +16,19 @@ function BaseLayout(props: ComponentProps) {
 		// TODO: Sync theme with prefers-color-scheme
 		const theme = getThemeValue();
 		setContext({ theme });
-		updateLocalStorage(STORAGE_THEME_KEY, theme);
+		setLocalStorage(STORAGE_THEME_KEY, theme);
 		reflectTheme(theme);
 
 		// Sync sound
 		const { hasStorage, value: playSound } = getSoundValue();
 		if (!hasStorage) {
-			updateLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
+			setLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
 		}
 		setContext({ playSound });
 		reflectSound(playSound);
 
 		const audioEl = document.getElementById('audio') as HTMLAudioElement;
-		const buttonEls = document.querySelectorAll(
-			'button, a'
-		) as NodeListOf<Element>;
+		const buttonEls = document.querySelectorAll('button, a') as NodeListOf<Element>;
 
 		const playSoundEvent = () => audioEl.play();
 
@@ -61,9 +50,7 @@ function BaseLayout(props: ComponentProps) {
 			<div className={`${gridItems} row-start-1 sticky top-0 z-10`}>
 				<Navbar />
 			</div>
-			<div className={`${gridItems} row-start-2 relative`}>
-				{props.children}
-			</div>
+			<div className={`${gridItems} row-start-2 relative`}>{props.children}</div>
 			<div className={`${gridItems} row-start-3 relative`}>
 				<Footer />
 			</div>

@@ -9,8 +9,9 @@
 	--beams-fill: #94a3b8;
 
 	touch-action: manipulation;
-	-webkit-tap-highlight-color: transparent;
-
+	@supports (-webkit-appearance: none) {
+		-webkit-tap-highlight-color: transparent;
+	}
 	.icon {
 		stroke-linecap: round;
 
