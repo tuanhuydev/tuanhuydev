@@ -12,7 +12,6 @@ import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 class AuthService {
 	async signIn(email: string, plainPassword: string) {
-		//TODO: verify email and password here
 		const existingUser = await prismaClient.user.findUnique({
 			where: { email },
 		});

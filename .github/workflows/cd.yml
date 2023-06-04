@@ -3,35 +3,6 @@ on:
   push:
     branches: [main]
 jobs:
-  release:
-    name: Release new tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: tuanhuydev/tuanhuydev
-          ref: ${{ github.head_ref }}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install Dependencies
-        run: npm install
-      
-      - name: Setup git credential
-        run: |
-          git config --global user.name 'tuanhuydev'
-          git config --global user.email 'tuanhuydev@gmail.com'
-
-      # - name: Release version
-      #   run: npm run release:major
-
-      # - name: Push to origin
-      #   run: | 
-      #     echo "The current branch is ${GITHUB_REF##*/}"
-      #     git push --follow-tags origin ${GITHUB_REF##*/}
-
-      # - name: Push tag to GitHub
-      #   run: git push --follow-tags origin ${GITHUB_REF##*/}
   build:
     if: github.event.pull_request.merged == true
     name: Docker build

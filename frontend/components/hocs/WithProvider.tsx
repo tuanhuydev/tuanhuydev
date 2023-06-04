@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 import { createContext } from 'react';
 import { EMPTY_OBJECT } from '@shared/configs/constants';
 import { ComponentProps, ObjectType } from '@shared/interfaces/base';
@@ -16,9 +16,5 @@ export const AppContext = createContext(EMPTY_OBJECT);
 export default function WithProvider(props: ProviderProps) {
 	const [context, setContext] = useReducer(reducer, props.context);
 
-	return (
-		<AppContext.Provider value={{ context, setContext }}>
-			{props?.children}
-		</AppContext.Provider>
-	);
+	return <AppContext.Provider value={{ context, setContext }}>{props?.children}</AppContext.Provider>;
 }

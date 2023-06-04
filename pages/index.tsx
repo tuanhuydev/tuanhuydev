@@ -8,7 +8,7 @@ import React from 'react';
 
 const Home: NextPage = () => {
 	return (
-		<div>
+		<div data-testid="homepage-testid">
 			<Head>
 				<title>tuanhuydev</title>
 				<meta name="description" content="Huy Nguyen Tuan personal website" />
