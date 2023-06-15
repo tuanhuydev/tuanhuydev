@@ -13,9 +13,18 @@ export const EMPTY_STRING: string = '';
 export const DEFAULT_THEME: string = 'light';
 export const STORAGE_THEME_KEY: string = 'theme-preference';
 export const STORAGE_PLAYSOUND_KEY: string = 'sound-preference';
+export const STORAGE_CREDENTIAL_KEY: string = 'credential';
 
 // Encryption
-export const SALT_ROUNDS = 12;
+export const SALT_ROUNDS: number = 12;
+
+// Environments
+const DEFAULT_ENV = 'development';
+export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
+export const GOOGLE_ADSENSE: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
+export const GOOGLE_TAG = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
+export const BASE_URL =
+	process.env.HOST && process.env.PORT ? `${process.env.HOST}:${process.env.PORT}` : 'http://localhost:3000';
 
 export const MOCK_PROJECTS = [
 	{

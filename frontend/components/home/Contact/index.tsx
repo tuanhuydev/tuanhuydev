@@ -8,20 +8,12 @@ import Image from 'next/image';
 
 export default function Contact() {
 	return (
-		<section
-			id="contact"
-			className="dark:text-white py-10 px-2 rounded-md py-24">
+		<section id="contact" data-testid="homepage-contact-testid" className="dark:text-white py-10 px-2 rounded-md py-24">
 			<div className="grid grid-cols-12 gap-y-8 justify-items-center lg:justify-items-start">
 				<div className="col-start-1 col-span-full lg:col-span-6">
-					<h3
-						className={`${styles.texture} text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold ml-4`}>
-						<span className="text-slate-600 dark:text-slate-300">
-							I&lsquo;m the
-						</span>{' '}
-						<br />
-						<span className="text-slate-900 dark:text-slate-100 break-keep">
-							&#60;RightOne&#47;&#62;
-						</span>
+					<h3 className={`${styles.texture} text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold ml-4`}>
+						<span className="text-slate-600 dark:text-slate-300">I&lsquo;m the</span> <br />
+						<span className="text-slate-900 dark:text-slate-100 break-keep">&#60;RightOne&#47;&#62;</span>
 					</h3>
 				</div>
 				<div className="col-start-1 col-span-full lg:col-start-7">
@@ -45,35 +37,21 @@ export default function Contact() {
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image
-										src={EmailIcon}
-										width={24}
-										height={24}
-										alt="tuanhuydev - send email"></Image>
+									<Image src={EmailIcon} width={24} height={24} alt="tuanhuydev - send email"></Image>
 								</a>
 							</Link>
 							<Link href="https://github.com/tuanhuydev" legacyBehavior>
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image
-										src={GithubIcon}
-										width={24}
-										height={24}
-										alt="tuanhuydev - github profile"></Image>
+									<Image src={GithubIcon} width={24} height={24} alt="tuanhuydev - github profile"></Image>
 								</a>
 							</Link>
-							<Link
-								href="https://www.linkedin.com/in/tuanhuydev"
-								legacyBehavior>
+							<Link href="https://www.linkedin.com/in/tuanhuydev" legacyBehavior>
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image
-										src={LinkedInIcon}
-										width={24}
-										height={24}
-										alt="tuanhuydev - linkedin profile"></Image>
+									<Image src={LinkedInIcon} width={24} height={24} alt="tuanhuydev - linkedin profile"></Image>
 								</a>
 							</Link>
 						</div>

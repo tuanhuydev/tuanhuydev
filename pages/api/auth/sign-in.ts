@@ -1,16 +1,12 @@
 import { HTTP_CODE } from '@shared/commons/constants/httpCode';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import AuthController from '@backend/controllers/AuthController';
-export default function handler(
-	req: NextApiRequest,
-	res: NextApiResponse<string>
-) {
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 	switch (req.method) {
 		case 'POST':
 			return AuthController.signIn(req, res);
 		default:
-			return res
-				.status(HTTP_CODE.METHOD_NOT_ALLOWED_ERROR)
-				.end('Method not allowed');
+			return res.status(HTTP_CODE.METHOD_NOT_ALLOWED_ERROR).end('Method not allowed');
 	}
 }
