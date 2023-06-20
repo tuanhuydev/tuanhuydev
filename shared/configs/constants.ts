@@ -1,9 +1,10 @@
-import { ObjectType } from '@shared/interfaces/base';
-import EProject from '@public/assets/images/projects/e.svg';
 import CProject from '@public/assets/images/projects/c.svg';
+import CTIProject from '@public/assets/images/projects/cti.svg';
+import EProject from '@public/assets/images/projects/e.svg';
 import IProject from '@public/assets/images/projects/i.svg';
 import PulseProject from '@public/assets/images/projects/pulse.svg';
-import CTIProject from '@public/assets/images/projects/cti.svg';
+
+import { ObjectType } from '@shared/interfaces/base';
 
 // Default Type
 export const EMPTY_OBJECT: ObjectType = {};

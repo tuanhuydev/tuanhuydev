@@ -1,4 +1,4 @@
-import { STORAGE_THEME_KEY, DEFAULT_THEME, STORAGE_PLAYSOUND_KEY } from '@shared/configs/constants';
+import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 
 export const reflectTheme = (theme: string) => {
@@ -26,6 +26,10 @@ export const getLocalStorage = (key: string) => {
 	} catch (error) {
 		return null;
 	}
+};
+
+export const clearLocalStorage = () => {
+	return localStorage.clear();
 };
 
 export const getThemeValue = (): string => {

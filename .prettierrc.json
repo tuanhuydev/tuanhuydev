@@ -2,5 +2,8 @@
 	"tabWidth": 2,
 	"semi": true,
 	"singleQuote": true,
-	"bracketSameLine": true
+	"bracketSameLine": true,
+	"importOrder": ["^@shared/(.*)$", "^@frontend/(.*)$", "^@backend/(.*)$", "^[./]"],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true
 }

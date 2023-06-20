@@ -1,12 +1,15 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
+import React from 'react';
+
 import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+
+import logoSrc from '@frontend/assets/images/logo.svg';
+
 import { AppContext } from '../hocs/WithProvider';
 import styles from './styles.module.scss';
-import React from 'react';
-import logoSrc from '@frontend/assets/images/logo.svg';
-import Image from 'next/image';
 
 const buttonStyles =
 	'rounded-md drop-shadow bg-white dark:drop-shadow-none dark:bg-slate-50 dark:hover:bg-slate-300 transition ease-in';

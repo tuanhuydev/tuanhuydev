@@ -1,10 +1,11 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import BaseLayout from '@frontend/components/layouts/BaseLayout';
-import Hero from '@frontend/components/home/Hero';
-import Experience from '@frontend/components/home/Experience';
-import Contact from '@frontend/components/home/Contact';
 import React from 'react';
+
+import Contact from '@frontend/components/home/Contact';
+import Experience from '@frontend/components/home/Experience';
+import Hero from '@frontend/components/home/Hero';
+import BaseLayout from '@frontend/components/layouts/BaseLayout';
 
 const Home: NextPage = () => {
 	return (
