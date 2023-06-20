@@ -1,10 +1,13 @@
-import { MOCK_PROJECTS } from '@shared/configs/constants';
-import { ObjectType } from '@shared/interfaces/base';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext } from 'react';
-import styles from './styles.module.scss';
-import Image from 'next/image';
+
+import { MOCK_PROJECTS } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
+
 import { AppContext } from '@frontend/components/hocs/WithProvider';
+
+import styles from './styles.module.scss';
 
 export default function Experience() {
 	const { context } = useContext(AppContext);

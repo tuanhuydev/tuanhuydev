@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+
 import { HTTP_CODE } from '../constants/httpCode';
 
 export default class BaseError extends Error {

@@ -1,12 +1,14 @@
-import { AppDispatch, RootState } from '@frontend/configs/types';
+import { Skeleton } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Skeleton } from 'antd';
+
 import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
-import { getLocalStorage } from '@shared/utils/dom';
-import { authActions } from '@frontend/configs/store/slices/authSlice';
 import { ObjectType } from '@shared/interfaces/base';
+import { getLocalStorage } from '@shared/utils/dom';
+
+import { authActions } from '@frontend/configs/store/slices/authSlice';
+import { AppDispatch, RootState } from '@frontend/configs/types';
 
 export default function WithAuth(WrappedComponent: React.FC) {
 	const AuthenticatedComponent = (props: JSX.IntrinsicAttributes) => {

@@ -1,5 +1,7 @@
-import { HTTP_CODE } from '@shared/commons/constants/httpCode';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import { HTTP_CODE } from '@shared/commons/constants/httpCode';
+
 import AuthController from '@backend/controllers/AuthController';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<string>) {
