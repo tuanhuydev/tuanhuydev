@@ -1,10 +1,12 @@
+import { memo, useContext, useEffect } from 'react';
+
 import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { ComponentProps } from '@shared/interfaces/base';
-import { getThemeValue, setLocalStorage, reflectTheme, getSoundValue, reflectSound } from '@shared/utils/dom';
-import { useContext, useEffect, memo } from 'react';
+import { getSoundValue, getThemeValue, reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+
 import Footer from '../Footer';
-import { AppContext } from '../hocs/WithProvider';
 import Navbar from '../Navbar';
+import { AppContext } from '../hocs/WithProvider';
 
 const gridItems = 'col-span-full md:col-start-2 md:col-span-10';
 

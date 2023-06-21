@@ -1,10 +1,11 @@
-import React from 'react';
-import styles from './styles.module.scss';
+import EmailIcon from '@public/assets/images/email.svg';
 import GithubIcon from '@public/assets/images/socials/github.svg';
 import LinkedInIcon from '@public/assets/images/socials/linkedin.svg';
-import EmailIcon from '@public/assets/images/email.svg';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
+import styles from './styles.module.scss';
 
 export default function Contact() {
 	return (
