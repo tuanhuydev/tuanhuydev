@@ -1,6 +1,7 @@
 // Reference to the issue https://github.com/prisma/prisma/issues/13672
-import { PrismaClient } from '.prisma/client';
 import BaseError from '@shared/commons/errors/BaseError';
+
+import { PrismaClient } from '.prisma/client';
 
 // NextJS reload initialize prisma alot => implement singleton pattern
 const cachedPrisma = global as unknown as { prisma: PrismaClient };

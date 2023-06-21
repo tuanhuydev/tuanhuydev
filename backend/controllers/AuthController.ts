@@ -1,8 +1,10 @@
-import AuthService from '@backend/services/AuthService';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { HTTP_CODE } from '@shared/commons/constants/httpCode';
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
-import type { NextApiRequest, NextApiResponse } from 'next';
+
+import AuthService from '@backend/services/AuthService';
 
 class AuthController {
 	async signIn(req: NextApiRequest, res: NextApiResponse) {

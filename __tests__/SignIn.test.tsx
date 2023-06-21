@@ -1,8 +1,10 @@
-import WithProvider from '@frontend/components/hocs/WithProvider';
-import store from '@frontend/configs/store';
 import SignIn from '@pages/auth/sign-in';
 import { render, screen } from '@testing-library/react';
 import { Provider as ReduxProvider } from 'react-redux';
+
+import WithProvider from '@frontend/components/hocs/WithProvider';
+import store from '@frontend/configs/store';
+
 import { mockWindow } from './mocks/dom';
 
 describe('Sign in page test suit', () => {

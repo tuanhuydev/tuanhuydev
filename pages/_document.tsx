@@ -1,8 +1,9 @@
+import { Head, Html, Main, NextScript } from 'next/document';
+import { memo } from 'react';
+
 import GoogleAdsense from '@frontend/components/google/GoogleAdsense';
 import GoogleAnalytic from '@frontend/components/google/GoogleAnalytic';
 import GoogleTag from '@frontend/components/google/GoogleTag';
-import { Html, Head, Main, NextScript } from 'next/document';
-import { memo } from 'react';
 
 function Document() {
 	return (
