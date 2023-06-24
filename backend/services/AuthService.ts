@@ -11,7 +11,7 @@ import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
 import { SALT_ROUNDS } from '@shared/configs/constants';
 
-import prismaClient from '@backend/prismaClient';
+import prismaClient from '@backend/database/prismaClient';
 
 class AuthService {
 	async signIn(email: string, plainPassword: string) {
