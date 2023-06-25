@@ -16,7 +16,12 @@ const customJestConfig = {
 		'^@public(.*)$': '<rootDir>/public/$1',
 		'^@pages/(.*)$': '<rootDir>/pages/$1',
 	},
-	modulePathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/.history/', '<rootDir>/__tests__/mocks/'],
+	modulePathIgnorePatterns: [
+		'<rootDir>/build/',
+		'<rootDir>/.history/',
+		'<rootDir>/frontend/__tests__/mocks/',
+		'<rootDir>/backend/__tests__/mocks',
+	],
 	testEnvironment: 'jest-environment-jsdom',
 };
 
