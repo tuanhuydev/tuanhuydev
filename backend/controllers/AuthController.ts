@@ -5,6 +5,7 @@ import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 
 import AuthService from '@backend/services/AuthService';
+import { failResponse } from '@backend/utils/http';
 
 class AuthController {
 	async signIn(req: NextApiRequest, res: NextApiResponse) {
@@ -16,10 +17,9 @@ class AuthController {
 			}
 
 			const auth = await AuthService.signIn(email, password);
-			return res.status(HTTP_CODE.SUCCESS).json(auth);
+			return res.json(auth);
 		} catch (error) {
-			if (error instanceof BaseError) return (error as BaseError).getApiResponse(res);
-			return res.status(HTTP_CODE.INTERNAL_ERROR).json(error);
+			return res.json(failResponse((error as BaseError).message));
 		}
 	}
 }
