@@ -1,10 +1,8 @@
 name: tuanhuy.dev CI
 on: 
-  pull_request:
   push:
 jobs:
   commitlint:
-    if: github.on == 'pull_request'
     name: Validate Commit
     runs-on: ubuntu-latest
     steps:
@@ -32,5 +30,7 @@ jobs:
           node-version: 16
       - name: Install required dependencies
         run: npm install
+      - name: Generate prisma client
+        run: npm run db:generate
       - name: Run test suites
         run: npm run test
