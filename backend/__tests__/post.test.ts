@@ -23,20 +23,7 @@ describe('Post feature test suits', function () {
 		});
 
 		it('Should get post by id', async () => {
-			const mockId = 1;
-			const mockPost = {
-				id: mockId,
-				title: 'this is first post',
-				content: '<h1>Hello World</h1><p>This is a description</p>',
-				published: false,
-				authorId: '2e633db0-dc69-11ed-afa1-0242ac120002',
-				deletedAt: null,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-				slug: 'this-is-first-post-1687608784188',
-			};
-
-			const req: NextApiRequest = { query: { id: mockId } } as any;
+			const req: NextApiRequest = { query: { id: mockPostId } } as any;
 			const res: NextApiResponse = { json: jest.fn() } as any;
 			jest.spyOn(PostService, 'getPost').mockResolvedValue(mockPost);
 			await PostController.getOne(req, res);

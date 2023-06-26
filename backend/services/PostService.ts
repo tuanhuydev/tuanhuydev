@@ -7,7 +7,6 @@ class PostService {
 	async createPost(body: any) {
 		try {
 			if (!body) throw new BaseError();
-
 			return await prismaClient.post.create({
 				data: {
 					...body,
@@ -21,7 +20,7 @@ class PostService {
 
 	async getPosts() {
 		try {
-			return await prismaClient.post.findMany({ where: { deletedAt: null } });
+			return await prismaClient.post.findMany({ where: { deletedAt: null, publishedAt: { lte: new Date() } } });
 		} catch (error) {
 			throw new BaseError('Unable to get posts');
 		}

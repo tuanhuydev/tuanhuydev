@@ -2,6 +2,8 @@
 	color: theme('colors.slate.600');
 	cursor: pointer;
 	padding: theme('spacing.2') theme('spacing.4');
+	border-top-right-radius: theme('spacing.1');
+	border-bottom-right-radius: theme('spacing.1');
 
 	&:hover,
 	&.active {
