@@ -14,7 +14,7 @@ export interface PageContainerProps extends PropsWithChildren {
 	title: string;
 }
 
-export default function PageContainer({ title }: PageContainerProps) {
+export default function PageContainer({ title, children }: PageContainerProps) {
 	// Hook
 	const router = useRouter();
 	const dispatch = useDispatch();
@@ -43,10 +43,10 @@ export default function PageContainer({ title }: PageContainerProps) {
 	};
 
 	return (
-		<div className="bg-slate-50 w-full min-h-screen lg:overflow-hidden flex flex-wrap lg:flex-nowrap">
-			<div className="flex w-full">
+		<div className="bg-slate-50 w-full h-screen lg:overflow-hidden flex flex-wrap lg:flex-nowrap">
+			<div className="flex w-full relative">
 				<Sidebar open={sidebarOpen} onToggle={toggleSidebar} />
-				<div className="grow">
+				<div className="grow flex flex-col">
 					<Navbar
 						startComponent={<h1 className="mb-0 text-2xl font-bold capitalize">{title}</h1>}
 						endComponent={
@@ -76,7 +76,9 @@ export default function PageContainer({ title }: PageContainerProps) {
 							</div>
 						}
 					/>
-					<div className="grow p-3">Content</div>
+					<div className="grow bg-white overflow-auto">
+						<div className="p-4 overflow-auto">{children}</div>
+					</div>
 				</div>
 			</div>
 		</div>

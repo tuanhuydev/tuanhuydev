@@ -1,8 +1,8 @@
 import PageContainer from '@frontend/Dashboard/PageContainer';
 import WithAuth from '@frontend/components/hocs/WithAuth';
 
-const Posts = () => {
-	return <PageContainer title="Posts">Posts</PageContainer>;
+const Dashboard = () => {
+	return <PageContainer title="Home" />;
 };
 
-export default WithAuth(Posts);
+export default WithAuth(Dashboard);

@@ -27,6 +27,13 @@ export const GOOGLE_TAG = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const BASE_URL =
 	process.env.HOST && process.env.PORT ? `${process.env.HOST}:${process.env.PORT}` : 'http://localhost:3000';
 
+export const POST_STATUS = {
+	PUBLISHED: 'PUBLISHED',
+	DRAFT: 'DRAFT',
+};
+
+export type PostStatusType = typeof POST_STATUS;
+
 export const MOCK_PROJECTS = [
 	{
 		image: EProject,

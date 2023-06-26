@@ -60,7 +60,7 @@ export default function Hero() {
 					</a>
 				</Link>
 			</div>
-			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden overflow-x-hidden h-max sm:overflow-visible">
+			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
 				<ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6">
 					<li className={`${graphicStyles} col-start-1 col-span-4`}>#Web Development</li>
 					<li className={`${graphicStyles} col-start-3 row-start-3`}>#HTML</li>
@@ -73,7 +73,7 @@ export default function Hero() {
 					<li className={`${graphicStyles} col-start-6 row-start-6`}>#ReactJS</li>
 					<li className={`${graphicStyles} col-start-10 col-span-full row-start-2`}>#PHP Laravel</li>
 					<li
-						className={`m-auto rounded-md p-2 transition ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}>
+						className={`rounded-md p-2 transition ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}>
 						<Image src={Avatar} alt="avatar" width={180} height={180} className="rounded-full" />
 					</li>
 					<li className={`${graphicStyles} col-start-7 col-span-2 row-start-5`}>#Docker</li>
