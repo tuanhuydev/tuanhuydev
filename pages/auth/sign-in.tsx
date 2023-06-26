@@ -84,7 +84,7 @@ export default function SignIn() {
 	useEffect(() => {
 		const isAuthenticated: boolean = isAuthenticatedByStore() || isAuthenticatedByStorage();
 		if (isAuthenticated) {
-			router.push('/dashboard');
+			router.push('/dashboard/home');
 		}
 	}, [isAuthenticatedByStorage, isAuthenticatedByStore, router]);
 

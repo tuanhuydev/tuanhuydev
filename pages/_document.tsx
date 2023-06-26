@@ -5,9 +5,12 @@ import GoogleAdsense from '@frontend/components/google/GoogleAdsense';
 import GoogleAnalytic from '@frontend/components/google/GoogleAnalytic';
 import GoogleTag from '@frontend/components/google/GoogleTag';
 
+import i18nextConfig from '../next-i18next.config';
+
 function Document() {
+	const currentLocale = i18nextConfig.i18n.defaultLocale;
 	return (
-		<Html lang="en">
+		<Html lang={currentLocale}>
 			<Head>
 				<meta name="robots" content="all" />
 				<meta name="google" content="notranslate" />

@@ -8,6 +8,7 @@ export const mockPosts = [
 		deletedAt: null,
 		createdAt: new Date(),
 		updatedAt: new Date(),
+		publishedAt: new Date(),
 		slug: 'this-is-first-post-1687608784188',
 	},
 	{
@@ -19,6 +20,7 @@ export const mockPosts = [
 		deletedAt: null,
 		createdAt: new Date(),
 		updatedAt: new Date(),
+		publishedAt: new Date(),
 		slug: 'this-is-first-post-1687608784188',
 	},
 ];
@@ -34,5 +36,6 @@ export const mockPost = {
 	deletedAt: null,
 	createdAt: new Date(),
 	updatedAt: new Date(),
+	publishedAt: new Date(),
 	slug: 'this-is-first-post-1687608784188',
 };

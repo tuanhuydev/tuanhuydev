@@ -2,11 +2,13 @@
 CREATE TABLE "posts" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(255) NOT NULL,
-    "content" TEXT,
-    "published" BOOLEAN NOT NULL DEFAULT false,
+    "content" TEXT NOT NULL,
+    "publishedAt" TIMESTAMP(6),
     "authorId" UUID NOT NULL,
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "slug" TEXT NOT NULL,
+    "deletedAt" TIMESTAMP(6),
 
     CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );
@@ -18,14 +20,9 @@ CREATE TABLE "users" (
     "email" VARCHAR(50) NOT NULL,
     "password" VARCHAR(255) NOT NULL DEFAULT '0',
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "updatedAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMP(6)
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "posts_title_key" ON "posts"("title");
-
--- CreateIndex
-CREATE UNIQUE INDEX "posts_authorId_key" ON "posts"("authorId");
 
 -- CreateIndex
 CREATE INDEX "posts_title_authorId_idx" ON "posts"("title", "authorId");

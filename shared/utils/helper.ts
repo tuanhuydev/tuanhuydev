@@ -1,6 +1,6 @@
 export const makeSlug = (title: string) => {
 	// clear space
-	let slug = title.trim();
+	let slug = title.toLowerCase().trim();
 
 	// Remove all special characters
 	slug = slug.replace(/[^\w\s]/g, '');

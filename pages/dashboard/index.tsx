@@ -1,8 +1,16 @@
-import PageContainer from '@frontend/Dashboard/PageContainer';
-import WithAuth from '@frontend/components/hocs/WithAuth';
+'use client';
 
-const Dashboard = () => {
-	return <PageContainer title="Home" />;
-};
+import { Skeleton } from 'antd';
+import { Redirect } from 'next';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 
-export default WithAuth(Dashboard);
+export default function Page() {
+	const router = useRouter();
+
+	useEffect(() => {
+		router.push('/dashboard/home');
+	}, [router]);
+
+	return <Skeleton />;
+}
