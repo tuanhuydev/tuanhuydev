@@ -9,6 +9,7 @@ module.exports = {
 			},
 			minHeight: {
 				'screen-d': '100dvh',
+				60: '15rem',
 			},
 			fontFamily: {
 				sans: ['Source Sans Pro, sans-serif'],

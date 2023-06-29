@@ -11,7 +11,6 @@ export default function middleware(request: NextRequest) {
 		// Verify tokens before proceeding anything
 		return NextResponse.next();
 	} catch (error) {
-		console.log(error);
 		return;
 	}
 }

@@ -99,7 +99,7 @@ function Navbar() {
 					</svg>
 				</button>
 				<Link href={'#contact'} legacyBehavior>
-					<a className="rounded-full bg-stone-900 drop-shadow-md text-white dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+					<a className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
 						Contact
 					</a>
 				</Link>

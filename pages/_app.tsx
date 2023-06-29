@@ -1,5 +1,7 @@
 import { notification } from 'antd';
+import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import { ObjectType } from '@shared/interfaces/base';
@@ -17,7 +19,6 @@ function App({ Component, pageProps }: AppProps) {
 		playSound: true,
 		toastApi: api,
 	};
-
 	return (
 		<WithProvider context={context}>
 			<WithAntd>
@@ -30,4 +31,4 @@ function App({ Component, pageProps }: AppProps) {
 	);
 }
 
-export default App;
+export default appWithTranslation(App);
