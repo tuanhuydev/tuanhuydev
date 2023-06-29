@@ -5,6 +5,8 @@
 @import 'variables';
 @import 'helpers';
 
+@import 'vendors/react-quill.scss';
+
 /* Source Sans Pro */
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Ubuntu+Mono:wght@400;700&display=swap');
 html,
@@ -41,4 +43,10 @@ a {
 	-webkit-line-clamp: 4;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+}
+button,
+button[type='button'],
+button[type='reset'],
+button[type='submit'] {
+	box-shadow: none;
 }

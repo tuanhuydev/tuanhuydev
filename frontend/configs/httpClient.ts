@@ -5,7 +5,6 @@ import { BASE_URL } from '@shared/configs/constants';
 
 const apiClient = axios.create({
 	baseURL: `${BASE_URL}/api`,
-	// timeout: 8000,
 	headers: {
 		'Content-Type': 'application/json',
 	},

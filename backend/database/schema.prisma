@@ -9,29 +9,29 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String   @unique @db.VarChar(255)
-  content   String
-  published Boolean  @default(false)
-  authorId  String   @db.Uuid
-	deletedAt DateTime? @db.Timestamp(6)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @db.Timestamp(6)
-  slug      String
-  User      User     @relation(fields: [authorId], references: [id])
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  content     String		@db.Text
+  publishedAt DateTime? @db.Timestamp(6)
+  authorId    String    @db.Uuid
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(6)
+  slug        String
+  deletedAt   DateTime? @db.Timestamp(6)
+  User        User      @relation(fields: [authorId], references: [id])
 
   @@index([title, authorId])
   @@map("posts")
 }
 
 model User {
-  id        String   @unique @db.Uuid
-  name      String   @db.VarChar(50)
-  email     String   @unique @db.VarChar(50)
-  password  String   @default("0") @db.VarChar(255)
-	deletedAt DateTime? @db.Timestamp(6)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  id        String    @unique @db.Uuid
+  name      String    @db.VarChar(50)
+  email     String    @unique @db.VarChar(50)
+  password  String    @default("0") @db.VarChar(255)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
   posts     Post[]
 
   @@map("users")
