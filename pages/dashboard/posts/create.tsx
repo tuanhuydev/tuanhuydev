@@ -141,13 +141,7 @@ export default function Page(_props: InferGetStaticPropsType<typeof getStaticPro
 						</Form.Item>
 
 						<Form.Item name="slug" label="Slug" rules={rules}>
-							<Input
-								placeholder="Please type slug..."
-								defaultValue={EMPTY_STRING}
-								size="large"
-								className="mb-4"
-								disabled={submiting}
-							/>
+							<Input placeholder="Please type slug..." size="large" className="mb-4" disabled={submiting} />
 						</Form.Item>
 
 						<Form.Item label="Content" name="content" rules={rules} className="h-96 relative">
