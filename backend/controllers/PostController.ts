@@ -8,6 +8,7 @@ import { makeSlug } from '@shared/utils/helper';
 
 import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
+import Network from '@backend/utils/Network';
 import { failResponse, successResponse } from '@backend/utils/http';
 
 class PostController implements BaseController {
@@ -21,62 +22,71 @@ class PostController implements BaseController {
 	}
 
 	async validateStoreRequest(body: any) {
-		if (!body) throw new BadRequestError();
-		return await this.#schema.validate(body);
+		try {
+			return await this.#schema.validate(body);
+		} catch (error) {
+			throw new BadRequestError();
+		}
 	}
 
 	async store(req: NextApiRequest, res: NextApiResponse) {
+		const network = Network(req, res);
 		try {
 			const validatedFields = await this.validateStoreRequest(req.body);
 			validatedFields.slug = makeSlug(validatedFields.title);
 
 			const newPost = await postService.createPost(validatedFields);
-
-			return res.json(successResponse(newPost));
+			return network.successResponse(newPost);
 		} catch (error) {
-			return res.json(failResponse((error as BaseError).message));
+			return network.failResponse(error as BaseError);
 		}
 	}
 
 	async getAll(req: NextApiRequest, res: NextApiResponse) {
+		const network = Network(req, res);
 		try {
 			// TODO handle filter, pagination
 			const posts = await postService.getPosts();
-			return res.json(successResponse(posts));
+			return network.successResponse(posts);
 		} catch (error) {
-			return res.json(failResponse((error as BaseError).message));
+			return network.failResponse(error as BaseError);
 		}
 	}
 
 	async getOne(req: NextApiRequest, res: NextApiResponse) {
+		const network = Network(req, res);
 		try {
 			const { id } = req.query;
 			if (!id) throw new BadRequestError();
 
-			const post = await postService.getPost(Number(id));
-			return res.json(successResponse(post));
+			const postById = await postService.getPost(Number(id));
+			return network.successResponse(postById);
 		} catch (error) {
-			return res.json(failResponse((error as BaseError).message));
+			return network.failResponse(error as BaseError);
 		}
 	}
 
-	async update({ query, body }: NextApiRequest, res: NextApiResponse) {
+	async update(req: NextApiRequest, res: NextApiResponse) {
+		const network = Network(req, res);
+
 		try {
-			const { id } = query;
-			if (!id || !body) throw new BadRequestError();
-			const updated = await postService.updatePost(Number(id), body);
-			return res.json(successResponse(updated));
+			const { query, body } = req;
+			if (!query?.id || !body) throw new BadRequestError();
+
+			const updated = await postService.updatePost(Number(query.id), body);
+			return network.successResponse(updated);
 		} catch (error) {
-			return res.json(failResponse((error as BaseError).message));
+			return network.failResponse(error as BaseError);
 		}
 	}
 
-	async destroy({ query }: NextApiRequest, res: NextApiResponse) {
+	async destroy(req: NextApiRequest, res: NextApiResponse) {
+		const network = Network(req, res);
 		try {
-			const { id } = query;
-			if (!id) throw new BadRequestError();
-			const deleted = await postService.deletePost(Number(id));
-			return res.json(successResponse(deleted));
+			if (!req.query?.id) throw new BadRequestError();
+
+			const deleted = await postService.deletePost(Number(req.query.id));
+			return network.successResponse(deleted);
 		} catch (error) {
 			return res.json(failResponse((error as BaseError).message));
 		}

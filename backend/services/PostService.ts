@@ -6,14 +6,13 @@ import prismaClient from '@backend/database/prismaClient';
 class PostService {
 	async createPost(body: any) {
 		try {
-			if (!body) throw new BaseError();
-			return await prismaClient.post.create({
-				data: {
-					...body,
-					authorId: '2e633db0-dc69-11ed-afa1-0242ac120002',
-				},
-			});
+			const newPostData = {
+				...body,
+				authorId: '2e633db0-dc69-11ed-afa1-0242ac120002',
+			};
+			return await prismaClient.post.create({ data: newPostData });
 		} catch (error) {
+			console.log(error);
 			throw new BaseError('Unable to create post');
 		}
 	}
