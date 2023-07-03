@@ -43,7 +43,7 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 	};
 
 	return (
-		<div className="bg-slate-50 w-full h-screen lg:overflow-hidden flex flex-wrap lg:flex-nowrap">
+		<div className="bg-slate-50 w-full h-screen overflow-hidden flex flex-nowrap">
 			<div className="flex w-full relative">
 				<Sidebar open={sidebarOpen} onToggle={toggleSidebar} />
 				<div className="grow flex flex-col">

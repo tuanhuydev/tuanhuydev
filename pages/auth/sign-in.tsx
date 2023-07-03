@@ -14,7 +14,7 @@ import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
 
 import { AppContext } from '@frontend/components/hocs/WithProvider';
-import apiClient from '@frontend/configs/httpClient';
+import apiClient from '@frontend/configs/apiClient';
 import { authActions } from '@frontend/configs/store/slices/authSlice';
 import { RootState } from '@frontend/configs/types';
 
