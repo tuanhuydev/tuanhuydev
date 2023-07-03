@@ -34,6 +34,8 @@ export const POST_STATUS = {
 
 export type PostStatusType = typeof POST_STATUS;
 
+export const DATE_FORMAT = 'dd-MMM-yyyy';
+
 export const MOCK_PROJECTS = [
 	{
 		image: EProject,

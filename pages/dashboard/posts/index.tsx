@@ -1,15 +1,26 @@
 import { AppstoreOutlined, BarsOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { Button, Empty, Input } from 'antd';
+import { AxiosResponse } from 'axios';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import PageContainer from '@frontend/Dashboard/PageContainer';
+import PostCard from '@frontend/Posts/PostCard';
 import WithAuth from '@frontend/components/hocs/WithAuth';
+import { AppContext } from '@frontend/components/hocs/WithProvider';
+import apiClient from '@frontend/configs/apiClient';
+import { postActions, postsSelector } from '@frontend/configs/store/slices/postSlice';
+
+type ViewMode = 'card' | 'list';
 
 const Posts = () => {
-	type ViewMode = 'card' | 'list';
 	// Hook
 	const router = useRouter();
+	const dispatch = useDispatch();
+	const { context } = useContext(AppContext);
+
+	const posts = useSelector(postsSelector);
 
 	// State
 	const [viewMode, setMode] = useState<ViewMode>('card');
@@ -24,11 +35,45 @@ const Posts = () => {
 		// TODO: Implement search blog
 	};
 
-	const navigatePostForm = () => router.push('/dashboard/posts/create');
+	const navigatePostCreate = () => router.push('/dashboard/posts/create');
+	const navigatePostEdit = useCallback((id: number) => router.push(`/dashboard/posts/${id}`), [router]);
+
+	const fetchPosts = useCallback(async () => {
+		const { data: responseData }: AxiosResponse = await apiClient.get('/posts');
+		const { success, data: posts } = responseData;
+		if (!success) {
+			context.toastApi.error({ message: 'Unable to fetch posts' });
+		}
+		dispatch(postActions.setPosts(posts));
+	}, [context.toastApi, dispatch]);
+
+	useEffect(() => {
+		fetchPosts();
+	}, [fetchPosts]);
+
+	const RenderPosts: JSX.Element = useMemo(() => {
+		const isCard = viewMode === 'card';
+		if (isCard) {
+			return (
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-2">
+					{posts.map((post: any) => (
+						<PostCard post={post} key={post.id} onClick={navigatePostEdit} />
+					))}
+				</div>
+			);
+		}
+		return (
+			<ul>
+				{posts.map((post: any) => (
+					<li key={post.id}>{post.title}</li>
+				))}
+			</ul>
+		);
+	}, [navigatePostEdit, posts, viewMode]);
 
 	return (
 		<PageContainer title="Posts">
-			<div className="flex items-center mb-3">
+			<div className="flex items-center mb-12">
 				<div className="button-group flex mr-2">
 					<Button
 						size="large"
@@ -47,7 +92,7 @@ const Posts = () => {
 				</div>
 				<Input size="large" placeholder="Find your post" className="grow mr-2" prefix={<SearchOutlined />} />
 				<Button
-					onClick={navigatePostForm}
+					onClick={navigatePostCreate}
 					size="large"
 					type="primary"
 					className="bg-primary text-slate-50"
@@ -55,7 +100,7 @@ const Posts = () => {
 					Write new
 				</Button>
 			</div>
-			<div className="grow">{viewMode}</div>
+			<div className="grow">{posts.length ? RenderPosts : <Empty className="my-36" />}</div>
 		</PageContainer>
 	);
 };

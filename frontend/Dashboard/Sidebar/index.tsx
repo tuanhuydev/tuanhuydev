@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react';
 
+import { EMPTY_STRING } from '@shared/configs/constants';
+
 import logoSrc from '@frontend/assets/images/logo.svg';
 
 import styles from './styles.module.scss';
@@ -28,17 +30,18 @@ export default function Sidebar({ open, onToggle }: any) {
 		return routes.map(({ label, icon, path }) => {
 			const activeClass = (router.pathname as string).startsWith(path) ? styles.active : '';
 			return (
-				<li className={`ease-in duration-200 ${styles.navlink} ${activeClass}`} key={path}>
-					<Link href={path}>
+				<Link href={path} key={path}>
+					<li className={`ease-in duration-200 rounded-sm mb-1 ${styles.navlink} ${activeClass}`}>
 						<div className="capitalize flex items-center">
 							<span className="mr-4">{icon}</span>
 							{label}
 						</div>
-					</Link>
-				</li>
+					</li>
+				</Link>
 			);
 		});
 	}, [router.pathname]);
+	const linkContainerOpenStyles = open ? styles.open : EMPTY_STRING;
 
 	return (
 		<div className="relative">
@@ -55,9 +58,7 @@ export default function Sidebar({ open, onToggle }: any) {
 				<Image src={logoSrc} width={32} height={32} alt="page logo" />
 			</div>
 			<ul
-				className={`${
-					open ? 'w-60' : 'w-12'
-				} ease-in bg-white h-full border-r border-slate-100 relative overflow-x-hidden`}>
+				className={`${styles.linkContainer} ${linkContainerOpenStyles} ease-in bg-white h-full border-r border-slate-100 relative overflow-x-hidden p-1`}>
 				{renderRoutes}
 			</ul>
 		</div>
