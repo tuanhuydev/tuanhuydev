@@ -10,6 +10,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<string
 			return PostController.getAll(req, res);
 		case 'POST':
 			return PostController.store(req, res);
+		case 'PATCH':
+			return PostController.update(req, res);
 		default:
 			return res.status(HTTP_CODE.METHOD_NOT_ALLOWED_ERROR).end('Method not allowed');
 	}

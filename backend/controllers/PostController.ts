@@ -9,7 +9,6 @@ import { makeSlug } from '@shared/utils/helper';
 import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
 import Network from '@backend/utils/Network';
-import { failResponse, successResponse } from '@backend/utils/http';
 
 class PostController implements BaseController {
 	#schema: yup.ObjectSchema<any>;
@@ -88,7 +87,7 @@ class PostController implements BaseController {
 			const deleted = await postService.deletePost(Number(req.query.id));
 			return network.successResponse(deleted);
 		} catch (error) {
-			return res.json(failResponse((error as BaseError).message));
+			return network.failResponse(error as BaseError);
 		}
 	}
 }
