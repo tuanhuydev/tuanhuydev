@@ -5,6 +5,15 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	output: 'standalone',
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'os.alipayobjects.com',
+				pathname: '/rmsportal/**',
+			},
+		],
+	},
 };
 
 module.exports = nextConfig;

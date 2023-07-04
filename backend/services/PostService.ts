@@ -1,4 +1,3 @@
-import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 
 import prismaClient from '@backend/database/prismaClient';
@@ -12,14 +11,13 @@ class PostService {
 			};
 			return await prismaClient.post.create({ data: newPostData });
 		} catch (error) {
-			console.log(error);
 			throw new BaseError('Unable to create post');
 		}
 	}
 
 	async getPosts() {
 		try {
-			return await prismaClient.post.findMany({ where: { deletedAt: null, publishedAt: { lte: new Date() } } });
+			return await prismaClient.post.findMany({ where: { deletedAt: null } });
 		} catch (error) {
 			throw new BaseError('Unable to get posts');
 		}
@@ -29,6 +27,7 @@ class PostService {
 		try {
 			return await prismaClient.post.findFirst({ where: { id } });
 		} catch (error) {
+			console.log(error);
 			throw new BaseError('Unable to get post');
 		}
 	}
