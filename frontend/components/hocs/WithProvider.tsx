@@ -1,10 +1,10 @@
-import React, { useReducer } from 'react';
+import React, { PropsWithChildren, useReducer } from 'react';
 import { createContext } from 'react';
 
 import { EMPTY_OBJECT } from '@shared/configs/constants';
-import { ComponentProps, ObjectType } from '@shared/interfaces/base';
+import { ObjectType } from '@shared/interfaces/base';
 
-export interface ProviderProps extends ComponentProps {
+export interface ProviderProps extends PropsWithChildren {
 	context: any;
 }
 

@@ -9,8 +9,8 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'os.alipayobjects.com',
-				pathname: '/rmsportal/**',
+				hostname: 'tuanhuydev-dev.s3.ap-southeast-1.amazonaws.com',
+				pathname: '/image/**',
 			},
 		],
 	},

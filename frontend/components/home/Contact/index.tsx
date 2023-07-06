@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 
 export default function Contact() {
 	return (
-		<section id="contact" data-testid="homepage-contact-testid" className="dark:text-white py-10 px-2 rounded-md py-24">
+		<section id="contact" data-testid="homepage-contact-testid" className="dark:text-white px-2 rounded-md py-24">
 			<div className="grid grid-cols-12 gap-y-8 justify-items-center lg:justify-items-start">
 				<div className="col-start-1 col-span-full lg:col-span-6">
 					<h3 className={`${styles.texture} text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold ml-4`}>
