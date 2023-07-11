@@ -1,7 +1,6 @@
-import { memo, useContext, useEffect } from 'react';
+import { PropsWithChildren, memo, useContext, useEffect } from 'react';
 
 import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
-import { ComponentProps } from '@shared/interfaces/base';
 import { getSoundValue, getThemeValue, reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import Footer from '../Footer';
@@ -10,7 +9,7 @@ import { AppContext } from '../hocs/WithProvider';
 
 const gridItems = 'col-span-full md:col-start-2 md:col-span-10';
 
-function BaseLayout(props: ComponentProps) {
+function BaseLayout({ children }: PropsWithChildren) {
 	const { setContext } = useContext(AppContext);
 
 	useEffect(() => {
@@ -52,7 +51,7 @@ function BaseLayout(props: ComponentProps) {
 			<div className={`${gridItems} row-start-1 sticky top-0 z-10`}>
 				<Navbar />
 			</div>
-			<div className={`${gridItems} row-start-2 relative`}>{props.children}</div>
+			<div className={`${gridItems} row-start-2 relative`}>{children}</div>
 			<div className={`${gridItems} row-start-3 relative`}>
 				<Footer />
 			</div>

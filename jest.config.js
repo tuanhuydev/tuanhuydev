@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-	setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+	setupFilesAfterEnv: ['<rootDir>/shared/configs/jest.setup.js'],
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
 		'^@frontend(.*)$': '<rootDir>/frontend/$1',
