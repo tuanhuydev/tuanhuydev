@@ -1,4 +1,5 @@
 import { Card, Descriptions, Tag } from 'antd';
+import { CardProps } from 'antd/es/card';
 import format from 'date-fns/format';
 import Image from 'next/image';
 import React, { useMemo } from 'react';
@@ -8,16 +9,20 @@ import { DATE_FORMAT } from '@shared/configs/constants';
 export interface PostCardProps {
 	post: any;
 	onClick: (id: number) => void;
+	CardProps?: Partial<CardProps>;
 }
 
 const cardBodyStyle = {
 	padding: '1rem',
 };
 
-export default function PostCard({ post, onClick }: PostCardProps) {
+export default function PostCard({ post, onClick, CardProps }: PostCardProps) {
 	const { title, thumbnail = '', publishedAt, createdAt } = post;
 
-	const handleCardClick = () => onClick(post.id);
+	const handleCardClick = (event: any) => {
+		event.stopPropagation();
+		onClick(post.id);
+	};
 
 	const Status: JSX.Element = useMemo(() => {
 		const isPublished = !!publishedAt;
@@ -32,8 +37,8 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 	}, [publishedAt]);
 
 	return (
-		<Card hoverable bodyStyle={cardBodyStyle} onClick={handleCardClick}>
-			<div className="relative aspect-[4/5] rounded-sm mb-3">
+		<Card {...CardProps} hoverable bodyStyle={cardBodyStyle} onClick={handleCardClick}>
+			<div className="relative aspect-[3/2] rounded-sm mb-3">
 				<Image alt={title} className="rounded-sm object-cover" layout="fill" src={thumbnail} />
 			</div>
 			<h4 className="font-semibold text-xl mb-2 grow truncate">{title}</h4>
