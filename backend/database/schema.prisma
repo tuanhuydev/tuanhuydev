@@ -11,7 +11,8 @@ datasource db {
 model Post {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(255)
-  content     String		@db.Text
+  content     String    @db.Text
+  thumbnail   String?   @db.VarChar(255)
   publishedAt DateTime? @db.Timestamp(6)
   authorId    String    @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)

@@ -1,7 +1,7 @@
 'use client';
 
-import { ExclamationCircleFilled } from '@ant-design/icons';
-import { Button, Form, Input, Modal } from 'antd';
+import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Modal, Upload } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -19,6 +19,7 @@ const initialValues = {
 	title: EMPTY_STRING,
 	slug: EMPTY_STRING,
 	content: EMPTY_STRING,
+	thumbnail: EMPTY_STRING,
 };
 
 const { confirm } = Modal;
@@ -34,6 +35,8 @@ export default function PostForm({ post }: any) {
 	const [content, setContent] = useState<string>(EMPTY_STRING);
 	const [submiting, setSubmiting] = useState<boolean>(false);
 	const [published, setPublishState] = useState(false);
+	const [disabledUpload, setUploadState] = useState(false);
+	const [fileList, setFileList] = useState([]);
 
 	const isEditMode = !!post;
 	const isPublished = post?.publishedAt;
@@ -77,12 +80,14 @@ export default function PostForm({ post }: any) {
 		return fieldMap;
 	};
 
-	const handleFieldChange = (changedFields: Array<Object>) => {
+	const handleFieldChange = (changedFields: Array<Object>, allFields: Array<Object>) => {
 		const changedFieldsMap = transformFieldToMap(changedFields);
+		const allFieldsMap = transformFieldToMap(allFields);
 
 		if (changedFieldsMap.has('title') && changedFieldsMap.get('title').value) {
 			setSlugFieldValue(changedFieldsMap.get('title').value);
 		}
+		setUploadState(allFieldsMap.has('thumbnail') && allFieldsMap.get('thumbnail').value);
 	};
 
 	const handleEditorChange = (value: React.SetStateAction<string>) => setContent(value);
@@ -118,6 +123,20 @@ export default function PostForm({ post }: any) {
 
 	const cancelForm = () => (isAllFieldsEmpty() ? navigateBack() : showConfirmBox());
 
+	const uploadFile = ({ file, fileList, event }: any) => {
+		setFileList(fileList);
+		const { response, error } = file;
+		if (error) {
+			context.toastApi.error({ message: (error as BaseError).message });
+		}
+		if (response) {
+			const { url } = response.data;
+			form.setFieldValue('thumbnail', url);
+			setFileList([]);
+			setUploadState(true);
+		}
+	};
+
 	useEffect(() => {
 		form.setFieldsValue({ content: content });
 	}, [content, form]);
@@ -143,13 +162,37 @@ export default function PostForm({ post }: any) {
 					onFieldsChange={handleFieldChange}
 					onFinish={savePost}>
 					<Form.Item name="title" label="Title" rules={rules}>
-						<Input placeholder="Please type title..." size="large" className="mb-4" disabled={submiting} />
+						<Input placeholder="Please type title..." size="large" className="mb-3" disabled={submiting} />
 					</Form.Item>
-
 					<Form.Item name="slug" label="Slug" rules={rules}>
-						<Input placeholder="Please type slug..." size="large" className="mb-4" disabled={submiting} />
+						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submiting} />
 					</Form.Item>
-
+					<div className="flex items-center transition-all">
+						<Form.Item name="thumbnail" label="Thumbnail" className="grow">
+							<Input placeholder="Thumbnail url" size="large" disabled={submiting} />
+						</Form.Item>
+						<div className="mt-1 flex items-center">
+							<div className="mx-3 text-slate-500">Or</div>
+							<Upload
+								name="file"
+								className="w-44"
+								onChange={uploadFile}
+								fileList={fileList}
+								action={'/api/upload/image'}
+								accept="image/png, image/jpeg"
+								multiple={false}
+								listType="picture"
+								disabled={disabledUpload}>
+								<Button
+									size="large"
+									icon={<UploadOutlined />}
+									disabled={disabledUpload}
+									className="text-slate-400 font-normal w-full">
+									Click to upload
+								</Button>
+							</Upload>
+						</div>
+					</div>
 					<Form.Item label="Content" name="content" rules={rules} className="h-96 relative">
 						<RichEditor
 							content={content}

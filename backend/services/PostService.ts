@@ -10,8 +10,9 @@ class PostService {
 				authorId: '2e633db0-dc69-11ed-afa1-0242ac120002',
 			};
 			return await prismaClient.post.create({ data: newPostData });
-		} catch (error) {
-			throw new BaseError('Unable to create post');
+		} catch (error: any) {
+			console.log(error);
+			throw new BaseError((error as Error).message);
 		}
 	}
 
@@ -19,7 +20,7 @@ class PostService {
 		try {
 			return await prismaClient.post.findMany({ where: { deletedAt: null } });
 		} catch (error) {
-			throw new BaseError('Unable to get posts');
+			throw new BaseError((error as Error).message);
 		}
 	}
 
@@ -27,8 +28,7 @@ class PostService {
 		try {
 			return await prismaClient.post.findFirst({ where: { id } });
 		} catch (error) {
-			console.log(error);
-			throw new BaseError('Unable to get post');
+			throw new BaseError((error as Error).message);
 		}
 	}
 
@@ -37,7 +37,7 @@ class PostService {
 			if (!id || !data) throw new BaseError();
 			return await prismaClient.post.update({ where: { id }, data });
 		} catch (error) {
-			throw new BaseError('Unable to update post');
+			throw new BaseError((error as Error).message);
 		}
 	}
 	async deletePost(id: number) {
@@ -49,7 +49,7 @@ class PostService {
 				data: { deletedAt: new Date() },
 			});
 		} catch (error) {
-			throw new BaseError('Unable to update post');
+			throw new BaseError((error as Error).message);
 		}
 	}
 }

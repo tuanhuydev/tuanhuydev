@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import BaseError from '@shared/commons/errors/BaseError';
+import { NODE_ENV } from '@shared/configs/constants';
 
 class Network {
 	#req: NextApiRequest;
@@ -25,11 +26,13 @@ class Network {
 			data,
 		});
 
-	failResponse = (error: BaseError) =>
-		this.#res.status(error.status).json({
+	failResponse = (error: BaseError) => {
+		if (NODE_ENV !== 'production') console.log(error);
+		return this.#res.status(error.status).json({
 			success: false,
 			message: error.message,
 		});
+	};
 }
 
 export default Network.makeInstance;
