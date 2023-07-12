@@ -9,8 +9,7 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'tuanhuydev-dev.s3.ap-southeast-1.amazonaws.com',
-				pathname: '/image/**',
+				hostname: '**',
 			},
 		],
 	},

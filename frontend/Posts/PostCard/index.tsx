@@ -15,7 +15,7 @@ const cardBodyStyle = {
 };
 
 export default function PostCard({ post, onClick }: PostCardProps) {
-	const { title, publishedAt, createdAt } = post;
+	const { title, thumbnail = '', publishedAt, createdAt } = post;
 
 	const handleCardClick = () => onClick(post.id);
 
@@ -34,7 +34,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 	return (
 		<Card hoverable bodyStyle={cardBodyStyle} onClick={handleCardClick}>
 			<div className="relative aspect-[4/5] rounded-sm mb-3">
-				<Image alt={title} className="rounded-sm" layout="fill" src="" />
+				<Image alt={title} className="rounded-sm object-cover" layout="fill" src={thumbnail} />
 			</div>
 			<h4 className="font-semibold text-xl mb-2 grow truncate">{title}</h4>
 			<div className="flex flex-nowrap items-center justify-between">
