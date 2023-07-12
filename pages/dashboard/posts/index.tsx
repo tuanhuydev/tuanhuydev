@@ -1,5 +1,12 @@
-import { AppstoreOutlined, BarsOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Empty, Input } from 'antd';
+import {
+	AppstoreOutlined,
+	BarsOutlined,
+	DeleteOutlined,
+	EditOutlined,
+	ExclamationCircleFilled,
+	SearchOutlined,
+} from '@ant-design/icons';
+import { Button, Empty, Input, Modal } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -13,6 +20,8 @@ import apiClient from '@frontend/configs/apiClient';
 import { postActions, postsSelector } from '@frontend/configs/store/slices/postSlice';
 
 type ViewMode = 'card' | 'list';
+
+const { confirm } = Modal;
 
 const Posts = () => {
 	// Hook
@@ -36,6 +45,7 @@ const Posts = () => {
 	};
 
 	const navigatePostCreate = () => router.push('/dashboard/posts/create');
+
 	const navigatePostEdit = useCallback((id: number) => router.push(`/dashboard/posts/${id}`), [router]);
 
 	const fetchPosts = useCallback(async () => {
@@ -47,6 +57,37 @@ const Posts = () => {
 		dispatch(postActions.setPosts(posts));
 	}, [context.toastApi, dispatch]);
 
+	const deletePost = useCallback(
+		async (id: number) => {
+			const { data }: AxiosResponse = await apiClient.delete(`/posts/${id}`);
+			if (data && data?.success) {
+				context.toastApi.success({ message: 'Delete post successfully' });
+				// TODO: Apply optimistic update and cache on the FE
+				fetchPosts();
+			}
+		},
+		[context.toastApi, fetchPosts]
+	);
+
+	const triggerDeletePost = useCallback(
+		(postId: number) => (event: any) => {
+			event.preventDefault();
+			event.stopPropagation();
+			confirm({
+				title: 'Are you sure to delete ?',
+				icon: <ExclamationCircleFilled />,
+				okText: 'Delete',
+				okType: 'danger',
+				cancelText: 'Cancel',
+				onOk() {
+					deletePost(postId);
+				},
+				onCancel() {},
+			});
+		},
+		[deletePost]
+	);
+
 	useEffect(() => {
 		fetchPosts();
 	}, [fetchPosts]);
@@ -57,7 +98,17 @@ const Posts = () => {
 			return (
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-2">
 					{posts.map((post: any) => (
-						<PostCard post={post} key={post.id} onClick={navigatePostEdit} />
+						<PostCard
+							post={post}
+							key={post.id}
+							onClick={navigatePostEdit}
+							CardProps={{
+								actions: [
+									<EditOutlined key="edit" />,
+									<DeleteOutlined key="delete" onClick={triggerDeletePost(post.id)} />,
+								],
+							}}
+						/>
 					))}
 				</div>
 			);
@@ -69,7 +120,7 @@ const Posts = () => {
 				))}
 			</ul>
 		);
-	}, [navigatePostEdit, posts, viewMode]);
+	}, [navigatePostEdit, posts, triggerDeletePost, viewMode]);
 
 	return (
 		<PageContainer title="Posts">
