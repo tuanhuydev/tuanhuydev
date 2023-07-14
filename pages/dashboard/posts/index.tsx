@@ -24,7 +24,7 @@ type ViewMode = 'card' | 'list';
 
 const { confirm } = Modal;
 
-const Posts = () => {
+const DashboardPosts = () => {
 	// Hook
 	const router = useRouter();
 	const dispatch = useDispatch();
@@ -113,7 +113,6 @@ const Posts = () => {
 							CardProps={{
 								actions: [
 									<EyeOutlined key="view" onClick={openPostInNewTab(post.slug)} />,
-									<EditOutlined key="edit" />,
 									<DeleteOutlined key="delete" onClick={triggerDeletePost(post.id)} />,
 								],
 							}}
@@ -132,7 +131,7 @@ const Posts = () => {
 	}, [navigatePostEdit, posts, triggerDeletePost, viewMode]);
 
 	return (
-		<PageContainer title="Posts">
+		<PageContainer title="Posts" data-testid="dashboard-posts-page-testid">
 			<div className="flex items-center mb-12">
 				<div className="button-group flex mr-2">
 					<Button
@@ -165,4 +164,4 @@ const Posts = () => {
 	);
 };
 
-export default WithAuth(Posts);
+export default WithAuth(DashboardPosts);
