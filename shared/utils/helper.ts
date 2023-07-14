@@ -27,3 +27,8 @@ export const makeSlug = (text: string) => {
 	const hashedLength = 6;
 	return transformTextToDashed(text).concat(`-${makeRandomTextByLength(hashedLength)}`);
 };
+
+export const isURLValid = (url: string) => {
+	if (!url || typeof url !== 'string') return false;
+	return url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://');
+};

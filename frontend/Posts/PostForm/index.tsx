@@ -9,7 +9,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import { EMPTY_STRING } from '@shared/configs/constants';
-import { transformTextToDashed } from '@shared/utils/helper';
+import { isURLValid, transformTextToDashed } from '@shared/utils/helper';
 
 import RichEditor from '@frontend/components/commons/RichEditor';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
@@ -157,6 +157,13 @@ export default function PostForm({ post }: any) {
 		}
 	};
 
+	const validateUrl = (ruleObject: any, value: string) => {
+		if (isURLValid(value) || !value) {
+			return Promise.resolve();
+		}
+		return Promise.reject(new Error('Please enter a valid URL'));
+	};
+
 	useEffect(() => {
 		form.setFieldsValue({ content: content });
 	}, [content, form]);
@@ -173,7 +180,7 @@ export default function PostForm({ post }: any) {
 	}, [form, isEditMode, post]);
 
 	return (
-		<div className="grid grid-cols-12 gap-4">
+		<div className="grid grid-cols-12 gap-4" data-testid="post-form-testid">
 			<div className="col-span-10">
 				<Form
 					form={form}
@@ -188,7 +195,7 @@ export default function PostForm({ post }: any) {
 						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submiting} />
 					</Form.Item>
 					<div className="flex items-center transition-all">
-						<Form.Item name="thumbnail" label="Thumbnail" className="grow">
+						<Form.Item name="thumbnail" label="Thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
 							<Input placeholder="Thumbnail url" size="large" disabled={submiting} />
 						</Form.Item>
 						<div className="mt-1 flex items-center">

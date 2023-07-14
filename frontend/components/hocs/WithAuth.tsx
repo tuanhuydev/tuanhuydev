@@ -52,7 +52,11 @@ export default function WithAuth(WrappedComponent: React.FC) {
 		if (isAuthenticated) {
 			return <WrappedComponent {...props} />;
 		}
-		return <Skeleton />;
+		return (
+			<div data-testid="skeleton-testid">
+				<Skeleton />;
+			</div>
+		);
 	};
 	return AuthenticatedComponent;
 }
