@@ -4,6 +4,7 @@ import {
 	DeleteOutlined,
 	EditOutlined,
 	ExclamationCircleFilled,
+	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Empty, Input, Modal } from 'antd';
@@ -88,6 +89,13 @@ const Posts = () => {
 		[deletePost]
 	);
 
+	const openPostInNewTab = (postSlug: string) => (event: { stopPropagation: () => void }) => {
+		event.stopPropagation();
+		const postUrl = `/posts/${postSlug}`;
+		const newTab = window.open(postUrl, '_blank');
+		newTab!.focus();
+	};
+
 	useEffect(() => {
 		fetchPosts();
 	}, [fetchPosts]);
@@ -104,6 +112,7 @@ const Posts = () => {
 							onClick={navigatePostEdit}
 							CardProps={{
 								actions: [
+									<EyeOutlined key="view" onClick={openPostInNewTab(post.slug)} />,
 									<EditOutlined key="edit" />,
 									<DeleteOutlined key="delete" onClick={triggerDeletePost(post.id)} />,
 								],

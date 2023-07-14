@@ -2,7 +2,7 @@ import Avatar from '@public/assets/images/avatar.jpg';
 import FlagIcon from '@public/assets/images/vietnam_flag.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 
@@ -15,6 +15,23 @@ export default function Hero() {
 	const { context } = useContext(AppContext);
 
 	const { theme } = context;
+
+	const Navigator = useMemo(
+		() => (
+			<Link href="#experience" scroll={false} legacyBehavior>
+				<a rel="noopener noreferrer">
+					<h5
+						className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold transition ease-in ${styles.cta} ${styles[theme]}`}>
+						My proudly accomplishments
+						<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
+							<path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
+						</svg>
+					</h5>
+				</a>
+			</Link>
+		),
+		[theme]
+	);
 	return (
 		<section
 			id="about-me"
@@ -48,17 +65,7 @@ export default function Hero() {
 					<strong>yours</strong>.😀&#128077;
 					<br />
 				</div>
-				<Link href="#experience" scroll={false} legacyBehavior>
-					<a rel="noopener noreferrer">
-						<h5
-							className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold transition ease-in ${styles.cta} ${styles[theme]}`}>
-							My proudly accomplishments
-							<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
-								<path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
-							</svg>
-						</h5>
-					</a>
-				</Link>
+				{Navigator}
 			</div>
 			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
 				<ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6">
