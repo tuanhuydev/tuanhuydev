@@ -25,7 +25,7 @@ describe('Post feature test suits', function () {
 		it('Should get post by id', async () => {
 			const req: NextApiRequest = { query: { id: mockPostId } } as any;
 			const res: NextApiResponse = { json: jest.fn(), status: jest.fn().mockReturnThis() } as any;
-			jest.spyOn(PostService, 'getPost').mockResolvedValue(mockPost);
+			jest.spyOn(PostService, 'getPostById').mockResolvedValue(mockPost);
 			await PostController.getOne(req, res);
 			expect(res.json).toHaveBeenCalledWith(successResponse(mockPost));
 		});

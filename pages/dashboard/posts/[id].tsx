@@ -1,7 +1,7 @@
 import { Skeleton } from 'antd';
 import { InferGetServerSidePropsType } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { ObjectType } from '@shared/interfaces/base';
 
@@ -11,10 +11,6 @@ import PostForm from '@frontend/Posts/PostForm';
 import PostService from '@backend/services/PostService';
 
 export default function Page({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	useEffect(() => {
-		console.log(post);
-	}, [post]);
-
 	if (!post) {
 		return <Skeleton />;
 	}
@@ -28,7 +24,7 @@ export default function Page({ post }: InferGetServerSidePropsType<typeof getSer
 
 export async function getServerSideProps({ params, req, res, locale }: any) {
 	const { id } = params;
-	const post = await PostService.getPost(Number(id));
+	const post = await PostService.getPostById(Number(id));
 	if (!post) {
 		return {
 			redirect: {

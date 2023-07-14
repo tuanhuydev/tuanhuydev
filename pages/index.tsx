@@ -2,9 +2,9 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
 
-import Contact from '@frontend/components/home/Contact';
-import Experience from '@frontend/components/home/Experience';
-import Hero from '@frontend/components/home/Hero';
+import Contact from '@frontend/Home/Contact';
+import Experience from '@frontend/Home/Experience';
+import Hero from '@frontend/Home/Hero';
 import BaseLayout from '@frontend/components/layouts/BaseLayout';
 
 const Home: NextPage = () => {
@@ -27,4 +27,4 @@ const Home: NextPage = () => {
 	);
 };
 
-export default React.memo(Home, () => false);
+export default React.memo(Home);

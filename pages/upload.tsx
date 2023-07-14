@@ -29,12 +29,10 @@ export default function Page() {
 			const formData = new FormData();
 
 			formData.append('image', selectedFile);
-			console.log(formData, formData.has('image'));
 			const boundary = crypto.randomBytes(16).toString('hex'); // Generate a unique boundary string
 			const { data }: AxiosResponse = await apiClient.post('/upload/image', formData, {
 				headers: { 'content-type': `multipart/form-data; boundary=${boundary}` },
 			});
-			console.log(data);
 		} catch (error) {
 			console.log(error);
 		}
