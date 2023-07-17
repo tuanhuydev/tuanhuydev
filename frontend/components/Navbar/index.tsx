@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import React from 'react';
 
 import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
@@ -20,19 +20,19 @@ function Navbar() {
 
 	const { theme, playSound } = context;
 
-	const switchTheme = () => {
+	const switchTheme = useCallback(() => {
 		const newThemeValue = theme === DEFAULT_THEME ? 'dark' : DEFAULT_THEME;
 		setContext({ theme: newThemeValue });
 		setLocalStorage(STORAGE_THEME_KEY, newThemeValue);
 		reflectTheme(newThemeValue);
-	};
+	}, [setContext, theme]);
 
-	const toggleSound = () => {
+	const toggleSound = useCallback(() => {
 		const newSoundState = !playSound;
 		setContext({ playSound: newSoundState });
 		setLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
 		reflectSound(newSoundState);
-	};
+	}, [playSound, setContext]);
 
 	return (
 		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-4 md:px-0">

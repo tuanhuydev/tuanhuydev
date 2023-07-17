@@ -5,11 +5,11 @@ import { Button, Form, Input, Modal, Upload } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import { EMPTY_STRING } from '@shared/configs/constants';
-import { makeSlug } from '@shared/utils/helper';
+import { transformTextToDashed } from '@shared/utils/helper';
 
 import RichEditor from '@frontend/components/commons/RichEditor';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
@@ -42,71 +42,88 @@ export default function PostForm({ post }: any) {
 	const isPublished = post?.publishedAt;
 	const rules = [{ required: true, message: t('FORM_VALIDATE_REQUIRED') }];
 
-	const attachPublishDate = (formData: any) => {
-		if (published) {
-			formData.publishedAt = new Date();
-		}
-		return formData;
-	};
+	const attachPublishDate = useCallback(
+		(formData: any) => {
+			if (published) {
+				formData.publishedAt = new Date();
+			}
+			return formData;
+		},
+		[published]
+	);
+	const navigateBack = useCallback(() => setTimeout(() => router.back(), 250), [router]);
 
-	const savePost = async (formData: any) => {
-		const body = attachPublishDate(formData);
-		setSubmiting(true);
-		try {
-			const config = {
-				method: isEditMode ? 'PATCH' : 'POST',
-				url: isEditMode ? `/posts/${post.id}` : '/posts',
-				data: body,
-			};
-			const { data }: AxiosResponse = await apiClient.request(config);
+	const savePost = useCallback(
+		async (formData: any) => {
+			const body = attachPublishDate(formData);
+			body.slug = transformTextToDashed(formData.slug);
+			setSubmiting(true);
+			try {
+				let config = {
+					method: 'POST',
+					url: '/posts',
+					data: body,
+				};
+				if (isEditMode) {
+					const { id } = post;
+					config.url = `/posts/${id}`;
+					config.method = 'PATCH';
+				}
+				const { data }: AxiosResponse = await apiClient.request(config);
 
-			if (!data?.success) throw new Error('Unable to create post');
-			context.toastApi.success({ message: 'Create post successfully' });
-			navigateBack();
-		} catch (error) {
-			context.toastApi.error({ message: (error as BaseError).message });
-		} finally {
-			form.resetFields();
-			setContent(EMPTY_STRING);
-			setSubmiting(false);
-		}
-	};
+				if (!data?.success) throw new Error('Unable to create post');
+				context.toastApi.success({ message: 'Create post successfully' });
+				navigateBack();
+			} catch (error) {
+				context.toastApi.error({ message: (error as BaseError).message });
+			} finally {
+				form.resetFields();
+				setContent(EMPTY_STRING);
+				setSubmiting(false);
+			}
+		},
+		[attachPublishDate, context.toastApi, form, isEditMode, navigateBack, post]
+	);
 
-	const setSlugFieldValue = (title: string) => form.setFieldValue('slug', makeSlug(title));
+	const setSlugFieldValue = useCallback(
+		(title: string) => form.setFieldValue('slug', transformTextToDashed(title)),
+		[form]
+	);
 
-	const transformFieldToMap = (fields: Array<Object>) => {
+	const transformFieldToMap = useCallback((fields: Array<Object>) => {
 		const fieldMap = new Map();
 		fields.forEach(({ name, ...restFields }: any) => fieldMap.set(name[0], restFields));
 		return fieldMap;
-	};
+	}, []);
 
 	const handleFieldChange = (changedFields: Array<Object>, allFields: Array<Object>) => {
 		const changedFieldsMap = transformFieldToMap(changedFields);
 		const allFieldsMap = transformFieldToMap(allFields);
-
-		if (changedFieldsMap.has('title') && changedFieldsMap.get('title').value) {
+		const shouldOverrideSlug =
+			!changedFieldsMap.has('slug') && changedFieldsMap.has('title') && changedFieldsMap.get('title').value;
+		if (shouldOverrideSlug) {
 			setSlugFieldValue(changedFieldsMap.get('title').value);
 		}
 		setUploadState(allFieldsMap.has('thumbnail') && allFieldsMap.get('thumbnail').value);
 	};
 
-	const handleEditorChange = (value: React.SetStateAction<string>) => setContent(value);
+	const handleEditorChange = useCallback((value: React.SetStateAction<string>) => setContent(value), []);
 
-	const triggerSubmit =
+	const triggerSubmit = useCallback(
 		(shouldPublish: boolean = false) =>
-		() => {
-			setPublishState(shouldPublish);
-			form.submit();
-		};
+			() => {
+				setPublishState(shouldPublish);
+				form.submit();
+			},
+		[form]
+	);
 
-	const isAllFieldsEmpty = () => {
+	const isAllFieldsEmpty = useCallback(() => {
 		const fieldsValues = form.getFieldsValue();
 		return Object.values(fieldsValues).every((value) => !value);
-	};
+	}, [form]);
 
-	const navigateBack = () => setTimeout(() => router.back(), 250);
-
-	const showConfirmBox = () => {
+	const showConfirmBox = useCallback(() => {
 		confirm({
 			title: 'Discard current content ?',
 			icon: <ExclamationCircleFilled />,
@@ -119,9 +136,12 @@ export default function PostForm({ post }: any) {
 			},
 			onCancel() {},
 		});
-	};
+	}, [navigateBack]);
 
-	const cancelForm = () => (isAllFieldsEmpty() ? navigateBack() : showConfirmBox());
+	const cancelForm = useCallback(
+		() => (isAllFieldsEmpty() ? navigateBack() : showConfirmBox()),
+		[isAllFieldsEmpty, navigateBack, showConfirmBox]
+	);
 
 	const uploadFile = ({ file, fileList, event }: any) => {
 		setFileList(fileList);
@@ -197,7 +217,9 @@ export default function PostForm({ post }: any) {
 						<RichEditor
 							content={content}
 							setContent={handleEditorChange}
-							placeholder="Please type content..."
+							QuillProps={{
+								placeholder: 'Please type content...',
+							}}
 							disabled={submiting}
 						/>
 					</Form.Item>

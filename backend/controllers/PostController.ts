@@ -4,7 +4,7 @@ import { object, string } from 'yup';
 
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
-import { makeSlug } from '@shared/utils/helper';
+import { makeSlug, transformTextToDashed } from '@shared/utils/helper';
 
 import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
@@ -58,7 +58,7 @@ class PostController implements BaseController {
 			const { id } = req.query;
 			if (!id) throw new BadRequestError();
 
-			const postById = await postService.getPost(Number(id));
+			const postById = await postService.getPostById(Number(id));
 			return network.successResponse(postById);
 		} catch (error) {
 			return network.failResponse(error as BaseError);

@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 import { EMPTY_STRING } from '@shared/configs/constants';
 
@@ -11,7 +11,7 @@ import logoSrc from '@frontend/assets/images/logo.svg';
 
 import styles from './styles.module.scss';
 
-export default function Sidebar({ open, onToggle }: any) {
+const Sidebar = ({ open, onToggle }: any) => {
 	// Hooks
 	const router = useRouter();
 
@@ -63,4 +63,6 @@ export default function Sidebar({ open, onToggle }: any) {
 			</ul>
 		</div>
 	);
-}
+};
+
+export default memo(Sidebar);
