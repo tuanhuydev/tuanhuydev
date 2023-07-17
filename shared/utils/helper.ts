@@ -1,14 +1,29 @@
-export const makeSlug = (title: string) => {
+export const transformTextToDashed = (text: string) => {
 	// clear space
-	let slug = title.toLowerCase().trim();
+	let dashedText = text.toLowerCase().trim();
 
 	// Remove all special characters
-	slug = slug.replace(/[^\w\s]/g, '');
+	// dashedText = dashedText.replace(/[^\w\s]/g, '');
 
-	// Remove space to dash(-)
-	slug = slug.replace(/\s+/g, '-');
+	// Replace space to dash(-)
+	dashedText = dashedText.replace(/\s+/g, '-');
 
-	// Attach time
-	slug = slug.concat('-', new Date().getTime().toString());
-	return slug;
+	return dashedText;
+};
+
+export const makeRandomTextByLength = (length: number) => {
+	let randomText = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length);
+		randomText += characters.charAt(randomIndex);
+	}
+
+	return randomText;
+};
+
+export const makeSlug = (text: string) => {
+	const hashedLength = 6;
+	return transformTextToDashed(text).concat(`-${makeRandomTextByLength(hashedLength)}`);
 };

@@ -11,7 +11,6 @@ class PostService {
 			};
 			return await prismaClient.post.create({ data: newPostData });
 		} catch (error: any) {
-			console.log(error);
 			throw new BaseError((error as Error).message);
 		}
 	}
@@ -24,9 +23,17 @@ class PostService {
 		}
 	}
 
-	async getPost(id: number) {
+	async getPostById(id: number) {
 		try {
-			return await prismaClient.post.findFirst({ where: { id } });
+			return await prismaClient.post.findFirst({ where: { id, deletedAt: null } });
+		} catch (error) {
+			throw new BaseError((error as Error).message);
+		}
+	}
+
+	async getPostBySlug(slug: string) {
+		try {
+			return await prismaClient.post.findFirst({ where: { slug, deletedAt: null } });
 		} catch (error) {
 			throw new BaseError((error as Error).message);
 		}

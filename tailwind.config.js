@@ -18,6 +18,9 @@ module.exports = {
 			minHeight: {
 				'1/2': 'half',
 			},
+			maxHeight: {
+				48: '12rem',
+			},
 			colors: {
 				primary: '#172733',
 			},
@@ -26,7 +29,10 @@ module.exports = {
 				'4/3': '4 / 3',
 				'4/5': '4 / 5',
 			},
+			gridTemplateRows: {
+				post: '192px minmax(min-content, 1fr)',
+			},
 		},
 	},
-	plugins: [],
+	plugins: [require('@tailwindcss/typography')],
 };
