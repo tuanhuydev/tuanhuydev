@@ -8,6 +8,7 @@ import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import logoSrc from '@frontend/assets/images/logo.svg';
 
+import ImageWithFallback from '../commons/ImageWithFallback';
 import { AppContext } from '../hocs/WithProvider';
 import styles from './styles.module.scss';
 
@@ -39,7 +40,7 @@ function Navbar() {
 			<div className="text-primary dark:text-slate-50 font-bold text-xl md:text-2xl flex items-center">
 				<Link href={'/'} legacyBehavior>
 					<a className="line-height-1 hover:underline flex cursor-pointer">
-						<Image src={logoSrc} width={32} height={32} alt="page logo" />
+						<ImageWithFallback src={logoSrc} width={32} height={32} alt="page logo" />
 						<h1 className="inline">tuanhuydev</h1>
 					</a>
 				</Link>

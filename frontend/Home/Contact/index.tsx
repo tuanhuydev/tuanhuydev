@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
+import ImageWithFallback from '@frontend/components/commons/ImageWithFallback';
+
 import styles from './styles.module.scss';
 
 export default function Contact() {
@@ -38,21 +40,21 @@ export default function Contact() {
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image src={EmailIcon} width={24} height={24} alt="tuanhuydev - send email"></Image>
+									<ImageWithFallback src={EmailIcon} width={24} height={24} alt="tuanhuydev - send email" />
 								</a>
 							</Link>
 							<Link href="https://github.com/tuanhuydev" legacyBehavior>
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image src={GithubIcon} width={24} height={24} alt="tuanhuydev - github profile"></Image>
+									<ImageWithFallback src={GithubIcon} width={24} height={24} alt="tuanhuydev - github profile" />
 								</a>
 							</Link>
 							<Link href="https://www.linkedin.com/in/tuanhuydev" legacyBehavior>
 								<a
 									target="_blank"
 									className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-									<Image src={LinkedInIcon} width={24} height={24} alt="tuanhuydev - linkedin profile"></Image>
+									<ImageWithFallback src={LinkedInIcon} width={24} height={24} alt="tuanhuydev - linkedin profile" />
 								</a>
 							</Link>
 						</div>

@@ -28,7 +28,8 @@ const Sidebar = ({ open, onToggle }: any) => {
 			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
 		];
 		return routes.map(({ label, icon, path }) => {
-			const activeClass = (router.pathname as string).startsWith(path) ? styles.active : '';
+			const activeClass =
+				typeof router.pathname === 'string' && (router.pathname as string).startsWith(path) ? styles.active : '';
 			return (
 				<Link href={path} key={path}>
 					<li className={`ease-in duration-200 rounded-sm mb-1 ${styles.navlink} ${activeClass}`}>

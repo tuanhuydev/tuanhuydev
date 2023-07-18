@@ -5,6 +5,7 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { MOCK_PROJECTS } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 
+import ImageWithFallback from '@frontend/components/commons/ImageWithFallback';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 
 import styles from './styles.module.scss';
@@ -22,7 +23,7 @@ export default function Experience() {
 					<div className="flex min-w-0 justify-between">
 						<div
 							className={`${styles.image} drop-shadow-md dark:drop-shadow-none mr-3 shrink-0 relative flex items-center justify-center rounded-xl bg-slate-100`}>
-							{project?.image && <Image src={project.image} width={96} height={96} alt={project.title}></Image>}
+							{project?.image && <ImageWithFallback src={project.image} width={96} height={96} alt={project.title} />}
 						</div>
 						{project?.credential && (
 							<span className="ml-auto self-start flex items-center cursor-pointer min-w-0 text-md">&#128274;</span>
