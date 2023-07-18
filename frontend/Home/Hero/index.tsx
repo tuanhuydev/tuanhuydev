@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext, useMemo } from 'react';
 
-import ImageWithFallback from '@frontend/components/commons/ImageWithFallback';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 
 import styles from './styles.module.scss';
@@ -49,7 +48,7 @@ export default function Hero() {
 					<h2 className="font-medium text-2xl mr-2 inline dark:text-white">
 						I&lsquo;m Huy, a software engineer <br /> from Viet Nam
 					</h2>
-					<ImageWithFallback width={28} height={18} src={FlagIcon} alt="Viet Nam Flag" />
+					<Image width={28} height={18} src={FlagIcon} alt="Viet Nam Flag" />
 				</div>
 				<div className="dark:text-white mb-10">
 					I&lsquo;m 3 years of&nbsp;
@@ -82,7 +81,7 @@ export default function Hero() {
 					<li className={`${graphicStyles} col-start-10 col-span-full row-start-2`}>#PHP Laravel</li>
 					<li
 						className={`rounded-md p-2 transition ease-out hover:ease-in col-start-5 col-span-4 row-start-3 row-span-2 m-2 border-slate-700`}>
-						<ImageWithFallback src={Avatar} alt="avatar" width={180} height={180} className="rounded-full" />
+						<Image src={Avatar} alt="avatar" width={180} height={180} className="rounded-full" />
 					</li>
 					<li className={`${graphicStyles} col-start-7 col-span-2 row-start-5`}>#Docker</li>
 					<li className={`${graphicStyles} col-start-10 col-span-2 row-start-5`}>#CI/CD</li>

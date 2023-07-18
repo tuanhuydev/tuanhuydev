@@ -6,9 +6,8 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-
-# Install exact dependency version
 RUN npm ci
+
 
 # Rebuild the source code only when needed
 FROM --platform=linux/amd64 node:16-alpine AS builder

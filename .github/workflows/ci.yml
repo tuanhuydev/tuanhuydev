@@ -2,8 +2,8 @@ name: tuanhuy.dev CI
 on: 
   push:
 jobs:
-  commitlint:
-    name: Validate Commit
+  lint:
+    name: Check commit format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,8 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Install required dependencies
-        run: |
+      - run: |
           npm install
           git -v
           npx commitlint -v
