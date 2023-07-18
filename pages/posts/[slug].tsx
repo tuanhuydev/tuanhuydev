@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 
 import { ObjectType } from '@shared/interfaces/base';
 
+import ImageWithFallback from '@frontend/components/commons/ImageWithFallback';
+
 import PostService from '@backend/services/PostService';
 
 interface PostPageProps {
@@ -25,7 +27,7 @@ export default function Page({ post: postJSON }: PostPageProps) {
 			</Head>
 			<div className="grid grid-rows-post">
 				<div className="background row-start-1 col-span-full relative opacity-40">
-					<Image src={post.thumbnail} alt={post.title} layout="fill" className="object-cover" />
+					<ImageWithFallback src={post.thumbnail} alt={post.title} layout="fill" className="object-cover" />
 				</div>
 				<div className="grid grid-cols-12 -mt-10 relative z-20">
 					<div className="col-start-1 col-span-1"></div>

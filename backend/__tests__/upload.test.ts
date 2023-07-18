@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import StorageController from '@backend/controllers/StorageController';
-import S3Service from '@backend/services/S3Service';
 
 jest.mock<typeof import('@backend/utils/fileParser')>('@backend/utils/fileParser', () => ({
 	__esModule: true,

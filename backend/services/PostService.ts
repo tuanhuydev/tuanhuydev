@@ -33,7 +33,15 @@ class PostService {
 
 	async getPostBySlug(slug: string) {
 		try {
-			return await prismaClient.post.findFirst({ where: { slug, deletedAt: null } });
+			return await prismaClient.post.findFirst({
+				where: {
+					slug,
+					deletedAt: null,
+					publishedAt: {
+						not: null,
+					},
+				},
+			});
 		} catch (error) {
 			throw new BaseError((error as Error).message);
 		}
