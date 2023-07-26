@@ -33,9 +33,9 @@ export default function PostForm({ post }: any) {
 
 	// State
 	const [content, setContent] = useState<string>(EMPTY_STRING);
-	const [submiting, setSubmiting] = useState<boolean>(false);
-	const [published, setPublishState] = useState(false);
-	const [disabledUpload, setUploadState] = useState(false);
+	const [submitting, setSubmitting] = useState<boolean>(false);
+	const [published, setPublished] = useState(false);
+	const [disabledUpload, setDisabledUpload] = useState(false);
 	const [fileList, setFileList] = useState([]);
 
 	const isEditMode = !!post;
@@ -51,24 +51,28 @@ export default function PostForm({ post }: any) {
 		},
 		[published]
 	);
+
 	const navigateBack = useCallback(() => setTimeout(() => router.back(), 250), [router]);
 
 	const savePost = useCallback(
 		async (formData: any) => {
 			const body = attachPublishDate(formData);
 			body.slug = transformTextToDashed(formData.slug);
-			setSubmiting(true);
+			setSubmitting(true);
+
 			try {
 				let config = {
 					method: 'POST',
 					url: '/posts',
 					data: body,
 				};
+
 				if (isEditMode) {
 					const { id } = post;
 					config.url = `/posts/${id}`;
 					config.method = 'PATCH';
 				}
+
 				const { data }: AxiosResponse = await apiClient.request(config);
 
 				if (!data?.success) throw new Error('Unable to create post');
@@ -79,7 +83,7 @@ export default function PostForm({ post }: any) {
 			} finally {
 				form.resetFields();
 				setContent(EMPTY_STRING);
-				setSubmiting(false);
+				setSubmitting(false);
 			}
 		},
 		[attachPublishDate, context.toastApi, form, isEditMode, navigateBack, post]
@@ -96,23 +100,26 @@ export default function PostForm({ post }: any) {
 		return fieldMap;
 	}, []);
 
-	const handleFieldChange = (changedFields: Array<Object>, allFields: Array<Object>) => {
-		const changedFieldsMap = transformFieldToMap(changedFields);
-		const allFieldsMap = transformFieldToMap(allFields);
-		const shouldOverrideSlug =
-			!changedFieldsMap.has('slug') && changedFieldsMap.has('title') && changedFieldsMap.get('title').value;
-		if (shouldOverrideSlug) {
-			setSlugFieldValue(changedFieldsMap.get('title').value);
-		}
-		setUploadState(allFieldsMap.has('thumbnail') && allFieldsMap.get('thumbnail').value);
-	};
+	const handleFieldChange = useCallback(
+		(changedFields: Array<Object>, allFields: Array<Object>) => {
+			const changedFieldsMap = transformFieldToMap(changedFields);
+			const allFieldsMap = transformFieldToMap(allFields);
+			const shouldOverrideSlug =
+				!changedFieldsMap.has('slug') && changedFieldsMap.has('title') && changedFieldsMap.get('title').value;
+			if (shouldOverrideSlug) {
+				setSlugFieldValue(changedFieldsMap.get('title').value);
+			}
+			setDisabledUpload(allFieldsMap.has('thumbnail') && allFieldsMap.get('thumbnail').value);
+		},
+		[setSlugFieldValue, transformFieldToMap]
+	);
 
-	const handleEditorChange = useCallback((value: React.SetStateAction<string>) => setContent(value), []);
+	const handleEditorChange = useCallback((value: string) => setContent(value), []);
 
 	const triggerSubmit = useCallback(
 		(shouldPublish: boolean = false) =>
 			() => {
-				setPublishState(shouldPublish);
+				setPublished(shouldPublish);
 				form.submit();
 			},
 		[form]
@@ -125,7 +132,7 @@ export default function PostForm({ post }: any) {
 
 	const showConfirmBox = useCallback(() => {
 		confirm({
-			title: 'Discard current content ?',
+			title: 'Discard current content?',
 			icon: <ExclamationCircleFilled />,
 			content: 'Exit content page without saving current work',
 			okText: 'Discard',
@@ -153,7 +160,7 @@ export default function PostForm({ post }: any) {
 			const { url } = response.data;
 			form.setFieldValue('thumbnail', url);
 			setFileList([]);
-			setUploadState(true);
+			setDisabledUpload(true);
 		}
 	};
 
@@ -189,14 +196,14 @@ export default function PostForm({ post }: any) {
 					onFieldsChange={handleFieldChange}
 					onFinish={savePost}>
 					<Form.Item name="title" label="Title" rules={rules}>
-						<Input placeholder="Please type title..." size="large" className="mb-3" disabled={submiting} />
+						<Input placeholder="Please type title..." size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
 					<Form.Item name="slug" label="Slug" rules={rules}>
-						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submiting} />
+						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
 					<div className="flex items-center transition-all">
 						<Form.Item name="thumbnail" label="Thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
-							<Input placeholder="Thumbnail url" size="large" disabled={submiting} />
+							<Input placeholder="Thumbnail URL" size="large" disabled={submitting} />
 						</Form.Item>
 						<div className="mt-1 flex items-center">
 							<div className="mx-3 text-slate-500">Or</div>
@@ -205,7 +212,7 @@ export default function PostForm({ post }: any) {
 								className="w-44"
 								onChange={uploadFile}
 								fileList={fileList}
-								action={'/api/upload/image'}
+								action="/api/upload/image"
 								accept="image/png, image/jpeg"
 								multiple={false}
 								listType="picture"
@@ -227,7 +234,7 @@ export default function PostForm({ post }: any) {
 							QuillProps={{
 								placeholder: 'Please type content...',
 							}}
-							disabled={submiting}
+							disabled={submitting}
 						/>
 					</Form.Item>
 				</Form>
@@ -236,21 +243,21 @@ export default function PostForm({ post }: any) {
 				<div>
 					<Button
 						onClick={triggerSubmit(true)}
-						disabled={submiting}
-						loading={submiting}
+						disabled={submitting}
+						loading={submitting}
 						className="bg-primary text-slate-100 capitalize w-full mb-2"
 						type="primary">
-						{isEditMode ? 'save' : 'published'}
+						{isEditMode ? 'Save' : 'Publish'}
 					</Button>
 					{!isPublished && (
-						<Button onClick={triggerSubmit()} disabled={submiting} className="w-full capitalize">
-							save draft
+						<Button onClick={triggerSubmit()} disabled={submitting} className="w-full capitalize">
+							Save draft
 						</Button>
 					)}
 				</div>
 				<div className="mt-auto">
 					<Button onClick={cancelForm} danger className="w-full capitalize">
-						cancel
+						Cancel
 					</Button>
 				</div>
 			</div>
