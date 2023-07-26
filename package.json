@@ -1,25 +1,22 @@
 {
   "name": "tuanhuydev",
-  "version": "0.1.7",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run db:generate && next dev",
+    "build": "npm run db:generate && next build",
     "start": "next start",
     "lint": "next lint && npx prettier --write .",
     "test": "npx jest",
-    "prepare": "husky install",
-    "release": "standard-version",
-    "postinstall": "npm run db:generate",
     "db:schema:pull": "npx prisma db pull --schema ./backend/database/schema.prisma",
     "db:schema:push": "npx prisma db push --schema ./backend/database/schema.prisma",
     "db:migrate:run": "npx prisma migrate deploy --schema ./backend/database/schema.prisma",
     "db:migrate:create": "prisma migrate dev --schema ./backend/database/schema.prisma --name",
     "db:generate": "npx prisma generate --schema ./backend/database/schema.prisma",
     "db:seed": "npx prisma db seed",
-    "release:minor": "npm run release --release-as minor",
-    "release:patch": "npm run release --release-as patch",
-    "release:major": "npm run release --release-as major"
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} ./backend/database/seeders/seeder.ts",
@@ -32,7 +29,6 @@
     "@emotion/styled": "^11.10.6",
     "@prisma/client": "^4.16.2",
     "@reduxjs/toolkit": "^1.9.5",
-    "@types/react": "^18.2.13",
     "antd": "^5.5.2",
     "aws-sdk": "^2.1409.0",
     "axios": "^1.4.0",
@@ -50,6 +46,7 @@
     "next": "12.3.0",
     "next-i18next": "^14.0.0",
     "npm": "^9.7.1",
+    "prisma": "^4.16.2",
     "qs": "^6.11.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -61,6 +58,7 @@
     "redux-saga": "^1.2.3",
     "sass": "^1.62.1",
     "sharp": "^0.31.3",
+    "tailwindcss": "^3.2.4",
     "yup": "^1.2.0"
   },
   "devDependencies": {
@@ -75,6 +73,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "18.7.18",
     "@types/qs": "^6.9.7",
+    "@types/react": "^18.2.13",
     "@types/react-dom": "18.0.6",
     "@types/react-draft-wysiwyg": "^1.13.4",
     "autoprefixer": "^10.4.13",
@@ -89,9 +88,7 @@
     "postcss-nesting": "^11.3.0",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
-    "prisma": "^4.16.2",
     "standard-version": "^9.5.0",
-    "tailwindcss": "^3.2.4",
     "ts-node": "^10.9.1",
     "typescript": "4.8.3"
   }
