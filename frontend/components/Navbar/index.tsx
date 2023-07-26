@@ -40,7 +40,7 @@ function Navbar() {
 			<div className="text-primary dark:text-slate-50 font-bold text-xl md:text-2xl flex items-center">
 				<Link href={'/'} legacyBehavior>
 					<a className="line-height-1 hover:underline flex cursor-pointer">
-						<ImageWithFallback src={logoSrc} width={32} height={32} alt="page logo" />
+						<Image src={logoSrc} width={32} height={32} alt="page logo" />
 						<h1 className="inline">tuanhuydev</h1>
 					</a>
 				</Link>
