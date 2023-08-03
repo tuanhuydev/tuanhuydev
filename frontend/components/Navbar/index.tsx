@@ -1,18 +1,16 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from 'react';
-import {
-	DEFAULT_THEME,
-	STORAGE_PLAYSOUND_KEY,
-	STORAGE_THEME_KEY,
-} from '@shared/configs/constants';
-import {
-	reflectSound,
-	reflectTheme,
-	updateLocalStorage,
-} from '@shared/utils/dom';
+import { useCallback, useContext } from 'react';
+import React from 'react';
+
+import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
+import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+
+import logoSrc from '@frontend/assets/images/logo.svg';
+
+import ImageWithFallback from '../commons/ImageWithFallback';
 import { AppContext } from '../hocs/WithProvider';
 import styles from './styles.module.scss';
-import React from 'react';
 
 const buttonStyles =
 	'rounded-md drop-shadow bg-white dark:drop-shadow-none dark:bg-slate-50 dark:hover:bg-slate-300 transition ease-in';
@@ -23,26 +21,27 @@ function Navbar() {
 
 	const { theme, playSound } = context;
 
-	const switchTheme = () => {
+	const switchTheme = useCallback(() => {
 		const newThemeValue = theme === DEFAULT_THEME ? 'dark' : DEFAULT_THEME;
 		setContext({ theme: newThemeValue });
-		updateLocalStorage(STORAGE_THEME_KEY, newThemeValue);
+		setLocalStorage(STORAGE_THEME_KEY, newThemeValue);
 		reflectTheme(newThemeValue);
-	};
+	}, [setContext, theme]);
 
-	const toggleSound = () => {
+	const toggleSound = useCallback(() => {
 		const newSoundState = !playSound;
 		setContext({ playSound: newSoundState });
-		updateLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
+		setLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
 		reflectSound(newSoundState);
-	};
+	}, [playSound, setContext]);
 
 	return (
 		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-4 md:px-0">
 			<div className="text-primary dark:text-slate-50 font-bold text-xl md:text-2xl flex items-center">
 				<Link href={'/'} legacyBehavior>
-					<a className="line-height-1 hover:underline cursor-pointer">
-						#<h1 className="inline">tuanhuydev</h1>
+					<a className="line-height-1 hover:underline flex cursor-pointer">
+						<Image src={logoSrc} width={32} height={32} alt="page logo" />
+						<h1 className="inline">tuanhuydev</h1>
 					</a>
 				</Link>
 			</div>
@@ -56,9 +55,7 @@ function Navbar() {
             </Link>
           </li>
         </ul> */}
-				<button
-					className={`${buttonStyles} p-2 mr-2 md:mr-3`}
-					onClick={toggleSound}>
+				<button className={`${buttonStyles} p-2 mr-2 md:mr-3`} onClick={toggleSound}>
 					{playSound ? (
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -84,24 +81,12 @@ function Navbar() {
 					title="Toggles light & dark"
 					aria-live="polite"
 					onClick={switchTheme}>
-					<svg
-						className={styles.icon}
-						aria-hidden="true"
-						width="18"
-						height="18"
-						viewBox="0 0 24 24">
+					<svg className={styles.icon} aria-hidden="true" width="18" height="18" viewBox="0 0 24 24">
 						<mask className={styles.moon} id="moon-mask">
 							<rect x="0" y="0" width="100%" height="100%" fill="white" />
 							<circle cx="24" cy="10" r="6" fill="black" />
 						</mask>
-						<circle
-							className={styles.sun}
-							cx="12"
-							cy="12"
-							r="6"
-							mask="url(#moon-mask)"
-							fill="currentColor"
-						/>
+						<circle className={styles.sun} cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
 						<g className={styles.beams} stroke="currentColor">
 							<line x1="12" y1="1" x2="12" y2="3" />
 							<line x1="12" y1="21" x2="12" y2="23" />
@@ -115,7 +100,7 @@ function Navbar() {
 					</svg>
 				</button>
 				<Link href={'#contact'} legacyBehavior>
-					<a className="rounded-full bg-stone-900 drop-shadow-md text-white dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+					<a className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
 						Contact
 					</a>
 				</Link>

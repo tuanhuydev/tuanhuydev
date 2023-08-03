@@ -1,14 +1,15 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import BaseLayout from '@frontend/components/layouts/BaseLayout';
-import Hero from '@frontend/components/home/Hero';
-import Experience from '@frontend/components/home/Experience';
-import Contact from '@frontend/components/home/Contact';
 import React from 'react';
+
+import Contact from '@frontend/Home/Contact';
+import Experience from '@frontend/Home/Experience';
+import Hero from '@frontend/Home/Hero';
+import BaseLayout from '@frontend/components/layouts/BaseLayout';
 
 const Home: NextPage = () => {
 	return (
-		<div>
+		<div data-testid="homepage-testid">
 			<Head>
 				<title>tuanhuydev</title>
 				<meta name="description" content="Huy Nguyen Tuan personal website" />
@@ -26,4 +27,4 @@ const Home: NextPage = () => {
 	);
 };
 
-export default React.memo(Home, () => false);
+export default React.memo(Home);

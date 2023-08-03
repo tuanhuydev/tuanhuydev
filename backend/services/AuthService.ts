@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+
 import {
 	ACCESS_TOKEN_LIFE,
 	ACCESS_TOKEN_SECRET,
@@ -7,12 +10,11 @@ import {
 import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
 import { SALT_ROUNDS } from '@shared/configs/constants';
-import prismaClient from '@backend/prismaClient';
-import bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+
+import prismaClient from '@backend/database/prismaClient';
+
 class AuthService {
 	async signIn(email: string, plainPassword: string) {
-		//TODO: verify email and password here
 		const existingUser = await prismaClient.user.findUnique({
 			where: { email },
 		});

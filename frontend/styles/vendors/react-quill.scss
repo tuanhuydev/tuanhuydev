@@ -1,0 +1,16 @@
+@import 'react-quill/dist/quill.snow.css';
+
+.ql-toolbar.ql-snow {
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+.ql-container.ql-snow {
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.ql-editor.ql-blank::before {
+	font-style: normal;
+	color: #bfbfbf;
+	font-size: 1rem;
+}

@@ -1,23 +1,15 @@
-import {
-	STORAGE_PLAYSOUND_KEY,
-	STORAGE_THEME_KEY,
-} from '@shared/configs/constants';
-import { ComponentProps } from '@shared/interfaces/base';
-import {
-	getThemeValue,
-	updateLocalStorage,
-	reflectTheme,
-	getSoundValue,
-	reflectSound,
-} from '@shared/utils/dom';
-import { useContext, useEffect, memo } from 'react';
+import { PropsWithChildren, memo, useContext, useEffect } from 'react';
+
+import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
+import { getSoundValue, getThemeValue, reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+
 import Footer from '../Footer';
-import { AppContext } from '../hocs/WithProvider';
 import Navbar from '../Navbar';
+import { AppContext } from '../hocs/WithProvider';
 
 const gridItems = 'col-span-full md:col-start-2 md:col-span-10';
 
-function BaseLayout(props: ComponentProps) {
+function BaseLayout({ children }: PropsWithChildren) {
 	const { setContext } = useContext(AppContext);
 
 	useEffect(() => {
@@ -25,21 +17,19 @@ function BaseLayout(props: ComponentProps) {
 		// TODO: Sync theme with prefers-color-scheme
 		const theme = getThemeValue();
 		setContext({ theme });
-		updateLocalStorage(STORAGE_THEME_KEY, theme);
+		setLocalStorage(STORAGE_THEME_KEY, theme);
 		reflectTheme(theme);
 
 		// Sync sound
 		const { hasStorage, value: playSound } = getSoundValue();
 		if (!hasStorage) {
-			updateLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
+			setLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
 		}
 		setContext({ playSound });
 		reflectSound(playSound);
 
 		const audioEl = document.getElementById('audio') as HTMLAudioElement;
-		const buttonEls = document.querySelectorAll(
-			'button, a'
-		) as NodeListOf<Element>;
+		const buttonEls = document.querySelectorAll('button, a') as NodeListOf<Element>;
 
 		const playSoundEvent = () => audioEl.play();
 
@@ -58,13 +48,11 @@ function BaseLayout(props: ComponentProps) {
 
 	return (
 		<main className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d">
-			<div className={`${gridItems} row-start-1 sticky top-0 z-10`}>
+			<div className={`${gridItems} sticky top-0 z-10`}>
 				<Navbar />
 			</div>
-			<div className={`${gridItems} row-start-2 relative`}>
-				{props.children}
-			</div>
-			<div className={`${gridItems} row-start-3 relative`}>
+			<div className={`${gridItems} relative`}>{children}</div>
+			<div className={`${gridItems} relative`}>
 				<Footer />
 			</div>
 		</main>
