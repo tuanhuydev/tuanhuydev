@@ -1,7 +1,7 @@
-# Hey there! 👋 I'm Huy 
+# Huy - Full-Stack Developer | ReactJS, Angular, Node.js | AWS | Positive Vibes 🇻🇳
 
 ## About Me
-I'm a spirited full-stack developer hailing from the vibrant land of Vietnam 🇻🇳 (UTC+7). My passion lies in crafting captivating user experiences and building robust backend systems. With a strong foundation in web development, I specialize in ReactJS and Angular on the frontend, and I'm well-versed in Node.js, Laravel, and Golang on the backend. I bring a touch of positivity to every project and thrive in Agile methodologies.
+Passionate full-stack developer from Vietnam (UTC+7), specializing in ReactJS, Angular, Node.js, and AWS. With a strong foundation in web development, I create captivating user experiences and robust backend systems. Bringing positivity, adaptability, and domain expertise in banking and healthcare to every project.
 
 ## Key Skills
 - **Frontend:** ReactJS, Angular
