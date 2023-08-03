@@ -27,11 +27,15 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tuanhuydev:latest
+          push: true
+          secrets: |
+            "GOOGLE_ADSENSE=${{ secrets.GOOGLE_ADSENSE }}"
+            "GOOGLE_TAG=${{ secrets.GOOGLE_TAG }}"
+            "AWS_REGION=${{ secrets.AWS_REGION }}"
+            "DATABASE_URL=${{ secrets.DATABASE_URL }}"
           
+
   deploy:
     name: Connect and Deploy AWS
     needs: build
