@@ -8,12 +8,30 @@ node_modules
 # Logs
 npm-debug.log
 README.md
+CHANGELOG.md
+
+# Linter
+.prettierignore
+.prettierrc.json
 
 # Git history
 .git
+.github
 
 # Test directory
 __tests__
 
+
 # Local history
 .history
+
+# Ide
+.vscode
+
+# Other
+.swc
+.env.example
+.next/
+
+
+

@@ -1,17 +1,24 @@
-import AuthService from '@backend/services/AuthService';
-import { HTTP_CODE } from '@shared/commons/constants/httpCode';
-import NotFoundError from '@shared/commons/errors/NotFoundError';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import BadRequestError from '@shared/commons/errors/BadRequestError';
+import BaseError from '@shared/commons/errors/BaseError';
+
+import AuthService from '@backend/services/AuthService';
+import { failResponse } from '@backend/utils/http';
 
 class AuthController {
 	async signIn(req: NextApiRequest, res: NextApiResponse) {
 		try {
 			const { email, password } = req.body;
+
+			if (!email || !password) {
+				throw new BadRequestError();
+			}
+
 			const auth = await AuthService.signIn(email, password);
-			return res.status(HTTP_CODE.SUCCESS).json(auth);
+			return res.json(auth);
 		} catch (error) {
-			console.log(error);
-			return (error as NotFoundError)?.getApiResponse(res);
+			return res.json(failResponse((error as BaseError).message));
 		}
 	}
 }

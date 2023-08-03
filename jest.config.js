@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-	setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+	setupFilesAfterEnv: ['<rootDir>/shared/configs/jest.setup.js'],
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
 		'^@frontend(.*)$': '<rootDir>/frontend/$1',
@@ -16,7 +16,12 @@ const customJestConfig = {
 		'^@public(.*)$': '<rootDir>/public/$1',
 		'^@pages/(.*)$': '<rootDir>/pages/$1',
 	},
-	modulePathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/.history/'],
+	modulePathIgnorePatterns: [
+		'<rootDir>/build/',
+		'<rootDir>/.history/',
+		'<rootDir>/frontend/__tests__/mocks/',
+		'<rootDir>/backend/__tests__/mocks',
+	],
 	testEnvironment: 'jest-environment-jsdom',
 };
 

@@ -1,34 +1,34 @@
-import '@frontend/styles/globals.css';
+import { notification } from 'antd';
+import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+import { Provider as ReduxProvider } from 'react-redux';
+
+import { ObjectType } from '@shared/interfaces/base';
+
+import WithAntd from '@frontend/components/hocs/WithAntd';
 import WithProvider from '@frontend/components/hocs/WithProvider';
-import Script from 'next/script';
+import store from '@frontend/configs/store';
+import '@frontend/styles/globals.scss';
 
 function App({ Component, pageProps }: AppProps) {
+	const [api, contextHolder] = notification.useNotification();
+
+	const context: ObjectType = {
+		theme: 'light',
+		playSound: true,
+		toastApi: api,
+	};
 	return (
-		<WithProvider context={{ theme: 'light', playSound: true }}>
-			{/* Google Adsense */}
-			<Script
-				strategy="afterInteractive"
-				src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1314205932976713"
-				crossOrigin="anonymous"></Script>
-			{/* Google Tag Management */}
-			<Script
-				strategy="afterInteractive"
-				src="https://www.googletagmanager.com/gtag/js?id=G-GW4RS8JCYT"></Script>
-			{/* Google Analytic */}
-			<Script
-				id="google-analytics"
-				strategy="afterInteractive"
-				dangerouslySetInnerHTML={{
-					__html: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-GW4RS8JCYT');`,
-				}}
-			/>
-			<Component {...pageProps} />
+		<WithProvider context={context}>
+			<WithAntd>
+				<ReduxProvider store={store}>
+					<Component {...pageProps} />
+				</ReduxProvider>
+				{contextHolder}
+			</WithAntd>
 		</WithProvider>
 	);
 }
 
-export default App;
+export default appWithTranslation(App);
