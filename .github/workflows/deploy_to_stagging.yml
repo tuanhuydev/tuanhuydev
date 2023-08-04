@@ -1,10 +1,10 @@
 name: Deploy to Stagging
 on:
-  pull_request_target:
-    branches: [dev]
   pull_request:
     types:
       - closed
+    branches:
+      - dev
 permissions:
   id-token: write
   contents: read

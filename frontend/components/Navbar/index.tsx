@@ -8,7 +8,6 @@ import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import logoSrc from '@frontend/assets/images/logo.svg';
 
-import ImageWithFallback from '../commons/ImageWithFallback';
 import { AppContext } from '../hocs/WithProvider';
 import styles from './styles.module.scss';
 
