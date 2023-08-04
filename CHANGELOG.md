@@ -30,17 +30,9 @@ All notable changes to this project will be documented in this file. See [standa
 - **test:** post api unit tests ([387b22c](https://github.com/tuanhuydev/tuanhuydev/commit/387b22c7c2bc742ccf8379a01ac5212534cce65e))
 - **ui:** home page is unable to scroll ([7d6548e](https://github.com/tuanhuydev/tuanhuydev/commit/7d6548eb5c6d2d32406a31a10a011a214da37d53))
 
-### 0.1.7 (2023-05-24)
-
-### 0.1.6 (2023-05-23)
-
 ### Features
 
 - **seo:** initialize sitemap ([744d8fd](https://github.com/tuanhuydev/tuanhuydev/commit/744d8fd2f8da14965cb97fabe61e898961029f62))
-
-### 0.1.5 (2023-05-23)
-
-### 0.1.4 (2023-05-22)
 
 ### Bug Fixes
 
