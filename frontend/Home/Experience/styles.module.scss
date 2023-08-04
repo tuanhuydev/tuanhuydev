@@ -31,28 +31,28 @@
 		transition: visibility 250ms ease-in, opacity 250ms ease-in;
 	}
 
-	&:hover {
-		&.dark {
-			box-shadow: none;
-		}
+	// &:hover {
+	// 	&.dark {
+	// 		box-shadow: none;
+	// 	}
 
-		.title {
-			transform: translate3d(0, 0, 0);
-		}
+	// 	.title {
+	// 		transform: translate3d(0, 0, 0);
+	// 	}
 
-		.image {
-			width: var(--image-size-hover);
-			height: var(--image-size-hover);
-			transform: translate3d(-2rem, -2rem, 0);
-			background-color: white;
-			// filter: drop-shadow(0.5rem 0.5rem 1rem #cbd5e1);
-			// box-shadow: 0.5rem 0.5rem 1rem var(--slate-200);
-		}
+	// 	.image {
+	// 		width: var(--image-size-hover);
+	// 		height: var(--image-size-hover);
+	// 		transform: translate3d(-2rem, -2rem, 0);
+	// 		background-color: white;
+	// 		// filter: drop-shadow(0.5rem 0.5rem 1rem #cbd5e1);
+	// 		// box-shadow: 0.5rem 0.5rem 1rem var(--slate-200);
+	// 	}
 
-		.description {
-			z-index: 0;
-			opacity: 1;
-			visibility: visible;
-		}
-	}
+	// 	.description {
+	// 		z-index: 0;
+	// 		opacity: 1;
+	// 		visibility: visible;
+	// 	}
+	// }
 }

@@ -6,7 +6,7 @@ import React, { memo, useEffect, useState } from 'react';
 
 import { isURLValid } from '@shared/utils/helper';
 
-const ImageWithFallback = ({ src, alt = 'image', ...restProps }: ImageProps) => {
+const ImageWithFallback = ({ src = '', alt = 'image', ...restProps }: ImageProps) => {
 	const [hasError, setHasError] = useState(false);
 
 	useEffect(() => {

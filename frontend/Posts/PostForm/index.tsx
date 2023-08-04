@@ -29,7 +29,7 @@ export default function PostForm({ post }: any) {
 	const [form] = Form.useForm();
 	const router = useRouter();
 	const { context } = useContext(AppContext);
-	const { t } = useTranslation('common');
+	const { t: translate } = useTranslation('common');
 
 	// State
 	const [content, setContent] = useState<string>(EMPTY_STRING);
@@ -40,7 +40,7 @@ export default function PostForm({ post }: any) {
 
 	const isEditMode = !!post;
 	const isPublished = post?.publishedAt;
-	const rules = [{ required: true, message: t('FORM_VALIDATE_REQUIRED') }];
+	const rules = [{ required: true, message: translate('FORM_VALIDATE_REQUIRED') }];
 
 	const attachPublishDate = useCallback(
 		(formData: any) => {

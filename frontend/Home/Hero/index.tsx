@@ -2,7 +2,7 @@ import Avatar from '@public/assets/images/avatar.jpg';
 import FlagIcon from '@public/assets/images/vietnam_flag.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext, useMemo } from 'react';
+import React, { memo, useContext, useMemo } from 'react';
 
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 
@@ -11,7 +11,7 @@ import styles from './styles.module.scss';
 const matrixTypoStyles = 'font-medium text-slate-700 dark:text-white text-xs sm:text-base';
 const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
-export default function Hero() {
+export default memo(function Hero() {
 	const { context } = useContext(AppContext);
 
 	const { theme } = context;
@@ -93,4 +93,4 @@ export default function Hero() {
 			</div>
 		</section>
 	);
-}
+});

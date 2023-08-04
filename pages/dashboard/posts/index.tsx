@@ -7,10 +7,13 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import { NextPageWithLayout } from '@pages/_app';
 import { Button, Empty, Input, Modal } from 'antd';
 import { AxiosResponse } from 'axios';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import PageContainer from '@frontend/Dashboard/PageContainer';
@@ -131,7 +134,7 @@ const DashboardPosts = () => {
 	}, [navigatePostEdit, posts, triggerDeletePost, viewMode]);
 
 	return (
-		<PageContainer title="Posts" data-testid="dashboard-posts-page-testid">
+		<Fragment>
 			<div className="flex items-center mb-12">
 				<div className="button-group flex mr-2">
 					<Button
@@ -160,8 +163,21 @@ const DashboardPosts = () => {
 				</Button>
 			</div>
 			<div className="grow">{posts.length ? RenderPosts : <Empty className="my-36" />}</div>
-		</PageContainer>
+		</Fragment>
 	);
 };
 
-export default WithAuth(DashboardPosts);
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+	props: { ...(await serverSideTranslations(locale ?? 'en', ['common'])) },
+});
+
+const Page = WithAuth(DashboardPosts);
+export default Page;
+
+(Page as NextPageWithLayout).getLayout = function getLayout(page: ReactNode) {
+	return (
+		<PageContainer title="Posts" data-testid="dashboard-posts-page-testid">
+			{page}
+		</PageContainer>
+	);
+};
