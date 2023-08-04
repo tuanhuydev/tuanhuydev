@@ -11,9 +11,9 @@ describe('Authenticate feature API test suit', function () {
 	describe('Sign in API', () => {
 		it('Should throw error by email and password', async () => {
 			const req: NextApiRequest = { body: { email: 'abc@email.com' } } as any;
-			const res: NextApiResponse = { json: jest.fn() } as any;
+			const res: NextApiResponse = { json: jest.fn(), status: jest.fn().mockReturnThis() } as any;
 			await AuthController.signIn(req, res);
-			expect(res.json).toHaveBeenCalledWith(failResponse('[ERROR] BAD REQUEST'));
+			expect(res.json).toHaveBeenCalledWith(failResponse('password is a required field'));
 		});
 	});
 });

@@ -3,8 +3,8 @@ import { PropsWithChildren, memo, useContext, useEffect } from 'react';
 import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { getSoundValue, getThemeValue, reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
+import Navbar from '../../Home/Navbar';
 import Footer from '../Footer';
-import Navbar from '../Navbar';
 import { AppContext } from '../hocs/WithProvider';
 
 const gridItems = 'col-span-full md:col-start-2 md:col-span-10';

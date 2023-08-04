@@ -1,4 +1,4 @@
-name: tuanhuy.dev CI
+name: Check linter and Run tests
 on: 
   push:
 jobs:

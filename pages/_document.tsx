@@ -31,4 +31,4 @@ function Document() {
 		</Html>
 	);
 }
-export default memo(Document, () => false);
+export default memo(Document);

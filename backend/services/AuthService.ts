@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
@@ -9,38 +10,30 @@ import {
 } from '@shared/commons/constants/encryption';
 import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
-import { SALT_ROUNDS } from '@shared/configs/constants';
 
 import prismaClient from '@backend/database/prismaClient';
 
 class AuthService {
-	async signIn(email: string, plainPassword: string) {
-		const existingUser = await prismaClient.user.findUnique({
-			where: { email },
-		});
+	async validateSignIn(email: string, password: string) {
+		const userByEmail = await prismaClient.user.findUnique({ where: { email } });
 
-		if (!existingUser) {
-			throw new NotFoundError('Invalid user');
+		if (!userByEmail) throw new NotFoundError('Invalid user');
+
+		if (!bcrypt.compareSync(password, userByEmail.password)) throw new BaseError('Invalid credential');
+
+		return userByEmail;
+	}
+
+	async signIn(email: string, password: string) {
+		try {
+			const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
+			const accessToken = jwt.sign({ userId, userEmail }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFE });
+			const refreshToken = jwt.sign({ userId, userEmail }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFE });
+
+			return { accessToken, refreshToken };
+		} catch (error) {
+			console.log(error);
 		}
-
-		if (!bcrypt.compareSync(plainPassword, existingUser.password)) {
-			throw new BaseError('Invalid credential');
-		}
-		const tokenData = {
-			id: existingUser.id,
-			name: existingUser.name,
-			email: existingUser.email,
-		};
-
-		const token = jwt.sign(tokenData, ACCESS_TOKEN_SECRET, {
-			expiresIn: ACCESS_TOKEN_LIFE,
-		});
-
-		const refreshToken = jwt.sign({ email }, REFRESH_TOKEN_SECRET, {
-			expiresIn: REFRESH_TOKEN_LIFE,
-		});
-
-		return { token, refreshToken };
 	}
 
 	forgotPassword(email: string) {

@@ -3,11 +3,11 @@ import GithubIcon from '@public/assets/images/socials/github.svg';
 import LinkedInIcon from '@public/assets/images/socials/linkedin.svg';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { memo } from 'react';
 
 import styles from './styles.module.scss';
 
-export default function Contact() {
+const Contact = () => {
 	return (
 		<section id="contact" data-testid="homepage-contact-testid" className="dark:text-white px-2 rounded-md py-24">
 			<div className="grid grid-cols-12 gap-y-8 justify-items-center lg:justify-items-start">
@@ -61,4 +61,6 @@ export default function Contact() {
 			</div>
 		</section>
 	);
-}
+};
+
+export default memo(Contact);
