@@ -1,7 +1,6 @@
 'use client';
 
 import { Skeleton } from 'antd';
-import { Redirect } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 

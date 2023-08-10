@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export default function Footer() {
+function Footer() {
 	const currentYear = new Date().getFullYear();
 	return (
 		<section
@@ -14,3 +14,4 @@ export default function Footer() {
 		</section>
 	);
 }
+export default memo(Footer);

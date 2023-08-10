@@ -37,7 +37,7 @@ describe('Post feature test suits', function () {
 			const res: NextApiResponse = { json: jest.fn(), status: jest.fn().mockReturnThis() } as any;
 
 			await PostController.store(req, res);
-			expect(res.json).toHaveBeenCalledWith(failResponse('[ERROR] BAD REQUEST'));
+			expect(res.json).toHaveBeenCalledWith(failResponse('content is a required field'));
 		});
 
 		it('Should create with title and content', async () => {

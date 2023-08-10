@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useContext } from 'react';
+import { memo, useCallback, useContext } from 'react';
 import React from 'react';
 
 import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
@@ -8,7 +8,7 @@ import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import logoSrc from '@frontend/assets/images/logo.svg';
 
-import { AppContext } from '../hocs/WithProvider';
+import { AppContext } from '../../components/hocs/WithProvider';
 import styles from './styles.module.scss';
 
 const buttonStyles =
@@ -107,4 +107,4 @@ function Navbar() {
 		</header>
 	);
 }
-export default React.memo(Navbar, () => false);
+export default memo(Navbar);
