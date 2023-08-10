@@ -9,18 +9,12 @@ const handlePost = withAuthMiddleware(async (req: NextApiRequest, res: NextApiRe
 	PostController.store(req, res)
 );
 
-const handleUpdate = withAuthMiddleware(async (req: NextApiRequest, res: NextApiResponse) =>
-	PostController.store(req, res)
-);
-
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
 			return PostController.getAll(req, res);
 		case 'POST':
 			return handlePost(req, res);
-		case 'PATCH':
-			return handleUpdate(req, res);
 		default:
 			return res.status(HTTP_CODE.METHOD_NOT_ALLOWED_ERROR).end('Method not allowed');
 	}

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import WithProvider from '@frontend/components/hocs/WithProvider';
-import store from '@frontend/configs/store';
+import store from '@frontend/store';
 
 import { mockWindow } from './mocks/dom';
 

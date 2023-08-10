@@ -21,8 +21,9 @@ export const setLocalStorage = (key: string, value: any) => {
 export const getLocalStorage = (key: string) => {
 	try {
 		const rawStorage: string | null = localStorage.getItem(key);
-		if (rawStorage) return JSON.parse(rawStorage);
-		return rawStorage;
+		const isJsonFormat = rawStorage && rawStorage?.startsWith('{|[');
+
+		return isJsonFormat ? JSON.parse(rawStorage) : rawStorage;
 	} catch (error) {
 		return null;
 	}
