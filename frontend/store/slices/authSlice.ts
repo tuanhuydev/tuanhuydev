@@ -1,10 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+
+import { RootState } from '@frontend/configs/types';
 
 const initialState = {
 	token: '',
 	refreshToken: '',
-	loading: false,
-	error: null,
 };
 
 const authSlice = createSlice({
@@ -17,6 +17,9 @@ const authSlice = createSlice({
 		},
 	},
 });
+
+// Selector
+export const authSelector = createSelector([(state: RootState) => state.auth], (authState) => authState.auth);
 
 export const authActions = authSlice.actions;
 export default authSlice.reducer;

@@ -76,7 +76,7 @@ describe('Post feature test suits', function () {
 			const res: NextApiResponse = { json: jest.fn(), status: jest.fn().mockReturnThis() } as any;
 
 			jest.spyOn(PostService, 'deletePost').mockResolvedValue(mockPost);
-			await PostController.destroy(req, res);
+			await PostController.delete(req, res);
 			expect(res.json).toHaveBeenCalledWith(successResponse(mockPost));
 		});
 	});

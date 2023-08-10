@@ -14,7 +14,7 @@ import { ObjectType } from '@shared/interfaces/base';
 import Loader from '@frontend/components/commons/Loader';
 import WithAntd from '@frontend/components/hocs/WithAntd';
 import WithProvider from '@frontend/components/hocs/WithProvider';
-import store from '@frontend/configs/store';
+import store from '@frontend/store';
 import '@frontend/styles/globals.scss';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

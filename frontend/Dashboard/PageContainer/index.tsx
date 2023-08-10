@@ -2,15 +2,16 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { PropsWithChildren, useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { EMPTY_OBJECT } from '@shared/configs/constants';
 
 import Navbar from '@frontend/Dashboard/Navbar';
 import Sidebar from '@frontend/Dashboard/Sidebar';
-import Loader from '@frontend/components/commons/Loader';
-import { authActions } from '@frontend/configs/store/slices/authSlice';
+import { RootState } from '@frontend/configs/types';
+import { authActions } from '@frontend/store/slices/authSlice';
+import { metaAction } from '@frontend/store/slices/metaSlice';
 
 export interface PageContainerProps extends PropsWithChildren {
 	title: string;
@@ -23,8 +24,9 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 
 	// State
 	const [open, setOpenUserMenu] = useState(false);
-	const [sidebarOpen, setSidebarState] = useState(true);
-	const [loading, setLoading] = useState(true);
+
+	// Selector
+	const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
 
 	const signOut = useCallback(() => {
 		localStorage.clear();
@@ -44,13 +46,12 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 		[open, signOut]
 	);
 
-	const toggleSidebar = useCallback((value: boolean) => {
-		setSidebarState(value);
-	}, []);
-
-	useEffect(() => {
-		setLoading(false);
-	}, []);
+	const toggleSidebar = useCallback(
+		(value: boolean) => {
+			dispatch(metaAction.setSidebarState(!sidebarOpen));
+		},
+		[dispatch, sidebarOpen]
+	);
 
 	return (
 		<>
@@ -92,7 +93,7 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 							}
 						/>
 						<div className="grow bg-white overflow-auto">
-							<div className="p-4 h-full overflow-auto">{loading ? <Loader /> : children}</div>
+							<div className="p-4 h-full overflow-auto">{children}</div>
 						</div>
 					</div>
 				</div>

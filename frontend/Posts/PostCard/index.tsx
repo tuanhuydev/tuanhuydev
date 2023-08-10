@@ -1,7 +1,6 @@
 import { Card, Descriptions, Tag } from 'antd';
 import { CardProps } from 'antd/es/card';
 import format from 'date-fns/format';
-import Image from 'next/image';
 import React, { useCallback, useMemo } from 'react';
 
 import { DATE_FORMAT } from '@shared/configs/constants';

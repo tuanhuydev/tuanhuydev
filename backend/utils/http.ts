@@ -7,4 +7,4 @@ export const handleApiError = (error: any, res: NextApiResponse) => {
 };
 
 export const successResponse = (data: any) => ({ success: true, data });
-export const failResponse = (message: string) => ({ success: false, message });
+export const failResponse = (message: string) => ({ success: false, error: message });

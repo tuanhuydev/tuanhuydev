@@ -7,8 +7,8 @@ import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage } from '@shared/utils/dom';
 
-import { authActions } from '@frontend/configs/store/slices/authSlice';
 import { AppDispatch, RootState } from '@frontend/configs/types';
+import { authActions } from '@frontend/store/slices/authSlice';
 
 export default function WithAuth(WrappedComponent: React.FC) {
 	const AuthenticatedComponent = (props: JSX.IntrinsicAttributes) => {

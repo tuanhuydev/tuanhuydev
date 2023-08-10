@@ -8,12 +8,15 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
-import { EMPTY_STRING } from '@shared/configs/constants';
+import { EMPTY_STRING, STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
+import { getLocalStorage } from '@shared/utils/dom';
 import { isURLValid, transformTextToDashed } from '@shared/utils/helper';
 
 import RichEditor from '@frontend/components/commons/RichEditor';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 import apiClient from '@frontend/configs/apiClient';
+import { useCreatePostMutation, useUpdatePostMutation } from '@frontend/store/apis/apiSlice';
 
 const initialValues = {
 	title: EMPTY_STRING,
@@ -30,6 +33,8 @@ export default function PostForm({ post }: any) {
 	const router = useRouter();
 	const { context } = useContext(AppContext);
 	const { t: translate } = useTranslation('common');
+	const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
+	const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
 
 	// State
 	const [content, setContent] = useState<string>(EMPTY_STRING);
@@ -56,37 +61,25 @@ export default function PostForm({ post }: any) {
 
 	const savePost = useCallback(
 		async (formData: any) => {
+			setSubmitting(true);
 			const body = attachPublishDate(formData);
 			body.slug = transformTextToDashed(formData.slug);
-			setSubmitting(true);
 
 			try {
-				let config = {
-					method: 'POST',
-					url: '/posts',
-					data: body,
-				};
-
-				if (isEditMode) {
-					const { id } = post;
-					config.url = `/posts/${id}`;
-					config.method = 'PATCH';
-				}
-
-				const { data }: AxiosResponse = await apiClient.request(config);
-
+				const apiResponse = isEditMode ? await updatePost({ id: post.id, body }) : await createPost(body);
+				const { data } = apiResponse as ObjectType;
 				if (!data?.success) throw new Error('Unable to create post');
 				context.toastApi.success({ message: 'Create post successfully' });
 				navigateBack();
 			} catch (error) {
 				context.toastApi.error({ message: (error as BaseError).message });
 			} finally {
-				form.resetFields();
+				if (!isEditMode) form.resetFields();
 				setContent(EMPTY_STRING);
 				setSubmitting(false);
 			}
 		},
-		[attachPublishDate, context.toastApi, form, isEditMode, navigateBack, post]
+		[attachPublishDate, context.toastApi, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
 	);
 
 	const setSlugFieldValue = useCallback(
@@ -165,10 +158,7 @@ export default function PostForm({ post }: any) {
 	};
 
 	const validateUrl = (ruleObject: any, value: string) => {
-		if (isURLValid(value) || !value) {
-			return Promise.resolve();
-		}
-		return Promise.reject(new Error('Please enter a valid URL'));
+		return isURLValid(value) || !value ? Promise.resolve() : Promise.reject(new Error('Please enter a valid URL'));
 	};
 
 	useEffect(() => {
