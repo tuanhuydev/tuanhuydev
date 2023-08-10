@@ -1,4 +1,10 @@
-import { ContainerOutlined, HomeOutlined, LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
+import {
+	ContainerOutlined,
+	HomeOutlined,
+	LeftCircleOutlined,
+	ProjectOutlined,
+	RightCircleOutlined,
+} from '@ant-design/icons';
 import { Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -26,6 +32,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 		const routes = [
 			{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
 			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
+			{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
 		];
 		return routes.map(({ label, icon, path }) => {
 			const activeClass =

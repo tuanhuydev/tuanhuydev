@@ -1,17 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import * as yup from 'yup';
-import { object, string } from 'yup';
+import { ObjectSchema, object, string } from 'yup';
 
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
-import { makeSlug, transformTextToDashed } from '@shared/utils/helper';
+import { makeSlug } from '@shared/utils/helper';
 
 import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
 import Network from '@backend/utils/Network';
 
 class PostController implements BaseController {
-	#schema: yup.ObjectSchema<any>;
+	#schema: ObjectSchema<any>;
 
 	constructor() {
 		this.#schema = object({
@@ -22,7 +21,7 @@ class PostController implements BaseController {
 
 	async validateStoreRequest(body: any) {
 		try {
-			return await this.#schema.validate(body);
+			return this.#schema.validate(body);
 		} catch (error) {
 			throw new BadRequestError();
 		}
@@ -30,6 +29,7 @@ class PostController implements BaseController {
 
 	async store(req: NextApiRequest, res: NextApiResponse) {
 		const network = Network(req, res);
+
 		try {
 			const validatedFields = await this.validateStoreRequest(req.body);
 			validatedFields.slug = makeSlug(validatedFields.title);

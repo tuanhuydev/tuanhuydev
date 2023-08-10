@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import BaseError from '@shared/commons/errors/BaseError';
@@ -23,7 +23,7 @@ const INITIAL_SIGN_IN_FORM = {
 	password: '',
 };
 
-export default function SignIn() {
+export default memo(function SignIn() {
 	// Hooks
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
@@ -36,17 +36,17 @@ export default function SignIn() {
 	// State
 	const [submiting, setSubmitState] = useState(false);
 
-	const syncAuth = ({ token = EMPTY_STRING, refreshToken = EMPTY_STRING }: any) => {
-		if (!token || !refreshToken) throw new UnauthorizedError();
-		const credential = { token, refreshToken };
+	const syncAuth = ({ accessToken = EMPTY_STRING, refreshToken = EMPTY_STRING }: any) => {
+		if (!accessToken || !refreshToken) throw new UnauthorizedError();
+		const credential = { accessToken, refreshToken };
 
 		dispatch(authActions.setAuth(credential));
 		setLocalStorage(STORAGE_CREDENTIAL_KEY, JSON.stringify(credential));
 	};
 
 	const handleAuth = async (body: { email: string; password: string }) => {
-		const { data }: AxiosResponse = await apiClient.post('/auth/sign-in', body);
-		syncAuth(data);
+		const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', body);
+		syncAuth(res.data);
 	};
 
 	const submit = async (formData: any) => {
@@ -56,7 +56,7 @@ export default function SignIn() {
 			await router.push('/dashboard');
 		} catch (error) {
 			context.toastApi.error({ message: (error as BaseError).message });
-			form.resetFields();
+			clearForm();
 		} finally {
 			setSubmitState(false);
 		}
@@ -64,8 +64,8 @@ export default function SignIn() {
 
 	// TODO: Write custom hook
 	const isAuthenticatedByStore = useCallback(
-		(): boolean => auth.token && auth.refreshToken,
-		[auth.refreshToken, auth.token]
+		(): boolean => auth.accessToken && auth.refreshToken,
+		[auth.refreshToken, auth.accessToken]
 	);
 
 	const syncToStore = useCallback(
@@ -81,11 +81,11 @@ export default function SignIn() {
 		return !!credential;
 	}, [syncToStore]);
 
+	const clearForm = () => form.resetFields();
+
 	useEffect(() => {
 		const isAuthenticated: boolean = isAuthenticatedByStore() || isAuthenticatedByStorage();
-		if (isAuthenticated) {
-			router.push('/dashboard/home');
-		}
+		if (isAuthenticated) router.push('/dashboard/home');
 	}, [isAuthenticatedByStorage, isAuthenticatedByStore, router]);
 
 	return (
@@ -127,10 +127,15 @@ export default function SignIn() {
 					submit
 				</Button>
 				<Divider className="my-3" />
-				<Button size="large" disabled={submiting} className="w-full capitalize mr-3" htmlType="submit">
+				<Button
+					size="large"
+					disabled={submiting}
+					className="w-full capitalize mr-3"
+					onClick={clearForm}
+					htmlType="button">
 					clear
 				</Button>
 			</Form>
 		</div>
 	);
-}
+});
