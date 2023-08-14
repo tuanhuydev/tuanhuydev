@@ -67,7 +67,6 @@ class PostController implements BaseController {
 
 	async update(req: NextApiRequest, res: NextApiResponse) {
 		const network = Network(req, res);
-
 		try {
 			const { query, body } = req;
 			if (!query?.id || !body) throw new BadRequestError();
@@ -79,7 +78,7 @@ class PostController implements BaseController {
 		}
 	}
 
-	async destroy(req: NextApiRequest, res: NextApiResponse) {
+	async delete(req: NextApiRequest, res: NextApiResponse) {
 		const network = Network(req, res);
 		try {
 			if (!req.query?.id) throw new BadRequestError();

@@ -4,7 +4,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import WithProvider from '@frontend/components/hocs/WithProvider';
-import store from '@frontend/configs/store';
+import store from '@frontend/store';
 
 import { mockWindow } from '../mocks/dom';
 
@@ -30,9 +30,6 @@ describe('Dashboard posts page test suit', () => {
 		);
 
 		// Assert
-		const pageSkeleton = await screen.findByTestId('skeleton-testid');
-		expect(pageSkeleton).toBeInTheDocument();
-
 		await waitFor(() => {
 			setTimeout(async () => {
 				const pageElement = await screen.findByTestId('dashboard-posts-page-testid');

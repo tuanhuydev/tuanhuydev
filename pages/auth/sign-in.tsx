@@ -3,6 +3,7 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,8 +16,8 @@ import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
 
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 import apiClient from '@frontend/configs/apiClient';
-import { authActions } from '@frontend/configs/store/slices/authSlice';
 import { RootState } from '@frontend/configs/types';
+import { authActions } from '@frontend/store/slices/authSlice';
 
 const INITIAL_SIGN_IN_FORM = {
 	email: '',
@@ -36,24 +37,19 @@ export default memo(function SignIn() {
 	// State
 	const [submiting, setSubmitState] = useState(false);
 
-	const syncAuth = ({ accessToken = EMPTY_STRING, refreshToken = EMPTY_STRING }: any) => {
-		if (!accessToken || !refreshToken) throw new UnauthorizedError();
-		const credential = { accessToken, refreshToken };
-
-		dispatch(authActions.setAuth(credential));
-		setLocalStorage(STORAGE_CREDENTIAL_KEY, JSON.stringify(credential));
+	const syncAuth = (credential: ObjectType) => {
+		if (!credential) throw new UnauthorizedError();
+		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.token);
 	};
 
-	const handleAuth = async (body: { email: string; password: string }) => {
-		const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', body);
-		syncAuth(res.data);
-	};
-
-	const submit = async (formData: any) => {
+	const submit = async (formData: { email: string; password: string }) => {
 		setSubmitState(true);
 		try {
-			await handleAuth(formData);
-			await router.push('/dashboard');
+			const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
+			if (res) {
+				syncAuth(res.data);
+				await router.push('/dashboard');
+			}
 		} catch (error) {
 			context.toastApi.error({ message: (error as BaseError).message });
 			clearForm();
