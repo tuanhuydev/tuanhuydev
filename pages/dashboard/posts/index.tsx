@@ -9,19 +9,16 @@ import {
 } from '@ant-design/icons';
 import { NextPageWithLayout } from '@pages/_app';
 import { Button, Empty, Input, Modal } from 'antd';
-import { AxiosResponse } from 'axios';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { Fragment, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Fragment, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 import PageContainer from '@frontend/Dashboard/PageContainer';
 import PostCard from '@frontend/Posts/PostCard';
-import WithAuth from '@frontend/components/hocs/WithAuth';
+import Loader from '@frontend/components/commons/Loader';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
-import apiClient from '@frontend/configs/apiClient';
-import { postActions, postsSelector } from '@frontend/configs/store/slices/postSlice';
+import { useDeletePostMutation, useGetPostsQuery } from '@frontend/store/apis/apiSlice';
 
 type ViewMode = 'card' | 'list';
 
@@ -30,10 +27,11 @@ const { confirm } = Modal;
 const DashboardPosts = () => {
 	// Hook
 	const router = useRouter();
-	const dispatch = useDispatch();
 	const { context } = useContext(AppContext);
 
-	const posts = useSelector(postsSelector);
+	// const posts = useSelector(postsSelector);
+	const { data: posts = [], isLoading, isError, error } = useGetPostsQuery();
+	const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
 
 	// State
 	const [viewMode, setMode] = useState<ViewMode>('card');
@@ -51,27 +49,6 @@ const DashboardPosts = () => {
 	const navigatePostCreate = () => router.push('/dashboard/posts/create');
 
 	const navigatePostEdit = useCallback((id: number) => router.push(`/dashboard/posts/${id}`), [router]);
-
-	const fetchPosts = useCallback(async () => {
-		const { data: responseData }: AxiosResponse = await apiClient.get('/posts');
-		const { success, data: posts } = responseData;
-		if (!success) {
-			context.toastApi.error({ message: 'Unable to fetch posts' });
-		}
-		dispatch(postActions.setPosts(posts));
-	}, [context.toastApi, dispatch]);
-
-	const deletePost = useCallback(
-		async (id: number) => {
-			const { data }: AxiosResponse = await apiClient.delete(`/posts/${id}`);
-			if (data && data?.success) {
-				context.toastApi.success({ message: 'Delete post successfully' });
-				// TODO: Apply optimistic update and cache on the FE
-				fetchPosts();
-			}
-		},
-		[context.toastApi, fetchPosts]
-	);
 
 	const triggerDeletePost = useCallback(
 		(postId: number) => (event: any) => {
@@ -98,10 +75,6 @@ const DashboardPosts = () => {
 		const newTab = window.open(postUrl, '_blank');
 		newTab!.focus();
 	};
-
-	useEffect(() => {
-		fetchPosts();
-	}, [fetchPosts]);
 
 	const RenderPosts: JSX.Element = useMemo(() => {
 		const isCard = viewMode === 'card';
@@ -162,7 +135,7 @@ const DashboardPosts = () => {
 					Write new
 				</Button>
 			</div>
-			<div className="grow">{posts.length ? RenderPosts : <Empty className="my-36" />}</div>
+			<div className="grow">{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}</div>
 		</Fragment>
 	);
 };
@@ -171,7 +144,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 	props: { ...(await serverSideTranslations(locale ?? 'en', ['common'])) },
 });
 
-const Page = WithAuth(DashboardPosts);
+const Page = DashboardPosts;
 export default Page;
 
 (Page as NextPageWithLayout).getLayout = function getLayout(page: ReactNode) {
