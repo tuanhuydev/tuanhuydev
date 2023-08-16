@@ -7,6 +7,7 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
+		"strictNullChecks": true,
 		"noEmit": true,
 		"esModuleInterop": true,
 		"module": "esnext",
@@ -16,13 +17,26 @@
 		"jsx": "preserve",
 		"incremental": true,
 		"paths": {
-			"@frontend/*": ["frontend/*"],
-			"@backend/*": ["backend/*"],
-			"@shared/*": ["shared/*"],
-			"@public/*": ["public/*"],
-			"@pages/*": ["pages/*"]
-		}
+			"@app/*": ["app/*"],
+			"@lib/*": ["lib/*"],
+			"@frontend/*": ["lib/frontend/*"],
+			"@backend/*": ["lib/backend/*"],
+			"@shared/*": ["lib/shared/*"],
+			"@public/*": ["public/*"]
+		},
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"lib/frontend/components/hocs/WithAntd.tsx",
+		"lib/frontend/components/hocs/WithAuth.tsx"
+	],
 	"exclude": ["node_modules"]
 }
