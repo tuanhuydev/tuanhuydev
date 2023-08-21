@@ -1,4 +1,3 @@
-import { NODE_ENV } from '@lib/shared/configs/constants';
 import GoogleAdsense from 'lib/frontend/components/google/GoogleAdsense';
 import GoogleAnalytic from 'lib/frontend/components/google/GoogleAnalytic';
 import GoogleTag from 'lib/frontend/components/google/GoogleTag';
@@ -20,6 +19,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 				<link rel="manifest" href="/site.webmanifest" />
 				<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0f172a" />
+				<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+				<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
 				{/* Google Setup */}
 				<GoogleAdsense />
 				<GoogleTag />
