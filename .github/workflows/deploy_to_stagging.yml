@@ -59,7 +59,7 @@ jobs:
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: backend/.aws/task-definition.json
+          task-definition: lib/backend/.aws/task-definition.json
           service: tuanhuydev-service
           cluster: tuanhuydev
           wait-for-service-stability: true
