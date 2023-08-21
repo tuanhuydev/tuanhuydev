@@ -1,0 +1,54 @@
+.card {
+	--image-size: 14rem;
+	--image-size-hover: 8rem;
+	--transition: all 250ms ease-in-out;
+
+	transition: var(--transition);
+
+	.image {
+		width: var(--image-size);
+		height: var(--image-size);
+		transition: var(--transition);
+		transform: translate3d(var(--card-size) / 2, var(--card-size) / 2, 0);
+	}
+	.time {
+		width: fit-content;
+	}
+
+	.title {
+		transition: transform 250ms ease-in;
+		transform: translate3d(0, 150%, 0);
+	}
+
+	.description {
+		z-index: -1;
+		opacity: 0;
+		visibility: hidden;
+		transition: visibility 250ms ease-in, opacity 250ms ease-in;
+	}
+
+	// &:hover {
+	// 	&.dark {
+	// 		box-shadow: none;
+	// 	}
+
+	// 	.title {
+	// 		transform: translate3d(0, 0, 0);
+	// 	}
+
+	// 	.image {
+	// 		width: var(--image-size-hover);
+	// 		height: var(--image-size-hover);
+	// 		transform: translate3d(-2rem, -2rem, 0);
+	// 		background-color: white;
+	// 		// filter: drop-shadow(0.5rem 0.5rem 1rem #cbd5e1);
+	// 		// box-shadow: 0.5rem 0.5rem 1rem var(--slate-200);
+	// 	}
+
+	// 	.description {
+	// 		z-index: 0;
+	// 		opacity: 1;
+	// 		visibility: visible;
+	// 	}
+	// }
+}
