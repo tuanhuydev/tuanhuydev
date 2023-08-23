@@ -6,6 +6,7 @@ import {
 	LeftCircleOutlined,
 	ProjectOutlined,
 	RightCircleOutlined,
+	SettingOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
 import { EMPTY_STRING } from 'lib/shared/configs/constants';
@@ -35,6 +36,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 			{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
 			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
 			{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
+			{ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' },
 		];
 
 		return routes.map(({ label, icon, path }) => {
