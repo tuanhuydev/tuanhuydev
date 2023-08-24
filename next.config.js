@@ -8,11 +8,6 @@ const nextConfig = {
 	experimental: {
 		serverActions: true,
 	},
-	compiler: {
-		removeConsole: {
-			exclude: ['error'],
-		},
-	},
 	images: {
 		remotePatterns: [
 			{

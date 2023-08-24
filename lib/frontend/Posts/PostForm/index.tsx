@@ -2,6 +2,7 @@
 
 import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Upload } from 'antd';
+import Cookies from 'js-cookie';
 import RichEditor from 'lib/frontend/components/commons/RichEditor';
 import { AppContext } from 'lib/frontend/components/hocs/WithProvider';
 import { useCreatePostMutation, useUpdatePostMutation } from 'lib/frontend/store/apis/apiSlice';
@@ -168,7 +169,6 @@ export default function PostForm({ post }: any) {
 			}
 		}
 	}, [form, isEditMode, post]);
-
 	return (
 		<div className="grid grid-cols-12 gap-4" data-testid="post-form-testid">
 			<div className="col-span-10">
@@ -196,6 +196,9 @@ export default function PostForm({ post }: any) {
 								onChange={uploadFile}
 								fileList={fileList}
 								action="/api/upload/image"
+								headers={{
+									Authorization: `Bearer ${Cookies.get('jwt')}`,
+								}}
 								accept="image/png, image/jpeg"
 								multiple={false}
 								listType="picture"
