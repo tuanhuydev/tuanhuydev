@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { apiSlice } from './apis/apiSlice';
+import { apiSlice } from './slices/apiSlice';
 import authReducer from './slices/authSlice';
 import metaReducer from './slices/metaSlice';
 import postReducer from './slices/postSlice';

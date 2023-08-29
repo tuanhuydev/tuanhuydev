@@ -1,10 +1,11 @@
-import PostController from 'lib/backend/controllers/PostController';
-import withAuthMiddleware from 'lib/backend/middlewares/authMiddleware';
 import { NextRequest } from 'next/server';
 
-const handlePost = withAuthMiddleware(async (request: NextRequest, params: any) => PostController.store(request));
+import PostController from '@backend/controllers/PostController';
+import withAuthMiddleware from '@backend/middlewares/authMiddleware';
 
-export async function GET(request: NextRequest) {
+const handlePost = withAuthMiddleware(async (request: NextRequest) => PostController.store(request));
+
+export async function GET(request: NextRequest, { params }: any) {
 	return PostController.getAll(request);
 }
 

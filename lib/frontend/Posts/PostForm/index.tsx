@@ -3,15 +3,17 @@
 import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Upload } from 'antd';
 import Cookies from 'js-cookie';
-import RichEditor from 'lib/frontend/components/commons/RichEditor';
-import { AppContext } from 'lib/frontend/components/hocs/WithProvider';
-import { useCreatePostMutation, useUpdatePostMutation } from 'lib/frontend/store/apis/apiSlice';
-import BaseError from 'lib/shared/commons/errors/BaseError';
-import { EMPTY_STRING } from 'lib/shared/configs/constants';
-import { isURLValid, transformTextToDashed } from 'lib/shared/utils/helper';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+
+import BaseError from '@shared/commons/errors/BaseError';
+import { EMPTY_STRING } from '@shared/configs/constants';
+import { isURLValid, transformTextToDashed } from '@shared/utils/helper';
+
+import RichEditor from '@frontend/components/commons/RichEditor';
+import { AppContext } from '@frontend/components/hocs/WithProvider';
+import { useCreatePostMutation, useUpdatePostMutation } from '@frontend/store/slices/apiSlice';
 
 const initialValues = {
 	title: EMPTY_STRING,

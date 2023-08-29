@@ -24,8 +24,9 @@ const DEFAULT_ENV: string = 'development';
 export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
 export const GOOGLE_ADSENSE: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
-export const BASE_URL =
-	process.env.HOST && process.env.PORT ? `${process.env.HOST}:${process.env.PORT}` : 'http://localhost:3000';
+export const HOST = process.env.HOST ?? 'http://localhost';
+export const PORT = process.env.PORT ?? 3000;
+export const BASE_URL = `${HOST}:${PORT}`;
 
 export const POST_STATUS = {
 	PUBLISHED: 'PUBLISHED',

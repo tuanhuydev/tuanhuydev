@@ -1,5 +1,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { RootState } from 'lib/frontend/configs/types';
+
+import { RootState } from '@frontend/configs/types';
 
 const initialState = {
 	token: '',

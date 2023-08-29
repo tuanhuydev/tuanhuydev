@@ -9,11 +9,12 @@ import {
 	SettingOutlined,
 } from '@ant-design/icons';
 import { Button } from 'antd';
-import { EMPTY_STRING } from 'lib/shared/configs/constants';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { memo, useCallback, useMemo } from 'react';
+
+import { EMPTY_STRING } from '@shared/configs/constants';
 
 import logoSrc from '@frontend/assets/images/logo.svg';
 

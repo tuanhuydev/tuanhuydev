@@ -3,18 +3,20 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
-import { AppContext } from 'lib/frontend/components/hocs/WithProvider';
-import apiClient from 'lib/frontend/configs/apiClient';
-import { RootState } from 'lib/frontend/configs/types';
-import { authActions } from 'lib/frontend/store/slices/authSlice';
-import BaseError from 'lib/shared/commons/errors/BaseError';
-import UnauthorizedError from 'lib/shared/commons/errors/UnauthorizedError';
-import { STORAGE_CREDENTIAL_KEY } from 'lib/shared/configs/constants';
-import { ObjectType } from 'lib/shared/interfaces/base';
-import { getLocalStorage, setLocalStorage } from 'lib/shared/utils/dom';
 import { useRouter } from 'next/navigation';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import BaseError from '@shared/commons/errors/BaseError';
+import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
+import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
+import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
+
+import { AppContext } from '@frontend/components/hocs/WithProvider';
+import apiClient from '@frontend/configs/apiClient';
+import { RootState } from '@frontend/configs/types';
+import { authActions } from '@frontend/store/slices/authSlice';
 
 const INITIAL_SIGN_IN_FORM = {
 	email: '',
