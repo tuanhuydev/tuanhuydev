@@ -1,10 +1,12 @@
-import AuthService from 'lib/backend/services/AuthService';
-import Network from 'lib/backend/utils/Network';
-import BadRequestError from 'lib/shared/commons/errors/BadRequestError';
-import BaseError from 'lib/shared/commons/errors/BaseError';
-import UnauthorizedError from 'lib/shared/commons/errors/UnauthorizedError';
 import { NextRequest } from 'next/server';
 import { ObjectSchema, object, string } from 'yup';
+
+import BadRequestError from '@shared/commons/errors/BadRequestError';
+import BaseError from '@shared/commons/errors/BaseError';
+import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
+
+import AuthService from '@backend/services/AuthService';
+import Network from '@backend/utils/Network';
 
 class AuthController {
 	#signInSchema: ObjectSchema<any>;

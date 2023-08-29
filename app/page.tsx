@@ -1,24 +1,36 @@
-import Contact from 'lib/frontend/Home/Contact';
-import Experience from 'lib/frontend/Home/Experience';
-import Hero from 'lib/frontend/Home/Hero';
-import WithProvider from 'lib/frontend/components/hocs/WithProvider';
-import BaseLayout from 'lib/frontend/components/layouts/BaseLayout';
-import type { NextPage } from 'next';
+import { Post } from '@prisma/client';
 import React, { Fragment } from 'react';
 
+import { BASE_URL } from '@shared/configs/constants';
+
+import Blog from '@frontend/Home/BlogSection';
+import Contact from '@frontend/Home/Contact';
+import Hero from '@frontend/Home/Hero';
+import Services from '@frontend/Home/Services';
+import WithProvider from '@frontend/components/hocs/WithProvider';
+import BaseLayout from '@frontend/components/layouts/BaseLayout';
+
+import PostService from '@backend/services/PostService';
+
 export const metadata = {
-	title: 'tuanhuydev',
-	description: 'Huy Nguyen Tuan personal website',
+	title: 'tuanhuydev - Fullstack Software Engineer',
+	description:
+		"tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
 };
 
-const Home: NextPage = () => {
+export default async function Home() {
+	'use server';
+	const posts = await PostService.getPosts({ page: 1, pageSize: 4 });
+	const shouldDisplayBlogs = (posts as Post[]).length;
+
 	return (
 		<Fragment>
 			<WithProvider>
 				<div data-testid="homepage-testid">
 					<BaseLayout>
 						<Hero />
-						<Experience />
+						<Services />
+						{shouldDisplayBlogs && <Blog posts={posts} />}
 						<Contact />
 					</BaseLayout>
 				</div>
@@ -29,6 +41,4 @@ const Home: NextPage = () => {
 			</audio>
 		</Fragment>
 	);
-};
-
-export default React.memo(Home);
+}

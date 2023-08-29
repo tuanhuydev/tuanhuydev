@@ -2,11 +2,13 @@
 
 import { BaseQueryFn, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { ACCESS_TOKEN_LIFE } from 'lib/shared/commons/constants/encryption';
-import { STORAGE_CREDENTIAL_KEY } from 'lib/shared/configs/constants';
-import { ObjectType } from 'lib/shared/interfaces/base';
-import { getLocalStorage } from 'lib/shared/utils/dom';
+import QueryString from 'qs';
 import { REHYDRATE } from 'redux-persist';
+
+import { ACCESS_TOKEN_LIFE } from '@shared/commons/constants/encryption';
+import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
+import { getLocalStorage } from '@shared/utils/dom';
 
 const baseQuery: BaseQueryFn = fetchBaseQuery({
 	baseUrl: '/api',
@@ -61,8 +63,10 @@ export const apiSlice = createApi({
 	},
 	tagTypes: ['Post'],
 	endpoints: (builder) => ({
-		getPosts: builder.query<any, void>({
-			query: () => 'posts',
+		getPosts: builder.query({
+			query: (filter: any) => {
+				return `posts?${QueryString.stringify(filter)}`;
+			},
 			providesTags: ['Post'],
 			transformResponse: (response: ObjectType) => response.data,
 		}),

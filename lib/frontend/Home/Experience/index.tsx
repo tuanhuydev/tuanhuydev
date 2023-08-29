@@ -1,7 +1,8 @@
-import { MOCK_PROJECTS } from 'lib/shared/configs/constants';
-import { ObjectType } from 'lib/shared/interfaces/base';
 import Image from 'next/image';
 import React, { memo, useMemo } from 'react';
+
+import { MOCK_PROJECTS } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
 
 import styles from './styles.module.scss';
 
@@ -41,7 +42,7 @@ export default memo(function Experience() {
 	);
 
 	return (
-		<section id="experience" className="py-10 md:py-24 px-2">
+		<section id="experience" className="py-10 md:py-24">
 			<h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 tracking-tight dark:text-white pt-14 pb-7">
 				&#60;Experience&#47;&#62;
 			</h1>

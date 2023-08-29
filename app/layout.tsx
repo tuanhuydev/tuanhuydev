@@ -1,10 +1,10 @@
-import GoogleAdsense from 'lib/frontend/components/google/GoogleAdsense';
-import GoogleAnalytic from 'lib/frontend/components/google/GoogleAnalytic';
-import GoogleTag from 'lib/frontend/components/google/GoogleTag';
 import { PropsWithChildren } from 'react';
 
 import i18nextConfig from '@shared/configs/next-i18next.config';
 
+import GoogleAdsense from '@frontend/components/google/GoogleAdsense';
+import GoogleAnalytic from '@frontend/components/google/GoogleAnalytic';
+import GoogleTag from '@frontend/components/google/GoogleTag';
 import '@frontend/styles/globals.scss';
 
 export default function RootLayout({ children }: PropsWithChildren) {

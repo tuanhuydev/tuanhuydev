@@ -1,7 +1,9 @@
-import S3Service from 'lib/backend/services/S3Service';
-import Network from 'lib/backend/utils/Network';
-import BaseError from 'lib/shared/commons/errors/BaseError';
 import { NextRequest } from 'next/server';
+
+import BaseError from '@shared/commons/errors/BaseError';
+
+import S3Service from '@backend/services/S3Service';
+import Network from '@backend/utils/Network';
 
 class StorageController {
 	async uploadFile(request: NextRequest, { type }: any) {

@@ -1,16 +1,16 @@
 'use client';
 
 import { AnimatePresence } from 'framer-motion';
-import PageContainer from 'lib/frontend/Dashboard/PageContainer';
-import WithAntd from 'lib/frontend/components/hocs/WithAntd';
-import WithAuth from 'lib/frontend/components/hocs/WithAuth';
-import WithProvider from 'lib/frontend/components/hocs/WithProvider';
-import store from 'lib/frontend/store';
 import { PropsWithChildren } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import i18nextConfig from '@shared/configs/next-i18next.config';
 
+import PageContainer from '@frontend/Dashboard/PageContainer';
+import WithAntd from '@frontend/components/hocs/WithAntd';
+import WithAuth from '@frontend/components/hocs/WithAuth';
+import WithProvider from '@frontend/components/hocs/WithProvider';
+import store from '@frontend/store';
 import '@frontend/styles/globals.scss';
 
 export default function RootLayout({ children }: PropsWithChildren) {
