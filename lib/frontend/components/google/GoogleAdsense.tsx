@@ -1,8 +1,9 @@
 'use client';
 
-import { GOOGLE_ADSENSE, NODE_ENV } from '@lib/shared/configs/constants';
 import Script from 'next/script';
 import React, { memo } from 'react';
+
+import { GOOGLE_ADSENSE, NODE_ENV } from '@shared/configs/constants';
 
 export default memo(function GoogleAdsense() {
 	const shouldAttach = NODE_ENV === 'production' && GOOGLE_ADSENSE;

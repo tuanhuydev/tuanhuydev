@@ -5,7 +5,7 @@ function Footer() {
 	return (
 		<footer
 			id="footer"
-			className="flex flex-col items-center md:flex-row text-center md:text-left justify-between py-3 px-2 font-medium text-primary dark:text-slate-50">
+			className="flex flex-col relative items-center md:flex-row text-center md:text-left justify-between py-3 px-2 font-medium text-primary dark:text-slate-50">
 			<div className="text-md">
 				&copy;&nbsp;{currentYear}&nbsp;
 				<span>Huy Nguyen Tuan</span>

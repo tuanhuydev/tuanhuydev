@@ -9,8 +9,6 @@ import Footer from '@frontend/Home/Footer';
 import Navbar from '@frontend/Home/Navbar';
 import { AppContext } from '@frontend/components/hocs/WithProvider';
 
-const gridItems = 'col-span-full md:col-start-2 md:col-span-10';
-
 function BaseLayout({ children }: PropsWithChildren) {
 	const { setContext } = useContext(AppContext);
 
@@ -31,7 +29,7 @@ function BaseLayout({ children }: PropsWithChildren) {
 		reflectSound(playSound);
 
 		const audioEl = document.getElementById('audio') as HTMLAudioElement;
-		const buttonEls = document.querySelectorAll('button, a') as NodeListOf<Element>;
+		const buttonEls = document.querySelectorAll('button, a, .cursor-pointer') as NodeListOf<Element>;
 
 		const playSoundEvent = () => audioEl.play();
 
@@ -49,12 +47,12 @@ function BaseLayout({ children }: PropsWithChildren) {
 	}, [setContext]);
 
 	return (
-		<main className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d">
-			<div className={`${gridItems} sticky top-0 z-10`}>
-				<Navbar />
-			</div>
-			<div className={`${gridItems} relative`}>{children}</div>
-			<div className={`${gridItems} relative`}>
+		<main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d">
+			<div className="container mx-auto">
+				<div className="sticky top-0 z-10">
+					<Navbar />
+				</div>
+				<div className="relative">{children}</div>
 				<Footer />
 			</div>
 		</main>

@@ -14,8 +14,7 @@ export default memo(function Hero() {
 		<section
 			id="about-me"
 			data-testid="homepage-about-me"
-			className="grid grid-cols-12 gap-y-8 lg:gap-0 py-10 md:py-24 content-center"
-			style={{ height: 'calc(100vh - 56px)' }}>
+			className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 md:py-24 content-center">
 			<div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
 				<h1 className="font-bold mb-3 dark:text-white">
 					<span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{' '}
@@ -23,7 +22,7 @@ export default memo(function Hero() {
 					<span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
 				</h1>
 				<div className="relative mb-6">
-					<h2 className="font-medium text-2xl mr-2 inline dark:text-white">
+					<h2 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
 						I&lsquo;m Huy, a software engineer <br /> from Viet Nam
 						<Image
 							width={28}
@@ -34,8 +33,8 @@ export default memo(function Hero() {
 						/>
 					</h2>
 				</div>
-				<div className="dark:text-white mb-10">
-					I&lsquo;m 3 years of&nbsp;
+				<div className="dark:text-white text-xs md:text-base mb-10">
+					I&lsquo;m 4 years of&nbsp;
 					<h3 className="inline-flex font-medium">#experience</h3> in&nbsp;
 					<h3 className="inline-flex font-medium">#web development</h3>
 					&nbsp;with&nbsp;
@@ -49,9 +48,9 @@ export default memo(function Hero() {
 					<strong>yours</strong>.😀&#128077;
 					<br />
 				</div>
-				<Link href="#experience" legacyBehavior>
+				<Link href="#service" legacyBehavior>
 					<h5
-						className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-sm font-semibold transition ease-in ${styles.cta}`}>
+						className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2 mr-3 cursor-pointer uppercase text-xs md:text-sm font-semibold transition ease-in animate-bounce ${styles.cta}`}>
 						My proudly accomplishments
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

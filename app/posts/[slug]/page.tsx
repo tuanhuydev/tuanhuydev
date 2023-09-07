@@ -1,9 +1,13 @@
-import PostService from 'lib/backend/services/PostService';
-import ImageWithFallback from 'lib/frontend/components/commons/ImageWithFallback';
-import { EMPTY_STRING } from 'lib/shared/configs/constants';
 import React from 'react';
 
+import { EMPTY_STRING } from '@shared/configs/constants';
+
+import ImageWithFallback from '@frontend/components/commons/ImageWithFallback';
+
+import PostService from '@backend/services/PostService';
+
 export default async function Page({ params }: any) {
+	'use server';
 	const { slug } = params;
 	const post = await PostService.getPostBySlug(slug);
 	if (!post) return <h1>Not Found</h1>;

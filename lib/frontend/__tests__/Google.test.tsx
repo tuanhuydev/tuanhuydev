@@ -10,7 +10,7 @@ jest.mock('next/script', () => ({
 	default: jest.fn((props) => <script {...props}></script>),
 }));
 
-jest.mock('@lib/shared/configs/constants', () => ({
+jest.mock('@shared/configs/constants', () => ({
 	GOOGLE_ADSENSE: 'your_adsense_id',
 	GOOGLE_TAG: 'your_google_tag',
 	NODE_ENV: 'production',
