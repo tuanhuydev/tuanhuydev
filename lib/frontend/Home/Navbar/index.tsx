@@ -34,10 +34,10 @@ function Navbar() {
 	}, [playSound, setContext]);
 
 	return (
-		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-4 md:px-0">
+		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2 md:px-0">
 			<div className="text-primary dark:text-slate-50 font-bold text-xl md:text-2xl flex items-center">
 				<Link href={'/'} legacyBehavior>
-					<a className="line-height-1 hover:underline flex cursor-pointer">
+					<a className="line-height-1 hover:underline flex items-center cursor-pointer">
 						<svg
 							width="32"
 							height="32"
@@ -62,7 +62,7 @@ function Navbar() {
             </Link>
           </li>
         </ul> */}
-				<button className={`${buttonStyles} p-2 mr-2 md:mr-3`} onClick={toggleSound}>
+				<button className={`${buttonStyles} p-2 mr-2 md:mr-3 hidden md:block`} onClick={toggleSound}>
 					{playSound ? (
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +84,7 @@ function Navbar() {
 					)}
 				</button>
 				<button
-					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7`}
+					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 hidden md:block`}
 					title="Toggles light & dark"
 					aria-live="polite"
 					onClick={switchTheme}>
@@ -107,7 +107,7 @@ function Navbar() {
 					</svg>
 				</button>
 				<Link href={'#contact'} legacyBehavior>
-					<a className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+					<a className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 text-sm md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
 						Contact
 					</a>
 				</Link>

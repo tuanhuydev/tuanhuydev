@@ -9,12 +9,14 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import { Post } from '@prisma/client';
 import { Button, Empty, Input, Modal } from 'antd';
-import PostCard from 'lib/frontend/Posts/PostCard';
-import Loader from 'lib/frontend/components/commons/Loader';
-import { useDeletePostMutation, useGetPostsQuery } from 'lib/frontend/store/apis/apiSlice';
 import { useRouter } from 'next/navigation';
 import { Fragment, memo, useCallback, useMemo, useState } from 'react';
+
+import PostCard from '@frontend/Posts/PostCard';
+import Loader from '@frontend/components/commons/Loader';
+import { useDeletePostMutation, useGetPostsQuery } from '@frontend/store/slices/apiSlice';
 
 type ViewMode = 'card' | 'list';
 
@@ -24,8 +26,7 @@ export default memo(function Page() {
 	// Hook
 	const router = useRouter();
 
-	// const posts = useSelector(postsSelector);
-	const { data: posts = [], isLoading } = useGetPostsQuery();
+	const { data: posts = [], isLoading } = useGetPostsQuery({ active: false });
 	const [deletePost] = useDeletePostMutation();
 
 	// State
@@ -67,6 +68,17 @@ export default memo(function Page() {
 		newTab!.focus();
 	};
 
+	const makePostCardActions = useCallback(
+		({ id, slug, publishedAt }: Post) => {
+			const actions = [<DeleteOutlined key="delete" onClick={triggerDeletePost(id)} />];
+			if (publishedAt) {
+				actions.push(<EyeOutlined key="view" onClick={openPostInNewTab(slug)} />);
+			}
+			return actions;
+		},
+		[triggerDeletePost]
+	);
+
 	const RenderPosts: JSX.Element = useMemo(() => {
 		const isCard = viewMode === 'card';
 
@@ -79,10 +91,7 @@ export default memo(function Page() {
 							key={post.id}
 							onClick={navigatePostEdit}
 							CardProps={{
-								actions: [
-									<EyeOutlined key="view" onClick={openPostInNewTab(post.slug)} />,
-									<DeleteOutlined key="delete" onClick={triggerDeletePost(post.id)} />,
-								],
+								actions: makePostCardActions(post),
 							}}
 						/>
 					))}
@@ -96,7 +105,7 @@ export default memo(function Page() {
 				))}
 			</ul>
 		);
-	}, [navigatePostEdit, posts, triggerDeletePost, viewMode]);
+	}, [makePostCardActions, navigatePostEdit, posts, viewMode]);
 
 	return (
 		<Fragment>

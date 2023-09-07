@@ -1,6 +1,8 @@
-import PostService from '@lib/backend/services/PostService';
-import { BASE_URL, NODE_ENV } from '@lib/shared/configs/constants';
 import { MetadataRoute } from 'next';
+
+import { BASE_URL, NODE_ENV } from '@shared/configs/constants';
+
+import PostService from '@backend/services/PostService';
 
 const getPosts = async () => {
 	try {

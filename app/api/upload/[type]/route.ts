@@ -1,6 +1,7 @@
-import StorageController from 'lib/backend/controllers/StorageController';
-import withAuthMiddleware from 'lib/backend/middlewares/authMiddleware';
 import { NextRequest } from 'next/server';
+
+import StorageController from '@backend/controllers/StorageController';
+import withAuthMiddleware from '@backend/middlewares/authMiddleware';
 
 const handlePost = withAuthMiddleware(async (request: NextRequest, params: any) =>
 	StorageController.uploadFile(request, params)

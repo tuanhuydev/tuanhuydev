@@ -1,6 +1,8 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { RootState } from 'lib/frontend/configs/types';
-import { ObjectType } from 'lib/shared/interfaces/base';
+
+import { ObjectType } from '@shared/interfaces/base';
+
+import { RootState } from '@frontend/configs/types';
 
 const initialState: { posts: Array<any>; filter: ObjectType; order: ObjectType } = {
 	posts: [],

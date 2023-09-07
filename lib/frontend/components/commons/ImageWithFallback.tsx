@@ -1,10 +1,11 @@
 'use client';
 
 import { WarningOutlined } from '@ant-design/icons';
-import { EMPTY_STRING } from 'lib/shared/configs/constants';
-import { isURLValid } from 'lib/shared/utils/helper';
 import Image, { ImageProps } from 'next/image';
 import React, { memo, useEffect, useState } from 'react';
+
+import { EMPTY_STRING } from '@shared/configs/constants';
+import { isURLValid } from '@shared/utils/helper';
 
 interface ImageWithFallbackProps extends Partial<ImageProps> {
 	src?: string;

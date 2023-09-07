@@ -1,8 +1,9 @@
-import { HTTP_CODE } from 'lib/shared/commons/constants/httpCode';
-import BaseError from 'lib/shared/commons/errors/BaseError';
-import { NODE_ENV } from 'lib/shared/configs/constants';
-import { ObjectType } from 'lib/shared/interfaces/base';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { HTTP_CODE } from '@shared/commons/constants/httpCode';
+import BaseError from '@shared/commons/errors/BaseError';
+import { NODE_ENV } from '@shared/configs/constants';
+import { ObjectType } from '@shared/interfaces/base';
 
 class Network {
 	#req: NextRequest;

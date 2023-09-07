@@ -1,14 +1,18 @@
+'use client';
+
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Popover } from 'antd';
-import Navbar from 'lib/frontend/Dashboard/Navbar';
-import Sidebar from 'lib/frontend/Dashboard/Sidebar';
-import { RootState } from 'lib/frontend/configs/types';
-import { authActions } from 'lib/frontend/store/slices/authSlice';
-import { metaAction } from 'lib/frontend/store/slices/metaSlice';
-import { EMPTY_OBJECT } from 'lib/shared/configs/constants';
 import { useRouter } from 'next/navigation';
 import React, { PropsWithChildren, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { EMPTY_OBJECT } from '@shared/configs/constants';
+
+import Navbar from '@frontend/Dashboard/Navbar';
+import Sidebar from '@frontend/Dashboard/Sidebar';
+import { RootState } from '@frontend/configs/types';
+import { authActions } from '@frontend/store/slices/authSlice';
+import { metaAction } from '@frontend/store/slices/metaSlice';
 
 export interface PageContainerProps extends PropsWithChildren {
 	title: string;
