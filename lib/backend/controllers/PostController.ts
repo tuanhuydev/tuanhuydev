@@ -40,14 +40,15 @@ class PostController implements BaseController {
 		return params;
 	}
 
-	async store(request: NextRequest) {
+	async store(request: NextRequest, params: any) {
 		const network = Network(request);
-
 		try {
 			const body = await request.json();
 			const validatedFields = await this.validateStoreRequest(body);
 			validatedFields.slug = makeSlug(validatedFields.title);
-
+			if (params) {
+				validatedFields.authorId = params.userId;
+			}
 			const newPost = await postService.createPost(validatedFields);
 			return network.successResponse(newPost);
 		} catch (error) {
