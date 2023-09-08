@@ -14,21 +14,16 @@ export type PostFilter = {
 class PostService {
 	static #instance: PostService;
 
-	static makeInstance() {
-		// Implement Singleton
+	static makeSingleton() {
 		if (PostService.#instance) {
 			return PostService.#instance;
 		}
 		return new PostService();
 	}
 
-	async createPost(body: any) {
+	async createPost(body: ObjectType) {
 		try {
-			const newPostData = {
-				...body,
-				authorId: '2e633db0-dc69-11ed-afa1-0242ac120002',
-			};
-			return await prismaClient.post.create({ data: newPostData });
+			return await prismaClient.post.create({ data: body as any });
 		} catch (error: any) {
 			throw new BaseError((error as Error).message);
 		}
@@ -130,4 +125,4 @@ class PostService {
 	}
 }
 
-export default PostService.makeInstance();
+export default PostService.makeSingleton();
