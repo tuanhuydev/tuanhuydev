@@ -1,19 +1,11 @@
+import PostService from '@lib/backend/services/PostService';
+import { Post } from '@prisma/client';
 import { MetadataRoute } from 'next';
 
-import { BASE_URL, NODE_ENV } from '@shared/configs/constants';
-
-import PostService from '@backend/services/PostService';
-
-const getPosts = async () => {
-	try {
-		return PostService.getPosts();
-	} catch (error) {
-		if (NODE_ENV === 'production') console.log((error as Error).message);
-		return [];
-	}
-};
+import { BASE_URL } from '@shared/configs/constants';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+	const posts = (await PostService.getPosts()) || [];
 	const sites = [
 		{
 			url: BASE_URL,
@@ -21,9 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		},
 	];
 
-	const posts = await getPosts();
-
-	posts.forEach(({ publishedAt, deletedAt, updatedAt, slug }) => {
+	(posts as Array<Post>).forEach(({ publishedAt, deletedAt, updatedAt, slug }) => {
 		if (publishedAt && !deletedAt) {
 			sites.push({
 				url: `${BASE_URL}/posts/${slug}`,
