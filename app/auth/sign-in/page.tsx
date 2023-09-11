@@ -3,6 +3,10 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
+import { AppContext } from 'lib/components/hocs/WithProvider';
+import apiClient from 'lib/configs/apiClient';
+import { RootState } from 'lib/configs/types';
+import { authActions } from 'lib/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,11 +16,6 @@ import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
 import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
-
-import { AppContext } from '@frontend/components/hocs/WithProvider';
-import apiClient from '@frontend/configs/apiClient';
-import { RootState } from '@frontend/configs/types';
-import { authActions } from '@frontend/store/slices/authSlice';
 
 const INITIAL_SIGN_IN_FORM = {
 	email: '',

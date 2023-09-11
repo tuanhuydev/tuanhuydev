@@ -10,7 +10,6 @@ const customJestConfig = {
 	setupFilesAfterEnv: ['<rootDir>/lib/shared/configs/jest.setup.js'],
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
-		'^@frontend(.*)$': '<rootDir>/lib/frontend/$1',
 		'^@lib(.*)$': '<rootDir>/lib/$1',
 		'^@backend(.*)$': '<rootDir>/lib/backend/$1',
 		'^@shared(.*)$': '<rootDir>/lib/shared/$1',

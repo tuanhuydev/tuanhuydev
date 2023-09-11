@@ -1,14 +1,10 @@
+import Blog from '@lib/HomeModule/BlogSection';
+import Contact from '@lib/HomeModule/Contact';
+import Hero from '@lib/HomeModule/Hero';
+import HomeLayout from '@lib/HomeModule/HomeLayout';
+import Services from '@lib/HomeModule/Services';
 import { Post } from '@prisma/client';
 import React, { Fragment } from 'react';
-
-import { BASE_URL } from '@shared/configs/constants';
-
-import Blog from '@frontend/Home/BlogSection';
-import Contact from '@frontend/Home/Contact';
-import Hero from '@frontend/Home/Hero';
-import Services from '@frontend/Home/Services';
-import WithProvider from '@frontend/components/hocs/WithProvider';
-import BaseLayout from '@frontend/components/layouts/BaseLayout';
 
 import PostService from '@backend/services/PostService';
 
@@ -24,21 +20,15 @@ export default async function Home() {
 	const shouldDisplayBlogs = (posts as Post[]).length;
 
 	return (
-		<Fragment>
-			<WithProvider>
-				<div data-testid="homepage-testid">
-					<BaseLayout>
-						<Hero />
-						<Services />
-						{shouldDisplayBlogs && <Blog posts={posts} />}
-						<Contact />
-					</BaseLayout>
-				</div>
-			</WithProvider>
+		<HomeLayout>
+			<Hero />
+			<Services />
+			{shouldDisplayBlogs ? <Blog posts={posts} /> : <Fragment />}
+			<Contact />
 			<audio id="audio" src="/assets/sounds/click.wav">
 				Your browser does not support the
 				<code>audio</code> element.
 			</audio>
-		</Fragment>
+		</HomeLayout>
 	);
 }

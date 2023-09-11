@@ -18,7 +18,8 @@
 		"incremental": true,
 		"paths": {
 			"@app/*": ["app/*"],
-			"@frontend/*": ["lib/frontend/*"],
+			"@lib/*": ["lib/*"],
+			"@prismaClient/*": ["./prisma/*"],
 			"@backend/*": ["lib/backend/*"],
 			"@shared/*": ["lib/shared/*"],
 			"@public/*": ["public/*"]
@@ -34,8 +35,8 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"lib/frontend/components/hocs/WithAntd.tsx",
-		"lib/frontend/components/hocs/WithAuth.tsx"
+		"lib/components/hocs/WithAntd.tsx",
+		"lib/components/hocs/WithAuth.tsx"
 	],
 	"exclude": ["node_modules"]
 }

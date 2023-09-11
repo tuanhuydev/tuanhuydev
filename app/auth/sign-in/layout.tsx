@@ -1,13 +1,12 @@
 'use client';
 
 import { AnimatePresence } from 'framer-motion';
+import WithAntd from 'lib/components/hocs/WithAntd';
+import store from 'lib/store';
 import { PropsWithChildren } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import i18nextConfig from '@shared/configs/next-i18next.config';
-
-import WithAntd from '@frontend/components/hocs/WithAntd';
-import store from '@frontend/store';
 
 export default function SignInLayout({ children }: PropsWithChildren) {
 	const currentLocale = i18nextConfig.i18n.defaultLocale;
