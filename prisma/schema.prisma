@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(255)
-  content     String    @db.Text
-  thumbnail   String?   @db.VarChar(255)
-  publishedAt DateTime? @db.Timestamp(6)
-  authorId    String    @db.Uuid
-  createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime  @default(now()) @db.Timestamp(6)
+  id          Int         @id @default(autoincrement())
+  title       String      @db.VarChar(255)
+  content     String      @db.Text
+  thumbnail   String?     @db.VarChar(255)
+  publishedAt DateTime?   @db.Timestamp(6)
+  authorId    String      @db.Uuid
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @default(now()) @db.Timestamp(6)
   slug        String
-  deletedAt   DateTime? @db.Timestamp(6)
-  User        User      @relation(fields: [authorId], references: [id])
+  deletedAt   DateTime?   @db.Timestamp(6)
+  User        User        @relation(fields: [authorId], references: [id])
+  PostAsset   PostAsset[]
 
   @@index([title, authorId])
   @@map("posts")
@@ -104,4 +105,35 @@ model ProjectUser {
 
   @@id([projectId, userId])
   @@map("project_users")
+}
+
+model Asset {
+  id        Int         @id @default(autoincrement())
+  url       String
+  type      String
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt DateTime    @default(now()) @db.Timestamp(6)
+  deletedAt DateTime?   @db.Timestamp(6)
+  PostAsset PostAsset[]
+
+  @@map("assets")
+}
+
+model PostAsset {
+  postId  Int
+  assetId Int
+  Post    Post  @relation(fields: [postId], references: [id])
+  Asset   Asset @relation(fields: [assetId], references: [id])
+
+  @@id([postId, assetId])
+  @@map("post_assets")
+}
+
+model Meta {
+  id        Int       @id @default(autoincrement())
+  key       String    @db.VarChar(50)
+  value     String
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
 }
