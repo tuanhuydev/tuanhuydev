@@ -1,6 +1,6 @@
 'use client';
 
-import PostForm from '@lib/PostModule/components/PostForm';
+import PostForm from '@lib/PostModule/PostForm';
 import { useGetPostQuery } from '@lib/store/slices/apiSlice';
 import { Skeleton } from 'antd';
 import React, { Fragment } from 'react';
