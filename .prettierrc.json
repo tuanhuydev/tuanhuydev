@@ -4,7 +4,7 @@
 	"singleQuote": true,
 	"bracketSameLine": true,
 	"plugins": ["prettier-plugin-tailwindcss"],
-	"importOrder": ["^@shared/(.*)$", "^@frontend/(.*)$", "^@backend/(.*)$", "^[./]"],
+	"importOrder": ["^@shared/(.*)$", "^@backend/(.*)$", "^[./]"],
 	"importOrderSeparation": true,
 	"importOrderSortSpecifiers": true
 }

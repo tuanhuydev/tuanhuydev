@@ -1,10 +1,9 @@
 'use client';
 
+import PostForm from '@lib/PostModule/components/PostForm';
+import { useGetPostQuery } from '@lib/store/slices/apiSlice';
 import { Skeleton } from 'antd';
 import React, { Fragment } from 'react';
-
-import PostForm from '@frontend/Posts/PostForm';
-import { useGetPostQuery } from '@frontend/store/slices/apiSlice';
 
 export default function Page({ params }: any) {
 	const { data: post, isLoading } = useGetPostQuery(params.id as string);

@@ -1,16 +1,19 @@
+import GoogleAdsense from '@lib/components/google/GoogleAdsense';
+import GoogleAnalytic from '@lib/components/google/GoogleAnalytic';
+import GoogleTag from '@lib/components/google/GoogleTag';
+import WithProvider from '@lib/components/hocs/WithProvider';
+import '@lib/styles/globals.scss';
 import { PropsWithChildren } from 'react';
 
 import i18nextConfig from '@shared/configs/next-i18next.config';
 
-import GoogleAdsense from '@frontend/components/google/GoogleAdsense';
-import GoogleAnalytic from '@frontend/components/google/GoogleAnalytic';
-import GoogleTag from '@frontend/components/google/GoogleTag';
-import '@frontend/styles/globals.scss';
+import { sourceCodeFont } from './font';
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	const currentLocale = i18nextConfig.i18n.defaultLocale;
+
 	return (
-		<html lang={currentLocale} suppressHydrationWarning={true}>
+		<html lang={currentLocale} suppressHydrationWarning={true} className={sourceCodeFont.className}>
 			<head>
 				{/* General */}
 				<meta property="og:title" content="tuanhuydev - Personal Website" />
@@ -41,7 +44,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
 				<GoogleTag />
 				<GoogleAnalytic />
 			</head>
-			<body>{children}</body>
+			<body>
+				<WithProvider>{children}</WithProvider>
+			</body>
 		</html>
 	);
 }

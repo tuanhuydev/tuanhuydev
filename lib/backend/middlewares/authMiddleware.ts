@@ -11,7 +11,6 @@ import Network from '@backend/utils/Network';
 
 const withAuthMiddleware = (handler: Function) => async (req: NextRequest, params: any) => {
 	const network = Network(req);
-
 	try {
 		const authorization: string | null = headers().get('authorization');
 		if (authorization) {
@@ -22,8 +21,10 @@ const withAuthMiddleware = (handler: Function) => async (req: NextRequest, param
 			if (!secret || typeof secret !== 'object' || (secret?.exp as number) < currentTimestamp || !secret.userId) {
 				throw new UnauthorizedError('Token expired');
 			}
-
-			return await handler(req, params);
+			return await handler(req, {
+				...params,
+				userId: secret.userId,
+			});
 		}
 	} catch (error) {
 		const isBaseError = error instanceof BaseError;

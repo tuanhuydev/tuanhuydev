@@ -12,7 +12,7 @@ module.exports = {
 				60: '15rem',
 			},
 			fontFamily: {
-				sans: ['Source Sans Pro, sans-serif'],
+				sans: ['var(--font-source-code)'],
 				mono: ['Ubuntu Mono, monospace'],
 			},
 			minHeight: {

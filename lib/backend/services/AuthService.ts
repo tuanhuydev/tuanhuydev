@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import prismaClient from '@prismaClient/prismaClient';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
@@ -12,8 +13,6 @@ import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
 import { EMPTY_STRING, NODE_ENV } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
-
-import prismaClient from '@backend/database/prismaClient';
 
 class AuthService {
 	static #instance: AuthService;

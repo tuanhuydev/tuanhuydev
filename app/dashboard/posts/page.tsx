@@ -9,14 +9,13 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import PostCard from '@lib/PostModule/components/PostCard';
+import Loader from '@lib/components/commons/Loader';
+import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
 import { Button, Empty, Input, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
 import { Fragment, memo, useCallback, useMemo, useState } from 'react';
-
-import PostCard from '@frontend/Posts/PostCard';
-import Loader from '@frontend/components/commons/Loader';
-import { useDeletePostMutation, useGetPostsQuery } from '@frontend/store/slices/apiSlice';
 
 type ViewMode = 'card' | 'list';
 
