@@ -9,7 +9,7 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
-import PostCard from '@lib/PostModule/components/PostCard';
+import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
