@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
 
+type ControllerMethod = (req: NextRequest, params?: any) => Promise<any>;
 export interface BaseController {
-	store: (req: NextRequest) => Promise<any>;
-	getAll: (req: NextRequest, params?: any) => Promise<any>;
-	update: (req: NextRequest, params?: any) => Promise<any>;
-	delete: (req: NextRequest, params?: any) => Promise<any>;
+	store: ControllerMethod;
+	getAll: ControllerMethod;
+	update: ControllerMethod;
+	delete: ControllerMethod;
 }
