@@ -1,8 +1,7 @@
 .container {
-	$containerExtendedWidth: 240px;
+	$containerExtendedWidth: 196px;
 	$containerWidth: 48px;
 	width: $containerWidth;
-	transition: all 0.25s;
 
 	&.open {
 		width: $containerExtendedWidth;

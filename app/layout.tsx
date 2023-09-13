@@ -16,17 +16,20 @@ export default function RootLayout({ children }: PropsWithChildren) {
 		<html lang={currentLocale} suppressHydrationWarning={true} className={sourceCodeFont.className}>
 			<head>
 				{/* General */}
-				<meta property="og:title" content="tuanhuydev - Personal Website" />
+				<meta name="title" property="og:title" content="tuanhuydev - Personal Website" />
 				<meta
+					name="description"
 					property="og:description"
 					content="🚀 Embark on a journey through the world of web development and technology. Dive into my personal website to discover a collection of innovative projects, insightful blog posts, and the latest trends in full-stack development, React.js, Next.js, Node.js, and AWS. Join me in exploring the limitless possibilities of the digital realm. Let's turn ideas into interactive experiences together! 💡🌐"
 				/>
+
+				<meta name="image" property="og:image" content="/assets/images/preview.png" />
+				<meta name="url" property="og:url" content="https://tuanhuy.dev" />
+				<meta name="type" property="og:type" content="website" />
+				<meta name="site_name" property="og:site_name" content="tuanhuydev" />
+
 				<meta name="keywords" content="#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS" />
 				<meta name="author" content="Huy Nguyen Tuan"></meta>
-				<meta property="og:image" content="/assets/images/preview.png" />
-				<meta property="og:url" content="https://tuanhuy.dev" />
-				<meta property="og:type" content="website" />
-				<meta property="og:site_name" content="tuanhuydev" />
 				<meta name="robots" content="all" />
 				<meta name="google" content="notranslate" />
 				{/* Safari Customize */}
