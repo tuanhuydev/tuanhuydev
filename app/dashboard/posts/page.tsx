@@ -4,16 +4,18 @@ import {
 	AppstoreOutlined,
 	BarsOutlined,
 	DeleteOutlined,
-	EditOutlined,
+	DownOutlined,
+	DownloadOutlined,
 	ExclamationCircleFilled,
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
+import { BASE_URL } from '@lib/shared/configs/constants';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { Button, Empty, Input, Modal } from 'antd';
+import { Button, Dropdown, Empty, Input, MenuProps, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
 import { Fragment, memo, useCallback, useMemo, useState } from 'react';
 
@@ -37,7 +39,7 @@ export default memo(function Page() {
 
 	const activeViewModeButtonType = (expectingMode: string) => (viewMode === expectingMode ? 'primary' : 'default');
 
-	const navigatePostCreate = () => router.push('/dashboard/posts/create');
+	const navigatePostCreate = useCallback(() => router.push('/dashboard/posts/create'), [router]);
 
 	const navigatePostEdit = useCallback((id: number) => router.push(`/dashboard/posts/${id}`), [router]);
 
@@ -60,12 +62,14 @@ export default memo(function Page() {
 		[deletePost]
 	);
 
-	const openPostInNewTab = (postSlug: string) => (event: { stopPropagation: () => void }) => {
-		event.stopPropagation();
-		const postUrl = `/posts/${postSlug}`;
-		const newTab = window.open(postUrl, '_blank');
-		newTab!.focus();
-	};
+	const openPostInNewTab = useCallback(
+		(postSlug: string) => (event: { stopPropagation: () => void }) => {
+			event.stopPropagation();
+			const newTab = window.open(`/posts/${postSlug}`, '_blank');
+			newTab!.focus();
+		},
+		[]
+	);
 
 	const makePostCardActions = useCallback(
 		({ id, slug, publishedAt }: Post) => {
@@ -75,8 +79,32 @@ export default memo(function Page() {
 			}
 			return actions;
 		},
-		[triggerDeletePost]
+		[openPostInNewTab, triggerDeletePost]
 	);
+	const exportPostsToJson = useCallback(async () => {
+		// Fetch posts
+		let allPosts = [];
+		const response = await fetch(`${BASE_URL}/api/posts`, { cache: 'no-cache' });
+		if (response.ok) {
+			const { data = [] } = await response.json();
+			allPosts = data;
+		}
+		// Create blob from posts
+		const postBlob = new Blob([JSON.stringify(allPosts)], { type: 'application/json' });
+		const url = window.URL.createObjectURL(postBlob);
+
+		// Make hidden download element
+		const downloadElement = document.createElement('a');
+		downloadElement.style.display = 'none';
+		downloadElement.href = url;
+		downloadElement.download = 'posts.json';
+		document.body.appendChild(downloadElement);
+		downloadElement.click();
+
+		// Clean up
+		window.URL.revokeObjectURL(url);
+		document.body.removeChild(downloadElement);
+	}, []);
 
 	const RenderPosts: JSX.Element = useMemo(() => {
 		const isCard = viewMode === 'card';
@@ -106,34 +134,44 @@ export default memo(function Page() {
 		);
 	}, [makePostCardActions, navigatePostEdit, posts, viewMode]);
 
+	const menuItems: MenuProps['items'] = [
+		{
+			key: '1',
+			label: 'Export JSON',
+			icon: <DownloadOutlined />,
+			onClick: exportPostsToJson,
+		},
+	];
+
 	return (
 		<Fragment>
 			<div className="flex items-center mb-12" data-testid="dashboard-posts-page-testid">
 				<div className="button-group flex mr-2">
 					<Button
-						size="large"
+						size="middle"
 						type={activeViewModeButtonType('card')}
 						onClick={toggleViewMode('card')}
-						className={`${activeViewModeStyle('card')} mr-1`}
+						className={`${activeViewModeStyle('card')} rounded-sm mr-1`}
 						icon={<AppstoreOutlined />}
 					/>
 					<Button
 						onClick={toggleViewMode('list')}
 						type={activeViewModeButtonType('list')}
-						className={`${activeViewModeStyle('list')} mr-1`}
-						size="large"
+						className={`${activeViewModeStyle('list')} rounded-sm mr-1`}
+						size="middle"
 						icon={<BarsOutlined />}
 					/>
 				</div>
-				<Input size="large" placeholder="Find your post" className="grow mr-2" prefix={<SearchOutlined />} />
-				<Button
-					onClick={navigatePostCreate}
+				<Input size="large" placeholder="Find your post" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
+				<Dropdown.Button
 					size="large"
 					type="primary"
-					className="bg-primary text-slate-50"
-					icon={<EditOutlined />}>
-					Write new
-				</Button>
+					onClick={navigatePostCreate}
+					className="bg-primary text-slate-50 w-auto rounded-sm"
+					icon={<DownOutlined />}
+					menu={{ items: menuItems }}>
+					Write New
+				</Dropdown.Button>
 			</div>
 			<div className="grow">{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}</div>
 		</Fragment>
