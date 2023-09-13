@@ -87,7 +87,7 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 							</div>
 						}
 					/>
-					<div className="grow bg-white overflow-auto">
+					<div className="grow bg-white overflow-auto drop-shadow-lg">
 						<div className="p-4 h-full overflow-auto">{children}</div>
 					</div>
 				</div>

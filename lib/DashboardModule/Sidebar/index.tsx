@@ -7,6 +7,7 @@ import {
 	ProjectOutlined,
 	RightCircleOutlined,
 	SettingOutlined,
+	UserOutlined,
 } from '@ant-design/icons';
 import logoSrc from '@lib/assets/images/logo.svg';
 import { Button } from 'antd';
@@ -36,6 +37,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 			{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
 			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
 			{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
+			{ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' },
 			{ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' },
 		];
 
@@ -56,10 +58,10 @@ const Sidebar = ({ open, onToggle }: any) => {
 
 	return (
 		<div className="relative">
-			<div className="absolute -right-4 top-1/2 z-20">
+			<div className="absolute -right-4 top-1/2 z-20 drop-shadow-md">
 				<Button
 					shape="circle"
-					className="bg-white text-slate-400"
+					className="bg-white text-slate-400 flex items-center justify-center"
 					type="text"
 					onClick={toggleSidebar}
 					icon={toggleIcon}
@@ -69,7 +71,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 				<Image src={logoSrc} width={32} height={32} alt="page logo" />
 			</div>
 			<ul
-				className={`${styles.container} ${linkContainerStyles} ease-in bg-white h-full border-r border-slate-100 relative overflow-x-hidden p-1`}>
+				className={`${styles.container} ${linkContainerStyles} ease-in duration-150 bg-white h-full border-r border-slate-100 relative overflow-x-hidden p-1`}>
 				{renderRoutes}
 			</ul>
 		</div>
