@@ -1,5 +1,8 @@
-function Page() {
-	return <h1>Setting</h1>;
-}
+'use client';
 
-export default Page;
+import DynamicForm from '@lib/components/DynamicForm/DynamicForm';
+import React from 'react';
+
+export default function Page() {
+	return <DynamicForm />;
+}

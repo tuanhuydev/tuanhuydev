@@ -20,6 +20,14 @@ import { EMPTY_STRING } from '@shared/configs/constants';
 
 import styles from './styles.module.scss';
 
+const routes = [
+	{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
+	{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
+	{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
+	{ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' },
+	{ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' },
+];
+
 const Sidebar = ({ open, onToggle }: any) => {
 	// Hooks
 	const pathName = usePathname();
@@ -27,20 +35,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 
 	const toggleSidebar = useCallback(() => onToggle(!open), [onToggle, open]);
 
-	const toggleIcon = useMemo(() => {
-		const iconStyle = { fontSize: '1.125rem' };
-		return open ? <LeftCircleOutlined style={iconStyle} /> : <RightCircleOutlined style={iconStyle} />;
-	}, [open]);
-
 	const renderRoutes = useMemo(() => {
-		const routes = [
-			{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
-			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
-			{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
-			{ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' },
-			{ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' },
-		];
-
 		return routes.map(({ label, icon, path }) => {
 			const activeClass = pathName && (pathName as string).startsWith(path) ? styles.active : EMPTY_STRING;
 			return (
@@ -64,7 +59,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 					className="bg-white text-slate-400 flex items-center justify-center"
 					type="text"
 					onClick={toggleSidebar}
-					icon={toggleIcon}
+					icon={open ? <LeftCircleOutlined className="text-xl" /> : <RightCircleOutlined className="text-xl" />}
 				/>
 			</div>
 			<div className="h-14 bg-white truncate flex items-center justify-center">

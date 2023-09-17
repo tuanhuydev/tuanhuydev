@@ -19,6 +19,7 @@
 		"paths": {
 			"@app/*": ["app/*"],
 			"@lib/*": ["lib/*"],
+			"@modules/*": ["modules/*"],
 			"@prismaClient/*": ["./prisma/*"],
 			"@backend/*": ["lib/backend/*"],
 			"@shared/*": ["lib/shared/*"],
