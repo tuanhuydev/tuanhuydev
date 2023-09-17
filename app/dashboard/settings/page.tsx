@@ -1,13 +1,13 @@
 'use client';
 
+import React from 'react';
+import DynamicForm from '@lib/components/DynamicForm/DynamicForm';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
 
-function Page() {
+export default function Page() {
 	return (
 		<WithAnimation>
-			<h1>Setting</h1>
+			<DynamicForm />
 		</WithAnimation>
 	);
 }
-
-export default Page;

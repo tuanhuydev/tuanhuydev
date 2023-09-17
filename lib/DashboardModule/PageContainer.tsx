@@ -59,7 +59,7 @@ export default function PageContainer({ title, children }: PageContainerProps) {
 				<Sidebar open={sidebarOpen} onToggle={toggleSidebar} />
 				<div className="grow flex flex-col">
 					<Navbar
-						startComponent={<h1 className="mb-0 text-2xl font-bold capitalize">{title}</h1>}
+						startComponent={<h1 className="mb-0 text-3xl font-bold capitalize">{title}</h1>}
 						endComponent={
 							<div className="flex">
 								<Popover
