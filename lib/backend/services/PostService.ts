@@ -111,6 +111,7 @@ class PostService {
 			throw new BaseError((error as Error).message);
 		}
 	}
+
 	async deletePost(id: number) {
 		try {
 			if (!id) throw new BaseError();
