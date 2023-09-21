@@ -71,6 +71,7 @@
     "redux-saga": "^1.2.3",
     "sass": "^1.62.1",
     "sharp": "^0.31.3",
+    "uuid": "^9.0.1",
     "yup": "^1.2.0"
   },
   "devDependencies": {
@@ -90,6 +91,7 @@
     "@types/react": "^18.2.13",
     "@types/react-dom": "18.0.6",
     "@types/react-draft-wysiwyg": "^1.13.4",
+    "@types/uuid": "^9.0.4",
     "autoprefixer": "^10.4.13",
     "commitlint": "^17.4.4",
     "conventional-changelog-conventionalcommits": "^5.0.0",
