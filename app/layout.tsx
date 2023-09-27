@@ -3,6 +3,8 @@ import GoogleAnalytic from '@lib/components/google/GoogleAnalytic';
 import GoogleTag from '@lib/components/google/GoogleTag';
 import WithProvider from '@lib/components/hocs/WithProvider';
 import '@lib/styles/globals.scss';
+import { ConfigProvider } from 'antd';
+import theme from 'lib/configs/theme';
 import { PropsWithChildren } from 'react';
 
 import i18nextConfig from '@shared/configs/next-i18next.config';

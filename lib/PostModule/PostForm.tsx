@@ -64,17 +64,17 @@ export default function PostForm({ post }: any) {
 			try {
 				const { data }: any = isEditMode ? await updatePost({ id: post.id, body }) : await createPost(body);
 				if (!data?.success) throw new Error('Unable to save');
-				context.toastAPI?.success({ message: 'Save successfully' });
+				context.notify?.success({ message: 'Save successfully' });
 				navigateBack();
 			} catch (error) {
-				context.toastAPI?.error({ message: (error as BaseError).message });
+				context.notify?.error({ message: (error as BaseError).message });
 			} finally {
 				if (!isEditMode) form.resetFields();
 				setContent(EMPTY_STRING);
 				setSubmitting(false);
 			}
 		},
-		[attachPublishDate, context.toastAPI, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
+		[attachPublishDate, context.notify, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
 	);
 
 	const setSlugFieldValue = useCallback(
@@ -142,7 +142,7 @@ export default function PostForm({ post }: any) {
 		setFileList(fileList);
 		const { response, error } = file;
 		if (error) {
-			context.toastAPI.error({ message: (error as BaseError).message });
+			context.notify.error({ message: (error as BaseError).message });
 		}
 		if (response) {
 			const { url } = response.data;
