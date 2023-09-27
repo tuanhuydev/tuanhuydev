@@ -8,14 +8,7 @@
 	}
 }
 
-.navlink {
-	color: theme('colors.slate.600');
-	cursor: pointer;
-	padding: theme('spacing.2') theme('spacing.3');
-
-	&:hover,
-	&.active {
-		background-color: theme('colors.primary');
-		color: theme('colors.white');
-	}
+.active {
+	background-color: theme('colors.primary') !important;
+	color: theme('colors.white') !important;
 }
