@@ -14,18 +14,18 @@ function reducer(state: ObjectType, item: ObjectType) {
 export const AppContext = createContext(EMPTY_OBJECT);
 
 export default function WithProvider(props: PropsWithChildren) {
-	const [toastAPI, toastContext] = notification.useNotification();
+	const [notify, notifyContext] = notification.useNotification();
 
 	const [context, setContext] = useReducer(reducer, {
 		theme: 'light',
 		playSound: true,
-		toastAPI,
+		notify,
 	});
 
 	return (
 		<AppContext.Provider value={{ context, setContext }}>
 			{props.children}
-			{toastContext}
+			{notifyContext}
 		</AppContext.Provider>
 	);
 }

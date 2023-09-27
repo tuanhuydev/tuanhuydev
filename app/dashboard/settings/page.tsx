@@ -1,5 +1,13 @@
+'use client';
+
+import WithAnimation from '@lib/components/hocs/WithAnimation';
+
 function Page() {
-	return <h1>Setting</h1>;
+	return (
+		<WithAnimation>
+			<h1>Setting</h1>
+		</WithAnimation>
+	);
 }
 
 export default Page;

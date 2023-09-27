@@ -1,6 +1,7 @@
 'use client';
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
 import { AppContext } from 'lib/components/hocs/WithProvider';
@@ -49,7 +50,7 @@ export default memo(function SignIn() {
 				await router.push('/dashboard');
 			}
 		} catch (error) {
-			context.toastAPI.error({ message: (error as BaseError).message });
+			context.notify.error({ message: (error as BaseError).message });
 			clearForm();
 		} finally {
 			setSubmitState(false);
@@ -83,53 +84,55 @@ export default memo(function SignIn() {
 	}, [isAuthenticatedByStorage, isAuthenticatedByStore, router]);
 
 	return (
-		<div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
-			<Form
-				form={form}
-				initialValues={INITIAL_SIGN_IN_FORM}
-				onFinish={submit}
-				className="form h-fit w-96 drop-shadow-md bg-white p-3">
-				<h1 className="font-sans text-2xl font-bold mb-4">Sign In</h1>
-				<Form.Item name="email" className="mb-4">
-					<Input
-						size="large"
-						placeholder="Email"
-						disabled={submiting}
-						prefix={<UserOutlined />}
-						type="email"
-						required
-					/>
-				</Form.Item>
-				<Form.Item name="password" className="mb-5">
-					<Input
-						size="large"
-						prefix={<LockOutlined />}
-						disabled={submiting}
-						placeholder="Password"
-						type="password"
-						required
-					/>
-				</Form.Item>
+		<WithAnimation>
+			<div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
+				<Form
+					form={form}
+					initialValues={INITIAL_SIGN_IN_FORM}
+					onFinish={submit}
+					className="form h-fit w-96 drop-shadow-md bg-white p-3">
+					<h1 className="font-sans text-2xl font-bold mb-4">Sign In</h1>
+					<Form.Item name="email" className="mb-4">
+						<Input
+							size="large"
+							placeholder="Email"
+							disabled={submiting}
+							prefix={<UserOutlined />}
+							type="email"
+							required
+						/>
+					</Form.Item>
+					<Form.Item name="password" className="mb-5">
+						<Input
+							size="large"
+							prefix={<LockOutlined />}
+							disabled={submiting}
+							placeholder="Password"
+							type="password"
+							required
+						/>
+					</Form.Item>
 
-				<Button
-					type="primary"
-					size="large"
-					className="w-full bg-primary capitalize border-transparent shadow-none"
-					loading={submiting}
-					disabled={submiting}
-					htmlType="submit">
-					submit
-				</Button>
-				<Divider className="my-3" />
-				<Button
-					size="large"
-					disabled={submiting}
-					className="w-full capitalize mr-3"
-					onClick={clearForm}
-					htmlType="button">
-					clear
-				</Button>
-			</Form>
-		</div>
+					<Button
+						type="primary"
+						size="large"
+						className="w-full bg-primary capitalize border-transparent shadow-none"
+						loading={submiting}
+						disabled={submiting}
+						htmlType="submit">
+						submit
+					</Button>
+					<Divider className="my-3" />
+					<Button
+						size="large"
+						disabled={submiting}
+						className="w-full capitalize mr-3"
+						onClick={clearForm}
+						htmlType="button">
+						clear
+					</Button>
+				</Form>
+			</div>
+		</WithAnimation>
 	);
 });

@@ -21,9 +21,8 @@ function HomeLayout({ children }: PropsWithChildren) {
 
 		// Sync sound
 		const { hasStorage, value: playSound } = getSoundValue();
-		if (!hasStorage) {
-			setLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
-		}
+		if (!hasStorage) setLocalStorage(STORAGE_PLAYSOUND_KEY, playSound);
+
 		setContext({ playSound });
 		reflectSound(playSound);
 

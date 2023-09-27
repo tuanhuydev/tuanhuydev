@@ -12,10 +12,6 @@ export interface PostCardProps {
 	CardProps?: Partial<CardProps>;
 }
 
-const cardBodyStyle = {
-	padding: '1rem',
-};
-
 export default function PostCard({ post, onClick, CardProps }: PostCardProps) {
 	const { title, thumbnail = '', publishedAt, createdAt } = post;
 
@@ -40,7 +36,12 @@ export default function PostCard({ post, onClick, CardProps }: PostCardProps) {
 	}, [publishedAt]);
 
 	return (
-		<Card {...CardProps} hoverable bodyStyle={cardBodyStyle} onClick={handleCardClick}>
+		<Card
+			{...CardProps}
+			hoverable
+			rootClassName="max-w-[22rem] max-h-[24rem]"
+			onClick={handleCardClick}
+			loading={!post}>
 			<div className="relative aspect-[3/2] rounded-sm mb-3">
 				<ImageWithFallback alt={title} className="rounded-sm object-cover" fill src={thumbnail} />
 			</div>

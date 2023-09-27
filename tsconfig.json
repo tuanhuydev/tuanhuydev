@@ -30,13 +30,6 @@
 			}
 		]
 	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"lib/components/hocs/WithAntd.tsx",
-		"lib/components/hocs/WithAuth.tsx"
-	],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/components/hocs/WithAuth.tsx"],
 	"exclude": ["node_modules"]
 }
