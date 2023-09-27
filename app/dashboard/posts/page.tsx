@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
+import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { BASE_URL } from '@lib/shared/configs/constants';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
@@ -144,7 +145,7 @@ export default memo(function Page() {
 	];
 
 	return (
-		<Fragment>
+		<WithAnimation>
 			<div className="flex items-center mb-12" data-testid="dashboard-posts-page-testid">
 				<div className="button-group flex mr-2">
 					<Button
@@ -167,13 +168,13 @@ export default memo(function Page() {
 					size="large"
 					type="primary"
 					onClick={navigatePostCreate}
-					className="bg-primary text-slate-50 w-auto rounded-sm"
+					className="w-auto rounded-sm"
 					icon={<DownOutlined />}
 					menu={{ items: menuItems }}>
 					Write New
 				</Dropdown.Button>
 			</div>
 			<div className="grow">{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}</div>
-		</Fragment>
+		</WithAnimation>
 	);
 });
