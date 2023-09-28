@@ -1,3 +1,4 @@
+import { Asset } from '@prisma/client';
 import prismaClient from '@prismaClient/prismaClient';
 
 import BaseError from '@shared/commons/errors/BaseError';
@@ -29,6 +30,14 @@ class PostService {
 		}
 	}
 
+	async saveAssets(postId: number, assets: Partial<Asset>[]) {
+		const postAssets = assets.map((assetId: any) => ({ postId, assetId }));
+		return await prismaClient.postAsset.createMany({
+			data: postAssets,
+			skipDuplicates: true,
+		});
+	}
+
 	async getPosts(filter?: PostFilter) {
 		let defaultWhere: ObjectType = { deletedAt: null };
 		if (!filter) return await prismaClient.post.findMany({ where: defaultWhere });
@@ -52,11 +61,10 @@ class PostService {
 		}
 
 		let query: any = {
+			include: { PostAsset: true },
 			where: {
 				deletedAt: null,
-				title: {
-					contains: search,
-				},
+				title: { contains: search },
 			},
 			take: pageSize,
 			skip: (page - 1) * pageSize,
@@ -81,7 +89,7 @@ class PostService {
 
 	async getPostById(id: number) {
 		try {
-			return await prismaClient.post.findFirst({ where: { id, deletedAt: null } });
+			return await prismaClient.post.findFirst({ include: { PostAsset: true }, where: { id, deletedAt: null } });
 		} catch (error) {
 			throw new BaseError((error as Error).message);
 		}
@@ -103,9 +111,10 @@ class PostService {
 		}
 	}
 
-	async updatePost(id: number, data: Object) {
+	async updatePost(id: number, { assets, ...data }: ObjectType) {
 		try {
 			if (!id || !data) throw new BaseError();
+			this.saveAssets(id, assets);
 			return await prismaClient.post.update({ where: { id }, data });
 		} catch (error) {
 			throw new BaseError((error as Error).message);

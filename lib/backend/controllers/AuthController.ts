@@ -32,9 +32,7 @@ class AuthController {
 			const { email, password } = await this.validateSignIn(body);
 			const auth = await AuthService.signIn(email, password);
 			if (!auth) throw new UnauthorizedError('Authenticate Failed');
-
-			network.setCookie('jwt', auth.accessToken);
-			return network.successResponse({ token: auth.refreshToken });
+			return network.successResponse(auth);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
 		}

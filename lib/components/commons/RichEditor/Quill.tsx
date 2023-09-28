@@ -2,7 +2,6 @@
 
 import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
-import { cookies } from 'next/headers';
 import React, { ChangeEvent, memo, useCallback, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 
@@ -34,20 +33,26 @@ const modules = {
 	],
 };
 
-const Quill = ({ content, setContent, disabled, QuillProps }: RichEditorProps) => {
+const Quill = ({ content, setContent, disabled, QuillProps, onFileUpload }: RichEditorProps) => {
 	const quillRef = useRef(null);
 
-	const uploadFileToS3 = useCallback(async (file: File): Promise<string> => {
-		let formData = new FormData();
-		formData.append('file', file);
-		const { data: response }: AxiosResponse = await axios.post('/api/upload/image', formData, {
-			headers: {
-				Authorization: `Bearer ${Cookies.get('jwt')}`,
-			},
-		});
-		const { data, success } = response;
-		return success && data.url ? data.url : EMPTY_STRING;
-	}, []);
+	const uploadFileToS3 = useCallback(
+		async (file: File): Promise<string> => {
+			let formData = new FormData();
+			formData.append('file', file);
+			const { data: response }: AxiosResponse = await axios.post('/api/upload/image', formData, {
+				headers: {
+					Authorization: `Bearer ${Cookies.get('jwt')}`,
+				},
+			});
+			const { data: asset, success } = response;
+			if (!success) return EMPTY_STRING;
+
+			if (onFileUpload) onFileUpload(asset);
+			return asset.url;
+		},
+		[onFileUpload]
+	);
 
 	const selectImage = useCallback(
 		async (event: ChangeEvent<HTMLInputElement>) => {

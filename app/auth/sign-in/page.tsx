@@ -4,6 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import { AppContext } from 'lib/components/hocs/WithProvider';
 import apiClient from 'lib/configs/apiClient';
 import { RootState } from 'lib/configs/types';
@@ -38,7 +39,8 @@ export default memo(function SignIn() {
 
 	const syncAuth = (credential: ObjectType) => {
 		if (!credential) throw new UnauthorizedError();
-		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.token);
+		Cookies.set('jwt', credential.accessToken);
+		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
 	};
 
 	const submit = async (formData: { email: string; password: string }) => {
@@ -47,7 +49,7 @@ export default memo(function SignIn() {
 			const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
 			if (res) {
 				syncAuth(res.data);
-				await router.push('/dashboard');
+				router.push('/dashboard');
 			}
 		} catch (error) {
 			context.notify.error({ message: (error as BaseError).message });
