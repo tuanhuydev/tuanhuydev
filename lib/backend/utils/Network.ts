@@ -15,15 +15,27 @@ class Network {
 		this.#req = req;
 	}
 
-	setCookie(key: string, value: any) {
-		this.cookie = `${key}=${value}`;
-	}
-
 	static makeInstance(req: NextRequest) {
 		if (Network.#instance) {
 			return Network.#instance;
 		}
 		return new Network(req);
+	}
+
+	extractSearchParams(searchParams: URLSearchParams): ObjectType {
+		const params: ObjectType = {};
+		const numbericKeys = ['page', 'pageSize'];
+		const booleanKeys = ['active'];
+
+		for (let [key, values] of searchParams.entries()) {
+			if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
+			else if (booleanKeys.includes(values)) params[key] = Boolean(values === 'true');
+		}
+		return params;
+	}
+
+	setCookie(key: string, value: any) {
+		this.cookie = `${key}=${value}`;
 	}
 
 	successResponse(data: any) {
