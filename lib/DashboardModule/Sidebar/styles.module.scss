@@ -1,0 +1,14 @@
+.container {
+	$containerExtendedWidth: 196px;
+	$containerWidth: 48px;
+	width: $containerWidth;
+
+	&.open {
+		width: $containerExtendedWidth;
+	}
+}
+
+.active {
+	background-color: theme('colors.primary') !important;
+	color: theme('colors.white') !important;
+}

@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	darkMode: 'class',
-	content: ['./app/**/*.{js,ts,jsx,tsx}', './pages/**/*.{js,ts,jsx,tsx}', './frontend/**/*.{js,ts,jsx,tsx}'],
+	corePlugins: {
+		preflight: false,
+	},
+	content: ['./app/**/*.{js,ts,jsx,tsx}', './lib/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		extend: {
 			height: {
@@ -11,8 +14,11 @@ module.exports = {
 				'screen-d': '100dvh',
 				60: '15rem',
 			},
+			colors: {
+				primary: '#172733',
+			},
 			fontFamily: {
-				sans: ['Source Sans Pro, sans-serif'],
+				sans: ['var(--font-source-code)'],
 				mono: ['Ubuntu Mono, monospace'],
 			},
 			minHeight: {
@@ -21,9 +27,6 @@ module.exports = {
 			maxHeight: {
 				48: '12rem',
 			},
-			colors: {
-				primary: '#172733',
-			},
 			aspectRatio: {
 				'3/4': '3 / 4',
 				'4/3': '4 / 3',
@@ -31,6 +34,10 @@ module.exports = {
 			},
 			gridTemplateRows: {
 				post: '192px minmax(min-content, 1fr)',
+				homePosts: 'repeat(6, 100px)',
+			},
+			gridTemplateColumns: {
+				homePosts: 'repeat(6, minmax(50px, 1fr))',
 			},
 		},
 	},
