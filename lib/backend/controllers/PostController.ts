@@ -10,7 +10,7 @@ import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
 import Network from '@backend/utils/Network';
 
-class PostController implements BaseController {
+export class PostController implements BaseController {
 	#schema: ObjectSchema<any>;
 
 	constructor() {
@@ -43,13 +43,15 @@ class PostController implements BaseController {
 	async store(request: NextRequest, params: any) {
 		const network = Network(request);
 		try {
-			const body = await request.json();
+			const { assets = [], ...body } = await request.json();
 			const validatedFields = await this.validateStoreRequest(body);
+
 			validatedFields.slug = makeSlug(validatedFields.title);
-			if (params) {
-				validatedFields.authorId = params.userId;
-			}
+			if (params) validatedFields.authorId = params.userId;
+
 			const newPost = await postService.createPost(validatedFields);
+			await postService.saveAssets(newPost.id, assets);
+
 			return network.successResponse(newPost);
 		} catch (error) {
 			console.error(error);

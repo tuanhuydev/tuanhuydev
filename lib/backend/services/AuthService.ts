@@ -2,6 +2,7 @@ import { User } from '@prisma/client';
 import prismaClient from '@prismaClient/prismaClient';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
 	ACCESS_TOKEN_LIFE,
@@ -11,7 +12,7 @@ import {
 } from '@shared/commons/constants/encryption';
 import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
-import { EMPTY_STRING, NODE_ENV } from '@shared/configs/constants';
+import { EMPTY_STRING, NODE_ENV, SALT_ROUNDS } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 
 class AuthService {
@@ -23,6 +24,19 @@ class AuthService {
 			return AuthService.#instance;
 		}
 		return new AuthService();
+	}
+
+	issueID() {
+		return uuidv4();
+	}
+
+	async hashPassword(plainPassword: string) {
+		return new Promise((resolve, reject) => {
+			bcrypt.hash(plainPassword, SALT_ROUNDS, function (error, hash) {
+				if (error) reject(new BaseError((error as Error).message));
+				resolve(hash);
+			});
+		});
 	}
 
 	async validateSignIn(email: string, password: string) {
