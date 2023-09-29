@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/tuanhuydev/tuanhuydev/compare/v0.2.0...v1.0.0) (2023-09-29)
+
+### Features
+
+- **be:** meta configs database design ([49c54fd](https://github.com/tuanhuydev/tuanhuydev/commit/49c54fd74d3ef2b653849d371c1976ac7c8fc7fb))
+- **be:** post asset api ([46dab20](https://github.com/tuanhuydev/tuanhuydev/commit/46dab203e33bf31d9f26624d035e93251352e7cc))
+- **be:** project feature database design ([832d451](https://github.com/tuanhuydev/tuanhuydev/commit/832d451cf89b945ddfefc90db5c73e5bc8791a5f))
+- **be:** users apis ([3f9c1b9](https://github.com/tuanhuydev/tuanhuydev/commit/3f9c1b91e8a1f8c417bf43cc0a8c6bc74206a939))
+- **fe:** client optimistic update ([f63bcf1](https://github.com/tuanhuydev/tuanhuydev/commit/f63bcf199dfbb001a890035fc2923465d694b4ae))
+- **fe:** export posts to json file ([a6471cb](https://github.com/tuanhuydev/tuanhuydev/commit/a6471cb0e8407ef7577659ec74eded6505f41248))
+- **fe:** sync safari background color ([ba18504](https://github.com/tuanhuydev/tuanhuydev/commit/ba1850433995a14c281c2cdb7f1c1ce2dd7f808d))
+
+### Bug Fixes
+
+- **fe:** image unable to load ([f6ca837](https://github.com/tuanhuydev/tuanhuydev/commit/f6ca83706b9056613268132545d5c7db9d5a72c4))
+- **post:** create post should map author id base on request ([0af7070](https://github.com/tuanhuydev/tuanhuydev/commit/0af7070b970e48531aa3090e47bc565c8d340003))
+
 ## [0.2.0](https://github.com/tuanhuydev/tuanhuydev/compare/v0.1.0...v0.2.0) (2023-08-03)
 
 ### Features
