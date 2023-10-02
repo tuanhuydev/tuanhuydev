@@ -1,10 +1,10 @@
 'use client';
 
+import { EMPTY_OBJECT } from '@lib/configs/constants';
 import { notification } from 'antd';
 import React, { PropsWithChildren, useReducer } from 'react';
 import { createContext } from 'react';
 
-import { EMPTY_OBJECT } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 
 function reducer(state: ObjectType, item: ObjectType) {

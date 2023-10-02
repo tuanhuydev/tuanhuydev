@@ -10,13 +10,12 @@ import {
 	UserOutlined,
 } from '@ant-design/icons';
 import logoSrc from '@lib/assets/images/logo.svg';
+import { EMPTY_STRING } from '@lib/configs/constants';
 import { Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { memo, useCallback, useMemo } from 'react';
-
-import { EMPTY_STRING } from '@shared/configs/constants';
 
 import styles from './styles.module.scss';
 

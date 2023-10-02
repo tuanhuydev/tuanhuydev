@@ -13,7 +13,7 @@ import {
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
-import { BASE_URL } from '@lib/shared/configs/constants';
+import { BASE_URL } from '@lib/configs/constants';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
 import { Button, Dropdown, Empty, Input, MenuProps, Modal } from 'antd';
