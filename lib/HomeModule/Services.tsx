@@ -1,34 +1,82 @@
 'use client';
 
 import { CodeOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type DelightProps = {
 	title: string;
 	value: number;
 	delay?: number;
+	gradient?: {
+		from: string;
+		to: string;
+	};
 };
 
-const Delight = ({ title, value: target, delay = 30 }: DelightProps) => {
-	const [value, setValue] = useState(0);
+const Delight = ({ title, value: target, gradient }: DelightProps) => {
+	const [count, setCount] = useState(0);
+	const hasTextBg = !!gradient;
+	const backgroundGradient = hasTextBg
+		? `bg-clip-text text-transparent bg-gradient-to-r ${gradient.from} ${gradient.to}`
+		: '';
+
+	const ref = useRef<any>();
 
 	useEffect(() => {
-		const countInterval = setInterval(() => {
-			if (value < target) setValue(value + 1);
-		}, delay);
-		return () => clearInterval(countInterval);
-	}, [delay, target, value]);
+		const interval = setInterval(() => {
+			setCount((prevCount) => {
+				if (prevCount < target) return prevCount + 1;
 
+				clearInterval(interval);
+				return prevCount;
+			});
+		}, 150);
+
+		return () => clearInterval(interval);
+	}, [target]);
 	return (
 		<div className="text-center text-primary dark:text-slate-50 p-3 flex-1 self-stretch">
-			<h2 className="text-sm md:text-xl mb-3 font-semibold capitalize">&#60;{title}&nbsp;&#47;&#62;</h2>
-			<p className="text-2xl md:text-5xl font-bold">{value}+</p>
+			<h2 className={`text-sm md:text-xl mb-3 font-bold capitalize ${backgroundGradient}`}>
+				&#60;{title}&nbsp;&#47;&#62;
+			</h2>
+			<div
+				className={`text-2xl md:text-5xl font-semibold text-slate-700 dark:text-slate-300 flex gap-2 justify-center `}>
+				<motion.div ref={ref}>{count}</motion.div>+
+			</div>
 		</div>
 	);
 };
 
-export default function Page() {
+const delights = [
+	{
+		title: 'projects',
+		value: 10,
+		gradient: {
+			from: 'from-cyan-500',
+			to: 'to-cyan-900',
+		},
+	},
+	{
+		title: 'companies',
+		value: 3,
+		gradient: {
+			from: 'from-rose-500',
+			to: 'to-rose-900',
+		},
+	},
+	{
+		title: 'experiences',
+		value: 4,
+		gradient: {
+			from: 'from-indigo-500',
+			to: 'to-indigo-900',
+		},
+	},
+];
+
+export default function Services() {
 	return (
 		<section id="service" className="py-10 md:py-24">
 			<h2 className="text-center text-primary dark:text-slate-50 font-bold text-xl md:text-3xl lg:text-4xl mb-3">
@@ -53,9 +101,9 @@ export default function Page() {
 					</Link>
 				</div>
 				<div className="col-start-2 col-span-10 md:col-start-4 md:col-span-6 flex flex-wrap sm:flex-nowrap justify-between">
-					<Delight title="projects" value={10} />
-					<Delight title="companies" value={3} />
-					<Delight title="experiences" value={4} />
+					{delights.map((delight: DelightProps) => (
+						<Delight key={delight.title} {...delight} />
+					))}
 				</div>
 			</div>
 		</section>
