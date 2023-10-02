@@ -38,9 +38,9 @@ const Delight = ({ title, value: target, gradient }: DelightProps) => {
 	}, [target]);
 	return (
 		<div className="text-center text-primary dark:text-slate-50 p-3 flex-1 self-stretch">
-			<h2 className={`text-sm md:text-xl mb-3 font-bold capitalize ${backgroundGradient}`}>
+			<h6 className={`text-sm md:text-xl mb-3 font-bold capitalize ${backgroundGradient}`}>
 				&#60;{title}&nbsp;&#47;&#62;
-			</h2>
+			</h6>
 			<div
 				className={`text-2xl md:text-5xl font-semibold text-slate-700 dark:text-slate-300 flex gap-2 justify-center `}>
 				<motion.div ref={ref}>{count}</motion.div>+
@@ -79,17 +79,17 @@ const delights = [
 export default function Services() {
 	return (
 		<section id="service" className="py-10 md:py-24">
-			<h2 className="text-center text-primary dark:text-slate-50 font-bold text-xl md:text-3xl lg:text-4xl mb-3">
+			<h3 className="text-center text-primary dark:text-slate-50 font-bold text-xl md:text-3xl lg:text-4xl mb-3">
 				&ldquo;Elevating Excellence in Every Project &rdquo;
-			</h2>
-			<h5 className="text-slate-700 dark:text-slate-400 text-center mb-5">
+			</h3>
+			<h4 className="text-slate-700 dark:text-slate-400 text-center mb-5">
 				<span className="break-keep text-xs md:text-sm lg:text-base inline-block">
 					I consistently deliver quality and innovation,&nbsp;
 				</span>
 				<span className="break-keep text-xs md:text-sm lg:text-base inline-block">
 					setting new standards for success.
 				</span>
-			</h5>
+			</h4>
 
 			<div className="grid grid-cols-12 gap-5 p-3 grid-flow-row">
 				<div className="col-start-2 col-span-10 md:col-start-4 md:col-span-6 flex justify-center">

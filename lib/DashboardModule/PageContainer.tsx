@@ -1,6 +1,7 @@
 'use client';
 
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { EMPTY_OBJECT } from '@lib/configs/constants';
 import { Button, Popover } from 'antd';
 import Navbar from 'lib/DashboardModule/Navbar';
 import Sidebar from 'lib/DashboardModule/Sidebar';
@@ -10,8 +11,6 @@ import { metaAction } from 'lib/store/slices/metaSlice';
 import { useRouter } from 'next/navigation';
 import React, { PropsWithChildren, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { EMPTY_OBJECT } from '@shared/configs/constants';
 
 export interface PageContainerProps extends PropsWithChildren {
 	title: string;

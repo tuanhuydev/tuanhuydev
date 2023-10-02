@@ -1,4 +1,4 @@
-import UnauthorizedError from 'lib/shared/commons/errors/UnauthorizedError';
+import UnauthorizedError from '@lib/shared/commons/errors/UnauthorizedError';
 
 export const extractTokenFromRequest = (bearerString: string) => {
 	const bearerPrefixLength = 7;

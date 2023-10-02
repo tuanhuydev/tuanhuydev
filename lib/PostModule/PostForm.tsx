@@ -1,6 +1,7 @@
 'use client';
 
 import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
+import { EMPTY_STRING } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { PostAsset } from '@prisma/client';
 import { Button, Form, Input, Modal, Upload } from 'antd';
@@ -13,7 +14,6 @@ import { useRouter } from 'next/navigation';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
-import { EMPTY_STRING } from '@shared/configs/constants';
 import { isURLValid, transformTextToDashed } from '@shared/utils/helper';
 
 const initialValues = {

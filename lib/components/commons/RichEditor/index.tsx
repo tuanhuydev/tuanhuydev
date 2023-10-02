@@ -1,6 +1,6 @@
 import { ObjectType } from '@lib/shared/interfaces/base';
 import dynamic from 'next/dynamic';
-import React, { memo } from 'react';
+import React from 'react';
 import { ReactQuillProps } from 'react-quill';
 
 const Editor = dynamic(() => import('./Quill'), { ssr: false });
