@@ -1,7 +1,6 @@
 import Avatar from '@public/assets/images/avatar.png';
 import FlagIcon from '@public/assets/images/vietnam_flag.png';
 import Image from 'next/image';
-import Link from 'next/link';
 import React, { memo } from 'react';
 
 const matrixTypoStyles = 'font-medium text-slate-700 dark:text-white text-xs sm:text-base';
@@ -46,7 +45,7 @@ export default memo(function Hero() {
 					<strong>yours</strong>.😀&#128077;
 					<br />
 				</div>
-				<Link href="#service" legacyBehavior>
+				<a href="#service">
 					<h5
 						className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-xs md:text-sm font-semibold transition ease-in`}>
 						My proudly accomplishments
@@ -54,7 +53,7 @@ export default memo(function Hero() {
 							<path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
 						</svg>
 					</h5>
-				</Link>
+				</a>
 			</div>
 			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
 				<ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6">

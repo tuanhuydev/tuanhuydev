@@ -26,7 +26,14 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
 			<div className="z-0 lg:h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-3">
 				{thumbnail && (
 					<div className="w-full h-72 lg:w-full lg:h-full relative mb-2">
-						<Image src={thumbnail} className="object-cover rounded-md w-0" alt={title} fill></Image>
+						<Image
+							src={thumbnail}
+							className="object-cover rounded-md w-full h-full"
+							alt={title}
+							width="0"
+							height="0"
+							sizes="100vw"
+						/>
 					</div>
 				)}
 				<div className="mt-auto">
