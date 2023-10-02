@@ -1,7 +1,6 @@
+import { GOOGLE_TAG, NODE_ENV } from '@lib/configs/constants';
 import Script from 'next/script';
 import React from 'react';
-
-import { GOOGLE_TAG, NODE_ENV } from '@shared/configs/constants';
 
 export default function GoogleAnalytic() {
 	const shouldAttach = NODE_ENV === 'production' && GOOGLE_TAG;

@@ -1,10 +1,9 @@
 'use client';
 
+import i18nextConfig from '@lib/configs/next-i18next.config';
 import store from 'lib/store';
 import { PropsWithChildren } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-
-import i18nextConfig from '@shared/configs/next-i18next.config';
 
 export default function SignInLayout({ children }: PropsWithChildren) {
 	const currentLocale = i18nextConfig.i18n.defaultLocale;

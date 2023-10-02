@@ -1,11 +1,10 @@
 'use client';
 
+import { EMPTY_STRING } from '@lib/configs/constants';
 import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import React, { ChangeEvent, memo, useCallback, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
-
-import { EMPTY_STRING } from '@shared/configs/constants';
 
 import { RichEditorProps } from '.';
 

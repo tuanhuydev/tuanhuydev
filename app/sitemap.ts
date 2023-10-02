@@ -1,8 +1,7 @@
 import PostService from '@lib/backend/services/PostService';
+import { BASE_URL } from '@lib/configs/constants';
 import { Post } from '@prisma/client';
 import { MetadataRoute } from 'next';
-
-import { BASE_URL } from '@shared/configs/constants';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const posts = (await PostService.getPosts()) || [];

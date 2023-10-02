@@ -13,11 +13,11 @@ export default memo(function Hero() {
 			data-testid="homepage-about-me"
 			className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 md:py-24 content-center">
 			<div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
-				<h1 className="font-bold mb-3 dark:text-white">
+				<h2 className="font-bold mb-3 dark:text-white">
 					<span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{' '}
 					<br />
 					<span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
-				</h1>
+				</h2>
 				<div className="relative mb-6">
 					<h2 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
 						I&lsquo;m Huy, a software engineer <br /> from Viet Nam
@@ -46,13 +46,13 @@ export default memo(function Hero() {
 					<br />
 				</div>
 				<a href="#service">
-					<h5
+					<h6
 						className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-xs md:text-sm font-semibold transition ease-in`}>
 						My proudly accomplishments
 						<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
 							<path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
 						</svg>
-					</h5>
+					</h6>
 				</a>
 			</div>
 			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">

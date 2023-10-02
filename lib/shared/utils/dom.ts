@@ -1,4 +1,5 @@
-import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
+import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@lib/configs/constants';
+
 import { ObjectType } from '@shared/interfaces/base';
 
 export const reflectTheme = (theme: string) => {
