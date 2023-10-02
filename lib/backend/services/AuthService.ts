@@ -1,3 +1,4 @@
+import { EMPTY_STRING, NODE_ENV, SALT_ROUNDS } from '@lib/configs/constants';
 import { User } from '@prisma/client';
 import prismaClient from '@prismaClient/prismaClient';
 import bcrypt from 'bcrypt';
@@ -12,7 +13,6 @@ import {
 } from '@shared/commons/constants/encryption';
 import BaseError from '@shared/commons/errors/BaseError';
 import NotFoundError from '@shared/commons/errors/NotFoundError';
-import { EMPTY_STRING, NODE_ENV, SALT_ROUNDS } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 
 class AuthService {

@@ -1,10 +1,9 @@
 'use client';
 
 import { AppContext } from '@lib/components/hocs/WithProvider';
-import Link from 'next/link';
+import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@lib/configs/constants';
 import { memo, useCallback, useContext } from 'react';
 
-import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import styles from './styles.module.scss';

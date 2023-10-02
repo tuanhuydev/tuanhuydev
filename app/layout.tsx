@@ -2,12 +2,9 @@ import GoogleAdsense from '@lib/components/google/GoogleAdsense';
 import GoogleAnalytic from '@lib/components/google/GoogleAnalytic';
 import GoogleTag from '@lib/components/google/GoogleTag';
 import WithProvider from '@lib/components/hocs/WithProvider';
+import i18nextConfig from '@lib/configs/next-i18next.config';
 import '@lib/styles/globals.scss';
-import { ConfigProvider } from 'antd';
-import theme from 'lib/configs/theme';
 import { PropsWithChildren } from 'react';
-
-import i18nextConfig from '@shared/configs/next-i18next.config';
 
 import { sourceCodeFont } from './font';
 
@@ -18,11 +15,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
 		<html lang={currentLocale} suppressHydrationWarning={true} className={sourceCodeFont.className}>
 			<head>
 				{/* General */}
-				<meta name="title" property="og:title" content="tuanhuydev - Personal Website" />
+				<meta name="title" property="og:title" content="tuanhuydev - Fullstack Software Engineer" />
 				<meta
 					name="description"
 					property="og:description"
-					content="🚀 Embark on a journey through the world of web development and technology. Dive into my personal website to discover a collection of innovative projects, insightful blog posts, and the latest trends in full-stack development, React.js, Next.js, Node.js, and AWS. Join me in exploring the limitless possibilities of the digital realm. Let's turn ideas into interactive experiences together! 💡🌐"
+					content="🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success."
 				/>
 
 				<meta name="image" property="og:image" content="/assets/images/preview.png" />

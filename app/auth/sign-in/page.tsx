@@ -2,6 +2,7 @@
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
+import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
@@ -15,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
-import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
 

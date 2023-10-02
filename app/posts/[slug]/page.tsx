@@ -1,7 +1,6 @@
+import { EMPTY_STRING } from '@lib/configs/constants';
 import ImageWithFallback from 'lib/components/commons/ImageWithFallback';
 import React from 'react';
-
-import { EMPTY_STRING } from '@shared/configs/constants';
 
 import PostService from '@backend/services/PostService';
 

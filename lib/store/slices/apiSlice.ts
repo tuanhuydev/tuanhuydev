@@ -1,12 +1,12 @@
 'use client';
 
+import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import { BaseQueryFn, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
 import QueryString from 'qs';
 import { REHYDRATE } from 'redux-persist';
 
 import { ACCESS_TOKEN_LIFE } from '@shared/commons/constants/encryption';
-import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage } from '@shared/utils/dom';
 

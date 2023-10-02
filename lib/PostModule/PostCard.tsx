@@ -1,10 +1,9 @@
+import { DATE_FORMAT } from '@lib/configs/constants';
 import { Card, Descriptions, Tag } from 'antd';
 import { CardProps } from 'antd/es/card';
 import format from 'date-fns/format';
 import ImageWithFallback from 'lib/components/commons/ImageWithFallback';
 import React, { useCallback, useMemo } from 'react';
-
-import { DATE_FORMAT } from '@shared/configs/constants';
 
 export interface PostCardProps {
 	post: any;

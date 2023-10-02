@@ -1,11 +1,11 @@
 'use client';
 
-import Footer from 'lib/HomeModule/Footer';
-import Navbar from 'lib/HomeModule/Navbar';
-import { AppContext } from 'lib/components/hocs/WithProvider';
+import Footer from '@lib/HomeModule/Footer';
+import Navbar from '@lib/HomeModule/Navbar';
+import { AppContext } from '@lib/components/hocs/WithProvider';
+import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@lib/configs/constants';
 import { PropsWithChildren, memo, useContext, useEffect } from 'react';
 
-import { STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@shared/configs/constants';
 import { getSoundValue, getThemeValue, reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 function HomeLayout({ children }: PropsWithChildren) {
