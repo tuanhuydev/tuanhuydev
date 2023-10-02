@@ -2,9 +2,10 @@
 const { i18n } = require('./lib/shared/configs/next-i18next.config');
 const nextConfig = {
 	i18n,
+	output: 'standalone',
 	reactStrictMode: true,
 	swcMinify: true,
-	output: 'standalone',
+	poweredByHeader: false,
 	async redirects() {
 		return [
 			{
