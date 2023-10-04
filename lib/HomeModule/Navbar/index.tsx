@@ -52,16 +52,14 @@ function Navbar() {
 				</Link>
 			</div>
 			<div className="flex items-center">
-				{/* <ul className="hidden md:flex md:justify-between">
-          <li className="mr-3.5 cursor-pointer rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
-            <Link href="/articles">
-              <div className="block px-4 py-1 dark:text-white capitalize">
-                articles
-              </div>
-            </Link>
-          </li>
-        </ul> */}
-				<button className={`${buttonStyles} p-2 mr-2 md:mr-3 hidden md:block`} onClick={toggleSound}>
+				<ul className="hidden md:flex md:justify-between">
+					<li className="mr-3.5 cursor-pointer rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
+						<Link href="#blog">
+							<div className="block px-4 py-1 dark:text-white capitalize">Blog</div>
+						</Link>
+					</li>
+				</ul>
+				<button className={`${buttonStyles} p-2 mr-2 md:mr-3 hidden md:block border-none`} onClick={toggleSound}>
 					{playSound ? (
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +81,7 @@ function Navbar() {
 					)}
 				</button>
 				<button
-					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 hidden md:block`}
+					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 hidden md:block border-none`}
 					title="Toggles light & dark"
 					aria-live="polite"
 					onClick={switchTheme}>

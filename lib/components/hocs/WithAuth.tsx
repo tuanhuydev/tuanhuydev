@@ -13,23 +13,18 @@ export default function WithAuth(WrappedComponent: React.FC) {
 		const [authenticated, setAuthenticated] = useState(false);
 		// Hooks
 		const router = useRouter();
+
 		useEffect(() => {
 			const missStorageToken = !getLocalStorage(STORAGE_CREDENTIAL_KEY) as boolean;
 			const missCookieToken = !Cookies.get('jwt');
 			const unAuthenticated = missStorageToken && missCookieToken;
-			if (unAuthenticated) {
-				router.replace('/auth/sign-in');
-			}
+
+			if (unAuthenticated) router.replace('/auth/sign-in');
 			setAuthenticated(!unAuthenticated);
 		}, [router]);
 
-		return authenticated ? (
-			<WrappedComponent {...props} />
-		) : (
-			<div data-testid="skeleton-testid">
-				<Skeleton />
-			</div>
-		);
+		if (authenticated) return <WrappedComponent {...props} />;
+		return <Skeleton data-testid="skeleton-testid" />;
 	};
 
 	return AuthenticatedComponent;

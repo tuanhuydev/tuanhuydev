@@ -40,7 +40,8 @@ const Sidebar = ({ open, onToggle }: any) => {
 			const activeClass = pathName && (pathName as string).startsWith(path) ? styles.active : EMPTY_STRING;
 			return (
 				<Link href={path} key={path}>
-					<li className={`ease-in duration-200 rounded-sm mb-1 ${styles.navlink} ${activeClass}`}>
+					<li
+						className={`ease-in duration-200 rounded-sm mb-1 text-slate-600 cursor-pointer py-2 px-3 hover:bg-primary hover:text-white ${activeClass}`}>
 						<div className="capitalize flex items-center">
 							<span className="mr-4">{icon}</span>
 							{label}

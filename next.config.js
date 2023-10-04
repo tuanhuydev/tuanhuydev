@@ -5,6 +5,15 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	output: 'standalone',
+	async redirects() {
+		return [
+			{
+				source: '/dashboard',
+				destination: '/dashboard/home', // Matched parameters can be used in the destination
+				permanent: true,
+			},
+		];
+	},
 	experimental: {
 		serverActions: true,
 	},

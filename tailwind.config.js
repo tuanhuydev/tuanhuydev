@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	darkMode: 'class',
+	corePlugins: {
+		preflight: false,
+	},
 	content: ['./app/**/*.{js,ts,jsx,tsx}', './lib/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		extend: {
@@ -11,6 +14,9 @@ module.exports = {
 				'screen-d': '100dvh',
 				60: '15rem',
 			},
+			colors: {
+				primary: '#172733',
+			},
 			fontFamily: {
 				sans: ['var(--font-source-code)'],
 				mono: ['Ubuntu Mono, monospace'],
@@ -20,9 +26,6 @@ module.exports = {
 			},
 			maxHeight: {
 				48: '12rem',
-			},
-			colors: {
-				primary: '#172733',
 			},
 			aspectRatio: {
 				'3/4': '3 / 4',

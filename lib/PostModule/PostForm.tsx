@@ -1,6 +1,8 @@
 'use client';
 
 import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
+import { ObjectType } from '@lib/shared/interfaces/base';
+import { PostAsset } from '@prisma/client';
 import { Button, Form, Input, Modal, Upload } from 'antd';
 import Cookies from 'js-cookie';
 import RichEditor from 'lib/components/commons/RichEditor';
@@ -34,10 +36,12 @@ export default function PostForm({ post }: any) {
 
 	// State
 	const [content, setContent] = useState<string>(EMPTY_STRING);
-	const [submitting, setSubmitting] = useState<boolean>(false);
 	const [published, setPublished] = useState(false);
 	const [disabledUpload, setDisabledUpload] = useState(false);
 	const [fileList, setFileList] = useState([]);
+	const [assets, setAssets] = useState([]);
+
+	const submitting = isCreating || isUpdating;
 
 	const isEditMode = !!post;
 	const isPublished = post?.publishedAt;
@@ -57,24 +61,25 @@ export default function PostForm({ post }: any) {
 
 	const savePost = useCallback(
 		async (formData: any) => {
-			setSubmitting(true);
 			const body = attachPublishDate(formData);
 			body.slug = transformTextToDashed(formData.slug);
+			body.assets = assets;
 
 			try {
 				const { data }: any = isEditMode ? await updatePost({ id: post.id, body }) : await createPost(body);
 				if (!data?.success) throw new Error('Unable to save');
-				context.toastAPI?.success({ message: 'Save successfully' });
+
+				context.notify?.success({ message: 'Save successfully' });
 				navigateBack();
 			} catch (error) {
-				context.toastAPI?.error({ message: (error as BaseError).message });
+				context.notify?.error({ message: (error as BaseError).message });
 			} finally {
 				if (!isEditMode) form.resetFields();
+
 				setContent(EMPTY_STRING);
-				setSubmitting(false);
 			}
 		},
-		[attachPublishDate, context.toastAPI, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
+		[assets, attachPublishDate, context.notify, createPost, form, isEditMode, navigateBack, post.id, updatePost]
 	);
 
 	const setSlugFieldValue = useCallback(
@@ -103,6 +108,10 @@ export default function PostForm({ post }: any) {
 	);
 
 	const handleEditorChange = useCallback((value: string) => setContent(value), []);
+
+	const updatePostAssets = useCallback((asset: ObjectType) => {
+		setAssets((prevAssets) => [...prevAssets, asset.id] as never);
+	}, []);
 
 	const triggerSubmit = useCallback(
 		(shouldPublish: boolean = false) =>
@@ -140,13 +149,13 @@ export default function PostForm({ post }: any) {
 
 	const uploadFile = ({ file, fileList, event }: any) => {
 		setFileList(fileList);
-		const { response, error } = file;
-		if (error) {
-			context.toastAPI.error({ message: (error as BaseError).message });
-		}
-		if (response) {
-			const { url } = response.data;
-			form.setFieldValue('thumbnail', url);
+		const { response = {}, error } = file;
+		const { data: asset } = response;
+		if (error) context.notify.error({ message: (error as BaseError).message });
+		if (asset) {
+			updatePostAssets(asset);
+			form.setFieldValue('thumbnail', asset.url);
+
 			setFileList([]);
 			setDisabledUpload(true);
 		}
@@ -166,10 +175,14 @@ export default function PostForm({ post }: any) {
 				form.setFieldValue(key, value);
 				if (key === 'content') {
 					setContent(value as string);
+				} else if (key === 'PostAsset') {
+					const assets = (value as Array<Partial<PostAsset>>).map(({ assetId }) => assetId);
+					setAssets(assets as never);
 				}
 			}
 		}
 	}, [form, isEditMode, post]);
+
 	return (
 		<div className="grid grid-cols-12 gap-4" data-testid="post-form-testid">
 			<div className="col-span-10">
@@ -218,6 +231,7 @@ export default function PostForm({ post }: any) {
 						<RichEditor
 							content={content}
 							setContent={handleEditorChange}
+							onFileUpload={updatePostAssets}
 							QuillProps={{
 								placeholder: 'Please type content...',
 							}}
