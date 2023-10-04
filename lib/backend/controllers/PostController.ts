@@ -35,7 +35,7 @@ export class PostController implements BaseController {
 
 		for (let [key, values] of searchParams.entries()) {
 			if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
-			else if (booleanKeys.includes(values)) params[key] = Boolean(values === 'true');
+			else if (booleanKeys.includes(key)) params[key] = Boolean(values === 'true');
 		}
 		return params;
 	}
@@ -64,7 +64,6 @@ export class PostController implements BaseController {
 		try {
 			const { searchParams } = new URL(request.url);
 			const params: ObjectType = this.extractSearchParams(searchParams);
-
 			const posts = await postService.getPosts(params);
 			return network.successResponse(posts);
 		} catch (error) {
