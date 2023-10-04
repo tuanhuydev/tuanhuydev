@@ -23,17 +23,10 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
 		<div
 			className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer ${className}`}
 			onClick={navigatePost(post)}>
-			<div className="z-0 lg:h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-3">
+			<div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-3">
 				{thumbnail && (
-					<div className="w-full h-72 lg:w-full lg:h-full relative mb-2">
-						<Image
-							src={thumbnail}
-							className="object-cover rounded-md w-full h-full"
-							alt={title}
-							width="0"
-							height="0"
-							sizes="100vw"
-						/>
+					<div className="w-full h-72 lg:h-72 grow relative mb-2">
+						<Image src={thumbnail} className="object-cover rounded-md" alt={title} fill sizes="50vw" />
 					</div>
 				)}
 				<div className="mt-auto">

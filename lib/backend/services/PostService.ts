@@ -41,13 +41,7 @@ class PostService {
 	async getPosts(filter?: PostFilter) {
 		let defaultWhere: ObjectType = { deletedAt: null };
 		if (!filter) return await prismaClient.post.findMany({ where: defaultWhere });
-		const {
-			page = 1,
-			pageSize = 10,
-			active = false,
-			orderBy = [{ field: 'createdAt', direction: 'desc' }],
-			search = '',
-		} = filter;
+		const { page = 1, pageSize = 10, orderBy = [{ field: 'createdAt', direction: 'desc' }], search = '' } = filter;
 
 		if (search) {
 			defaultWhere = {
@@ -57,13 +51,10 @@ class PostService {
 				},
 			};
 		}
-
-		if (active) {
+		if ('active' in filter) {
 			defaultWhere = {
 				...defaultWhere,
-				publishedAt: {
-					not: null,
-				},
+				publishedAt: filter?.active ? { not: null } : null,
 			};
 		}
 
