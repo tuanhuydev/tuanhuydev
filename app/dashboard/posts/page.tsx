@@ -13,12 +13,12 @@ import {
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
-import { BASE_URL } from '@lib/configs/constants';
+import { AppContext } from '@lib/components/hocs/WithProvider';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
 import { Button, Dropdown, Empty, Input, MenuProps, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
-import { Fragment, memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 type ViewMode = 'card' | 'list';
 
@@ -27,9 +27,10 @@ const { confirm } = Modal;
 export default memo(function Page() {
 	// Hook
 	const router = useRouter();
+	const { context }: any = useContext(AppContext);
 
-	const { data: posts = [], isLoading } = useGetPostsQuery({ active: false });
-	const [deletePost] = useDeletePostMutation();
+	const { data: posts = [], isLoading } = useGetPostsQuery({});
+	const [deletePost, { isSuccess, isError }] = useDeletePostMutation();
 
 	// State
 	const [viewMode, setMode] = useState<ViewMode>('card');
@@ -143,6 +144,11 @@ export default memo(function Page() {
 			onClick: exportPostsToJson,
 		},
 	];
+
+	useEffect(() => {
+		if (isSuccess) context?.notify.success({ message: 'Delete Post Successfully' });
+		if (isError) context?.notify.error({ message: 'Delete Post Fail' });
+	}, [context?.notify, isError, isSuccess]);
 
 	return (
 		<WithAnimation>

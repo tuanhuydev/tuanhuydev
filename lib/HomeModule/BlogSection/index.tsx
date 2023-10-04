@@ -10,7 +10,7 @@ interface BlogSectionProps {
 function BlogSection({ posts = [] }: BlogSectionProps) {
 	const makeColumn = (index: number) => {
 		const firstItemIndex = 0;
-		return index === firstItemIndex ? 'lg:row-span-5' : 'lg:row-span-3';
+		return index === firstItemIndex ? 'lg:row-span-full' : 'lg:row-span-3';
 	};
 
 	if (!posts.length) return <></>;
@@ -28,7 +28,7 @@ function BlogSection({ posts = [] }: BlogSectionProps) {
 					Join me in the journey of continuous learning!
 				</span>
 			</h4>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-5 p-3 grid-flow-row">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-y-8 gap-x-6 p-3 grid-flow-row">
 				{posts.map((post: Post, index: number) => (
 					<HighlightPost key={post.title} post={post} className={makeColumn(index)} />
 				))}
