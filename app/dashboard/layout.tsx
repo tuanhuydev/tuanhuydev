@@ -5,9 +5,9 @@ import WithAuth from '@lib/components/hocs/WithAuth';
 import WithProvider from '@lib/components/hocs/WithProvider';
 import i18nextConfig from '@lib/configs/next-i18next.config';
 import theme from '@lib/configs/theme';
+import store from '@lib/store';
 import '@lib/styles/globals.scss';
 import { ConfigProvider } from 'antd';
-import store from 'lib/store';
 import { PropsWithChildren } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
