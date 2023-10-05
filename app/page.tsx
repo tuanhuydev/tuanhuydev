@@ -1,7 +1,7 @@
 import Blog from '@lib/HomeModule/BlogSection';
 import HomeLayout from '@lib/HomeModule/HomeLayout';
-import PostService from '@lib/backend/services/PostService';
 import WithProvider from '@lib/components/hocs/WithProvider';
+import { BASE_URL } from '@lib/configs/constants';
 import { Post } from '@prisma/client';
 import React, { Fragment, lazy } from 'react';
 
@@ -9,9 +9,16 @@ const Hero = lazy(() => import('@lib/HomeModule/Hero'));
 const Contact = lazy(() => import('@lib/HomeModule/Contact'));
 const Services = lazy(() => import('@lib/HomeModule/Services'));
 
+async function getData() {
+	const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: 'no-store' });
+	if (!response.ok) return [];
+
+	const { data: posts } = await response.json();
+	return posts;
+}
+
 export default async function Home() {
-	'use server';
-	const posts: Post[] = await PostService.getPosts({ page: 1, pageSize: 4, active: true });
+	const posts: Post[] = await getData();
 
 	return (
 		<WithProvider>
