@@ -1,10 +1,10 @@
 'use client';
 
 import { AppContext } from '@lib/components/hocs/WithProvider';
-import { DEFAULT_THEME, STORAGE_PLAYSOUND_KEY, STORAGE_THEME_KEY } from '@lib/configs/constants';
+import { DEFAULT_THEME, STORAGE_THEME_KEY } from '@lib/configs/constants';
 import { memo, useCallback, useContext } from 'react';
 
-import { reflectSound, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+import { reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import styles from './styles.module.scss';
 
@@ -24,12 +24,12 @@ function Navbar() {
 		reflectTheme(newThemeValue);
 	}, [setContext, theme]);
 
-	const toggleSound = useCallback(() => {
-		const newSoundState = !playSound;
-		setContext({ playSound: newSoundState });
-		setLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
-		reflectSound(newSoundState);
-	}, [playSound, setContext]);
+	// const toggleSound = useCallback(() => {
+	// 	const newSoundState = !playSound;
+	// 	setContext({ playSound: newSoundState });
+	// 	setLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
+	// 	reflectSound(newSoundState);
+	// }, [playSound, setContext]);
 
 	return (
 		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2 md:px-0">
@@ -49,36 +49,15 @@ function Navbar() {
 				</a>
 			</div>
 			<div className="flex items-center">
-				<ul className="hidden md:flex md:justify-between">
+				<ul className="flex md:justify-between">
 					<li className="mr-3.5 cursor-pointer rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
 						<a href="#blog">
 							<div className="block px-4 py-1 dark:text-white capitalize">Blog</div>
 						</a>
 					</li>
 				</ul>
-				<button className={`${buttonStyles} p-2 mr-2 md:mr-3 hidden md:block border-none`} onClick={toggleSound}>
-					{playSound ? (
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							height="18"
-							viewBox="0 96 960 960"
-							width="18"
-							className={`${styles.sound} ${styles[theme]}`}>
-							<path d="M560 925v-62q97-28 158.5-107.5T780 575q0-101-61-181T560 287v-62q124 28 202 125.5T840 575q0 127-78 224.5T560 925ZM120 696V456h160l200-200v640L280 696H120Zm420 48V407q55 17 87.5 64T660 576q0 57-33 104t-87 64Z" />
-						</svg>
-					) : (
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							height="18"
-							viewBox="0 96 960 960"
-							width="18"
-							className={`${styles.sound} ${styles[theme]}`}>
-							<path d="M813 1000 681 868q-28 20-60.5 34.5T553 925v-62q23-7 44.5-15.5T638 825L473 659v237L273 696H113V456h156L49 236l43-43 764 763-43 44Zm-36-232-43-43q20-34 29.5-72t9.5-78q0-103-60-184.5T553 287v-62q124 28 202 125.5T833 575q0 51-14 100t-42 93ZM643 634l-90-90V414q47 22 73.5 66t26.5 96q0 15-2.5 29.5T643 634ZM473 464 369 360l104-104v208Z" />
-						</svg>
-					)}
-				</button>
 				<button
-					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 hidden md:block border-none`}
+					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 border-none flex items-center`}
 					title="Toggles light & dark"
 					aria-live="polite"
 					onClick={switchTheme}>
