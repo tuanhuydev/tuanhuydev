@@ -75,8 +75,7 @@ export class PostController implements BaseController {
 		const network = Network(request);
 		try {
 			if (!id) throw new BadRequestError();
-
-			const postById = await postService.getPostById(Number(id));
+			const postById = await postService.getPost(id);
 			return network.successResponse(postById);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
