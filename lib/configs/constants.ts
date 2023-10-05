@@ -7,7 +7,6 @@ export const EMPTY_STRING: string = '';
 // Theme
 export const DEFAULT_THEME: string = 'light';
 export const STORAGE_THEME_KEY: string = 'theme-preference';
-export const STORAGE_PLAYSOUND_KEY: string = 'sound-preference';
 export const STORAGE_CREDENTIAL_KEY: string = 'credential';
 
 // Encryption
@@ -18,9 +17,7 @@ const DEFAULT_ENV: string = 'development';
 export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
 export const GOOGLE_ADSENSE: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
-export const HOST = process.env.HOST ?? 'http://localhost';
-export const PORT = parseInt(process.env.PORT as string, 10);
-export const BASE_URL = !PORT || PORT === 80 ? HOST : `${HOST}:${PORT}`;
+export const BASE_URL = process.env.HOST ?? 'http://localhost:3000';
 
 export const POST_STATUS = {
 	PUBLISHED: 'PUBLISHED',
