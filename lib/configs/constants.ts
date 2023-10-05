@@ -19,8 +19,8 @@ export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
 export const GOOGLE_ADSENSE: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const HOST = process.env.HOST ?? 'http://localhost';
-export const PORT = parseInt(process.env.PORT as string, 10) ?? 3000;
-export const BASE_URL = PORT === 80 ? HOST : `${HOST}:${PORT}`;
+export const PORT = parseInt(process.env.PORT as string, 10);
+export const BASE_URL = !PORT || PORT === 80 ? HOST : `${HOST}:${PORT}`;
 
 export const POST_STATUS = {
 	PUBLISHED: 'PUBLISHED',
