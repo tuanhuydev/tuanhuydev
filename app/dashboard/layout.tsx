@@ -3,7 +3,6 @@
 import PageContainer from '@lib/DashboardModule/PageContainer';
 import WithAuth from '@lib/components/hocs/WithAuth';
 import WithProvider from '@lib/components/hocs/WithProvider';
-import i18nextConfig from '@lib/configs/next-i18next.config';
 import theme from '@lib/configs/theme';
 import store from '@lib/store';
 import '@lib/styles/globals.scss';
@@ -17,9 +16,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
 			{children}
 		</PageContainer>
 	));
-	const currentLocale = i18nextConfig.i18n.defaultLocale;
 	return (
-		<html lang={currentLocale}>
+		<html lang="en">
 			<body>
 				<WithProvider>
 					<ReduxProvider store={store}>

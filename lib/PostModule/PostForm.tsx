@@ -9,7 +9,6 @@ import Cookies from 'js-cookie';
 import RichEditor from 'lib/components/commons/RichEditor';
 import { AppContext } from 'lib/components/hocs/WithProvider';
 import { useCreatePostMutation, useUpdatePostMutation } from 'lib/store/slices/apiSlice';
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
@@ -30,7 +29,6 @@ export default function PostForm({ post }: any) {
 	const [form] = Form.useForm();
 	const router = useRouter();
 	const { context } = useContext(AppContext);
-	const { t: translate } = useTranslation('common');
 	const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
 	const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
 
@@ -45,7 +43,7 @@ export default function PostForm({ post }: any) {
 
 	const isEditMode = !!post;
 	const isPublished = post?.publishedAt;
-	const rules = [{ required: true, message: translate('FORM_VALIDATE_REQUIRED') }];
+	const rules = [{ required: true, message: 'This field is required' }];
 
 	const attachPublishDate = useCallback(
 		(formData: any) => {

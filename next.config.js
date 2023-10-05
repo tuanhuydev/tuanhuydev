@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
-const { i18n } = require('./lib/configs/next-i18next.config');
 const nextConfig = {
-	i18n,
 	output: 'standalone',
 	reactStrictMode: true,
 	swcMinify: true,
