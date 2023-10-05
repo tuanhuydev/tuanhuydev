@@ -18,7 +18,7 @@ export default function WithProvider(props: PropsWithChildren) {
 
 	const [context, setContext] = useReducer(reducer, {
 		theme: 'light',
-		playSound: true,
+		playSound: false,
 		notify,
 	});
 
