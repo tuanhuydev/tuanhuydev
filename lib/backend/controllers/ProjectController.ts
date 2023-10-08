@@ -4,19 +4,26 @@ import { ObjectSchema, object, string } from 'yup';
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 import { ObjectType } from '@shared/interfaces/base';
-import { makeSlug } from '@shared/utils/helper';
 
 import { BaseController } from '@backend/interfaces/controller';
-import postService from '@backend/services/PostService';
 import Network from '@backend/utils/Network';
 
-export class PostController implements BaseController {
+import LogService from '../services/LogService';
+import ProjectService from '../services/ProjectService';
+
+export class ProjectController implements BaseController {
 	#schema: ObjectSchema<any>;
+	static #instance: ProjectController;
+
+	static makeInstance() {
+		return ProjectController.#instance ?? new ProjectController();
+	}
 
 	constructor() {
 		this.#schema = object({
-			title: string().required(),
-			content: string().required(),
+			name: string().required(),
+			description: string().required(),
+			thumbnail: string().nullable(),
 		});
 	}
 
@@ -28,21 +35,16 @@ export class PostController implements BaseController {
 		}
 	}
 
-	async store(request: NextRequest, params: any) {
+	async store(request: NextRequest) {
 		const network = Network(request);
 		try {
-			const { assets = [], ...body } = await request.json();
-			const validatedFields = await this.validateStoreRequest(body);
+			const body = await request.json();
+			const validatedBody = await this.validateStoreRequest(body);
+			const newProject = await ProjectService.createProject(validatedBody);
 
-			validatedFields.slug = makeSlug(validatedFields.title);
-			if (params) validatedFields.authorId = params.userId;
-
-			const newPost = await postService.createPost(validatedFields);
-			await postService.saveAssets(newPost.id, assets);
-
-			return network.successResponse(newPost);
+			return network.successResponse(newProject);
 		} catch (error) {
-			console.error(error);
+			LogService.log((error as Error).message);
 			return network.failResponse(error as BaseError);
 		}
 	}
@@ -51,8 +53,8 @@ export class PostController implements BaseController {
 		const network = Network(request);
 		try {
 			const params: ObjectType = network.extractSearchParams();
-			const posts = await postService.getPosts(params);
-			return network.successResponse(posts);
+			const projects = await ProjectService.getProjects(params);
+			return network.successResponse(projects);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
 		}
@@ -62,8 +64,8 @@ export class PostController implements BaseController {
 		const network = Network(request);
 		try {
 			if (!id) throw new BadRequestError();
-			const postById = await postService.getPost(id);
-			return network.successResponse(postById);
+			const projectById = await ProjectService.getProject(id);
+			return network.successResponse(projectById);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
 		}
@@ -75,7 +77,7 @@ export class PostController implements BaseController {
 
 		const network = Network(request);
 		try {
-			const updated = await postService.updatePost(Number(id), body);
+			const updated = await ProjectService.updateProject(Number(id), body);
 			return network.successResponse(updated);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
@@ -86,7 +88,7 @@ export class PostController implements BaseController {
 		if (!id) throw new BadRequestError();
 		const network = Network(request);
 		try {
-			const deleted = await postService.deletePost(Number(id));
+			const deleted = await ProjectService.deleteProject(Number(id));
 			return network.successResponse(deleted);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
@@ -94,5 +96,4 @@ export class PostController implements BaseController {
 	}
 }
 
-const postController = new PostController();
-export default postController;
+export default ProjectController.makeInstance();

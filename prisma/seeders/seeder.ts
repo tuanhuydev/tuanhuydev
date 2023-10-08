@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+	// mock user
 	await prisma.user.upsert({
 		create: {
 			id: '2e633db0-dc69-11ed-afa1-0242ac120002',

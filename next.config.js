@@ -13,9 +13,6 @@ const nextConfig = {
 			},
 		];
 	},
-	experimental: {
-		serverActions: true,
-	},
 	images: {
 		remotePatterns: [
 			{
