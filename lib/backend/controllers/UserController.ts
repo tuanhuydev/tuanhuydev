@@ -60,8 +60,7 @@ class UserController implements BaseController {
 	async getAll(request: NextRequest) {
 		const network = Network(request);
 		try {
-			const { searchParams } = new URL(request.url);
-			const params: ObjectType = network.extractSearchParams(searchParams);
+			const params: ObjectType = network.extractSearchParams();
 
 			const users = await userService.getUsers(params);
 			return network.successResponse(users);

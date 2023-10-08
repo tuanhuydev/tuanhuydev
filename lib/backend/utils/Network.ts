@@ -22,14 +22,17 @@ class Network {
 		return new Network(req);
 	}
 
-	extractSearchParams(searchParams: URLSearchParams): ObjectType {
+	extractSearchParams(): ObjectType {
+		const { searchParams } = new URL(this.#req.url);
+
 		const params: ObjectType = {};
 		const numbericKeys = ['page', 'pageSize'];
 		const booleanKeys = ['active'];
 
 		for (let [key, values] of searchParams.entries()) {
 			if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
-			else if (booleanKeys.includes(values)) params[key] = Boolean(values === 'true');
+			else if (booleanKeys.includes(key)) params[key] = Boolean(values === 'true');
+			params[key] = values;
 		}
 		return params;
 	}

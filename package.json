@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.4.4",
-    "@prisma/client": "^5.3.1",
+    "@prisma/client": "^5.4.1",
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
