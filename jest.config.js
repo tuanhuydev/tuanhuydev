@@ -15,13 +15,9 @@ const customJestConfig = {
 		'^@shared(.*)$': '<rootDir>/lib/shared/$1',
 		'^@public(.*)$': '<rootDir>/public/$1',
 		'^@app/(.*)$': '<rootDir>/app/$1',
+		'^@prismaClient/(.*)$': '<rootDir>/prisma/$1',
 	},
-	modulePathIgnorePatterns: [
-		'<rootDir>/build/',
-		'<rootDir>/.history/',
-		'<rootDir>/frontend/__tests__/mocks/',
-		'<rootDir>/backend/__tests__/mocks',
-	],
+	modulePathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/.history/'],
 	testEnvironment: 'jest-environment-jsdom',
 };
 

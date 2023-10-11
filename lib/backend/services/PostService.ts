@@ -47,7 +47,7 @@ class PostService {
 			defaultWhere = {
 				...defaultWhere,
 				title: {
-					contains: search,
+					startWith: search,
 				},
 			};
 		}
@@ -75,24 +75,17 @@ class PostService {
 		}
 	}
 
-	async getPostById(id: number) {
+	async getPost(id: string) {
 		try {
-			return await prismaClient.post.findFirst({ include: { PostAsset: true }, where: { id, deletedAt: null } });
-		} catch (error) {
-			throw new BaseError((error as Error).message);
-		}
-	}
+			const isSlug = Number.isNaN(parseInt(id, 10));
+			const whereStatement: ObjectType = { deletedAt: null };
 
-	async getPostBySlug(slug: string) {
-		try {
+			if (isSlug) whereStatement.slug = { equals: id as string };
+			else whereStatement.id = { equals: parseInt(id, 10) };
+
 			return await prismaClient.post.findFirst({
-				where: {
-					slug,
-					deletedAt: null,
-					publishedAt: {
-						not: null,
-					},
-				},
+				include: { PostAsset: true },
+				where: whereStatement,
 			});
 		} catch (error) {
 			throw new BaseError((error as Error).message);
