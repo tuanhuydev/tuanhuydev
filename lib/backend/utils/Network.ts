@@ -32,7 +32,7 @@ class Network {
 		for (let [key, values] of searchParams.entries()) {
 			if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
 			else if (booleanKeys.includes(key)) params[key] = Boolean(values === 'true');
-			params[key] = values;
+			else params[key] = values;
 		}
 		return params;
 	}
