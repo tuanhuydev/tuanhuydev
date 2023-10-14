@@ -1,13 +1,13 @@
 'use client';
 
+import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostForm from '@lib/PostModule/PostForm';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
 import React, { memo } from 'react';
 
 export default memo(function Page() {
 	return (
-		<WithAnimation>
+		<PageContainer title="Create new post">
 			<PostForm />
-		</WithAnimation>
+		</PageContainer>
 	);
 });
