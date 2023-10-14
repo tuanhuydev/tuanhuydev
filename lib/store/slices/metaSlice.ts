@@ -1,7 +1,9 @@
+import { ObjectType } from '@lib/shared/interfaces/base';
 import { createSlice } from '@reduxjs/toolkit';
 
 const INITIAL_STATE = {
 	sidebarOpen: false,
+	userInfo: {} as ObjectType,
 };
 
 const metaSlice = createSlice({
@@ -10,6 +12,9 @@ const metaSlice = createSlice({
 	reducers: {
 		setSidebarState: (state, { payload }) => {
 			state.sidebarOpen = payload;
+		},
+		setUserInfo: (state, { payload }) => {
+			state.userInfo = payload;
 		},
 	},
 });

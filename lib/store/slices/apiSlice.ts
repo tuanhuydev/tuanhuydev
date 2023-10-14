@@ -1,5 +1,6 @@
 'use client';
 
+import LogService from '@lib/backend/services/LogService';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import { BaseQueryFn, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
@@ -14,10 +15,8 @@ const baseQuery: BaseQueryFn = fetchBaseQuery({
 	baseUrl: '/api',
 	prepareHeaders: (headers, { getState, endpoint }) => {
 		const accessToken = Cookies.get('jwt');
+		if (accessToken) headers.set('authorization', `Bearer ${accessToken}`);
 
-		if (accessToken) {
-			headers.set('authorization', `Bearer ${accessToken}`);
-		}
 		return headers;
 	},
 });
@@ -49,7 +48,7 @@ const baseQueryWithAuth: BaseQueryFn = async (args, api, extraOptions) => {
 
 		return query;
 	} catch (error) {
-		// Handle errors here
+		LogService.log((error as Error).message);
 		throw error;
 	}
 };
@@ -61,7 +60,7 @@ export const apiSlice = createApi({
 	extractRehydrationInfo(action, { reducerPath }) {
 		if (action.type === REHYDRATE) return action.payload[reducerPath];
 	},
-	tagTypes: ['Post'],
+	tagTypes: ['Post', 'User'],
 	endpoints: (builder) => ({
 		getPosts: builder.query({
 			query: (filter?: any) => {

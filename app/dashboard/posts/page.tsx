@@ -10,6 +10,8 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
+import Navbar from '@lib/DashboardModule/Navbar';
+import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
@@ -83,6 +85,7 @@ export default memo(function Page() {
 		},
 		[openPostInNewTab, triggerDeletePost]
 	);
+
 	const exportPostsToJson = useCallback(async () => {
 		// Fetch posts
 		let allPosts = [];
@@ -151,8 +154,8 @@ export default memo(function Page() {
 	}, [context?.notify, isError, isSuccess]);
 
 	return (
-		<WithAnimation>
-			<div className="flex items-center mb-12" data-testid="dashboard-posts-page-testid">
+		<PageContainer title="Posts">
+			<div className="flex items-center mb-6" data-testid="dashboard-posts-page-testid">
 				<div className="button-group flex mr-2">
 					<Button
 						size="middle"
@@ -180,7 +183,9 @@ export default memo(function Page() {
 					Write New
 				</Dropdown.Button>
 			</div>
-			<div className="grow">{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}</div>
-		</WithAnimation>
+			<div className="grow overflow-auto">
+				{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
+			</div>
+		</PageContainer>
 	);
 });

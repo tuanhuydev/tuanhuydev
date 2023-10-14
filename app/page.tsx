@@ -3,11 +3,12 @@ import HomeLayout from '@lib/HomeModule/HomeLayout';
 import WithProvider from '@lib/components/hocs/WithProvider';
 import { BASE_URL } from '@lib/configs/constants';
 import { Post } from '@prisma/client';
-import React, { Fragment, lazy } from 'react';
+import dynamic from 'next/dynamic';
+import React from 'react';
 
-const Hero = lazy(() => import('@lib/HomeModule/Hero'));
-const Contact = lazy(() => import('@lib/HomeModule/Contact'));
-const Services = lazy(() => import('@lib/HomeModule/Services'));
+const Hero = dynamic(() => import('@lib/HomeModule/Hero'));
+const Contact = dynamic(() => import('@lib/HomeModule/Contact'));
+const Services = dynamic(() => import('@lib/HomeModule/Services'));
 
 async function getData() {
 	const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: 'no-store' });
@@ -25,7 +26,7 @@ export default async function Home() {
 			<HomeLayout>
 				<Hero />
 				<Services />
-				{posts.length ? <Blog posts={posts} /> : <Fragment />}
+				<Blog posts={posts} />
 				<Contact />
 				<audio id="audio" src="/assets/sounds/click.wav">
 					Your browser does not support the

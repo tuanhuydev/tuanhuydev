@@ -71,7 +71,7 @@ const Sidebar = ({ open, onToggle }: any) => {
 				<Image src={logoSrc} width={32} height={32} alt="page logo" />
 			</div>
 			<ul
-				className={`${styles.container} ${linkContainerStyles} ease-in duration-150 bg-white h-full border-r border-slate-100 relative overflow-x-hidden p-1`}>
+				className={`${styles.container} ${linkContainerStyles} ease-in duration-150 bg-white h-full border-r border-slate-100 relative overflow-x-hidden p-1 m-0`}>
 				{renderRoutes}
 			</ul>
 		</div>
