@@ -3,8 +3,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import DynamicText from '@lib/components/commons/Form/DynamicText';
 import { ObjectType } from '@lib/shared/interfaces/base';
-import { Button } from 'antd';
-import { Fragment, useMemo } from 'react';
+import { Button, ButtonProps } from 'antd';
+import { ReactNode, useMemo } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -21,6 +21,8 @@ export interface ElementType {
 export interface DynamicFormProps {
 	config: DynamicFormConfig;
 	onSubmit: SubmitHandler<FieldValues>;
+	submitProps?: Partial<ButtonProps>;
+	customSubmit?: ReactNode;
 }
 export interface DynamicFormConfig {
 	fields: ElementType[];
@@ -57,8 +59,9 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
 	return yup.object(schema);
 };
 
-export default function DynamicForm({ config, onSubmit }: DynamicFormProps) {
-	const { handleSubmit, control } = useForm({ resolver: yupResolver(makeSchema(config)) });
+export default function DynamicForm({ config, onSubmit, customSubmit, submitProps }: DynamicFormProps) {
+	const form = useForm({ resolver: yupResolver(makeSchema(config)) });
+	const { handleSubmit, control } = form;
 	const { fields } = config;
 
 	const registerFields = useMemo(
@@ -85,7 +88,9 @@ export default function DynamicForm({ config, onSubmit }: DynamicFormProps) {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			{registerFields}
-			<Button htmlType="submit">Submit</Button>
+			<Button type="primary" htmlType="submit" {...submitProps}>
+				Submit
+			</Button>
 		</form>
 	);
 }
