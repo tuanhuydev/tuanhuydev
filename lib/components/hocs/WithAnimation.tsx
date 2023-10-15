@@ -7,12 +7,12 @@ export default function WithAnimation({ children }: PropsWithChildren) {
 	return (
 		<AnimatePresence>
 			<motion.div
-				className="h-full"
+				className="h-full py-2"
 				initial={{ opacity: 0, y: 35 }}
 				animate={{ opacity: 1, y: 0 }}
 				exit={{ opacity: 0 }}
 				transition={{ delay: 0.2 }}>
-				<div className="p-4 h-full overflow-auto flex flex-col">{children}</div>
+				{children}
 			</motion.div>
 		</AnimatePresence>
 	);

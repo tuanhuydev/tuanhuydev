@@ -1,9 +1,8 @@
 'use client';
 
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import DynamicForm, { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
-import { Button, Divider, Form, Input } from 'antd';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import { AppContext } from 'lib/components/hocs/WithProvider';
@@ -19,23 +18,42 @@ import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
 
-const INITIAL_SIGN_IN_FORM = {
-	email: '',
-	password: '',
+// TODO: Move this one to API.
+const signInFormConfig: DynamicFormConfig = {
+	fields: [
+		{
+			name: 'email',
+			type: 'email',
+			options: {
+				size: 'large',
+				placeholder: 'Email',
+			},
+			validate: {
+				required: true,
+			},
+		},
+		{
+			name: 'password',
+			type: 'password',
+			options: {
+				size: 'large',
+				placeholder: 'Password',
+			},
+			validate: {
+				required: true,
+			},
+		},
+	],
 };
 
 export default memo(function SignIn() {
 	// Hooks
 	const dispatch = useDispatch();
-	const [form] = Form.useForm();
 	const { context } = useContext(AppContext);
 	const router = useRouter();
 
 	// Selectors
 	const auth = useSelector((state: RootState) => state.auth);
-
-	// State
-	const [submiting, setSubmitState] = useState(false);
 
 	const syncAuth = (credential: ObjectType) => {
 		if (!credential) throw new UnauthorizedError();
@@ -43,19 +61,15 @@ export default memo(function SignIn() {
 		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
 	};
 
-	const submit = async (formData: { email: string; password: string }) => {
-		setSubmitState(true);
+	const submit = async (formData: ObjectType) => {
 		try {
 			const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
-			if (res) {
-				syncAuth(res.data);
-				router.push('/dashboard');
-			}
+			if (!res) throw new UnauthorizedError('Invalid sign in');
+
+			syncAuth(res.data);
+			router.push('/dashboard');
 		} catch (error) {
 			context.notify.error({ message: (error as BaseError).message });
-			clearForm();
-		} finally {
-			setSubmitState(false);
 		}
 	};
 
@@ -78,8 +92,6 @@ export default memo(function SignIn() {
 		return !!credential;
 	}, [syncToStore]);
 
-	const clearForm = () => form.resetFields();
-
 	useEffect(() => {
 		const isAuthenticated: boolean = isAuthenticatedByStore() || isAuthenticatedByStorage();
 		if (isAuthenticated) router.push('/dashboard/home');
@@ -88,52 +100,14 @@ export default memo(function SignIn() {
 	return (
 		<WithAnimation>
 			<div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
-				<Form
-					form={form}
-					initialValues={INITIAL_SIGN_IN_FORM}
-					onFinish={submit}
-					className="form h-fit w-96 drop-shadow-md bg-white p-3">
-					<h1 className="font-sans text-2xl font-bold mb-4">Sign In</h1>
-					<Form.Item name="email" className="mb-4">
-						<Input
-							size="large"
-							placeholder="Email"
-							disabled={submiting}
-							prefix={<UserOutlined />}
-							type="email"
-							required
-						/>
-					</Form.Item>
-					<Form.Item name="password" className="mb-5">
-						<Input
-							size="large"
-							prefix={<LockOutlined />}
-							disabled={submiting}
-							placeholder="Password"
-							type="password"
-							required
-						/>
-					</Form.Item>
-
-					<Button
-						type="primary"
-						size="large"
-						className="w-full bg-primary capitalize border-transparent shadow-none"
-						loading={submiting}
-						disabled={submiting}
-						htmlType="submit">
-						submit
-					</Button>
-					<Divider className="my-3" />
-					<Button
-						size="large"
-						disabled={submiting}
-						className="w-full capitalize mr-3"
-						onClick={clearForm}
-						htmlType="button">
-						clear
-					</Button>
-				</Form>
+				<div className="h-fit w-96 drop-shadow-md bg-white px-3 pt-3 pb-5">
+					<h1 className="font-sans text-2xl font-bold my-3">Sign In</h1>
+					<DynamicForm
+						config={signInFormConfig}
+						onSubmit={submit}
+						submitProps={{ size: 'large', className: 'w-full' }}
+					/>
+				</div>
 			</div>
 		</WithAnimation>
 	);
