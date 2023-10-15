@@ -164,13 +164,13 @@ export default memo(function Page() {
 						className={`${activeViewModeStyle('card')} rounded-sm mr-1`}
 						icon={<AppstoreOutlined />}
 					/>
-					<Button
+					{/* <Button
 						onClick={toggleViewMode('list')}
 						type={activeViewModeButtonType('list')}
 						className={`${activeViewModeStyle('list')} rounded-sm mr-1`}
 						size="middle"
 						icon={<BarsOutlined />}
-					/>
+					/> */}
 				</div>
 				<Input size="large" placeholder="Find your post" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
 				<Dropdown.Button
@@ -183,7 +183,7 @@ export default memo(function Page() {
 					Write New
 				</Dropdown.Button>
 			</div>
-			<div className="grow overflow-auto">
+			<div className="grow overflow-auto pb-3">
 				{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
 			</div>
 		</PageContainer>

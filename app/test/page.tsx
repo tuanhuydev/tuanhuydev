@@ -1,6 +1,6 @@
 'use client';
 
-import DynamicForm, { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
+import { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
 import FormBuilder from '@lib/components/commons/Form/FormBuilder';
 import MarkdownEditor from '@lib/components/commons/MardownEditor';
 
@@ -61,7 +61,7 @@ export default function Page() {
 		<>
 			{/* <DynamicForm config={config} onSubmit={submit} /> */}
 			<FormBuilder />
-			<MarkdownEditor />
+			<MarkdownEditor value={undefined} />
 		</>
 	);
 }

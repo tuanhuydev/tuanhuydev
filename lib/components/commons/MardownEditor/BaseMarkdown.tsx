@@ -22,13 +22,16 @@ import { FC, memo } from 'react';
 interface EditorProps {
 	markdown: string;
 	editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
+	onChange?: any;
 }
 
-const BaseEditor: FC<EditorProps> = ({ markdown, editorRef }) => {
+const BaseEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
 	return (
 		<MDXEditor
 			ref={editorRef}
 			markdown={markdown}
+			onChange={onChange}
+			contentEditableClassName="prose"
 			plugins={[
 				headingsPlugin(),
 				listsPlugin(),
@@ -39,7 +42,6 @@ const BaseEditor: FC<EditorProps> = ({ markdown, editorRef }) => {
 				toolbarPlugin({
 					toolbarContents: () => (
 						<>
-							{' '}
 							<UndoRedo />
 							<BlockTypeSelect />
 							<BoldItalicUnderlineToggles />

@@ -6,7 +6,7 @@ import React, { memo } from 'react';
 
 export default memo(function Page() {
 	return (
-		<PageContainer title="Create new post">
+		<PageContainer title="Create new post" goBack>
 			<PostForm />
 		</PageContainer>
 	);
