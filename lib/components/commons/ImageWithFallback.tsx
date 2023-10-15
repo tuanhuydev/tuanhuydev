@@ -18,7 +18,7 @@ const ImageWithFallback = ({ src = EMPTY_STRING, alt = 'image', ...restProps }: 
 	}, [src]);
 	const shouldRenderImage = src && !hasError;
 	return (
-		<div>
+		<div className="relative w-full h-full">
 			{shouldRenderImage ? (
 				<Image {...restProps} src={src} alt={alt} onError={() => setHasError(true)} />
 			) : (

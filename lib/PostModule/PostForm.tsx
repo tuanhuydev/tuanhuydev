@@ -1,12 +1,12 @@
 'use client';
 
-import { ExclamationCircleFilled, UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
+import MarkdownEditor from '@lib/components/commons/MardownEditor';
 import { EMPTY_STRING } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { PostAsset } from '@prisma/client';
-import { Button, Form, Input, Modal, Upload } from 'antd';
+import { Button, Form, Input, Upload } from 'antd';
 import Cookies from 'js-cookie';
-import RichEditor from 'lib/components/commons/RichEditor';
 import { AppContext } from 'lib/components/hocs/WithProvider';
 import { useCreatePostMutation, useUpdatePostMutation } from 'lib/store/slices/apiSlice';
 import { useRouter } from 'next/navigation';
@@ -21,8 +21,6 @@ const initialValues = {
 	content: EMPTY_STRING,
 	thumbnail: EMPTY_STRING,
 };
-
-const { confirm } = Modal;
 
 export default function PostForm({ post }: any) {
 	// Hooks
@@ -55,7 +53,7 @@ export default function PostForm({ post }: any) {
 		[published]
 	);
 
-	const navigateBack = useCallback(() => setTimeout(() => router.back(), 250), [router]);
+	const navigateBack = useCallback(() => router.back(), [router]);
 
 	const savePost = useCallback(
 		async (formData: any) => {
@@ -120,31 +118,6 @@ export default function PostForm({ post }: any) {
 		[form]
 	);
 
-	const isAllFieldsEmpty = useCallback(() => {
-		const fieldsValues = form.getFieldsValue();
-		return Object.values(fieldsValues).every((value) => !value);
-	}, [form]);
-
-	const showConfirmBox = useCallback(() => {
-		confirm({
-			title: 'Discard current content?',
-			icon: <ExclamationCircleFilled />,
-			content: 'Exit content page without saving current work',
-			okText: 'Discard',
-			okType: 'danger',
-			cancelText: 'Continue editing',
-			onOk() {
-				navigateBack();
-			},
-			onCancel() {},
-		});
-	}, [navigateBack]);
-
-	const cancelForm = useCallback(
-		() => (isAllFieldsEmpty() ? navigateBack() : showConfirmBox()),
-		[isAllFieldsEmpty, navigateBack, showConfirmBox]
-	);
-
 	const uploadFile = ({ file, fileList, event }: any) => {
 		setFileList(fileList);
 		const { response = {}, error } = file;
@@ -182,18 +155,18 @@ export default function PostForm({ post }: any) {
 	}, [form, isEditMode, post]);
 
 	return (
-		<div className="grid grid-cols-12 gap-4" data-testid="post-form-testid">
-			<div className="col-span-10">
+		<div className="grid grid-cols-4 lg:grid-cols-12 grid-rows-2 gap-4" data-testid="post-form-testid">
+			<div className="col-span-full lg:col-span-10">
 				<Form
 					form={form}
 					layout="vertical"
 					initialValues={initialValues}
 					onFieldsChange={handleFieldChange}
 					onFinish={savePost}>
-					<Form.Item name="title" label="Title" rules={rules}>
+					<Form.Item name="title" rules={rules}>
 						<Input placeholder="Please type title..." size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
-					<Form.Item name="slug" label="Slug" rules={rules}>
+					<Form.Item name="slug" rules={rules}>
 						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
 					<div className="flex items-center transition-all">
@@ -225,40 +198,25 @@ export default function PostForm({ post }: any) {
 							</Upload>
 						</div>
 					</div>
-					<Form.Item label="Content" name="content" rules={rules} className="h-96 relative">
-						<RichEditor
-							content={content}
-							setContent={handleEditorChange}
-							onFileUpload={updatePostAssets}
-							QuillProps={{
-								placeholder: 'Please type content...',
-							}}
-							disabled={submitting}
-						/>
+					<Form.Item name="content" rules={rules}>
+						<MarkdownEditor onChange={handleEditorChange} value={content} />
 					</Form.Item>
 				</Form>
 			</div>
-			<div className="col-start-11 col-span-full flex flex-col">
-				<div>
-					<Button
-						onClick={triggerSubmit(true)}
-						disabled={submitting}
-						loading={submitting}
-						className="bg-primary text-slate-100 capitalize w-full mb-2"
-						type="primary">
-						{isEditMode ? 'Save' : 'Publish'}
+			<div className="col-span-full md:col-span-1 lg:col-span-full row-start-auto col-start-1 lg:col-start-11 gap-3 flex lg:flex-col">
+				<Button
+					onClick={triggerSubmit(true)}
+					disabled={submitting}
+					loading={submitting}
+					className="bg-primary text-slate-100 capitalize mb-2"
+					type="primary">
+					{isEditMode ? 'Save' : 'Publish'}
+				</Button>
+				{!isPublished && (
+					<Button onClick={triggerSubmit()} disabled={submitting} className="capitalize">
+						Save draft
 					</Button>
-					{!isPublished && (
-						<Button onClick={triggerSubmit()} disabled={submitting} className="w-full capitalize">
-							Save draft
-						</Button>
-					)}
-				</div>
-				<div className="mt-auto">
-					<Button onClick={cancelForm} danger className="w-full capitalize">
-						Cancel
-					</Button>
-				</div>
+				)}
 			</div>
 		</div>
 	);

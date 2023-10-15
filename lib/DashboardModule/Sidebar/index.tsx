@@ -15,7 +15,7 @@ import { Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.scss';
 
@@ -78,4 +78,4 @@ const Sidebar = ({ open, onToggle }: any) => {
 	);
 };
 
-export default memo(Sidebar);
+export default Sidebar;

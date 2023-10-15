@@ -14,7 +14,6 @@ export default function DynamicText({ type, options, keyProp, ...restProps }: Dy
 	const { isSubmitting } = formState;
 	const { invalid, error } = fieldState;
 	let element;
-	console.log(keyProp);
 	switch (type) {
 		case 'password':
 			element = <Input.Password key={keyProp} {...field} {...options} disabled={isSubmitting} />;

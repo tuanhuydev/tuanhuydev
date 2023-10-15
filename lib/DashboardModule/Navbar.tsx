@@ -1,4 +1,4 @@
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { LeftOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { EMPTY_OBJECT } from '@lib/configs/constants';
 import { authActions } from '@lib/store/slices/authSlice';
 import { Button, Popover } from 'antd';
@@ -8,11 +8,12 @@ import { useDispatch } from 'react-redux';
 
 interface NavbarProps extends PropsWithChildren {
 	title?: string;
+	goBack?: boolean;
 	startComponent?: ReactNode;
 	endComponent?: ReactNode;
 }
 
-const Navbar = ({ title, startComponent = <Fragment />, endComponent = <Fragment /> }: NavbarProps) => {
+const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endComponent = <Fragment /> }: NavbarProps) => {
 	// Hook
 	const router = useRouter();
 	const dispatch = useDispatch();
@@ -39,9 +40,15 @@ const Navbar = ({ title, startComponent = <Fragment />, endComponent = <Fragment
 	);
 
 	const renderStart = useMemo(() => {
-		if (title) return <h1 className="my-auto text-xl font-bold capitalize">{title}</h1>;
+		if (title)
+			return (
+				<div className="flex items-center gap-1">
+					{goBack ? <Button type="text" onClick={() => router.back()} icon={<LeftOutlined />}></Button> : <Fragment />}
+					<h1 className="my-auto text-xl font-bold capitalize">{title}</h1>
+				</div>
+			);
 		return startComponent;
-	}, [startComponent, title]);
+	}, [goBack, router, startComponent, title]);
 
 	const renderEnd = useMemo(() => {
 		return (
