@@ -42,7 +42,7 @@ export default function PostCard({ post, onClick, CardProps }: PostCardProps) {
 			onClick={handleCardClick}
 			loading={!post}>
 			<div className="relative aspect-[3/2] rounded-sm mb-3">
-				<ImageWithFallback alt={title} className="rounded-sm object-cover" fill src={thumbnail} />
+				<ImageWithFallback alt={title} className="rounded-sm object-cover" fill sizes="100vw" src={thumbnail} />
 			</div>
 			<h4 className="font-semibold text-xl mb-2 grow truncate">{title}</h4>
 			<div className="flex flex-nowrap items-center justify-between">
