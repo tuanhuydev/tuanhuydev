@@ -5,9 +5,8 @@ import { NextRequest } from 'next/server';
 import { ACCESS_TOKEN_SECRET } from '@shared/commons/constants/encryption';
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
-import { extractTokenFromRequest } from '@shared/utils/network';
-
-import Network from '@backend/utils/Network';
+import Network from '@shared/utils/Network';
+import { extractTokenFromRequest } from '@shared/utils/helper';
 
 const withAuthMiddleware =
 	(handler: Function) =>

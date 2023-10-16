@@ -5,7 +5,7 @@ import MarkdownEditor from '@lib/components/commons/MardownEditor';
 import { EMPTY_STRING } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { PostAsset } from '@prisma/client';
-import { Button, Form, Input, Upload } from 'antd';
+import { Button, Form, Input, Upload, notification } from 'antd';
 import Cookies from 'js-cookie';
 import { AppContext } from 'lib/components/hocs/WithProvider';
 import { useCreatePostMutation, useUpdatePostMutation } from 'lib/store/slices/apiSlice';
@@ -26,7 +26,8 @@ export default function PostForm({ post }: any) {
 	// Hooks
 	const [form] = Form.useForm();
 	const router = useRouter();
-	const { context } = useContext(AppContext);
+	const [notify, notifyContext] = notification.useNotification();
+
 	const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
 	const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
 
@@ -65,17 +66,16 @@ export default function PostForm({ post }: any) {
 				const { data }: any = isEditMode ? await updatePost({ id: post.id, body }) : await createPost(body);
 				if (!data?.success) throw new Error('Unable to save');
 
-				context.notify?.success({ message: 'Save successfully' });
+				notify.success({ message: 'Save successfully' });
 				navigateBack();
 			} catch (error) {
-				context.notify?.error({ message: (error as BaseError).message });
+				notify.error({ message: (error as BaseError).message });
 			} finally {
 				if (!isEditMode) form.resetFields();
-
 				setContent(EMPTY_STRING);
 			}
 		},
-		[assets, attachPublishDate, context.notify, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
+		[assets, attachPublishDate, createPost, form, isEditMode, navigateBack, notify, post?.id, updatePost]
 	);
 
 	const setSlugFieldValue = useCallback(
@@ -122,7 +122,7 @@ export default function PostForm({ post }: any) {
 		setFileList(fileList);
 		const { response = {}, error } = file;
 		const { data: asset } = response;
-		if (error) context.notify.error({ message: (error as BaseError).message });
+		if (error) notify.error({ message: (error as BaseError).message });
 		if (asset) {
 			updatePostAssets(asset);
 			form.setFieldValue('thumbnail', asset.url);

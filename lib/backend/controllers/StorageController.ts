@@ -3,9 +3,9 @@ import BadRequestError from '@lib/shared/commons/errors/BadRequestError';
 import { NextRequest } from 'next/server';
 
 import BaseError from '@shared/commons/errors/BaseError';
+import Network from '@shared/utils/Network';
 
 import S3Service from '@backend/services/S3Service';
-import Network from '@backend/utils/Network';
 
 import assetService, { AssetService } from '../services/AssetService';
 
