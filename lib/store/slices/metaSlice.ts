@@ -2,7 +2,7 @@ import { ObjectType } from '@lib/shared/interfaces/base';
 import { createSlice } from '@reduxjs/toolkit';
 
 const INITIAL_STATE = {
-	sidebarOpen: false,
+	sidebarOpen: true,
 	userInfo: {} as ObjectType,
 };
 

@@ -1,10 +1,10 @@
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
 import { ObjectSchema, object, string } from 'yup';
 
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
-import Network from '@shared/utils/Network';
 
 import AuthService from '@backend/services/AuthService';
 

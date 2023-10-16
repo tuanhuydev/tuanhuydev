@@ -6,7 +6,9 @@ import { FilterType, ObjectType } from '@shared/interfaces/base';
 
 import LogService from './LogService';
 
-export type CreateProjectBody = Pick<Project, 'name' | 'description' | 'thumbnail'>;
+export type CreateProjectBody = Pick<Project, 'name' | 'description' | 'thumbnail'> & {
+	users: string[];
+};
 
 class ProjectService {
 	static #instance: ProjectService;
@@ -18,8 +20,13 @@ class ProjectService {
 		return new ProjectService();
 	}
 
-	async createProject(body: CreateProjectBody) {
-		return prismaClient.project.create({ data: body });
+	async createProject({ users = [], ...restBody }: CreateProjectBody) {
+		const project: Project = await prismaClient.project.create({ data: restBody });
+		if (users.length) {
+			const projectUsers = users.map((userId: string) => ({ projectId: project.id, userId, roleId: 1 }));
+			await prismaClient.projectUser.createMany({ data: projectUsers });
+		}
+		return project;
 	}
 
 	async getProjects(filter?: FilterType) {
@@ -27,7 +34,7 @@ class ProjectService {
 			let defaultWhere: ObjectType = { deletedAt: null };
 			if (!filter) return await prismaClient.project.findMany({ where: defaultWhere });
 
-			const { page = 1, pageSize = 10, orderBy = [{ field: 'createdAt', direction: 'desc' }], search = '' } = filter;
+			const { page, pageSize, orderBy = [{ field: 'createdAt', direction: 'desc' }], search = '' } = filter;
 
 			if (search) {
 				defaultWhere = {
@@ -41,15 +48,27 @@ class ProjectService {
 					publishedAt: filter?.active ? { not: null } : null,
 				};
 			}
-
 			let query: any = {
 				where: defaultWhere,
-				take: pageSize,
-				skip: (page - 1) * pageSize,
+				include: {
+					ProjectUser: {
+						select: {
+							userId: true,
+							roleId: true,
+						},
+					},
+				},
 				orderBy: orderBy.map((order) => ({
 					[order.field]: order.direction.toLowerCase(),
 				})),
 			};
+			if (page && pageSize) {
+				query.take = pageSize;
+				query.skip = (page - 1) * pageSize;
+			} else if (pageSize) {
+				query.take = pageSize;
+			}
+
 			return await prismaClient.project.findMany(query);
 		} catch (error) {
 			throw new BaseError((error as Error).message);

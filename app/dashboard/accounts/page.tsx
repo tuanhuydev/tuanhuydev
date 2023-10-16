@@ -1,12 +1,9 @@
 'use client';
 
+import PageContainer from '@lib/DashboardModule/PageContainer';
 import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { memo } from 'react';
 
 export default memo(function Page() {
-	return (
-		<WithAnimation>
-			<h1>Accounts</h1>
-		</WithAnimation>
-	);
+	return <PageContainer title="Accounts">Hello</PageContainer>;
 });

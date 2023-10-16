@@ -1,57 +1,95 @@
 'use client';
 
+import { EMPTY_STRING } from '@lib/configs/constants';
 import {
 	BlockTypeSelect,
 	BoldItalicUnderlineToggles,
-	CodeToggle,
+	CodeBlockEditorDescriptor,
 	CreateLink,
-	MDXEditor,
+	InsertCodeBlock,
+	ListsToggle,
 	MDXEditorMethods,
-	UndoRedo,
+	codeBlockPlugin,
+	codeMirrorPlugin,
 	headingsPlugin,
 	linkDialogPlugin,
 	linkPlugin,
 	listsPlugin,
-	quotePlugin,
-	thematicBreakPlugin,
 	toolbarPlugin,
+	useCodeBlockEditorContext,
+	MDXEditor,
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-import { FC, memo } from 'react';
+import React, { useMemo, RefObject, useEffect } from 'react';
 
 interface EditorProps {
 	markdown: string;
-	editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
 	onChange?: any;
+	readOnly?: boolean;
+	editorRef?: RefObject<MDXEditorMethods | null>;
+	placeholder?: string;
 }
 
-const BaseEditor: FC<EditorProps> = ({ markdown, editorRef, onChange }) => {
-	return (
-		<MDXEditor
-			ref={editorRef}
-			markdown={markdown}
-			onChange={onChange}
-			contentEditableClassName="prose"
-			plugins={[
-				headingsPlugin(),
-				listsPlugin(),
-				quotePlugin(),
-				thematicBreakPlugin(),
-				linkPlugin(),
-				linkDialogPlugin(),
-				toolbarPlugin({
-					toolbarContents: () => (
-						<>
-							<UndoRedo />
-							<BlockTypeSelect />
-							<BoldItalicUnderlineToggles />
-							<CodeToggle /> <CreateLink />
-						</>
-					),
-				}),
-			]}
-		/>
-	);
+const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
+	match: (language, meta) => true,
+	priority: 0,
+	Editor: (props) => {
+		const cb = useCodeBlockEditorContext();
+		return (
+			<div onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}>
+				<textarea rows={3} cols={20} defaultValue={props.code} onChange={(e) => cb.setCode(e.target.value)} />
+			</div>
+		);
+	},
 };
 
-export default memo(BaseEditor);
+export default function BaseMarkdown({
+	markdown,
+	onChange,
+	readOnly = false,
+	placeholder = 'Placeholder',
+}: EditorProps) {
+	const ref = React.useRef<MDXEditorMethods>(null);
+
+	const getPlugins = useMemo(() => {
+		const basePlugins = [
+			toolbarPlugin({
+				toolbarContents: () => (
+					<>
+						<InsertCodeBlock />
+						<BlockTypeSelect />
+						<BoldItalicUnderlineToggles />
+						<CreateLink />
+						<ListsToggle />
+					</>
+				),
+			}),
+			headingsPlugin(),
+			listsPlugin(),
+			linkPlugin(),
+			linkDialogPlugin(),
+			codeBlockPlugin({ defaultCodeBlockLanguage: 'txt', codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor] }),
+			codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),
+		];
+		if (readOnly) basePlugins.shift();
+		return basePlugins;
+	}, [readOnly]);
+
+	useEffect(() => {
+		if (!ref.current?.getMarkdown() && markdown) {
+			ref.current?.setMarkdown(markdown);
+		}
+	}, [markdown]);
+
+	return (
+		<MDXEditor
+			placeholder={placeholder}
+			ref={ref as RefObject<MDXEditorMethods>}
+			markdown={EMPTY_STRING}
+			onChange={onChange}
+			readOnly={readOnly}
+			contentEditableClassName="min-[4rem]"
+			plugins={getPlugins}
+		/>
+	);
+}
