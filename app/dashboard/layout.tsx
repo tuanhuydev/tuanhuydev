@@ -16,13 +16,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
 			<body>
-				<WithProvider>
-					<ReduxProvider store={store}>
-						<ConfigProvider theme={theme}>
-							<AuthGate />
-						</ConfigProvider>
-					</ReduxProvider>
-				</WithProvider>
+				<ReduxProvider store={store}>
+					<ConfigProvider theme={theme}>
+						<AuthGate />
+					</ConfigProvider>
+				</ReduxProvider>
 			</body>
 		</html>
 	);

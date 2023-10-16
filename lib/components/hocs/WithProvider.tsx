@@ -1,7 +1,6 @@
 'use client';
 
 import { EMPTY_OBJECT } from '@lib/configs/constants';
-import { notification } from 'antd';
 import React, { PropsWithChildren, useReducer } from 'react';
 import { createContext } from 'react';
 
@@ -14,18 +13,10 @@ function reducer(state: ObjectType, item: ObjectType) {
 export const AppContext = createContext(EMPTY_OBJECT);
 
 export default function WithProvider(props: PropsWithChildren) {
-	const [notify, notifyContext] = notification.useNotification();
-
 	const [context, setContext] = useReducer(reducer, {
 		theme: 'light',
 		playSound: false,
-		notify,
 	});
 
-	return (
-		<AppContext.Provider value={{ context, setContext }}>
-			{props.children}
-			{notifyContext}
-		</AppContext.Provider>
-	);
+	return <AppContext.Provider value={{ context, setContext }}>{props.children}</AppContext.Provider>;
 }

@@ -2,7 +2,6 @@
 
 import {
 	AppstoreOutlined,
-	BarsOutlined,
 	DeleteOutlined,
 	DownOutlined,
 	DownloadOutlined,
@@ -10,15 +9,13 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
-import Navbar from '@lib/DashboardModule/Navbar';
 import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
 import { AppContext } from '@lib/components/hocs/WithProvider';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { Button, Dropdown, Empty, Input, MenuProps, Modal } from 'antd';
+import { Button, Dropdown, Empty, Input, MenuProps, Modal, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -29,7 +26,7 @@ const { confirm } = Modal;
 export default memo(function Page() {
 	// Hook
 	const router = useRouter();
-	const { context }: any = useContext(AppContext);
+	const [notify, notifyContext] = notification.useNotification();
 
 	const { data: posts = [], isLoading } = useGetPostsQuery({});
 	const [deletePost, { isSuccess, isError }] = useDeletePostMutation();
@@ -149,9 +146,9 @@ export default memo(function Page() {
 	];
 
 	useEffect(() => {
-		if (isSuccess) context?.notify.success({ message: 'Delete Post Successfully' });
-		if (isError) context?.notify.error({ message: 'Delete Post Fail' });
-	}, [context?.notify, isError, isSuccess]);
+		if (isSuccess) notify.success({ message: 'Delete Post Successfully' });
+		if (isError) notify.error({ message: 'Delete Post Fail' });
+	}, [notify, isError, isSuccess]);
 
 	return (
 		<PageContainer title="Posts">
@@ -186,6 +183,7 @@ export default memo(function Page() {
 			<div className="grow overflow-auto pb-3">
 				{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
 			</div>
+			{notifyContext}
 		</PageContainer>
 	);
 });

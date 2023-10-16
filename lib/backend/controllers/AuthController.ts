@@ -4,9 +4,9 @@ import { ObjectSchema, object, string } from 'yup';
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
+import Network from '@shared/utils/Network';
 
 import AuthService from '@backend/services/AuthService';
-import Network from '@backend/utils/Network';
 
 class AuthController {
 	#signInSchema: ObjectSchema<any>;
