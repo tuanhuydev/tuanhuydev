@@ -43,3 +43,8 @@ export const extractTokenFromRequest = (bearerString: string) => {
 	const token = bearerString.substring(bearerPrefixLength);
 	return token;
 };
+
+export const isPathActive = (pathName: string, path: string) => {
+	if (!pathName || !path) return false;
+	return (pathName as string).startsWith(path);
+};

@@ -2,15 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-// @import 'variables';
-
-// @import 'vendors/react-quill.scss';
-
 /* Source Sans Pro */
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Ubuntu+Mono:wght@400;700&display=swap');
 
 * {
 	box-sizing: border-box;
+}
+
+.sp-read-only {
+	display: none !important;
 }
 
 html,

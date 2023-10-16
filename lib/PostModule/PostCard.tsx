@@ -35,12 +35,7 @@ export default function PostCard({ post, onClick, CardProps }: PostCardProps) {
 	}, [publishedAt]);
 
 	return (
-		<Card
-			{...CardProps}
-			hoverable
-			rootClassName="max-w-[22rem] max-h-[24rem]"
-			onClick={handleCardClick}
-			loading={!post}>
+		<Card {...CardProps} hoverable rootClassName="w-[18rem]" onClick={handleCardClick} loading={!post}>
 			<div className="relative aspect-[3/2] rounded-sm mb-3">
 				<ImageWithFallback alt={title} className="rounded-sm object-cover" fill sizes="100vw" src={thumbnail} />
 			</div>

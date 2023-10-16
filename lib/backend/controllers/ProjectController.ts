@@ -1,11 +1,11 @@
 import { BaseController } from '@lib/shared/interfaces/controller';
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
-import { ObjectSchema, object, string } from 'yup';
+import { ObjectSchema, object, string, date, array } from 'yup';
 
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 import { ObjectType } from '@shared/interfaces/base';
-import Network from '@shared/utils/Network';
 
 import LogService from '../services/LogService';
 import ProjectService from '../services/ProjectService';
@@ -23,7 +23,14 @@ export class ProjectController implements BaseController {
 			name: string().required(),
 			description: string().required(),
 			thumbnail: string().nullable(),
+			startDate: date().nullable(),
+			endDate: date().nullable(),
+			users: array().of(string()).nullable(),
 		});
+	}
+
+	makeResource(projects: any[]) {
+		return projects.map(({ ProjectUser: users, ...rest }: any) => ({ ...rest, users }));
 	}
 
 	async validateStoreRequest(body: any) {
@@ -53,7 +60,9 @@ export class ProjectController implements BaseController {
 		try {
 			const params: ObjectType = network.extractSearchParams();
 			const projects = await ProjectService.getProjects(params);
-			return network.successResponse(projects);
+
+			const formatProject = this.makeResource(projects);
+			return network.successResponse(formatProject);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
 		}
