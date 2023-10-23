@@ -1,13 +1,13 @@
 import { ObjectType } from '@lib/shared/interfaces/base';
+import { BaseController } from '@lib/shared/interfaces/controller';
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
 import { ObjectSchema, object, string } from 'yup';
 
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 
-import { BaseController } from '@backend/interfaces/controller';
 import userService from '@backend/services/UserService';
-import Network from '@backend/utils/Network';
 
 import AuthService from '../services/AuthService';
 

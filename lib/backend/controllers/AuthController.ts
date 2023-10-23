@@ -1,3 +1,4 @@
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
 import { ObjectSchema, object, string } from 'yup';
 
@@ -6,7 +7,6 @@ import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
 
 import AuthService from '@backend/services/AuthService';
-import Network from '@backend/utils/Network';
 
 class AuthController {
 	#signInSchema: ObjectSchema<any>;

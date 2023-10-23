@@ -1,12 +1,13 @@
 'use client';
 
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
-import { Skeleton } from 'antd';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { getLocalStorage } from '@shared/utils/dom';
+
+import Loader from '../commons/Loader';
 
 export default function WithAuth(WrappedComponent: React.FC) {
 	const AuthenticatedComponent = (props: JSX.IntrinsicAttributes) => {
@@ -24,7 +25,7 @@ export default function WithAuth(WrappedComponent: React.FC) {
 		}, [router]);
 
 		if (authenticated) return <WrappedComponent {...props} />;
-		return <Skeleton data-testid="skeleton-testid" />;
+		return <Loader />;
 	};
 
 	return AuthenticatedComponent;

@@ -1,11 +1,11 @@
 import { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
 import BadRequestError from '@lib/shared/commons/errors/BadRequestError';
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
 
 import BaseError from '@shared/commons/errors/BaseError';
 
 import S3Service from '@backend/services/S3Service';
-import Network from '@backend/utils/Network';
 
 import assetService, { AssetService } from '../services/AssetService';
 

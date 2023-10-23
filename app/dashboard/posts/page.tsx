@@ -2,7 +2,6 @@
 
 import {
 	AppstoreOutlined,
-	BarsOutlined,
 	DeleteOutlined,
 	DownOutlined,
 	DownloadOutlined,
@@ -10,17 +9,14 @@ import {
 	EyeOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
-import Navbar from '@lib/DashboardModule/Navbar';
 import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
-import { AppContext } from '@lib/components/hocs/WithProvider';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { Button, Dropdown, Empty, Input, MenuProps, Modal } from 'antd';
+import { Button, Dropdown, Empty, Input, MenuProps, Modal, notification, Flex } from 'antd';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 type ViewMode = 'card' | 'list';
 
@@ -29,19 +25,13 @@ const { confirm } = Modal;
 export default memo(function Page() {
 	// Hook
 	const router = useRouter();
-	const { context }: any = useContext(AppContext);
+	const [notify, notifyContext] = notification.useNotification();
 
 	const { data: posts = [], isLoading } = useGetPostsQuery({});
 	const [deletePost, { isSuccess, isError }] = useDeletePostMutation();
 
 	// State
 	const [viewMode, setMode] = useState<ViewMode>('card');
-
-	const toggleViewMode = (viewMode: string) => () => setMode(viewMode as ViewMode);
-
-	const activeViewModeStyle = (expectingMode: string) => (viewMode === expectingMode ? 'bg-primary text-slate-50' : '');
-
-	const activeViewModeButtonType = (expectingMode: string) => (viewMode === expectingMode ? 'primary' : 'default');
 
 	const navigatePostCreate = useCallback(() => router.push('/dashboard/posts/create'), [router]);
 
@@ -116,7 +106,7 @@ export default memo(function Page() {
 
 		if (isCard) {
 			return (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-2">
+				<div className="flex flex-wrap gap-2">
 					{posts.map((post: any) => (
 						<PostCard
 							post={post}
@@ -149,43 +139,30 @@ export default memo(function Page() {
 	];
 
 	useEffect(() => {
-		if (isSuccess) context?.notify.success({ message: 'Delete Post Successfully' });
-		if (isError) context?.notify.error({ message: 'Delete Post Fail' });
-	}, [context?.notify, isError, isSuccess]);
+		if (isSuccess) notify.success({ message: 'Delete Post Successfully' });
+		if (isError) notify.error({ message: 'Delete Post Fail' });
+	}, [notify, isError, isSuccess]);
 
 	return (
 		<PageContainer title="Posts">
-			<div className="flex items-center mb-6" data-testid="dashboard-posts-page-testid">
-				<div className="button-group flex mr-2">
-					<Button
-						size="middle"
-						type={activeViewModeButtonType('card')}
-						onClick={toggleViewMode('card')}
-						className={`${activeViewModeStyle('card')} rounded-sm mr-1`}
-						icon={<AppstoreOutlined />}
-					/>
-					{/* <Button
-						onClick={toggleViewMode('list')}
-						type={activeViewModeButtonType('list')}
-						className={`${activeViewModeStyle('list')} rounded-sm mr-1`}
-						size="middle"
-						icon={<BarsOutlined />}
-					/> */}
-				</div>
+			<Flex gap="middle" data-testid="dashboard-posts-page-testid">
 				<Input size="large" placeholder="Find your post" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
-				<Dropdown.Button
-					size="large"
-					type="primary"
-					onClick={navigatePostCreate}
-					className="w-auto rounded-sm"
-					icon={<DownOutlined />}
-					menu={{ items: menuItems }}>
-					Write New
-				</Dropdown.Button>
-			</div>
+				<div>
+					<Dropdown.Button
+						size="large"
+						type="primary"
+						onClick={navigatePostCreate}
+						className="rounded-sm"
+						icon={<DownOutlined />}
+						menu={{ items: menuItems }}>
+						Write New
+					</Dropdown.Button>
+				</div>
+			</Flex>
 			<div className="grow overflow-auto pb-3">
 				{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
 			</div>
+			{notifyContext}
 		</PageContainer>
 	);
 });

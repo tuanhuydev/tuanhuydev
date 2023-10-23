@@ -17,6 +17,15 @@ async function main() {
 		},
 		update: {},
 	});
+	await prisma.role.upsert({
+		create: {
+			id: 1,
+			name: 'Guest',
+			description: 'Default guest',
+		},
+		where: { id: 1 },
+		update: {},
+	});
 }
 main()
 	.then(async () => {
