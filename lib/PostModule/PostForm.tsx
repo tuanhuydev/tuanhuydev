@@ -1,19 +1,22 @@
 'use client';
 
 import { UploadOutlined } from '@ant-design/icons';
-import MarkdownEditor from '@lib/components/commons/MardownEditor';
+import Loader from '@lib/components/commons/Loader';
 import { EMPTY_STRING } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
+import { MDXEditorMethods } from '@mdxeditor/editor';
 import { PostAsset } from '@prisma/client';
-import { Button, Form, Input, Upload } from 'antd';
+import { App, Button, Form, Input, Upload } from 'antd';
 import Cookies from 'js-cookie';
-import { AppContext } from 'lib/components/hocs/WithProvider';
 import { useCreatePostMutation, useUpdatePostMutation } from 'lib/store/slices/apiSlice';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import { isURLValid, transformTextToDashed } from '@shared/utils/helper';
+
+const MarkdownEditor = dynamic(() => import('@lib/components/commons/MardownEditor'), { ssr: false });
 
 const initialValues = {
 	title: EMPTY_STRING,
@@ -23,10 +26,13 @@ const initialValues = {
 };
 
 export default function PostForm({ post }: any) {
+	const editorRef = useRef<MDXEditorMethods | null>(null);
+
 	// Hooks
 	const [form] = Form.useForm();
 	const router = useRouter();
-	const { context } = useContext(AppContext);
+	const { notification } = App.useApp();
+
 	const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
 	const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
 
@@ -62,20 +68,19 @@ export default function PostForm({ post }: any) {
 			body.assets = assets;
 
 			try {
-				const { data }: any = isEditMode ? await updatePost({ id: post.id, body }) : await createPost(body);
+				const { data }: any = isEditMode ? await updatePost({ id: post?.id, body }) : await createPost(body);
 				if (!data?.success) throw new Error('Unable to save');
 
-				context.notify?.success({ message: 'Save successfully' });
+				notification.success({ message: 'Save successfully' });
 				navigateBack();
 			} catch (error) {
-				context.notify?.error({ message: (error as BaseError).message });
+				notification.error({ message: (error as BaseError).message });
 			} finally {
 				if (!isEditMode) form.resetFields();
-
 				setContent(EMPTY_STRING);
 			}
 		},
-		[assets, attachPublishDate, context.notify, createPost, form, isEditMode, navigateBack, post?.id, updatePost]
+		[assets, attachPublishDate, createPost, form, isEditMode, navigateBack, notification, post?.id, updatePost]
 	);
 
 	const setSlugFieldValue = useCallback(
@@ -118,11 +123,11 @@ export default function PostForm({ post }: any) {
 		[form]
 	);
 
-	const uploadFile = ({ file, fileList, event }: any) => {
+	const uploadFile = ({ file, fileList }: any) => {
 		setFileList(fileList);
 		const { response = {}, error } = file;
 		const { data: asset } = response;
-		if (error) context.notify.error({ message: (error as BaseError).message });
+		if (error) notification.error({ message: (error as BaseError).message });
 		if (asset) {
 			updatePostAssets(asset);
 			form.setFieldValue('thumbnail', asset.url);
@@ -146,6 +151,7 @@ export default function PostForm({ post }: any) {
 				form.setFieldValue(key, value);
 				if (key === 'content') {
 					setContent(value as string);
+					editorRef.current?.setMarkdown(value as string);
 				} else if (key === 'PostAsset') {
 					const assets = (value as Array<Partial<PostAsset>>).map(({ assetId }) => assetId);
 					setAssets(assets as never);
@@ -199,7 +205,9 @@ export default function PostForm({ post }: any) {
 						</div>
 					</div>
 					<Form.Item name="content" rules={rules}>
-						<MarkdownEditor onChange={handleEditorChange} value={content} />
+						<Suspense fallback={<Loader />}>
+							<MarkdownEditor onChange={handleEditorChange} value={content} />
+						</Suspense>
 					</Form.Item>
 				</Form>
 			</div>

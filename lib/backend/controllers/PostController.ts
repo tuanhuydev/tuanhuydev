@@ -1,3 +1,5 @@
+import { BaseController } from '@lib/shared/interfaces/controller';
+import Network from '@lib/shared/utils/network';
 import { NextRequest } from 'next/server';
 import { ObjectSchema, object, string } from 'yup';
 
@@ -6,9 +8,7 @@ import BaseError from '@shared/commons/errors/BaseError';
 import { ObjectType } from '@shared/interfaces/base';
 import { makeSlug } from '@shared/utils/helper';
 
-import { BaseController } from '@backend/interfaces/controller';
 import postService from '@backend/services/PostService';
-import Network from '@backend/utils/Network';
 
 export class PostController implements BaseController {
 	#schema: ObjectSchema<any>;
