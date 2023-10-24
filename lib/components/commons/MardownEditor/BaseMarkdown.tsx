@@ -56,11 +56,11 @@ export default function BaseMarkdown({
 			toolbarPlugin({
 				toolbarContents: () => (
 					<>
-						<InsertCodeBlock />
 						<BlockTypeSelect />
 						<BoldItalicUnderlineToggles />
 						<CreateLink />
 						<ListsToggle />
+						<InsertCodeBlock />
 					</>
 				),
 			}),
