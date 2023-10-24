@@ -170,16 +170,16 @@ export default function PostForm({ post }: any) {
 					onFieldsChange={handleFieldChange}
 					onFinish={savePost}>
 					<Form.Item name="title" rules={rules}>
-						<Input placeholder="Please type title..." size="large" className="mb-3" disabled={submitting} />
+						<Input placeholder="Title" size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
 					<Form.Item name="slug" rules={rules}>
-						<Input placeholder="Please type slug..." size="large" className="mb-3" disabled={submitting} />
+						<Input placeholder="Slug" size="large" className="mb-3" disabled={submitting} />
 					</Form.Item>
 					<div className="flex items-center transition-all">
-						<Form.Item name="thumbnail" label="Thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
+						<Form.Item name="thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
 							<Input placeholder="Thumbnail URL" size="large" disabled={submitting} />
 						</Form.Item>
-						<div className="mt-1 flex items-center">
+						<div className="mb-6 flex items-center">
 							<div className="mx-3 text-slate-500">Or</div>
 							<Upload
 								name="file"
@@ -187,9 +187,7 @@ export default function PostForm({ post }: any) {
 								onChange={uploadFile}
 								fileList={fileList}
 								action="/api/upload/image"
-								headers={{
-									Authorization: `Bearer ${Cookies.get('jwt')}`,
-								}}
+								headers={{ Authorization: `Bearer ${Cookies.get('jwt')}` }}
 								accept="image/png, image/jpeg"
 								multiple={false}
 								listType="picture"

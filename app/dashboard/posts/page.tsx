@@ -1,7 +1,6 @@
 'use client';
 
 import {
-	AppstoreOutlined,
 	DeleteOutlined,
 	DownOutlined,
 	DownloadOutlined,
@@ -12,26 +11,22 @@ import {
 import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
+import { ObjectType } from '@lib/shared/interfaces/base';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { Button, Dropdown, Empty, Input, MenuProps, Modal, notification, Flex } from 'antd';
+import { Dropdown, Empty, Input, MenuProps, Modal, notification, Flex } from 'antd';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-
-type ViewMode = 'card' | 'list';
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 const { confirm } = Modal;
 
 export default memo(function Page() {
-	// Hook
+	const [filter, setFilter] = useState<ObjectType>({});
 	const router = useRouter();
 	const [notify, notifyContext] = notification.useNotification();
 
-	const { data: posts = [], isLoading } = useGetPostsQuery({});
+	const { data: posts = [], isLoading } = useGetPostsQuery(filter);
 	const [deletePost, { isSuccess, isError }] = useDeletePostMutation();
-
-	// State
-	const [viewMode, setMode] = useState<ViewMode>('card');
 
 	const navigatePostCreate = useCallback(() => router.push('/dashboard/posts/create'), [router]);
 
@@ -101,33 +96,30 @@ export default memo(function Page() {
 		document.body.removeChild(downloadElement);
 	}, []);
 
-	const RenderPosts: JSX.Element = useMemo(() => {
-		const isCard = viewMode === 'card';
+	const onSearchPosts = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		setTimeout(() => {
+			const search = event.target.value;
+			setFilter((filter) => ({ ...filter, search }));
+		}, 500);
+	}, []);
 
-		if (isCard) {
-			return (
-				<div className="flex flex-wrap gap-2">
-					{posts.map((post: any) => (
-						<PostCard
-							post={post}
-							key={post.id}
-							onClick={navigatePostEdit}
-							CardProps={{
-								actions: makePostCardActions(post),
-							}}
-						/>
-					))}
-				</div>
-			);
-		}
-		return (
-			<ul>
+	const RenderPosts: JSX.Element = useMemo(
+		() => (
+			<div className="flex flex-wrap gap-2">
 				{posts.map((post: any) => (
-					<li key={post.id}>{post.title}</li>
+					<PostCard
+						post={post}
+						key={post.id}
+						onClick={navigatePostEdit}
+						CardProps={{
+							actions: makePostCardActions(post),
+						}}
+					/>
 				))}
-			</ul>
-		);
-	}, [makePostCardActions, navigatePostEdit, posts, viewMode]);
+			</div>
+		),
+		[makePostCardActions, navigatePostEdit, posts]
+	);
 
 	const menuItems: MenuProps['items'] = [
 		{
@@ -145,8 +137,14 @@ export default memo(function Page() {
 
 	return (
 		<PageContainer title="Posts">
-			<Flex gap="middle" data-testid="dashboard-posts-page-testid">
-				<Input size="large" placeholder="Find your post" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
+			<Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
+				<Input
+					size="large"
+					placeholder="Find your post"
+					onChange={onSearchPosts}
+					className="grow mr-2 rounded-sm"
+					prefix={<SearchOutlined />}
+				/>
 				<div>
 					<Dropdown.Button
 						size="large"
