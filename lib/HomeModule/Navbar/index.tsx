@@ -49,7 +49,7 @@ function Navbar() {
 				</a>
 			</div>
 			<div className="flex items-center">
-				<ul className="flex md:justify-between list-none">
+				<ul className="flex md:justify-between list-none m-0 p-0">
 					<li className="mr-3.5 cursor-pointer rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
 						<a href="#blog">
 							<div className="block px-4 py-1 dark:text-white capitalize">Blog</div>
