@@ -47,7 +47,7 @@ class PostService {
 			defaultWhere = {
 				...defaultWhere,
 				title: {
-					startWith: search,
+					startsWith: search,
 				},
 			};
 		}

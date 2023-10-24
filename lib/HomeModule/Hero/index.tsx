@@ -68,7 +68,12 @@ export default memo(function Hero() {
 					<li className={`${graphicStyles} col-start-6 row-start-6`}>#ReactJS</li>
 					<li className={`${graphicStyles} col-start-10 col-span-full row-start-2`}>#PHP Laravel</li>
 					<li className="col-start-5 col-span-4 row-start-3 row-span-2 m-2 p-2 relative flex justify-center items-center">
-						<Image src={Avatar} alt="avatar" className="rounded-full w-24 h-24 md:w-40 md:h-40 lg:w-48 lg:h-48" />
+						<Image
+							src={Avatar}
+							alt="avatar"
+							className="rounded-full w-24 h-24 md:w-40 md:h-40 lg:w-48 lg:h-48"
+							priority
+						/>
 					</li>
 					<li className={`${graphicStyles} col-start-7 col-span-2 row-start-5`}>#Docker</li>
 					<li className={`${graphicStyles} col-start-10 col-span-2 row-start-5`}>#CI/CD</li>
