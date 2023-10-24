@@ -11,6 +11,7 @@ import {
 import PageContainer from '@lib/DashboardModule/PageContainer';
 import PostCard from '@lib/PostModule/PostCard';
 import Loader from '@lib/components/commons/Loader';
+import { BASE_URL } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
@@ -74,7 +75,7 @@ export default memo(function Page() {
 	const exportPostsToJson = useCallback(async () => {
 		// Fetch posts
 		let allPosts = [];
-		const response = await fetch(`/api/posts`, { cache: 'no-cache' });
+		const response = await fetch(`${BASE_URL}/api/posts`, { cache: 'no-cache' });
 		if (response.ok) {
 			const { data = [] } = await response.json();
 			allPosts = data;
