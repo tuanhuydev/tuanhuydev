@@ -1,5 +1,5 @@
 import Loader from '@lib/components/commons/Loader';
-import { EMPTY_STRING } from '@lib/configs/constants';
+import { BASE_URL, EMPTY_STRING } from '@lib/configs/constants';
 import ImageWithFallback from 'lib/components/commons/ImageWithFallback';
 import dynamic from 'next/dynamic';
 import React, { Suspense } from 'react';
@@ -10,7 +10,7 @@ const MarkdownPreview = dynamic(() => import('@lib/components/commons/MardownEdi
 });
 
 async function getData(slug: string) {
-	const response = await fetch(`/api/posts/${slug}`, { cache: 'no-store' });
+	const response = await fetch(`${BASE_URL}/api/posts/${slug}`, { cache: 'no-store' });
 	if (!response.ok) return {};
 
 	const { data: post } = await response.json();
