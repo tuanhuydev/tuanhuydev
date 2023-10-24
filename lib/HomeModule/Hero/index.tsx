@@ -56,7 +56,7 @@ export default memo(function Hero() {
 				</a>
 			</div>
 			<div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
-				<ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6 list-none">
+				<ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6 list-none m-0 p-0">
 					<li className={`${graphicStyles} col-start-1 col-span-4`}>#Web Development</li>
 					<li className={`${graphicStyles} col-start-3 row-start-3`}>#HTML</li>
 					<li className={`${graphicStyles} col-start-2 row-start-4`}>#CSS</li>
