@@ -1,12 +1,11 @@
 'use client';
 
-import { FormOutlined, LinkOutlined } from '@ant-design/icons';
+import { FolderOpenOutlined } from '@ant-design/icons';
 import PageContainer from '@lib/DashboardModule/PageContainer';
-import { BASE_URL } from '@lib/configs/constants';
 import { useGetProjectsQuery } from '@lib/store/slices/apiSlice';
 import { Card } from 'antd';
 import { useRouter } from 'next/navigation';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 
 export interface HomeCardProps {
 	url: string;
@@ -26,7 +25,7 @@ const HomeCard = ({ url, name, value, loading = false }: HomeCardProps) => {
 			onClick={navigateProjects}>
 			<div className="flex justify-between font-thin text-lg text-slate-400 mb-2">
 				<span className="block ">{name}</span>
-				<LinkOutlined />
+				<FolderOpenOutlined />
 			</div>
 			<span className="block text-3xl">{value}</span>
 		</Card>
