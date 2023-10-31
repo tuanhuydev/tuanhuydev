@@ -1,4 +1,6 @@
 .points {
+	list-style: none;
+
 	li::before {
 		content: attr(data-icon);
 		font-size: 1.5em;
