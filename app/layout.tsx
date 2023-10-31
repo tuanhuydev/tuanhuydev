@@ -17,7 +17,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 					property="og:description"
 					content="🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success."
 				/>
-
+				<title>tuanhuydev - Fullstack Software Engineer</title>
 				<meta name="image" property="og:image" content="/assets/images/preview.png" />
 				<meta name="url" property="og:url" content="https://tuanhuy.dev" />
 				<meta name="type" property="og:type" content="website" />
