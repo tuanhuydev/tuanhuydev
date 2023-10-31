@@ -3,26 +3,19 @@
 import { Post } from '@prisma/client';
 import { formatDistance } from 'date-fns';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export interface HighlightPostProps {
 	post: Post;
 	className?: string;
 }
+
 export default function HighlightPost({ post, className }: HighlightPostProps) {
-	const router = useRouter();
-
-	const navigatePost = (post: any) => () => {
-		router.push(`/posts/${post.slug}`);
-	};
-
 	const { title, thumbnail = '', createdAt } = post;
-
 	return (
-		<div
-			className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer ${className}`}
-			onClick={navigatePost(post)}>
+		<a
+			href={`/posts/${post.slug}`}
+			className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer ${className}`}>
 			<div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-3">
 				{thumbnail && (
 					<div className="w-full h-72 lg:h-72 grow relative mb-2">
@@ -36,6 +29,6 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
 					</p>
 				</div>
 			</div>
-		</div>
+		</a>
 	);
 }
