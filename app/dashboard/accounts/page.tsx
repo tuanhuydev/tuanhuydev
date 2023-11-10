@@ -1,9 +1,9 @@
 'use client';
 
-import PageContainer from '@lib/DashboardModule/PageContainer';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
-import { memo } from 'react';
+import dynamic from 'next/dynamic';
 
-export default memo(function Page() {
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'));
+
+export default function Page() {
 	return <PageContainer title="Accounts">Hello</PageContainer>;
-});
+}

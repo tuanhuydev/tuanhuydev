@@ -1,22 +1,25 @@
 'use client';
 
-import DynamicForm, { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
+import { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
+import { AppContext } from '@lib/components/hocs/WithProvider';
+import apiClient from '@lib/configs/apiClient';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
+import { RootState } from '@lib/configs/types';
+import { authActions } from '@lib/store/slices/authSlice';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
-import { AppContext } from 'lib/components/hocs/WithProvider';
-import apiClient from 'lib/configs/apiClient';
-import { RootState } from 'lib/configs/types';
-import { authActions } from 'lib/store/slices/authSlice';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
+
+const DynamicForm = dynamic(() => import('@lib/components/commons/Form/DynamicForm'), { ssr: false });
+const WithAnimation = dynamic(() => import('@lib/components/hocs/WithAnimation'), { ssr: false });
 
 // TODO: Move this one to API.
 const signInFormConfig: DynamicFormConfig = {
@@ -46,7 +49,7 @@ const signInFormConfig: DynamicFormConfig = {
 	],
 };
 
-export default memo(function SignIn() {
+export default function SignIn() {
 	// Hooks
 	const dispatch = useDispatch();
 	const { context } = useContext(AppContext);
@@ -67,7 +70,7 @@ export default memo(function SignIn() {
 			if (!res) throw new UnauthorizedError('Invalid sign in');
 
 			syncAuth(res.data);
-			router.push('/dashboard');
+			router.push('/dashboard', {});
 		} catch (error) {
 			context.notify.error({ message: (error as BaseError).message });
 		}
@@ -111,4 +114,4 @@ export default memo(function SignIn() {
 			</div>
 		</WithAnimation>
 	);
-});
+}

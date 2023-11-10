@@ -1,8 +1,14 @@
 'use client';
 
-import PageContainer from '@lib/DashboardModule/PageContainer';
-import React, { memo } from 'react';
+import dynamic from 'next/dynamic';
+import React from 'react';
 
-export default memo(function Page() {
-	return <PageContainer title="Tasks">Hello</PageContainer>;
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+	ssr: false,
+	loading: () => <Loader />,
 });
+
+export default function Page() {
+	return <PageContainer title="Tasks">Hello</PageContainer>;
+}

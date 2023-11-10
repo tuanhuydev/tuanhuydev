@@ -8,12 +8,8 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 export default function SignInLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang="en">
-			<body>
-				<ConfigProvider theme={theme}>
-					<ReduxProvider store={store}>{children}</ReduxProvider>
-				</ConfigProvider>
-			</body>
-		</html>
+		<ConfigProvider theme={theme}>
+			<ReduxProvider store={store}>{children}</ReduxProvider>
+		</ConfigProvider>
 	);
 }

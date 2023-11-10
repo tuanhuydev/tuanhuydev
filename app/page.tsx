@@ -1,5 +1,3 @@
-import Blog from '@lib/HomeModule/BlogSection';
-import HomeLayout from '@lib/HomeModule/HomeLayout';
 import WithProvider from '@lib/components/hocs/WithProvider';
 import { BASE_URL } from '@lib/configs/constants';
 import { Post } from '@prisma/client';
@@ -9,6 +7,8 @@ import React from 'react';
 const Hero = dynamic(() => import('@lib/HomeModule/Hero'));
 const Contact = dynamic(() => import('@lib/HomeModule/Contact'));
 const Services = dynamic(() => import('@lib/HomeModule/Services'));
+const Blog = dynamic(() => import('@lib/HomeModule/BlogSection'));
+const HomeLayout = dynamic(() => import('@lib/HomeModule/HomeLayout'));
 
 async function getData() {
 	const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: 'no-store' });
