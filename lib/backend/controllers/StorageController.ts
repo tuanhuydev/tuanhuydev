@@ -11,6 +11,11 @@ import assetService, { AssetService } from '../services/AssetService';
 
 class StorageController {
 	#assetService: AssetService;
+	static #instance: StorageController;
+
+	static makeInstance(assetService: AssetService) {
+		return StorageController.#instance ?? new StorageController(assetService);
+	}
 
 	constructor(assetService: AssetService) {
 		this.#assetService = assetService;
@@ -48,5 +53,4 @@ class StorageController {
 	}
 }
 
-const storageController = new StorageController(assetService);
-export default storageController;
+export default StorageController.makeInstance(assetService);
