@@ -35,6 +35,7 @@ model User {
   deletedAt   DateTime?     @db.Timestamp(6)
   posts       Post[]
   ProjectUser ProjectUser[]
+  Task        Task[]
 
   @@map("users")
 }
@@ -59,14 +60,15 @@ model Task {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(255)
   description String    @db.Text
-  projectId   Int
-  statusId    Int       @unique
+  projectId   Int?
+  statusId    Int?      @unique
+  createdBy   String?   @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
-
-  project Project @relation(fields: [projectId], references: [id])
-  status  Status  @relation(fields: [statusId], references: [id])
+  user        User?     @relation(fields: [createdBy], references: [id])
+  project     Project?  @relation(fields: [projectId], references: [id])
+  status      Status?   @relation(fields: [statusId], references: [id])
 
   @@index([title])
   @@map("tasks")
