@@ -2,12 +2,13 @@
 
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import Cookies from 'js-cookie';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { getLocalStorage } from '@shared/utils/dom';
 
-import Loader from '../commons/Loader';
+const Loader = dynamic(() => import('../commons/Loader'));
 
 export default function WithAuth(WrappedComponent: React.FC) {
 	const AuthenticatedComponent = (props: JSX.IntrinsicAttributes) => {

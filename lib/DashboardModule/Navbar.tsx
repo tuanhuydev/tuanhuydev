@@ -1,10 +1,13 @@
 import { LeftOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { EMPTY_OBJECT } from '@lib/configs/constants';
 import { authActions } from '@lib/store/slices/authSlice';
-import { Button, Popover } from 'antd';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+const Button = dynamic(() => import('antd/es/button'), { ssr: false });
+const Popover = dynamic(() => import('antd/es/popover'), { ssr: false });
 
 interface NavbarProps extends PropsWithChildren {
 	title?: string;

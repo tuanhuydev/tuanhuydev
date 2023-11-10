@@ -1,13 +1,24 @@
 'use client';
 
-import PageContainer from '@lib/DashboardModule/PageContainer';
-import PostForm from '@lib/PostModule/PostForm';
-import React, { memo } from 'react';
+import dynamic from 'next/dynamic';
+import React from 'react';
 
-export default memo(function Page() {
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
+const PostForm = dynamic(() => import('@lib/PostModule/PostForm'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
+export default function Page() {
 	return (
 		<PageContainer title="Create new post" goBack>
 			<PostForm />
 		</PageContainer>
 	);
-});
+}

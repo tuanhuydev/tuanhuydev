@@ -1,5 +1,7 @@
-import Sidebar from 'lib/DashboardModule/Sidebar';
+import dynamic from 'next/dynamic';
 import React, { PropsWithChildren } from 'react';
+
+const Sidebar = dynamic(() => import('@lib/DashboardModule/Sidebar'), { ssr: false });
 
 export default function WithSidebar({ children }: PropsWithChildren) {
 	return (
