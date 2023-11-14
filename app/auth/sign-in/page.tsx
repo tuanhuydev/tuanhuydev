@@ -1,25 +1,30 @@
 'use client';
 
 import { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
+import Loader from '@lib/components/commons/Loader';
 import { AppContext } from '@lib/components/hocs/WithProvider';
 import apiClient from '@lib/configs/apiClient';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
-import { RootState } from '@lib/configs/types';
-import { authActions } from '@lib/store/slices/authSlice';
+import NotFoundError from '@lib/shared/commons/errors/NotFoundError';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
 import { ObjectType } from '@shared/interfaces/base';
 import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
 
-const DynamicForm = dynamic(() => import('@lib/components/commons/Form/DynamicForm'), { ssr: false });
-const WithAnimation = dynamic(() => import('@lib/components/hocs/WithAnimation'), { ssr: false });
+const DynamicForm = dynamic(() => import('@lib/components/commons/Form/DynamicForm'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
+const WithAnimation = dynamic(() => import('@lib/components/hocs/WithAnimation'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
 
 // TODO: Move this one to API.
 const signInFormConfig: DynamicFormConfig = {
@@ -51,12 +56,8 @@ const signInFormConfig: DynamicFormConfig = {
 
 export default function SignIn() {
 	// Hooks
-	const dispatch = useDispatch();
 	const { context } = useContext(AppContext);
 	const router = useRouter();
-
-	// Selectors
-	const auth = useSelector((state: RootState) => state.auth);
 
 	const syncAuth = (credential: ObjectType) => {
 		if (!credential) throw new UnauthorizedError();
@@ -64,41 +65,40 @@ export default function SignIn() {
 		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
 	};
 
+	const getCurrentUser = async (userId: string) => {
+		const {
+			data: { data: currentUser = {} },
+		}: AxiosResponse = await apiClient.get(`/users/${userId}`);
+		if (!currentUser) throw new NotFoundError('User not found');
+
+		localStorage.setItem('currentUser', JSON.stringify(currentUser));
+	};
+
 	const submit = async (formData: ObjectType) => {
 		try {
-			const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
+			const { data: res = {} }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
 			if (!res) throw new UnauthorizedError('Invalid sign in');
 
-			syncAuth(res.data);
+			const { data: credential } = res;
+			if (credential) {
+				syncAuth(credential);
+				if (credential?.userId) await getCurrentUser(credential?.userId);
+			}
 			router.push('/dashboard', {});
 		} catch (error) {
 			context.notify.error({ message: (error as BaseError).message });
 		}
 	};
 
-	// TODO: Write custom hook
-	const isAuthenticatedByStore = useCallback(
-		(): boolean => auth.accessToken && auth.refreshToken,
-		[auth.refreshToken, auth.accessToken]
-	);
-
-	const syncToStore = useCallback(
-		(credential: any) => {
-			dispatch(authActions.setAuth(credential));
-		},
-		[dispatch]
-	);
-
 	const isAuthenticatedByStorage = useCallback(() => {
 		const credential: ObjectType | null = getLocalStorage(STORAGE_CREDENTIAL_KEY);
-		if (credential) syncToStore(credential);
 		return !!credential;
-	}, [syncToStore]);
+	}, []);
 
 	useEffect(() => {
-		const isAuthenticated: boolean = isAuthenticatedByStore() || isAuthenticatedByStorage();
+		const isAuthenticated: boolean = isAuthenticatedByStorage();
 		if (isAuthenticated) router.push('/dashboard/home');
-	}, [isAuthenticatedByStorage, isAuthenticatedByStore, router]);
+	}, [isAuthenticatedByStorage, router]);
 
 	return (
 		<WithAnimation>

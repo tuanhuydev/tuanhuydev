@@ -11,22 +11,28 @@ import {
 	UserOutlined,
 } from '@ant-design/icons';
 import logoSrc from '@lib/assets/images/logo.svg';
+import Loader from '@lib/components/commons/Loader';
 import { EMPTY_STRING } from '@lib/configs/constants';
 import { RootState } from '@lib/configs/types';
+import { currentUserSelector } from '@lib/store/slices/authSlice';
 import { metaAction } from '@lib/store/slices/metaSlice';
 import { Button } from 'antd';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Group from './Group';
-import Item from './Item';
 import styles from './styles.module.scss';
+
+const Group = dynamic(() => import('./Group'), { ssr: false, loading: () => <Loader /> });
+const Item = dynamic(() => import('./Item'), { ssr: false, loading: () => <Loader /> });
 
 const Sidebar = () => {
 	const dispatch = useDispatch();
 
 	const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
+	const currentUser = useSelector(currentUserSelector);
+	const { resources = [] } = currentUser || {};
 
 	const toggleSidebar = useCallback(() => dispatch(metaAction.setSidebarState(!sidebarOpen)), [dispatch, sidebarOpen]);
 
@@ -37,25 +43,32 @@ const Sidebar = () => {
 	);
 
 	const renderRoutes = useMemo(() => {
-		const routes = [
-			{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' },
-			{ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' },
-			{
-				label: 'Manage Projects',
-				children: [
-					{ label: 'Projects', icon: <AppstoreOutlined />, path: '/dashboard/projects' },
-					{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
-				],
-			},
-			{ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' },
-			{ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' },
-		];
-
+		const routes: Array<any> = [{ label: 'Home', icon: <HomeOutlined />, path: '/dashboard/home' }];
+		resources.forEach((resource: any) => {
+			switch (resource.name) {
+				case 'Posts':
+					routes.push({ label: 'Posts', icon: <ContainerOutlined />, path: '/dashboard/posts' });
+					break;
+				case 'Projects':
+					routes.push({
+						label: 'Manage Projects',
+						children: [
+							{ label: 'Projects', icon: <AppstoreOutlined />, path: '/dashboard/projects' },
+							{ label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
+						],
+					});
+					break;
+				case 'Accounts':
+					routes.push({ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' });
+					break;
+			}
+		});
+		// routes.push({ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' });
 		return routes.map((route: any) => {
 			const { children = [] } = route;
 			return children?.length ? <Group {...route} key={route.label} /> : <Item {...route} key={route.label} />;
 		});
-	}, []);
+	}, [resources]);
 
 	const containerToggleStyles = sidebarOpen ? styles.open : EMPTY_STRING;
 

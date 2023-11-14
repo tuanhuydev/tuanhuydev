@@ -18,13 +18,13 @@ export const setLocalStorage = (key: string, value: any) => {
 };
 
 export const getLocalStorage = (key: string) => {
-	try {
-		const rawStorage: string | null = localStorage.getItem(key);
-		const isJsonFormat = rawStorage && rawStorage?.startsWith('{|[');
+	const rawStorage: string | null = localStorage.getItem(key);
 
-		return isJsonFormat ? JSON.parse(rawStorage) : rawStorage;
+	try {
+		if (!rawStorage) throw Error('Not found');
+		return JSON.parse(rawStorage) ?? rawStorage;
 	} catch (error) {
-		return null;
+		return rawStorage;
 	}
 };
 

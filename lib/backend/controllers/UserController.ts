@@ -70,14 +70,14 @@ class UserController implements BaseController {
 	}
 
 	async getOne(request: NextRequest, { id }: any) {
-		// const network = Network(request);
-		// try {
-		// 	if (!id) throw new BadRequestError();
-		// 	const postById = await userService.getPostById(Number(id));
-		// 	return network.successResponse(postById);
-		// } catch (error) {
-		// 	return network.failResponse(error as BaseError);
-		// }
+		const network = Network(request);
+		try {
+			if (!id) throw new BadRequestError();
+			const postById = await userService.getUserById(String(id));
+			return network.successResponse(postById);
+		} catch (error) {
+			return network.failResponse(error as BaseError);
+		}
 	}
 
 	async update(request: NextRequest, { id }: any) {

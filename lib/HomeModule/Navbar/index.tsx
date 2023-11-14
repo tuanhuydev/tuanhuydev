@@ -15,7 +15,7 @@ function Navbar() {
 	// Hooks
 	const { context, setContext } = useContext(AppContext);
 
-	const { theme, playSound } = context;
+	const { theme } = context;
 
 	const switchTheme = useCallback(() => {
 		const newThemeValue = theme === DEFAULT_THEME ? 'dark' : DEFAULT_THEME;
@@ -23,13 +23,6 @@ function Navbar() {
 		setLocalStorage(STORAGE_THEME_KEY, newThemeValue);
 		reflectTheme(newThemeValue);
 	}, [setContext, theme]);
-
-	// const toggleSound = useCallback(() => {
-	// 	const newSoundState = !playSound;
-	// 	setContext({ playSound: newSoundState });
-	// 	setLocalStorage(STORAGE_PLAYSOUND_KEY, newSoundState);
-	// 	reflectSound(newSoundState);
-	// }, [playSound, setContext]);
 
 	return (
 		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2 md:px-0">
