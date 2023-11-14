@@ -25,19 +25,53 @@ model Post {
   @@map("posts")
 }
 
+model Permission {
+  id                  Int                  @id @default(autoincrement())
+  name                String               @db.VarChar(255)
+  createdAt           DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt           DateTime             @default(now()) @db.Timestamp(6)
+  deletedAt           DateTime?            @db.Timestamp(6)
+  users               User[]
+  resourcePermissions ResourcePermission[]
+
+  @@map("permissions")
+}
+
 model User {
-  id          String        @unique @db.Uuid
-  name        String        @db.VarChar(50)
-  email       String        @unique @db.VarChar(50)
-  password    String        @default("0") @db.VarChar(255)
-  createdAt   DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime      @default(now()) @db.Timestamp(6)
-  deletedAt   DateTime?     @db.Timestamp(6)
-  posts       Post[]
-  ProjectUser ProjectUser[]
-  Task        Task[]
+  id           String        @unique @db.Uuid
+  name         String        @db.VarChar(50)
+  email        String        @unique @db.VarChar(50)
+  password     String        @default("0") @db.VarChar(255)
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime      @default(now()) @db.Timestamp(6)
+  deletedAt    DateTime?     @db.Timestamp(6)
+  posts        Post[]
+  projectUsers ProjectUser[]
+  tasks        Task[]
+  permission   Permission    @relation(fields: [permissionId], references: [id])
+  permissionId Int
 
   @@map("users")
+}
+
+model Resource {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  ResourcePermissions ResourcePermission[]
+
+  @@map("resources")
+}
+
+model ResourcePermission {
+  resourceId   Int
+  permissionId Int
+  resourceType String
+
+  Resource   Resource   @relation(fields: [resourceId], references: [id])
+  Permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([resourceId, permissionId])
+  @@map("resource_permissions")
 }
 
 model Project {
@@ -50,8 +84,8 @@ model Project {
   createdAt   DateTime      @default(now()) @db.Timestamp(6)
   updatedAt   DateTime      @default(now()) @db.Timestamp(6)
   deletedAt   DateTime?     @db.Timestamp(6)
-  Task        Task[]
-  ProjectUser ProjectUser[]
+  tasks       Task[]
+  users       ProjectUser[]
 
   @@map("projects")
 }

@@ -27,7 +27,7 @@ const withAuthMiddleware =
 			return await handler(req, { ...params, userId: secret.userId });
 		} catch (error) {
 			const isBaseError = error instanceof BaseError;
-			return network.failResponse(isBaseError ? error : new BaseError((error as Error).message));
+			return network.failResponse(isBaseError ? error : new UnauthorizedError((error as Error).message));
 		}
 	};
 

@@ -51,7 +51,7 @@ class ProjectService {
 			let query: any = {
 				where: defaultWhere,
 				include: {
-					ProjectUser: {
+					users: {
 						select: {
 							userId: true,
 							roleId: true,

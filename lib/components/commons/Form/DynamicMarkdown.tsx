@@ -1,7 +1,7 @@
 'use client';
 
 import { ObjectType } from '@lib/shared/interfaces/base';
-import React, { ForwardedRef, RefObject } from 'react';
+import React from 'react';
 import { UseControllerProps, useController } from 'react-hook-form';
 
 import MarkdownEditor from '../MardownEditor';

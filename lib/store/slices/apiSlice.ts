@@ -4,6 +4,7 @@ import LogService from '@lib/backend/services/LogService';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import { BaseQueryFn, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
+import { redirect } from 'next/navigation';
 import { REHYDRATE } from 'redux-persist';
 
 import { ACCESS_TOKEN_LIFE } from '@shared/commons/constants/encryption';

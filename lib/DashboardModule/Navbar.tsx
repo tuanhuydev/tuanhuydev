@@ -1,12 +1,13 @@
 import { LeftOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { EMPTY_OBJECT } from '@lib/configs/constants';
+import { RootState } from '@lib/configs/types';
 import { authActions } from '@lib/store/slices/authSlice';
+import { Button } from 'antd';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-const Button = dynamic(() => import('antd/es/button'), { ssr: false });
 const Popover = dynamic(() => import('antd/es/popover'), { ssr: false });
 
 interface NavbarProps extends PropsWithChildren {
@@ -20,6 +21,7 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
 	// Hook
 	const router = useRouter();
 	const dispatch = useDispatch();
+	const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
 
 	// State
 	const [open, setOpenUserMenu] = useState(false);
@@ -32,10 +34,8 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
 
 	const toggleUserMenu = useCallback(
 		(value: boolean) => () => {
-			if (!value) {
-				setOpenUserMenu(!open);
-				return;
-			}
+			if (!value) return setOpenUserMenu(!open);
+
 			setOpenUserMenu(value);
 			signOut();
 		},
@@ -57,28 +57,26 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
 		return (
 			<Popover
 				placement="bottom"
+				title={currentUser.name}
 				content={
-					<ul className="block m-0 p-0 list-none">
-						<li className="mb-1">
-							<h4 className="text-sm font-bold truncate mb-0">Huy Nguyen Tuan</h4>
-						</li>
-						<li className="mb-2">@tuanhuydev</li>
-						<li className="mb-2">
-							<a onClick={toggleUserMenu(true)}>
-								<LogoutOutlined className="mr-2" />
+					<ul className="block m-0 p-0 list-none ">
+						<li className="mb-2 text-xs text-slate-500">{currentUser.email}</li>
+						<li className="mb-2 text-slate-500 hover:text-slate-700">
+							<li className="cursor-pointer" onClick={toggleUserMenu(true)}>
+								<LogoutOutlined className="mr-1" />
 								Sign out
-							</a>
+							</li>
 						</li>
 					</ul>
 				}
-				overlayInnerStyle={{ width: '10rem' }}
+				overlayInnerStyle={{ width: '12rem' }}
 				trigger="click"
 				open={open}
 				onOpenChange={toggleUserMenu(false)}>
 				<Button shape="circle" type="text" size="large" icon={<UserOutlined />} />
 			</Popover>
 		);
-	}, [open, toggleUserMenu]);
+	}, [currentUser.email, currentUser.name, open, toggleUserMenu]);
 
 	return (
 		<div className="px-3 py-2 bg-white flex item-center justify-between">

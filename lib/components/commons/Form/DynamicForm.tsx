@@ -1,7 +1,6 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { DynamicInputProps } from '@lib/components/commons/Form/DynamicText';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { Button, ButtonProps } from 'antd';
 import dynamic from 'next/dynamic';
@@ -109,7 +108,7 @@ export default function DynamicForm({ config, onSubmit, submitProps }: DynamicFo
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="flex flex-wrap">{registerFields}</div>
-			<div className="flex">
+			<div className="flex pr-2 pb-2">
 				<Button {...submitProps} type="primary" htmlType="submit" loading={isLoading} disabled={isSubmitting}>
 					Submit
 				</Button>
