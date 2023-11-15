@@ -25,6 +25,7 @@ class AuthController {
 			throw new BadRequestError();
 		}
 	}
+
 	async signIn(request: NextRequest) {
 		const network = Network(request);
 		try {
@@ -37,6 +38,7 @@ class AuthController {
 			return network.failResponse(error as BaseError);
 		}
 	}
+
 	async issueAccessToken(request: NextRequest) {
 		const network = Network(request);
 		try {

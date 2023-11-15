@@ -1,3 +1,5 @@
+import NotFoundError from '@lib/shared/commons/errors/NotFoundError';
+import { User } from '@prisma/client';
 import prismaClient from '@prismaClient/prismaClient';
 
 import BaseError from '@shared/commons/errors/BaseError';
@@ -18,6 +20,11 @@ class UserService {
 			return UserService.#instance;
 		}
 		return new UserService();
+	}
+
+	exlude(user: User, fields: string[]) {
+		const userEntries = Object.entries(user).filter(([key]) => !fields.includes(key));
+		return Object.fromEntries(userEntries);
 	}
 
 	async createUser(body: ObjectType) {
@@ -56,7 +63,9 @@ class UserService {
 			})),
 		};
 		try {
-			return await prismaClient.user.findMany(query);
+			const users = await prismaClient.user.findMany(query);
+			const userWithoutPasswords = users.map((user: User) => this.exlude(user, ['password']));
+			return userWithoutPasswords;
 		} catch (error) {
 			throw new BaseError((error as Error).message);
 		}
@@ -64,7 +73,11 @@ class UserService {
 
 	async getUserById(id: string) {
 		try {
-			return await prismaClient.user.findFirst({ where: { id, deletedAt: null } });
+			const user = await prismaClient.user.findFirst({
+				where: { id, deletedAt: null },
+			});
+			if (!user) throw new NotFoundError('User not found');
+			return this.exlude(user, ['password']);
 		} catch (error) {
 			throw new BaseError((error as Error).message);
 		}
@@ -78,6 +91,7 @@ class UserService {
 			throw new BaseError((error as Error).message);
 		}
 	}
+
 	async deleteUser(id: string) {
 		try {
 			if (!id) throw new BaseError();

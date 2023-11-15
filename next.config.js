@@ -4,7 +4,7 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	poweredByHeader: false,
-	transpilePackages: ['@mdxeditor/editor'],
+	transpilePackages: ['@mdxeditor/editor', '@ant-design', 'date-fns'],
 	async redirects() {
 		return [
 			{

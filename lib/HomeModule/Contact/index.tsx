@@ -3,7 +3,7 @@ import GithubIcon from '@public/assets/images/socials/github.svg';
 import LinkedInIcon from '@public/assets/images/socials/linkedin.svg';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { memo, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import styles from './styles.module.scss';
 
@@ -13,7 +13,7 @@ const contactPoints = [
 	{ img: LinkedInIcon, alt: 'tuanhuydev - linkedin profile', href: 'https://www.linkedin.com/in/tuanhuydev' },
 ];
 
-export default memo(function Contact() {
+export default function Contact() {
 	const Contacts = useMemo(() => {
 		return contactPoints.map(({ img, alt, href }) => (
 			<Link href={href} legacyBehavior key={href}>
@@ -56,4 +56,4 @@ export default memo(function Contact() {
 			</div>
 		</section>
 	);
-});
+}

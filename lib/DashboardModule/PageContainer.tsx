@@ -1,7 +1,8 @@
-import WithAnimation from '@lib/components/hocs/WithAnimation';
+import dynamic from 'next/dynamic';
 import React, { Fragment, PropsWithChildren } from 'react';
 
-import Navbar from './Navbar';
+const Navbar = dynamic(() => import('./Navbar'), { ssr: false });
+const WithAnimation = dynamic(() => import('@lib/components/hocs/WithAnimation'), { ssr: false });
 
 export interface PageContainerProps extends PropsWithChildren {
 	title?: string;

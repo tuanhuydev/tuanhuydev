@@ -69,7 +69,7 @@ class AuthService {
 			const accessToken = jwt.sign({ userId, userEmail }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFE });
 			const refreshToken = jwt.sign({ userId, userEmail }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFE });
 
-			return { accessToken, refreshToken };
+			return { userId, accessToken, refreshToken };
 		} catch (error) {
 			if (NODE_ENV !== 'production') console.error(error);
 		}

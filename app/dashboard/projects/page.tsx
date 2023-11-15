@@ -1,14 +1,18 @@
 'use client';
 
 import { SearchOutlined } from '@ant-design/icons';
-import PageContainer from '@lib/DashboardModule/PageContainer';
-import ProjectCard from '@lib/ProjectModule/ProjectCard';
-import ProjectForm from '@lib/ProjectModule/ProjectForm';
-import Loader from '@lib/components/commons/Loader';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { useGetProjectsQuery } from '@lib/store/slices/apiSlice';
-import { Button, Empty, Input, Modal } from 'antd';
+import { Button, Input, Modal } from 'antd';
+import dynamic from 'next/dynamic';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+const Empty = dynamic(() => import('antd/es/empty'), { ssr: false, loading: () => <Loader /> });
+
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), { ssr: false });
+const ProjectForm = dynamic(() => import('@lib/ProjectModule/ProjectForm'), { ssr: false, loading: () => <Loader /> });
+const ProjectCard = dynamic(() => import('@lib/ProjectModule/ProjectCard'), { ssr: false, loading: () => <Loader /> });
 
 const modalStyles = { header: { marginBottom: 24 } };
 
