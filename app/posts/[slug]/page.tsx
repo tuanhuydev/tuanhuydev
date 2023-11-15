@@ -1,8 +1,12 @@
-import Loader from '@lib/components/commons/Loader';
 import { BASE_URL, EMPTY_STRING } from '@lib/configs/constants';
-import ImageWithFallback from 'lib/components/commons/ImageWithFallback';
 import dynamic from 'next/dynamic';
-import React, { Suspense } from 'react';
+import React from 'react';
+
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+const ImageWithFallback = dynamic(() => import('@lib/components/commons/ImageWithFallback'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
 
 const MarkdownPreview = dynamic(() => import('@lib/components/commons/MardownEditor/BaseMarkdown'), {
 	ssr: false,
@@ -37,9 +41,7 @@ export default async function Page({ params }: any) {
 				<div className="col-start-3 col-span-9 p-4 shadow-md rounded-md">
 					<h1 className=" text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
 					<div className="text-sm lg:text-base bg-white p-3">
-						<Suspense fallback={null}>
-							<MarkdownPreview markdown={post.content} readOnly />
-						</Suspense>
+						<MarkdownPreview markdown={post.content} readOnly />
 					</div>
 				</div>
 			</div>

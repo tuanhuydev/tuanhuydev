@@ -1,7 +1,7 @@
 'use client';
 
 import { Post } from '@prisma/client';
-import { formatDistance } from 'date-fns';
+import formatDistance from 'date-fns/formatDistance';
 import Image from 'next/image';
 import React from 'react';
 

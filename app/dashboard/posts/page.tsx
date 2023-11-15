@@ -1,30 +1,38 @@
 'use client';
 
 import {
-	DeleteOutlined,
-	DownOutlined,
-	DownloadOutlined,
 	ExclamationCircleFilled,
+	DeleteOutlined,
 	EyeOutlined,
+	DownloadOutlined,
 	SearchOutlined,
+	DownOutlined,
 } from '@ant-design/icons';
-import PageContainer from '@lib/DashboardModule/PageContainer';
-import PostCard from '@lib/PostModule/PostCard';
-import Loader from '@lib/components/commons/Loader';
 import { BASE_URL } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { Dropdown, Empty, Input, MenuProps, Modal, notification, Flex } from 'antd';
+import { App, MenuProps, Dropdown, Input } from 'antd';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
-const { confirm } = Modal;
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
+const PostCard = dynamic(() => import('@lib/PostModule/PostCard'), { ssr: false, loading: () => <Loader /> });
 
-export default memo(function Page() {
+const Empty = dynamic(() => import('antd/es/empty'), { ssr: false });
+const Flex = dynamic(() => import('antd/es/flex'), { ssr: false });
+
+export default function Page() {
+	const { notification, modal } = App.useApp();
+
 	const [filter, setFilter] = useState<ObjectType>({});
+	const { confirm } = modal;
 	const router = useRouter();
-	const [notify, notifyContext] = notification.useNotification();
 
 	const { data: posts = [], isLoading } = useGetPostsQuery(filter);
 	const [deletePost, { isSuccess, isError }] = useDeletePostMutation();
@@ -49,7 +57,7 @@ export default memo(function Page() {
 				onCancel() {},
 			});
 		},
-		[deletePost]
+		[confirm, deletePost]
 	);
 
 	const openPostInNewTab = useCallback(
@@ -132,9 +140,9 @@ export default memo(function Page() {
 	];
 
 	useEffect(() => {
-		if (isSuccess) notify.success({ message: 'Delete Post Successfully' });
-		if (isError) notify.error({ message: 'Delete Post Fail' });
-	}, [notify, isError, isSuccess]);
+		if (isSuccess) notification.success({ message: 'Delete Post Successfully' });
+		if (isError) notification.error({ message: 'Delete Post Fail' });
+	}, [notification, isError, isSuccess]);
 
 	return (
 		<PageContainer title="Posts">
@@ -161,7 +169,6 @@ export default memo(function Page() {
 			<div className="grow overflow-auto pb-3">
 				{isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
 			</div>
-			{notifyContext}
 		</PageContainer>
 	);
-});
+}

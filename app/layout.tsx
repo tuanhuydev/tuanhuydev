@@ -1,10 +1,13 @@
-import GoogleAdsense from '@lib/components/google/GoogleAdsense';
-import GoogleAnalytic from '@lib/components/google/GoogleAnalytic';
-import GoogleTag from '@lib/components/google/GoogleTag';
+import StyledComponentsRegistry from '@lib/components/commons/AntdRegistry';
 import '@lib/styles/globals.scss';
+import dynamic from 'next/dynamic';
 import { PropsWithChildren } from 'react';
 
 import { sourceCodeFont } from './font';
+
+const GoogleAdsense = dynamic(() => import('@lib/components/google/GoogleAdsense'), { ssr: false });
+const GoogleAnalytic = dynamic(() => import('@lib/components/google/GoogleAnalytic'), { ssr: false });
+const GoogleTag = dynamic(() => import('@lib/components/google/GoogleTag'), { ssr: false });
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
@@ -42,7 +45,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
 				<GoogleTag />
 				<GoogleAnalytic />
 			</head>
-			<body>{children}</body>
+			<body>
+				<StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+			</body>
 		</html>
 	);
 }

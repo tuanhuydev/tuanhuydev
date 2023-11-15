@@ -1,31 +1,27 @@
 'use client';
 
-import { StyleProvider } from '@ant-design/cssinjs';
-import WithAuth from '@lib/components/hocs/WithAuth';
-import WithSidebar from '@lib/components/hocs/WithSidebar';
 import theme from '@lib/configs/theme';
 import store from '@lib/store';
 import '@lib/styles/globals.scss';
 import { App, ConfigProvider } from 'antd';
+import dynamic from 'next/dynamic';
 import { PropsWithChildren } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
-export default function RootLayout({ children }: PropsWithChildren) {
-	const AuthGate = WithAuth(() => <WithSidebar>{children}</WithSidebar>);
+const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+const WithAuth = dynamic(() => import('@lib/components/hocs/WithAuth'), {
+	ssr: false,
+	loading: () => <Loader />,
+});
 
+export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang="en">
-			<body>
-				<ReduxProvider store={store}>
-					<ConfigProvider theme={theme}>
-						<StyleProvider hashPriority="high">
-							<App>
-								<AuthGate />
-							</App>
-						</StyleProvider>
-					</ConfigProvider>
-				</ReduxProvider>
-			</body>
-		</html>
+		<ReduxProvider store={store}>
+			<ConfigProvider theme={theme}>
+				<App>
+					<WithAuth>{children}</WithAuth>
+				</App>
+			</ConfigProvider>
+		</ReduxProvider>
 	);
 }
