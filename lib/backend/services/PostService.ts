@@ -15,7 +15,7 @@ export type PostFilter = {
 class PostService {
 	static #instance: PostService;
 
-	static makeSingleton() {
+	static makeInstance() {
 		if (PostService.#instance) {
 			return PostService.#instance;
 		}
@@ -116,4 +116,4 @@ class PostService {
 	}
 }
 
-export default PostService.makeSingleton();
+export default PostService.makeInstance();

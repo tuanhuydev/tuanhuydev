@@ -64,7 +64,6 @@ export default function PostForm({ post }: any) {
 	const savePost = useCallback(
 		async (formData: any) => {
 			const body = attachPublishDate(formData);
-			body.slug = transformTextToDashed(formData.slug);
 			body.assets = assets;
 
 			try {
@@ -101,7 +100,7 @@ export default function PostForm({ post }: any) {
 			const shouldOverrideSlug =
 				!changedFieldsMap.has('slug') && changedFieldsMap.has('title') && changedFieldsMap.get('title').value;
 			if (shouldOverrideSlug) {
-				setSlugFieldValue(changedFieldsMap.get('title').value);
+				setSlugFieldValue(transformTextToDashed(changedFieldsMap.get('title').value));
 			}
 			setDisabledUpload(allFieldsMap.has('thumbnail') && allFieldsMap.get('thumbnail').value);
 		},
