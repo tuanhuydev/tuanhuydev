@@ -2,6 +2,7 @@
 
 import { AppstoreOutlined, ContainerOutlined } from '@ant-design/icons';
 import { useGetPostsQuery, useGetProjectsQuery } from '@lib/store/slices/apiSlice';
+import { Calendar } from 'antd';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -43,6 +44,16 @@ export default function Page() {
 	return (
 		<PageContainer title="Home">
 			<div className="flex wrap gap-4">
+				<Card style={{ width: 300, height: 350 }}>
+					<Calendar
+						fullscreen={false}
+						headerRender={() => (
+							<div className="flex justify-between font-thin text-lg text-slate-400 mb-3">
+								<span className="block ">Calendar</span>
+							</div>
+						)}
+					/>
+				</Card>
 				<HomeCard
 					url={'/dashboard/projects'}
 					name={'Projects'}

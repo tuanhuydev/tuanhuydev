@@ -5,11 +5,10 @@ export const transformTextToDashed = (text: string) => {
 	let dashedText = text.toLowerCase().trim();
 
 	// Remove all special characters
-	dashedText = dashedText.replace(/[^\w\s]/g, '');
+	dashedText = dashedText.replace(/[^\w\s]/g, '-');
 
 	// Replace space to dash(-)
 	dashedText = dashedText.replace(/\s+/g, '-');
-
 	return dashedText;
 };
 
@@ -27,7 +26,7 @@ export const makeRandomTextByLength = (length: number) => {
 
 export const makeSlug = (text: string) => {
 	const hashedLength = 6;
-	return transformTextToDashed(text).concat(`-${makeRandomTextByLength(hashedLength)}`);
+	return text.concat(`-${makeRandomTextByLength(hashedLength)}`);
 };
 
 export const isURLValid = (url: string) => {
