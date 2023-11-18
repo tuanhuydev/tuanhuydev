@@ -6,7 +6,7 @@ import { ObjectSchema, object, string } from 'yup';
 import BadRequestError from '@shared/commons/errors/BadRequestError';
 import BaseError from '@shared/commons/errors/BaseError';
 import { ObjectType } from '@shared/interfaces/base';
-import { makeSlug } from '@shared/utils/helper';
+import { makeSlug, transformTextToDashed } from '@shared/utils/helper';
 
 import postService from '@backend/services/PostService';
 
@@ -33,9 +33,8 @@ export class PostController implements BaseController {
 		try {
 			const { assets = [], ...body } = await request.json();
 			const validatedFields = await this.validateStoreRequest(body);
-
-			validatedFields.slug = makeSlug(validatedFields.title);
 			if (params) validatedFields.authorId = params.userId;
+			validatedFields.slug = makeSlug(validatedFields.slug);
 
 			const newPost = await postService.createPost(validatedFields);
 			await postService.saveAssets(newPost.id, assets);
@@ -71,6 +70,9 @@ export class PostController implements BaseController {
 
 	async update(request: NextRequest, { id }: any) {
 		const body = await request.json();
+		if ('slug' in body) {
+			body.slug = transformTextToDashed(body.slug);
+		}
 		if (!id || !body) throw new BadRequestError();
 
 		const network = Network(request);
