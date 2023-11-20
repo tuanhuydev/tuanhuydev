@@ -4,7 +4,6 @@ import LogService from '@lib/backend/services/LogService';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import { BaseQueryFn, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'js-cookie';
-import { redirect } from 'next/navigation';
 import { REHYDRATE } from 'redux-persist';
 
 import { ACCESS_TOKEN_LIFE } from '@shared/commons/constants/encryption';
@@ -13,6 +12,8 @@ import { getLocalStorage } from '@shared/utils/dom';
 
 import { postApis } from '../api/postApis';
 import { projectApis } from '../api/projectApis';
+import { taskApis } from '../api/taskApis';
+import { userApis } from '../api/userApis';
 
 const baseQuery: BaseQueryFn = fetchBaseQuery({
 	baseUrl: '/api',
@@ -63,10 +64,12 @@ export const apiSlice = createApi({
 	extractRehydrationInfo(action, { reducerPath }) {
 		if (action.type === REHYDRATE) return action.payload[reducerPath];
 	},
-	tagTypes: ['Post', 'User', 'Project'],
+	tagTypes: ['Post', 'User', 'Project', 'Task'],
 	endpoints: (builder) => ({
 		...postApis(builder),
 		...projectApis(builder),
+		...taskApis(builder),
+		...userApis(builder),
 	}),
 });
 
@@ -81,4 +84,10 @@ export const {
 	useDeleteProjectMutation,
 	useCreateProjectMutation,
 	useUpdateProjectMutation,
+	useGetTasksQuery,
+	useGetTaskQuery,
+	useUpdateTaskMutation,
+	useDeleteTaskMutation,
+	useGetUserQuery,
+	useGetUsersQuery,
 } = apiSlice;

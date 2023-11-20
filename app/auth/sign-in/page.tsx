@@ -2,15 +2,15 @@
 
 import { DynamicFormConfig } from '@lib/components/commons/Form/DynamicForm';
 import Loader from '@lib/components/commons/Loader';
-import { AppContext } from '@lib/components/hocs/WithProvider';
 import apiClient from '@lib/configs/apiClient';
 import { STORAGE_CREDENTIAL_KEY } from '@lib/configs/constants';
 import NotFoundError from '@lib/shared/commons/errors/NotFoundError';
+import { App } from 'antd';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import BaseError from '@shared/commons/errors/BaseError';
 import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
@@ -56,8 +56,8 @@ const signInFormConfig: DynamicFormConfig = {
 
 export default function SignIn() {
 	// Hooks
-	const { context } = useContext(AppContext);
 	const router = useRouter();
+	const { notification } = App.useApp();
 
 	const syncAuth = (credential: ObjectType) => {
 		if (!credential) throw new UnauthorizedError();
@@ -86,7 +86,7 @@ export default function SignIn() {
 			}
 			router.push('/dashboard', {});
 		} catch (error) {
-			context.notify.error({ message: (error as BaseError).message });
+			notification.error({ message: (error as BaseError).message });
 		}
 	};
 

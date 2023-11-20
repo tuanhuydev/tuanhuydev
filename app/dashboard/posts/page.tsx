@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
 	loading: () => <Loader />,
 });
@@ -145,7 +145,7 @@ export default function Page() {
 	}, [notification, isError, isSuccess]);
 
 	return (
-		<PageContainer title="Posts">
+		<PageContainer title="Posts" pageKey="Posts">
 			<Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
 				<Input
 					size="large"

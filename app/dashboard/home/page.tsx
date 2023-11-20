@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
 	loading: () => <Loader />,
 });
@@ -42,7 +42,7 @@ export default function Page() {
 	const { data: posts = [], isLoading: isPostLoading } = useGetPostsQuery({});
 
 	return (
-		<PageContainer title="Home">
+		<PageContainer title="Home" pageKey="Home">
 			<div className="flex wrap gap-4">
 				<Card style={{ width: 300, height: 350 }}>
 					<Calendar

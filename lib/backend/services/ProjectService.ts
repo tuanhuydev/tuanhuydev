@@ -32,7 +32,13 @@ class ProjectService {
 	async getProjects(filter?: FilterType) {
 		try {
 			let defaultWhere: ObjectType = { deletedAt: null };
-			if (!filter) return await prismaClient.project.findMany({ where: defaultWhere });
+			if (!filter)
+				return await prismaClient.project.findMany({
+					where: defaultWhere,
+					include: {
+						users: true,
+					},
+				});
 
 			const { page, pageSize, orderBy = [{ field: 'createdAt', direction: 'desc' }], search = '' } = filter;
 

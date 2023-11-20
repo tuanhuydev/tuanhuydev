@@ -61,11 +61,9 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
 				content={
 					<ul className="block m-0 p-0 list-none ">
 						<li className="mb-2 text-xs text-slate-500">{currentUser.email}</li>
-						<li className="mb-2 text-slate-500 hover:text-slate-700">
-							<li className="cursor-pointer" onClick={toggleUserMenu(true)}>
-								<LogoutOutlined className="mr-1" />
-								Sign out
-							</li>
+						<li className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer" onClick={toggleUserMenu(true)}>
+							<LogoutOutlined className="mr-1" />
+							Sign out
 						</li>
 					</ul>
 				}

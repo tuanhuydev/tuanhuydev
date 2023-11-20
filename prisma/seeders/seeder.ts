@@ -57,7 +57,7 @@ async function main() {
 		data: [
 			{ id: 1, name: 'Posts' },
 			{ id: 2, name: 'Projects' },
-			{ id: 3, name: 'Accounts' },
+			{ id: 3, name: 'Users' },
 			{ id: 4, name: 'Tasks' },
 		],
 		skipDuplicates: true,
@@ -68,7 +68,6 @@ async function main() {
 			{ permissionId: 1, resourceId: 2, resourceType: 'feature' },
 			{ permissionId: 1, resourceId: 3, resourceType: 'feature' },
 			{ permissionId: 1, resourceId: 4, resourceType: 'feature' },
-			{ permissionId: 2, resourceId: 1, resourceType: 'feature' },
 			{ permissionId: 2, resourceId: 2, resourceType: 'feature' },
 		],
 		skipDuplicates: true,
