@@ -77,7 +77,12 @@ class ProjectService {
 
 	async getProject(id: string) {
 		try {
-			return await prismaClient.project.findFirst({ where: { deletedAt: null, id: parseInt(id, 10) } });
+			return await prismaClient.project.findFirst({
+				where: { deletedAt: null, id: parseInt(id, 10) },
+				include: {
+					users: true,
+				},
+			});
 		} catch (error) {
 			LogService.log((error as Error).message);
 			throw new BaseError((error as Error).message);
