@@ -32,7 +32,7 @@ export default function ProjectCard({
 			className="cursor-pointer"
 			extra={<Status />}
 			onClick={navigateDetail}>
-			<p className="mt-0 mb-3 line-clamp-3">{description}</p>
+			<p className="mt-0 mb-3 line-clamp-3 min-h-[4.5rem]">{description}</p>
 			<div className="grid grid-cols-[minmax(max-content,_1fr)_minmax(max-content,_1fr)] gap-2 justify-between relative text-xs">
 				<div>
 					<b>People:&nbsp;</b>
