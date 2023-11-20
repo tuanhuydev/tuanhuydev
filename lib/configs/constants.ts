@@ -26,7 +26,7 @@ export const POST_STATUS = {
 
 export type PostStatusType = typeof POST_STATUS;
 
-export const DATE_FORMAT = 'dd-MM-yyyy';
+export const DATE_FORMAT = 'dd/MM/yyyy';
 
 // AWS
 export const awsRegion = process.env.AWS_REGION || EMPTY_STRING;
