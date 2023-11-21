@@ -5,7 +5,7 @@ import React from 'react';
 
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
 
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
 	loading: () => <Loader />,
 });
@@ -17,7 +17,7 @@ const PostForm = dynamic(() => import('@lib/PostModule/PostForm'), {
 
 export default function Page() {
 	return (
-		<PageContainer title="Create new post" goBack>
+		<PageContainer title="Create new post" pageKey="Posts" goBack>
 			<PostForm />
 		</PageContainer>
 	);

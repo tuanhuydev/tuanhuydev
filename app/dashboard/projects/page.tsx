@@ -10,7 +10,10 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
 const Empty = dynamic(() => import('antd/es/empty'), { ssr: false, loading: () => <Loader /> });
 
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), { ssr: false });
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
+	ssr: false,
+	loading: () => <Loader />,
+});
 const ProjectForm = dynamic(() => import('@lib/ProjectModule/ProjectForm'), { ssr: false, loading: () => <Loader /> });
 const ProjectCard = dynamic(() => import('@lib/ProjectModule/ProjectCard'), { ssr: false, loading: () => <Loader /> });
 
@@ -42,7 +45,7 @@ export default function Page() {
 		[projects]
 	);
 	return (
-		<PageContainer title="Projects">
+		<PageContainer title="Projects" pageKey="Projects">
 			<div className="flex items-center mb-6" data-testid="dashboard-posts-page-testid">
 				<Input
 					size="large"

@@ -29,10 +29,6 @@ export class ProjectController implements BaseController {
 		});
 	}
 
-	makeResource(projects: any[]) {
-		return projects.map(({ ProjectUser: users, ...rest }: any) => ({ ...rest, users }));
-	}
-
 	async validateStoreRequest(body: any) {
 		try {
 			return this.#schema.validate(body);
@@ -61,8 +57,7 @@ export class ProjectController implements BaseController {
 			const params: ObjectType = network.extractSearchParams();
 			const projects = await ProjectService.getProjects(params);
 
-			const formatProject = this.makeResource(projects);
-			return network.successResponse(formatProject);
+			return network.successResponse(projects);
 		} catch (error) {
 			return network.failResponse(error as BaseError);
 		}
