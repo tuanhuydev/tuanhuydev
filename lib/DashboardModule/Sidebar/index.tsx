@@ -7,7 +7,6 @@ import {
 	LeftCircleOutlined,
 	ProjectOutlined,
 	RightCircleOutlined,
-	SettingOutlined,
 	UserOutlined,
 } from '@ant-design/icons';
 import logoSrc from '@lib/assets/images/logo.svg';
@@ -58,8 +57,8 @@ const Sidebar = () => {
 						],
 					});
 					break;
-				case 'Accounts':
-					routes.push({ label: 'Accounts', icon: <UserOutlined />, path: '/dashboard/accounts' });
+				case 'Users':
+					routes.push({ label: 'Users', icon: <UserOutlined />, path: '/dashboard/users' });
 					break;
 			}
 		});

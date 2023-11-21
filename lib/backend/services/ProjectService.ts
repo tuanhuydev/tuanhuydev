@@ -32,7 +32,13 @@ class ProjectService {
 	async getProjects(filter?: FilterType) {
 		try {
 			let defaultWhere: ObjectType = { deletedAt: null };
-			if (!filter) return await prismaClient.project.findMany({ where: defaultWhere });
+			if (!filter)
+				return await prismaClient.project.findMany({
+					where: defaultWhere,
+					include: {
+						users: true,
+					},
+				});
 
 			const { page, pageSize, orderBy = [{ field: 'createdAt', direction: 'desc' }], search = '' } = filter;
 
@@ -77,7 +83,12 @@ class ProjectService {
 
 	async getProject(id: string) {
 		try {
-			return await prismaClient.project.findFirst({ where: { deletedAt: null, id: parseInt(id, 10) } });
+			return await prismaClient.project.findFirst({
+				where: { deletedAt: null, id: parseInt(id, 10) },
+				include: {
+					users: true,
+				},
+			});
 		} catch (error) {
 			LogService.log((error as Error).message);
 			throw new BaseError((error as Error).message);

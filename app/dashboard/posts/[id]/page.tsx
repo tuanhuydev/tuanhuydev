@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
 const PostForm = dynamic(() => import('@lib/PostModule/PostForm'), { ssr: false, loading: () => <Loader /> });
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer'), {
+const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
 	loading: () => <Loader />,
 });
@@ -18,7 +18,7 @@ export default function Page({ params }: any) {
 	}, []);
 
 	return (
-		<PageContainer title="Edit post" goBack>
+		<PageContainer title="Edit post" goBack pageKey="Posts">
 			<div className="grow overflow-auto">{isLoading ? <Loader /> : <PostForm post={post} />}</div>
 		</PageContainer>
 	);
