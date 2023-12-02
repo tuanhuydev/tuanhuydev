@@ -1,4 +1,8 @@
 {
-	"extends": ["next", "prettier"],
-	"rules": {}
+  "extends": ["next", "next/core-web-vitals", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unsafe-optional-chaining": 0
+  }
 }

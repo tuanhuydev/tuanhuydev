@@ -1,49 +1,55 @@
-'use client';
+"use client";
 
-import Loader from '@lib/components/commons/Loader';
-import { currentUserSelector } from '@lib/store/slices/authSlice';
-import { Resource } from '@prisma/client';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
-import React, { Fragment, PropsWithChildren, ReactElement, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { currentUserSelector } from "@lib/store/slices/authSlice";
+import { Resource } from "@prisma/client";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import React, { Fragment, PropsWithChildren, ReactElement, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const Navbar = dynamic(() => import('./Navbar'), { ssr: false });
-const WithAnimation = dynamic(() => import('@lib/components/hocs/WithAnimation'), { ssr: false });
+const Navbar = dynamic(() => import("./Navbar"), { ssr: false });
+const Loader = dynamic(() => import("@lib/components/commons/Loader").then((module) => module.default), { ssr: false });
+const WithAnimation = dynamic(() => import("@lib/components/hocs/WithAnimation"), { ssr: false });
 
 export interface PageContainerProps extends PropsWithChildren {
-	title?: string;
-	pageKey: string;
-	goBack?: boolean;
+  title?: string;
+  pageKey: string;
+  goBack?: boolean;
+  loading?: boolean;
 }
 
+const DEFAULT_PAGES = ["Home", "Setting"];
+
 export default function PageContainer({
-	children,
-	title,
-	pageKey,
-	goBack,
+  children,
+  title,
+  pageKey,
+  goBack,
+  loading = true,
 }: PageContainerProps): ReactElement<any, any> | null {
-	const [loading, setLoading] = useState<boolean>(true);
+  const [pageLoading, setPageLoading] = useState<boolean>(loading);
 
-	const router = useRouter();
-	const { resources = [] } = useSelector(currentUserSelector) || {};
+  const router = useRouter();
+  const { resources = [] } = useSelector(currentUserSelector) || {};
 
-	useEffect(() => {
-		const defaultPages = ['Home', 'Setting'];
-		if (!defaultPages.includes(pageKey) && !resources.some(({ name }: Resource) => name === pageKey)) {
-			router.back();
-		}
-		setLoading(false);
-	}, [pageKey, resources, router]);
+  useEffect(() => {
+    const allowAccess = resources.some(({ name }: Resource) => name === pageKey);
+    const isDefaultFeature = DEFAULT_PAGES.includes(pageKey);
+    if (isDefaultFeature || allowAccess) {
+      setPageLoading(false);
+      return;
+    }
+    router.back();
+  }, [pageKey, resources, router]);
 
-	return loading ? (
-		<Loader />
-	) : (
-		<Fragment>
-			<Navbar title={title} goBack={goBack} />
-			<div className="h-full overflow-auto p-3 bg-white drop-shadow-lg">
-				<WithAnimation>{children}</WithAnimation>
-			</div>
-		</Fragment>
-	);
+  return pageLoading ? (
+    <Loader />
+  ) : (
+    <Fragment>
+      <Navbar title={title} goBack={goBack} />
+      <div className="h-full overflow-auto p-3 bg-white drop-shadow-lg">
+        <WithAnimation>{children}</WithAnimation>
+      </div>
+    </Fragment>
+  );
 }

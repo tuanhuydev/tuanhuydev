@@ -1,13 +1,13 @@
 .points {
-	list-style: none;
+  list-style: none;
 
-	li::before {
-		content: attr(data-icon);
-		font-size: 1.5em;
-		margin-right: 1rem;
-	}
+  li::before {
+    content: attr(data-icon);
+    font-size: 1.5em;
+    margin-right: 1rem;
+  }
 }
 
 .texture {
-	filter: drop-shadow(0.5rem 0.5rem 2rem #cbd5e1);
+  filter: drop-shadow(0.5rem 0.5rem 2rem #cbd5e1);
 }
