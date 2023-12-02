@@ -1,22 +1,25 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { RootState } from 'lib/configs/types';
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { ObjectType } from "@shared/interfaces/base";
+import { RootState } from "lib/configs/types";
 
-import { ObjectType } from '@shared/interfaces/base';
-
-const initialState: { posts: Array<any>; filter: ObjectType; order: ObjectType } = {
-	posts: [],
-	filter: {},
-	order: {},
+const initialState: {
+  posts: Array<any>;
+  filter: ObjectType;
+  order: ObjectType;
+} = {
+  posts: [],
+  filter: {},
+  order: {},
 };
 
 const postSlice = createSlice({
-	name: 'postSlice',
-	initialState,
-	reducers: {
-		setPosts: (state, { payload }) => {
-			state.posts = payload;
-		},
-	},
+  name: "postSlice",
+  initialState,
+  reducers: {
+    setPosts: (state, { payload }) => {
+      state.posts = payload;
+    },
+  },
 });
 
 // selector

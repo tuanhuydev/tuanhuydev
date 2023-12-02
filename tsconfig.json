@@ -1,35 +1,35 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"moduleResolution": "node",
-		"module": "esnext",
-		"jsx": "preserve",
-		"baseUrl": ".",
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"strictNullChecks": true,
-		"noEmit": true,
-		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"incremental": true,
-		"paths": {
-			"@app/*": ["app/*"],
-			"@lib/*": ["lib/*"],
-			"@prismaClient/*": ["./prisma/*"],
-			"@backend/*": ["lib/backend/*"],
-			"@shared/*": ["lib/shared/*"],
-			"@public/*": ["public/*"]
-		},
-		"plugins": [
-			{
-				"name": "next"
-			}
-		]
-	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/components/hocs/WithAuth.tsx"],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "paths": {
+      "@app/*": ["app/*"],
+      "@lib/*": ["lib/*"],
+      "@prismaClient/*": ["./prisma/*"],
+      "@backend/*": ["lib/backend/*"],
+      "@shared/*": ["lib/shared/*"],
+      "@public/*": ["public/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/components/hocs/WithAuth.tsx"],
+  "exclude": ["node_modules"]
 }
