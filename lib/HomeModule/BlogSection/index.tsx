@@ -1,7 +1,10 @@
 import { Post } from '@prisma/client';
 import React from 'react';
 
-import HighlightPost from './HighlightPost';
+import dynamic from 'next/dynamic';
+import Loader from '@lib/components/commons/Loader';
+
+const HighlightPost = dynamic(() => import('./HighlightPost'), { ssr: false, loading: () => <Loader /> });
 
 interface BlogSectionProps {
 	posts: Post[];

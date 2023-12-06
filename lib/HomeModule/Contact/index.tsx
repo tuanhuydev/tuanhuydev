@@ -16,7 +16,7 @@ const contactPoints = [
 export default function Contact() {
 	const Contacts = useMemo(() => {
 		return contactPoints.map(({ img, alt, href }) => (
-			<Link href={href} legacyBehavior key={href}>
+			<Link href={href} legacyBehavior key={href} prefetch={false}>
 				<a
 					target="_blank"
 					className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">

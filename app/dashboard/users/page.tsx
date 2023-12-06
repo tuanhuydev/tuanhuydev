@@ -1,17 +1,33 @@
 'use client';
 
 import { SearchOutlined, UserOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import Loader from '@lib/components/commons/Loader';
 import { useGetUsersQuery } from '@lib/store/slices/apiSlice';
 import { User } from '@prisma/client';
-import { Input, Button, Avatar } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dynamic from 'next/dynamic';
 import { Fragment } from 'react';
 
-const Loader = dynamic(() => import('@lib/components/commons/Loader'));
-const Flex = dynamic(() => import('antd/es/flex'));
+const Flex = dynamic(async () => (await import('antd/es/flex')).default, { 
+	ssr: false,
+	loading: () => <Loader />
+});
+const Button = dynamic(async () => (await import('antd/es/button')).default, { 
+	ssr: false,
+	loading: () => <Loader />
+});
 
-const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
+const Avatar = dynamic(async () => (await import('antd/es/avatar')).default, { 
+	ssr: false,
+	loading: () => <Loader />
+});
+
+const Input = dynamic(async () => (await import('antd/es/input')).default, { 
+	ssr: false,
+	loading: () => <Loader />
+});
+
+const PageContainer = dynamic(async () => (await import('@lib/DashboardModule/PageContainer')).default, {
 	ssr: false,
 	loading: () => <Loader />,
 });

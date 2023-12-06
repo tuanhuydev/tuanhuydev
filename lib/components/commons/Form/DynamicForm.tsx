@@ -2,16 +2,18 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ObjectType } from '@lib/shared/interfaces/base';
-import { Button, ButtonProps } from 'antd';
+import { ButtonProps } from 'antd';
 import dynamic from 'next/dynamic';
 import { ReactNode, useMemo } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import Loader from '../Loader';
 
-const DynamicText = dynamic(() => import('@lib/components/commons/Form/DynamicText'), { ssr: false });
-const DynamicSelect = dynamic(() => import('@lib/components/commons/Form/DynamicSelect'), { ssr: false });
-const DynamicMarkdown = dynamic(() => import('@lib/components/commons/Form/DynamicMarkdown'), { ssr: false });
-const DynamicDatepicker = dynamic(() => import('@lib/components/commons/Form/DynamicDatepicker'), { ssr: false });
+const DynamicText = dynamic(async () => (await import('@lib/components/commons/Form/DynamicText')).default, { ssr: false, loading: () => <Loader /> });
+const DynamicSelect = dynamic(async () => (await import('@lib/components/commons/Form/DynamicSelect')).default, { ssr: false, loading: () => <Loader /> });
+const DynamicMarkdown = dynamic(async () => (await import('@lib/components/commons/Form/DynamicMarkdown')).default, { ssr: false, loading: () => <Loader /> });
+const DynamicDatepicker = dynamic(async () => (await import('@lib/components/commons/Form/DynamicDatepicker')).default, { ssr: false, loading: () => <Loader /> });
+const Button = dynamic(async () => (await import('antd/es/button')).default, { ssr: false, loading: () => <Loader /> });
 
 export interface ElementType {
 	name: string;
