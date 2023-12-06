@@ -4,7 +4,10 @@ import { ObjectType } from '@lib/shared/interfaces/base';
 import React from 'react';
 import { UseControllerProps, useController } from 'react-hook-form';
 
-import MarkdownEditor from '../MardownEditor';
+import dynamic from 'next/dynamic';
+import Loader from '../Loader';
+
+const MarkdownEditor = dynamic(async () => (await import('../MardownEditor')).default, { ssr: false, loading: () => <Loader /> });
 
 export interface DynamicMarkdownProps extends UseControllerProps<any> {
 	options?: ObjectType;

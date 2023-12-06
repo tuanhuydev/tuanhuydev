@@ -1,31 +1,57 @@
 'use client';
 
-import {
-	ExclamationCircleFilled,
-	DeleteOutlined,
-	EyeOutlined,
-	DownloadOutlined,
-	SearchOutlined,
-	DownOutlined,
-} from '@ant-design/icons';
 import { BASE_URL } from '@lib/configs/constants';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { useDeletePostMutation, useGetPostsQuery } from '@lib/store/slices/apiSlice';
 import { Post } from '@prisma/client';
-import { App, MenuProps, Dropdown, Input } from 'antd';
+import { App, MenuProps } from 'antd';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
+
+const ExclamationCircleFilled = dynamic(async () => (await import('@ant-design/icons')).ExclamationCircleFilled, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+const DeleteOutlined = dynamic(async () => (await import('@ant-design/icons')).DeleteOutlined, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+const EyeOutlined = dynamic(async () => (await import('@ant-design/icons')).EyeOutlined, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
+const DownloadOutlined = dynamic(async () => (await import('@ant-design/icons')).DownloadOutlined, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
+const SearchOutlined = dynamic(async () => (await import('@ant-design/icons')).SearchOutlined, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
+const DownOutlined = dynamic(async () => (await import('@ant-design/icons')).DownOutlined, {
+	ssr: false,
+	loading: () => <Loader />,
+});
+
 const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
 	loading: () => <Loader />,
 });
-const PostCard = dynamic(() => import('@lib/PostModule/PostCard'), { ssr: false, loading: () => <Loader /> });
+const PostCard = dynamic(() => import('@lib/PostModule/PostCard'), {
+	ssr: false,
+	loading: () => <Loader />
+});
 
 const Empty = dynamic(() => import('antd/es/empty'), { ssr: false });
 const Flex = dynamic(() => import('antd/es/flex'), { ssr: false });
+const DropdownButton = dynamic(async () => (await import('antd/es/dropdown')).default.Button, { ssr: false });
+const Input = dynamic(() => import('antd/es/input'), { ssr: false });
 
 export default function Page() {
 	const { notification, modal } = App.useApp();
@@ -54,7 +80,7 @@ export default function Page() {
 				onOk() {
 					deletePost(postId);
 				},
-				onCancel() {},
+				onCancel() { },
 			});
 		},
 		[confirm, deletePost]
@@ -155,7 +181,7 @@ export default function Page() {
 					prefix={<SearchOutlined />}
 				/>
 				<div>
-					<Dropdown.Button
+					<DropdownButton
 						size="large"
 						type="primary"
 						onClick={navigatePostCreate}
@@ -163,7 +189,7 @@ export default function Page() {
 						icon={<DownOutlined />}
 						menu={{ items: menuItems }}>
 						Write New
-					</Dropdown.Button>
+					</DropdownButton>
 				</div>
 			</Flex>
 			<div className="grow overflow-auto pb-3">

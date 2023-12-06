@@ -1,10 +1,7 @@
 'use client';
 
-import { AppContext } from '@lib/components/hocs/WithProvider';
-import { DEFAULT_THEME, STORAGE_THEME_KEY } from '@lib/configs/constants';
-import { memo, useCallback, useContext } from 'react';
+import { memo } from 'react';
 
-import { reflectTheme, setLocalStorage } from '@shared/utils/dom';
 
 import styles from './styles.module.scss';
 
@@ -13,16 +10,16 @@ const buttonStyles =
 
 function Navbar() {
 	// Hooks
-	const { context, setContext } = useContext(AppContext);
+	// const { context, setContext } = useContext(AppContext);
 
-	const { theme } = context;
+	// const { theme } = context;
 
-	const switchTheme = useCallback(() => {
-		const newThemeValue = theme === DEFAULT_THEME ? 'dark' : DEFAULT_THEME;
-		setContext({ theme: newThemeValue });
-		setLocalStorage(STORAGE_THEME_KEY, newThemeValue);
-		reflectTheme(newThemeValue);
-	}, [setContext, theme]);
+	// const switchTheme = useCallback(() => {
+	// 	const newThemeValue = theme === DEFAULT_THEME ? 'dark' : DEFAULT_THEME;
+	// 	setContext({ theme: newThemeValue });
+	// 	setLocalStorage(STORAGE_THEME_KEY, newThemeValue);
+	// 	reflectTheme(newThemeValue);
+	// }, [setContext, theme]);
 
 	return (
 		<header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2 md:px-0">
@@ -50,10 +47,9 @@ function Navbar() {
 					</li>
 				</ul>
 				<button
-					className={`${styles.toggle} ${styles[theme]} ${buttonStyles} p-2 mr-2 md:mr-7 border-none flex items-center`}
+					className={`${styles.toggle} ${styles.light} ${buttonStyles} p-2 mr-2 md:mr-7 border-none flex items-center`}
 					title="Toggles light & dark"
-					aria-live="polite"
-					onClick={switchTheme}>
+					aria-live="polite">
 					<svg className={styles.icon} aria-hidden="true" width="18" height="18" viewBox="0 0 24 24">
 						<mask className={styles.moon} id="moon-mask">
 							<rect x="0" y="0" width="100%" height="100%" fill="white" />

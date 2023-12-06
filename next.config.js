@@ -1,3 +1,6 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: true,
+})
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	output: 'standalone',
@@ -25,4 +28,4 @@ const nextConfig = {
 	eslint: { ignoreDuringBuilds: true },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
