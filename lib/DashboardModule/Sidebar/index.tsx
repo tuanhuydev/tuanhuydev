@@ -15,16 +15,18 @@ import { EMPTY_STRING } from '@lib/configs/constants';
 import { RootState } from '@lib/configs/types';
 import { currentUserSelector } from '@lib/store/slices/authSlice';
 import { metaAction } from '@lib/store/slices/metaSlice';
-import { Button } from 'antd';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.scss';
 
-const Group = dynamic(() => import('./Group'), { ssr: false, loading: () => <Loader /> });
-const Item = dynamic(() => import('./Item'), { ssr: false, loading: () => <Loader /> });
+const Group = dynamic(async() => (await import('./Group')).default, { loading: () => <Loader /> });
+const Item = dynamic(async() => (await import('./Item')).default, { loading: () => <Loader /> });
+const Button = dynamic(async() => (await import('antd/es/button')).default, { ssr: false, loading: () => <Loader /> });
+const Image = dynamic(async() => (await import('next/image')).default, { ssr: false, loading: () => <Loader /> });
+
+
 
 const Sidebar = () => {
 	const dispatch = useDispatch();

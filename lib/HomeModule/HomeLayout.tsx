@@ -1,25 +1,13 @@
-'use client';
+import { PropsWithChildren } from 'react';
 
-import Footer from '@lib/HomeModule/Footer';
-import Navbar from '@lib/HomeModule/Navbar';
-import { AppContext } from '@lib/components/hocs/WithProvider';
-import { STORAGE_THEME_KEY } from '@lib/configs/constants';
-import { PropsWithChildren, memo, useContext, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Loader from '@lib/components/commons/Loader';
+import Navbar from './Navbar';
 
-import { getThemeValue, reflectTheme, setLocalStorage } from '@shared/utils/dom';
+const Footer = dynamic(() => import('@lib/HomeModule/Footer'), { ssr: false, loading: () => <Loader /> });
+
 
 function HomeLayout({ children }: PropsWithChildren) {
-	const { setContext } = useContext(AppContext);
-
-	useEffect(() => {
-		// Sync theme
-		// TODO: Sync theme with prefers-color-scheme
-		const theme = getThemeValue();
-		setContext({ theme });
-		setLocalStorage(STORAGE_THEME_KEY, theme);
-		reflectTheme(theme);
-	}, [setContext]);
-
 	return (
 		<main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
 			<div className="container mx-auto">
@@ -33,4 +21,4 @@ function HomeLayout({ children }: PropsWithChildren) {
 	);
 }
 
-export default memo(HomeLayout);
+export default HomeLayout;

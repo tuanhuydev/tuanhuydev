@@ -1,12 +1,9 @@
 'use client';
 
-import { EditOutlined, ShareAltOutlined } from '@ant-design/icons';
 import Loader from '@lib/components/commons/Loader';
 import { DATE_FORMAT } from '@lib/configs/constants';
 import { useGetProjectQuery, useGetTasksQuery } from '@lib/store/slices/apiSlice';
 import { Project, ProjectUser } from '@prisma/client';
-import { Row, Col, Button, Tooltip } from 'antd';
-import { Progress } from 'antd';
 import differenceInDays from 'date-fns/differenceInDays';
 import format from 'date-fns/format';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
@@ -17,7 +14,14 @@ const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer')
 	ssr: false,
 	loading: () => <Loader />,
 });
-const Card = dynamic(() => import('antd/es/card'), { ssr: false, loading: () => <Loader /> });
+const Card = dynamic(async () => (await import('antd/es/card')).default, { ssr: false, loading: () => <Loader /> });
+const Row = dynamic(async () => (await import('antd/es/row')).default, { ssr: false, loading: () => <Loader /> });
+const Col = dynamic(async () => (await import('antd/es/col')).default, { ssr: false, loading: () => <Loader /> });
+const Button = dynamic(async () => (await import('antd/es/button')).default, { ssr: false, loading: () => <Loader /> });
+const Tooltip = dynamic(async () => (await import('antd/es/tooltip')).default, { ssr: false, loading: () => <Loader /> });
+const Progress = dynamic(async () => (await import('antd/es/progress')).default, { ssr: false, loading: () => <Loader /> });
+const EditOutlined = dynamic(async () => (await import('@ant-design/icons')).EditOutlined, { ssr: false, loading: () => <Loader /> });
+const ShareAltOutlined = dynamic(async () => (await import('@ant-design/icons')).ShareAltOutlined, { ssr: false, loading: () => <Loader /> });
 
 export default function Page({ params }: any) {
 	const { data: project, isLoading, isError } = useGetProjectQuery(params.id as string);

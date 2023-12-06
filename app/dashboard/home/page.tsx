@@ -1,8 +1,6 @@
 'use client';
 
-import { AppstoreOutlined, ContainerOutlined } from '@ant-design/icons';
 import { useGetPostsQuery, useGetProjectsQuery } from '@lib/store/slices/apiSlice';
-import { Calendar } from 'antd';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -13,7 +11,11 @@ const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer')
 	loading: () => <Loader />,
 });
 
-const Card = dynamic(() => import('antd/es/card'), { ssr: false, loading: () => <Loader /> });
+const AppstoreOutlined = dynamic(async () => (await import('@ant-design/icons')).AppstoreOutlined, { ssr: false, loading: () => <Loader /> });
+
+const ContainerOutlined = dynamic(async () => (await import('@ant-design/icons')).ContainerOutlined, { ssr: false, loading: () => <Loader /> });
+const Calendar = dynamic(async () => (await import('antd/es/calendar')).default, { ssr: false, loading: () => <Loader /> });
+const Card = dynamic(async () => (await import('antd/es/card')).default, { ssr: false, loading: () => <Loader /> });
 
 export interface HomeCardProps {
 	url: string;
@@ -25,7 +27,7 @@ export interface HomeCardProps {
 
 const HomeCard = ({ url, name, value, loading = false, icon }: HomeCardProps) => {
 	return (
-		<Link href={url}>
+		<Link href={url} prefetch={false}>
 			<Card className="w-[12rem] hover:border-primary transition-all duration-150 cursor-pointer" loading={loading}>
 				<div className="flex justify-between font-thin text-lg text-slate-400 mb-2">
 					<span className="block ">{name}</span>

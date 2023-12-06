@@ -1,7 +1,13 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { PropsWithChildren } from 'react';
+import Loader from '../commons/Loader';
+import dynamic from 'next/dynamic';
+
+const AnimatePresence = dynamic(async () => (await import('framer-motion')).default.AnimatePresence, {
+	loading: () => <Loader />,
+});
 
 export default function WithAnimation({ children }: PropsWithChildren) {
 	return (
