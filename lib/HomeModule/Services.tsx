@@ -1,9 +1,12 @@
 'use client';
 
-import { CodeOutlined } from '@ant-design/icons';
+import Loader from '@lib/components/commons/Loader';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
+
+const CodeOutlined = dynamic(async () => (await import('@ant-design/icons')).CodeOutlined, { ssr: false, loading: () => <Loader /> });
 
 type DelightProps = {
 	title: string;
@@ -93,7 +96,7 @@ export default function Services() {
 
 			<div className="grid grid-cols-12 gap-5 p-3 grid-flow-row">
 				<div className="col-start-2 col-span-10 md:col-start-4 md:col-span-6 flex justify-center">
-					<Link href={'#contact'} legacyBehavior>
+					<Link href={'#contact'} legacyBehavior prefetch={false}>
 						<div className="w-56 h-56 md:w-96 md:h-96 flex flex-col justify-center items-center rounded-md transition-all bg-slate-50 text-primary dark:bg-slate-800 dark:text-slate-50 drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer">
 							<CodeOutlined className="text-5xl lg:text-[6rem]" />
 							<h3 className="text-xl md:text-3xl font-semibold mt-5">Web Development</h3>

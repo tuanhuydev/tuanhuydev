@@ -1,14 +1,13 @@
 'use client';
 
-import { SearchOutlined } from '@ant-design/icons';
 import { ObjectType } from '@lib/shared/interfaces/base';
 import { useGetProjectsQuery } from '@lib/store/slices/apiSlice';
-import { Button, Input, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
-const Loader = dynamic(() => import('@lib/components/commons/Loader'), { ssr: false });
-const Empty = dynamic(() => import('antd/es/empty'), { ssr: false, loading: () => <Loader /> });
+const Loader = dynamic(async () => (await import('@lib/components/commons/Loader')).default, { ssr: false });
+const Empty = dynamic(async () => (await import('antd/es/empty')).default, { ssr: false, loading: () => <Loader /> });
+const SearchOutlined = dynamic(async () => (await import('@ant-design/icons')).SearchOutlined, { ssr: false, loading: () => <Loader /> });
 
 const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer').then((module) => module.default), {
 	ssr: false,
@@ -16,6 +15,9 @@ const PageContainer = dynamic(() => import('@lib/DashboardModule/PageContainer')
 });
 const ProjectForm = dynamic(() => import('@lib/ProjectModule/ProjectForm'), { ssr: false, loading: () => <Loader /> });
 const ProjectCard = dynamic(() => import('@lib/ProjectModule/ProjectCard'), { ssr: false, loading: () => <Loader /> });
+const Button = dynamic(async () => (await import('antd/es/button')).default, { ssr: false, loading: () => <Loader /> });
+const Input = dynamic(async () => (await import('antd/es/input')).default, { ssr: false, loading: () => <Loader /> });
+const Modal = dynamic(async () => (await import('antd/es/modal')).default, { ssr: false, loading: () => <Loader /> });
 
 const modalStyles = { header: { marginBottom: 24 } };
 
