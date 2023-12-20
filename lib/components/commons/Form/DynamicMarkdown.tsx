@@ -1,36 +1,37 @@
-'use client';
+"use client";
 
-import { ObjectType } from '@lib/shared/interfaces/base';
-import React from 'react';
-import { UseControllerProps, useController } from 'react-hook-form';
+import Loader from "../Loader";
+import { ObjectType } from "@lib/shared/interfaces/base";
+import dynamic from "next/dynamic";
+import React from "react";
+import { UseControllerProps, useController } from "react-hook-form";
 
-import dynamic from 'next/dynamic';
-import Loader from '../Loader';
-
-const MarkdownEditor = dynamic(async () => (await import('../MardownEditor')).default, { ssr: false, loading: () => <Loader /> });
+const BaseMarkdown = dynamic(async () => (await import("../BaseMarkdown")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 export interface DynamicMarkdownProps extends UseControllerProps<any> {
-	options?: ObjectType;
-	keyProp?: string;
-	className?: string;
+  options?: ObjectType;
+  keyProp?: string;
+  className?: string;
+  value?: any;
 }
 
 export default function DynamicMarkdown({
-	keyProp,
-	options,
-	className = 'w-full',
-	...restProps
+  keyProp,
+  options,
+  className = "",
+  name,
+  ...restProps
 }: DynamicMarkdownProps) {
-	const { field, fieldState, formState } = useController(restProps);
-	const { isSubmitting } = formState;
-	const { invalid, error } = fieldState;
-
-	return (
-		<div className={`pr-2 pb-2 self-stretch ${className}`}>
-			<div className=" mb-1">
-				<MarkdownEditor key={keyProp} {...field} {...options} />
-			</div>
-			{invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
-		</div>
-	);
+  const { field, fieldState } = useController({ ...restProps, name });
+  const { invalid, error } = fieldState;
+  const { ref, ...restField } = field;
+  return (
+    <div className={`p-2 self-stretch w-full ${className}`}>
+      <BaseMarkdown key={keyProp} {...restField} {...options} />
+      {invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
+    </div>
+  );
 }

@@ -1,14 +1,14 @@
 .container {
-	$containerExtendedWidth: 196px;
-	$containerWidth: 38px;
-	width: $containerWidth;
+  $containerExtendedWidth: 196px;
+  $containerWidth: 38px;
+  width: $containerWidth;
 
-	&.open {
-		width: $containerExtendedWidth;
-	}
+  &.open {
+    width: $containerExtendedWidth;
+  }
 }
 
 .active {
-	background-color: theme('colors.primary') !important;
-	color: theme('colors.white') !important;
+  background-color: theme("colors.primary") !important;
+  color: theme("colors.white") !important;
 }

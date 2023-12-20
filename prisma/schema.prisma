@@ -96,16 +96,33 @@ model Task {
   description String    @db.Text
   projectId   Int?
   statusId    Int?      @unique
+  sprintId    Int?
   createdBy   String?   @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
-  user        User?     @relation(fields: [createdBy], references: [id])
-  project     Project?  @relation(fields: [projectId], references: [id])
-  status      Status?   @relation(fields: [statusId], references: [id])
+
+  user    User?    @relation(fields: [createdBy], references: [id])
+  project Project? @relation(fields: [projectId], references: [id])
+  status  Status?  @relation(fields: [statusId], references: [id])
+  sprint  Sprint?  @relation(fields: [sprintId], references: [id])
 
   @@index([title])
   @@map("tasks")
+}
+
+model Sprint {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  fromDate    DateTime? @db.Timestamp(6)
+  toDate      DateTime  @db.Timestamp(6)
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(6)
+  Task        Task[]
+
+  @@index([name])
+  @@map("sprints")
 }
 
 model Status {
