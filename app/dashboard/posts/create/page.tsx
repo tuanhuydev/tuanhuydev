@@ -1,24 +1,24 @@
 "use client";
 
+import WithAuth from "@lib/components/hocs/WithAuth";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
-
-const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer").then((module) => module.default), {
-  ssr: false,
-  loading: () => <Loader />,
-});
 
 const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-export default function Page() {
-  return (
-    <PageContainer title="Create new post" pageKey="Posts" goBack>
-      <PostForm />
-    </PageContainer>
-  );
+function Page({ setTitle, setPageKey }: any) {
+  useEffect(() => {
+    if (setTitle) setTitle("Create new post");
+    if (setPageKey) setPageKey(Permissions.CREATE_POST);
+  }, [setTitle, setPageKey]);
+
+  return <PostForm />;
 }
+
+export default WithAuth(Page);

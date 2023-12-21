@@ -27,7 +27,13 @@ export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => (
     providesTags: (_result, _error, id) => [{ type: "Task", id }],
     transformResponse: (response: ObjectType) => response.data,
   }),
-
+  getTaskStatuses: builder.query({
+    query: () => {
+      const filter = { type: "task" };
+      return `status?${QueryString.stringify(filter)}`;
+    },
+    transformResponse: (response: ObjectType) => response.data,
+  }),
   createTask: builder.mutation<any, any>({
     query: (body) => ({ url: "tasks", method: "POST", body }),
     transformResponse: (response: ObjectType) => response.data,
@@ -35,8 +41,8 @@ export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => (
   }),
 
   updateTask: builder.mutation<any, any>({
-    query: ({ projectId, taskId, body }) => ({
-      url: `tasks/${projectId}/${taskId}`,
+    query: ({ taskId, status, ...body }) => ({
+      url: `tasks/${taskId}`,
       method: "PATCH",
       body,
     }),

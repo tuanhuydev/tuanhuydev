@@ -85,6 +85,7 @@ export const {
   useUpdateProjectMutation,
   useGetTasksQuery,
   useGetTaskQuery,
+  useGetTaskStatusesQuery,
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,

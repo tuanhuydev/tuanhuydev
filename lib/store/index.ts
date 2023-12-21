@@ -12,7 +12,12 @@ const store = configureStore({
     meta: metaReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   }),
-  middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), apiSlice.middleware],
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+    apiSlice.middleware,
+  ],
 });
 
 export default store;

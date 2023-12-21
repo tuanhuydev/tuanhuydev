@@ -1,26 +1,43 @@
 "use client";
 
 import styles from "./styles.module.scss";
-import {
-  AppstoreOutlined,
-  ContainerOutlined,
-  HomeOutlined,
-  LeftCircleOutlined,
-  RightCircleOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 import logoSrc from "@lib/assets/images/logo.svg";
 import Loader from "@lib/components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { currentUserSelector } from "@lib/store/slices/authSlice";
 import { metaAction } from "@lib/store/slices/metaSlice";
 import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const Group = dynamic(async () => (await import("./Group")).default, { loading: () => <Loader /> });
-const Item = dynamic(async () => (await import("./Item")).default, { loading: () => <Loader /> });
+const GridViewOutlined = dynamic(async () => (await import("@mui/icons-material/GridViewOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const ArticleOutlined = dynamic(async () => (await import("@mui/icons-material/ArticleOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const HomeOutlined = dynamic(async () => (await import("@mui/icons-material/HomeOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const ArrowCircleRightOutlined = dynamic(
+  async () => (await import("@mui/icons-material/ArrowCircleRightOutlined")).default,
+  {
+    ssr: false,
+    loading: () => <Loader />,
+  },
+);
+const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
+const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false, loading: () => <Loader /> });
 const Image = dynamic(async () => (await import("next/image")).default, { ssr: false, loading: () => <Loader /> });
 
@@ -33,35 +50,31 @@ const Sidebar = () => {
 
   const toggleSidebar = useCallback(() => dispatch(metaAction.setSidebarState(!sidebarOpen)), [dispatch, sidebarOpen]);
 
-  const toggleIcon = sidebarOpen ? (
-    <LeftCircleOutlined className="text-sm" />
-  ) : (
-    <RightCircleOutlined className="text-sm" />
-  );
-
   const renderRoutes = useMemo(() => {
-    const routes: Array<any> = [{ label: "Home", icon: <HomeOutlined />, path: "/dashboard/home" }];
+    const routes: Array<any> = [
+      { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home" },
+    ];
     resources.forEach((resource: any) => {
       switch (resource.name) {
-        case "Posts":
-          routes.push({ label: "Posts", icon: <ContainerOutlined />, path: "/dashboard/posts" });
+        case Permissions.VIEW_POSTS:
+          routes.push({ label: "Posts", icon: <ArticleOutlined className="!text-base" />, path: "/dashboard/posts" });
           break;
-        case "Projects":
+        case Permissions.VIEW_PROJECTS:
           routes.push({
             label: "Projects",
-            icon: <AppstoreOutlined />,
+            icon: <GridViewOutlined className="!text-base" />,
             path: "/dashboard/projects",
-            // children: [
-            // { label: 'Tasks', icon: <ProjectOutlined />, path: '/dashboard/tasks' },
-            // ],
           });
           break;
-        case "Users":
-          routes.push({ label: "Users", icon: <UserOutlined />, path: "/dashboard/users" });
+        case Permissions.VIEW_USERS:
+          routes.push({
+            label: "Users",
+            icon: <PersonOutlineOutlined className="!text-base" />,
+            path: "/dashboard/users",
+          });
           break;
       }
     });
-    // routes.push({ label: 'Settings', icon: <SettingOutlined />, path: '/dashboard/settings' });
     return routes.map((route: any) => {
       const { children = [] } = route;
       return children?.length ? <Group {...route} key={route.label} /> : <Item {...route} key={route.label} />;
@@ -77,10 +90,10 @@ const Sidebar = () => {
       </div>
       <Button
         shape="circle"
-        className="!bg-white text-slate-400 text-center leading-none !absolute -right-4 top-1/2 z-[1] drop-shadow-sm"
+        className="!bg-white text-slate-400 text-center !leading-none !absolute -right-4 top-1/2 z-[1] drop-shadow-sm"
         type="text"
         onClick={toggleSidebar}
-        icon={toggleIcon}
+        icon={<ArrowCircleRightOutlined className={`!text-lg ${sidebarOpen ? "rotate-180" : ""}`} />}
       />
       <ul
         className={`${styles.container} ${containerToggleStyles} ease-in duration-150 bg-white h-full overflow-x-hidden list-none p-0 m-0`}>

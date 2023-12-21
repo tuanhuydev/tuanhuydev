@@ -23,8 +23,10 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
           </div>
         )}
         <div className="mt-auto">
-          <h4 className="text-slate-900 dark:text-slate-50  text-2xl font-bold capitalize line-clamp-2">{title}</h4>
-          <p className="text-slate-600 dark:text-slate-200 text-sm capitalize">
+          <h4 className="text-slate-900 dark:text-slate-50 text-base lg:text-2xl font-bold capitalize line-clamp-2">
+            {title}
+          </h4>
+          <p className="text-slate-600 dark:text-slate-200 text-xs md:text-sm capitalize">
             {formatDistance(new Date(createdAt), new Date(), { addSuffix: true })}
           </p>
         </div>
