@@ -11,17 +11,18 @@ const theme: ThemeConfig = {
       hoverBorderColor: "rgb(203 213 225)",
       colorBorder: "rgb(203 213 225)",
       borderRadius: 4,
-      // controlOutline: 'transparent',
-      // boxShadow: 'none'
     },
     Button: {
       defaultShadow: "transparent",
       primaryShadow: "transparent",
+      colorLink: "@colorPrimary",
+      colorLinkHover: "@colorPrimary",
+      colorLinkActive: "@colorPrimary",
     },
     Collapse: {
       contentPadding: "12px 16px",
       headerPadding: "12px 0",
-      contentBg: "#fff",
+      contentBg: "#FFF",
       headerBg: "#FFF",
     },
   },

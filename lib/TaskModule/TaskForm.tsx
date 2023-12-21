@@ -1,8 +1,10 @@
 "use client";
 
 import DynamicForm, { DynamicFormConfig } from "@lib/components/commons/Form/DynamicForm";
+import { BASE_URL } from "@lib/configs/constants";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { ObjectType } from "@lib/shared/interfaces/base";
-import { useCreateTaskMutation } from "@lib/store/slices/apiSlice";
+import { useCreateTaskMutation, useGetTaskStatusesQuery, useUpdateTaskMutation } from "@lib/store/slices/apiSlice";
 import { Task } from "@prisma/client";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -10,24 +12,27 @@ import { UseFormReturn } from "react-hook-form";
 export interface TaskFormProps {
   task?: Task;
   onDone?: (response: ObjectType) => void;
+  onError?: (error: Error) => void;
   projectId: number;
+  readonly?: boolean;
 }
 
-export default function TaskForm({ task, projectId, onDone }: TaskFormProps) {
+export default function TaskForm({ task, projectId, readonly = true, onDone, onError }: TaskFormProps) {
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
+  const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
 
-  const submit = async (formData: ObjectType, form: UseFormReturn) => {
+  const submit = async ({ id: taskId, ...restForm }: ObjectType, form: UseFormReturn) => {
     try {
-      const newTask = {
-        ...formData,
-        projectId,
-      };
-      const response = await createTask(newTask);
-      if (response && onDone) onDone(response);
-
-      return;
+      const response = taskId
+        ? await updateTask({ ...restForm, taskId })
+        : await createTask({
+            ...restForm,
+            projectId,
+          });
+      if ((response as ObjectType)?.error) throw new BaseError("Unable to save task");
+      if (onDone) onDone(response);
     } catch (error) {
-      console.log(error);
+      if (onError) onError(error as Error);
     }
   };
 
@@ -38,6 +43,19 @@ export default function TaskForm({ task, projectId, onDone }: TaskFormProps) {
         type: "text",
         options: {
           placeholder: "Task Title",
+        },
+        validate: { required: true },
+      },
+      {
+        name: "statusId",
+        type: "select",
+        options: {
+          placeholder: "Select Status",
+          remote: {
+            url: `${BASE_URL}/api/status?type=task`,
+            label: "name",
+            value: "id",
+          },
         },
         validate: { required: true },
       },

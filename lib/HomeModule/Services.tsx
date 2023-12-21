@@ -85,7 +85,7 @@ const delights = [
 export default function Services() {
   return (
     <section id="service" className="py-10 md:py-24">
-      <h3 className="text-center text-primary dark:text-slate-50 font-bold text-xl md:text-3xl lg:text-4xl mb-3">
+      <h3 className="text-center text-primary dark:text-slate-50 font-bold text-base md:text-3xl lg:text-4xl mb-3">
         &ldquo;Elevating Excellence in Every Project &rdquo;
       </h3>
       <h4 className="text-slate-700 dark:text-slate-400 text-center mb-5">

@@ -1,24 +1,66 @@
 "use client";
 
-import PageContainer from "@lib/DashboardModule/PageContainer";
-import TaskForm from "@lib/TaskModule/TaskForm";
-import TaskRow from "@lib/TaskModule/TaskRow";
 import Loader from "@lib/components/commons/Loader";
+import WithAuth from "@lib/components/hocs/WithAuth";
+import { EMPTY_STRING } from "@lib/configs/constants";
+import { RootState } from "@lib/configs/types";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetProjectQuery, useGetTasksQuery } from "@lib/store/slices/apiSlice";
 import { Task } from "@prisma/client";
-import { Input, Button, CollapseProps, Collapse, Empty, Drawer } from "antd";
+import { CollapseProps, notification } from "antd";
 import dynamic from "next/dynamic";
-import React, { CSSProperties, useMemo, useState } from "react";
+import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 
-const SearchOutlined = dynamic(async () => (await import("@ant-design/icons")).SearchOutlined, {
+const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
+  ssr: false,
+});
+const EditOffOutlined = dynamic(async () => (await import("@mui/icons-material/EditOffOutlined")).default, {
+  ssr: false,
+});
+const EditOutlined = dynamic(async () => (await import("@mui/icons-material/EditOutlined")).default, {
+  ssr: false,
+});
+const CloseOutlined = dynamic(async () => (await import("@mui/icons-material/CloseOutlined")).default, {
+  ssr: false,
+});
+const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
+  ssr: false,
+});
+const Input = dynamic(async () => (await import("antd/es/input")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
-const PlusCircleOutlined = dynamic(async () => (await import("@ant-design/icons")).PlusCircleOutlined, {
+
+const BaseMarkdown = dynamic(async () => (await import("@lib/components/commons/BaseMarkdown")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
-const BuildOutlined = dynamic(async () => (await import("@ant-design/icons")).BuildOutlined, {
+const TaskForm = dynamic(async () => (await import("@lib/TaskModule/TaskForm")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const TaskRow = dynamic(async () => (await import("@lib/TaskModule/TaskRow")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const Button = dynamic(async () => (await import("antd/es/button")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const Collapse = dynamic(async () => (await import("antd/es/collapse")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const Drawer = dynamic(async () => (await import("antd/es/drawer")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const Empty = dynamic(async () => (await import("antd/es/empty")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -27,87 +69,194 @@ const panelStyle: CSSProperties = {
   fontWeight: 500,
   textTransform: "capitalize",
 };
+const drawerStyle: { [key: string]: CSSProperties } = {
+  header: { display: "none" },
+  body: { padding: 0 },
+};
 
-export default function Page({ params }: any) {
+const COMPONENT_MODE = {
+  VIEW: "VIEW",
+  EDIT: "EDIT",
+};
+
+function Page({ params, setTitle, setPageKey }: any) {
   const { id } = params;
+  const [notify, contextHolder] = notification.useNotification();
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
+  const { resources } = currentUser;
+
   const { data: project, isLoading: isProjectLoading } = useGetProjectQuery(id);
   const { data: tasks = [], isLoading: isProjectTaskLoading } = useGetTasksQuery(id);
+
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
+
+  const drawerTitle = selectedTask ? `Task [ #${selectedTask.id} ]` : "Create new task";
+  const isEditMode = mode === COMPONENT_MODE.EDIT;
 
   const toggleDrawer = (value: boolean) => () => {
     if (!value) setSelectedTask(null);
     setOpenDrawer(value);
   };
 
-  const getStatus = () => {
-    const statuses = fetch("");
-  };
+  const toggleMode = (value: string) => () => setMode(value);
 
-  const newTask = () => {
+  const createNewTask = () => {
+    setMode(COMPONENT_MODE.EDIT);
     setSelectedTask(null);
     setOpenDrawer(true);
   };
 
-  const handleView = (task: Task) => {
+  const viewTask = (task: Task) => {
+    setMode(COMPONENT_MODE.VIEW);
     setSelectedTask(task);
     setOpenDrawer(true);
   };
 
-  const RenderTasks = useMemo(() => {
+  const copyTaskLink = async (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(window.location.href);
+  };
+
+  const renderTasks = useCallback(() => {
     return tasks.map((task: Task) => (
-      <TaskRow active={task.id === selectedTask?.id} onView={handleView} task={task} projectId={id} key={task.id} />
+      <TaskRow active={task.id === selectedTask?.id} onView={viewTask} task={task} projectId={id} key={task.id} />
     ));
   }, [id, selectedTask?.id, tasks]);
 
-  const items: CollapseProps["items"] = [
-    {
-      key: "backlog",
-      label: "[ backlog ]",
-      children: RenderTasks,
-      style: panelStyle,
+  const RenderDrawerExtra = useMemo(() => {
+    const isViewMode = mode === COMPONENT_MODE.VIEW;
+    const allowEditTask = selectedTask && resources.has(Permissions.EDIT_TASK);
+
+    return (
+      <div className="px-2 flex items-center">
+        {allowEditTask && (
+          <Fragment>
+            {isViewMode && (
+              <Button
+                type="link"
+                onClick={toggleMode(COMPONENT_MODE.EDIT)}
+                className="!leading-none"
+                icon={<EditOutlined className="!text-lg text-white" />}
+              />
+            )}
+            {isEditMode && (
+              <Button
+                type="link"
+                className="!leading-none"
+                onClick={toggleMode(COMPONENT_MODE.VIEW)}
+                icon={<EditOffOutlined className="!text-lg text-white" />}
+              />
+            )}
+          </Fragment>
+        )}
+        <Button
+          type="primary"
+          onClick={toggleDrawer(false)}
+          className="!leading-none"
+          icon={<CloseOutlined className="!text-lg text-white" />}
+        />
+      </div>
+    );
+  }, [isEditMode, mode, resources, selectedTask]);
+
+  const onError = useCallback(
+    (error: Error) => {
+      notify.error({
+        message: "Error",
+        description: error.message,
+        placement: "topRight",
+      });
     },
-  ];
+    [notify],
+  );
+
+  const RenderTaskGroup = useMemo(() => {
+    if (!isProjectTaskLoading && !tasks.length) return <Empty className="my-36" />;
+    if (isProjectTaskLoading) return <Loader />;
+
+    const taskGroups: CollapseProps["items"] = [
+      {
+        key: "backlog",
+        label: "[ backlog ]",
+        children: renderTasks(),
+        style: panelStyle,
+      },
+    ];
+
+    return <Collapse items={taskGroups} bordered={false} ghost defaultActiveKey={["backlog"]} />;
+  }, [isProjectTaskLoading, tasks.length, renderTasks]);
+
+  const RenderTaskDetail = useMemo(() => {
+    if (isEditMode) {
+      return (
+        <div className="px-1">
+          <TaskForm
+            projectId={id}
+            onDone={toggleDrawer(false)}
+            onError={onError}
+            task={selectedTask as Task | undefined}
+          />
+        </div>
+      );
+    }
+    return (
+      <div className="px-3">
+        <div className="flex gap-3 relative">
+          <h1 className="text-lg capitalize px-3 m-0 font-medium truncate">{selectedTask?.title ?? EMPTY_STRING}</h1>
+          <span
+            className="px-2 py-1 text-white rounded-full flex items-center"
+            style={{ background: (selectedTask as any)?.status?.color }}>
+            {(selectedTask as any)?.status?.name}
+          </span>
+        </div>
+        <BaseMarkdown value={selectedTask?.description ?? EMPTY_STRING} readOnly></BaseMarkdown>
+      </div>
+    );
+  }, [id, isEditMode, onError, selectedTask]);
+
+  useEffect(() => {
+    if (setTitle) setTitle(`${project?.name}'s tasks`);
+    if (setPageKey) setPageKey(Permissions.VIEW_TASKS);
+  }, [setTitle, setPageKey, project?.name]);
 
   return (
-    <PageContainer
-      loading={isProjectLoading && isProjectTaskLoading}
-      title={`${project?.name}'s tasks`}
-      pageKey="Projects"
-      goBack>
+    <Fragment>
       <div className="mb-3 flex items-center">
         <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
         <div className="flex gap-3">
-          <Button size="large" type="primary" onClick={newTask} className="rounded-sm" icon={<PlusCircleOutlined />}>
-            New Task
-          </Button>
-          <Button
-            size="large"
-            onClick={() => console.log("new sprint")}
-            className="rounded-sm"
-            icon={<BuildOutlined />}>
-            New Sprint
-          </Button>
+          {resources.has(Permissions.CREATE_TASK) && (
+            <Button
+              size="large"
+              type="primary"
+              onClick={createNewTask}
+              className="rounded-sm"
+              icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
+              New Task
+            </Button>
+          )}
         </div>
       </div>
-      <div className="grow overflow-auto pb-3">
-        {isProjectTaskLoading ? (
-          <Loader />
-        ) : tasks.length ? (
-          <Collapse items={items} bordered={false} ghost defaultActiveKey={["backlog"]} />
-        ) : (
-          <Empty className="my-36" />
-        )}
-      </div>
-      <Drawer
-        title="Create new task"
-        size="large"
-        placement="right"
-        destroyOnClose
-        onClose={toggleDrawer(false)}
-        open={openDrawer}>
-        <TaskForm projectId={id} onDone={toggleDrawer(false)} task={selectedTask as Task | undefined} />
+      <div className="grow overflow-auto pb-3">{RenderTaskGroup}</div>
+      <Drawer size="large" placement="right" destroyOnClose styles={drawerStyle} open={openDrawer}>
+        <div className="bg-slate-700 mb-3 flex justify-between">
+          <div className="w-fit px-3 bg-primary text-white">
+            <div className="flex items-center py-2">
+              <h1
+                className={`m-0 p-0 text-base cursor-pointer ${selectedTask ? "hover:underline" : ""}`}
+                onClick={copyTaskLink}>
+                {drawerTitle}
+              </h1>
+            </div>
+          </div>
+          {RenderDrawerExtra}
+        </div>
+        {RenderTaskDetail}
       </Drawer>
-    </PageContainer>
+      {contextHolder}
+    </Fragment>
   );
 }
+
+export default WithAuth(Page);

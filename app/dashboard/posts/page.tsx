@@ -1,13 +1,15 @@
 "use client";
 
+import WithAuth from "@lib/components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { useDeletePostMutation, useGetPostsQuery } from "@lib/store/slices/apiSlice";
 import { Post } from "@prisma/client";
 import { App, MenuProps } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
 
@@ -37,10 +39,6 @@ const DownOutlined = dynamic(async () => (await import("@ant-design/icons")).Dow
   loading: () => <Loader />,
 });
 
-const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer").then((module) => module.default), {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const PostCard = dynamic(() => import("@lib/PostModule/PostCard"), {
   ssr: false,
   loading: () => <Loader />,
@@ -51,7 +49,7 @@ const Flex = dynamic(() => import("antd/es/flex"), { ssr: false });
 const DropdownButton = dynamic(async () => (await import("antd/es/dropdown")).default.Button, { ssr: false });
 const Input = dynamic(() => import("antd/es/input"), { ssr: false });
 
-export default function Page() {
+function Page({ setTitle, setPageKey }: any) {
   const { notification, modal } = App.useApp();
 
   const [filter, setFilter] = useState<ObjectType>({});
@@ -167,8 +165,13 @@ export default function Page() {
     if (isError) notification.error({ message: "Delete Post Fail" });
   }, [notification, isError, isSuccess]);
 
+  useEffect(() => {
+    if (setTitle) setTitle("Posts");
+    if (setPageKey) setPageKey(Permissions.VIEW_POSTS);
+  }, [setTitle, setPageKey]);
+
   return (
-    <PageContainer title="Posts" pageKey="Posts">
+    <Fragment>
       <Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
         <Input
           size="large"
@@ -192,6 +195,7 @@ export default function Page() {
       <div className="grow overflow-auto pb-3">
         {isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />}
       </div>
-    </PageContainer>
+    </Fragment>
   );
 }
+export default WithAuth(Page);

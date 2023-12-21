@@ -3,7 +3,7 @@ import FlagIcon from "@public/assets/images/vietnam_flag.png";
 import Image from "next/image";
 import React from "react";
 
-const matrixTypoStyles = "font-medium text-slate-700 dark:text-white text-xs sm:text-base";
+const matrixTypoStyles = "font-medium text-slate-700 dark:text-white text-[8px] sm:text-base";
 const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
 export default function Hero() {
@@ -11,7 +11,7 @@ export default function Hero() {
     <section
       id="about-me"
       data-testid="homepage-about-me"
-      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 md:py-24 content-center">
+      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-12 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
         <h2 className="font-bold mb-3 dark:text-white">
           <span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{" "}
@@ -47,7 +47,7 @@ export default function Hero() {
         </div>
         <a href="#service">
           <h6
-            className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-xs md:text-sm font-semibold transition ease-in`}>
+            className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition ease-in`}>
             My proudly accomplishments
             <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
               <path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />

@@ -1,15 +1,30 @@
-import { LeftOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import Loader from "@lib/components/commons/Loader";
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@lib/store/slices/authSlice";
-import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const Popover = dynamic(() => import("antd/es/popover"), { ssr: false });
+const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
+const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
+const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const KeyboardArrowLeftOutlined = dynamic(
+  async () => (await import("@mui/icons-material/KeyboardArrowLeftOutlined")).default,
+  {
+    ssr: false,
+    loading: () => <Loader />,
+  },
+);
+const ExitToAppOutlined = dynamic(async () => (await import("@mui/icons-material/ExitToAppOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 interface NavbarProps extends PropsWithChildren {
   title?: string;
   goBack?: boolean;
@@ -46,7 +61,11 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
     if (title)
       return (
         <div className="flex items-center gap-1">
-          {goBack ? <Button type="text" onClick={() => router.back()} icon={<LeftOutlined />}></Button> : <Fragment />}
+          {goBack ? (
+            <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />}></Button>
+          ) : (
+            <Fragment />
+          )}
           <h1 className="my-auto text-xl font-bold capitalize">{title}</h1>
         </div>
       );
@@ -61,8 +80,10 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
         content={
           <ul className="block m-0 p-0 list-none ">
             <li className="mb-2 text-xs text-slate-500">{currentUser.email}</li>
-            <li className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer" onClick={toggleUserMenu(true)}>
-              <LogoutOutlined className="mr-1" />
+            <li
+              className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer flex items-center"
+              onClick={toggleUserMenu(true)}>
+              <ExitToAppOutlined className="mr-2 !text-base leading-none" />
               Sign out
             </li>
           </ul>
@@ -71,7 +92,7 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
         trigger="click"
         open={open}
         onOpenChange={toggleUserMenu(false)}>
-        <Button shape="circle" type="text" size="large" icon={<UserOutlined />} />
+        <Button shape="circle" type="text" size="large" icon={<PersonOutlineOutlined />} />
       </Popover>
     );
   }, [currentUser.email, currentUser.name, open, toggleUserMenu]);

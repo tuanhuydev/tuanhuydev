@@ -6,7 +6,7 @@ function Footer() {
     <footer
       id="footer"
       className="flex flex-col relative items-center md:flex-row text-center md:text-left justify-between py-3 px-2 font-medium text-primary dark:text-slate-50">
-      <div className="text-md">
+      <div className="text-sm lg:text-md">
         &copy;&nbsp;{currentYear}&nbsp;
         <span>Huy Nguyen Tuan</span>
       </div>
