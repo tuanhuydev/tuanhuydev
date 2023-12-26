@@ -1,6 +1,5 @@
 import PageContainer from "@lib/DashboardModule/PageContainer";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { clearLocalStorage, getLocalStorage, setLocalStorage } from "@lib/shared/utils/dom";
 import { authActions } from "@lib/store/slices/authSlice";
@@ -8,7 +7,7 @@ import { User } from "@prisma/client";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { FC, Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import React, { FC, Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type UserWithPermission = User & { permissionId: number };

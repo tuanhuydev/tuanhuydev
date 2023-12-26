@@ -1,14 +1,27 @@
 "use client";
 
-import { SearchOutlined, UserOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Loader from "@lib/components/commons/Loader";
 import WithAuth from "@lib/components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { ObjectType } from "@lib/shared/interfaces/base";
 import { useGetUsersQuery } from "@lib/store/slices/apiSlice";
 import { User } from "@prisma/client";
 import { ColumnsType } from "antd/es/table";
 import dynamic from "next/dynamic";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
+
+const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
+  ssr: false,
+});
+
+const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
+  ssr: false,
+});
+
+const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 const Flex = dynamic(async () => (await import("antd/es/flex")).default, {
   ssr: false,
@@ -35,12 +48,16 @@ const Table = dynamic(async () => (await import("antd/es/table")).default, {
 });
 
 function Page({ setTitle, setPageKey }: any) {
-  const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery({});
+  const [filter, setFilter] = useState<ObjectType>({});
+  const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery(filter);
 
-  const searchProject = () => {
-    // TODO: Implement this function
+  const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTimeout(() => {
+      const search = e.target.value;
+      setFilter((currentFilter) => ({ ...currentFilter, search }));
+    }, 500);
   };
-  const createProject = () => {
+  const createUser = () => {
     // TODO: Implement this function
   };
 
@@ -51,7 +68,7 @@ function Page({ setTitle, setPageKey }: any) {
       key: "name",
       render: (text) => (
         <Flex gap={8} align="center">
-          <Avatar size="small" icon={<UserOutlined />} />
+          <Avatar size="small" icon={<PersonOutlineOutlined className="!h-5 !w-5" />} />
           <h3 className="m-0 capitalize">{text}</h3>
         </Flex>
       ),
@@ -80,17 +97,17 @@ function Page({ setTitle, setPageKey }: any) {
         <Input
           size="large"
           placeholder="Find your user"
-          onChange={searchProject}
+          onChange={searchUser}
           className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined />}
+          prefix={<SearchOutlined className="!text-lg text-white" />}
         />
         <div>
           <Button
             size="large"
             type="primary"
-            onClick={createProject}
+            onClick={createUser}
             className="rounded-sm"
-            icon={<PlusCircleOutlined />}>
+            icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
             New User
           </Button>
         </div>
