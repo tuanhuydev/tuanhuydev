@@ -4,7 +4,7 @@ import DynamicForm, { DynamicFormConfig } from "@lib/components/commons/Form/Dyn
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { ObjectType } from "@lib/shared/interfaces/base";
-import { useCreateTaskMutation, useGetTaskStatusesQuery, useUpdateTaskMutation } from "@lib/store/slices/apiSlice";
+import { useCreateTaskMutation, useUpdateTaskMutation } from "@lib/store/slices/apiSlice";
 import { Task } from "@prisma/client";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -95,7 +96,7 @@ model Task {
   title       String    @db.VarChar(255)
   description String    @db.Text
   projectId   Int?
-  statusId    Int?      @unique
+  statusId    Int?
   sprintId    Int?
   createdBy   String?   @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
@@ -119,7 +120,7 @@ model Sprint {
   toDate      DateTime  @db.Timestamp(6)
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
-  Task        Task[]
+  tasks       Task[]
 
   @@index([name])
   @@map("sprints")
@@ -134,7 +135,7 @@ model Status {
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
-  Task        Task?
+  tasks       Task[]
 
   @@map("statuses")
 }
