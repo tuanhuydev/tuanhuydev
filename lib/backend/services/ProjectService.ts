@@ -104,6 +104,15 @@ class ProjectService {
   async getProjectTasks(projectId: number) {
     const projectTasks = await prismaClient.task.findMany({
       where: { projectId },
+      include: {
+        status: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

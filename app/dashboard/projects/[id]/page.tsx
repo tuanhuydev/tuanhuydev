@@ -1,7 +1,9 @@
 "use client";
 
 import Loader from "@lib/components/commons/Loader";
+import WithAuth from "@lib/components/hocs/WithAuth";
 import { DATE_FORMAT } from "@lib/configs/constants";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetProjectQuery, useGetTasksQuery } from "@lib/store/slices/apiSlice";
 import { Project, ProjectUser } from "@prisma/client";
 import differenceInDays from "date-fns/differenceInDays";
@@ -9,7 +11,7 @@ import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 const Row = dynamic(async () => (await import("antd/es/row")).default, {
   ssr: false,
@@ -35,11 +37,6 @@ const Progress = dynamic(async () => (await import("antd/es/progress")).default,
   loading: () => <Loader />,
 });
 
-const PageContainer = dynamic(async () => (await import("@lib/DashboardModule/PageContainer")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
 const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
 const EditOutlined = dynamic(async () => (await import("@ant-design/icons")).EditOutlined, {
   ssr: false,
@@ -54,7 +51,7 @@ const LinkOutlined = dynamic(async () => (await import("@ant-design/icons")).Lin
   loading: () => <Loader />,
 });
 
-export default function Page({ params }: any) {
+function Page({ params, setTitle, setPageKey }: any) {
   const router = useRouter();
 
   const { data: project, isLoading, isError: isProjectLoading } = useGetProjectQuery(params.id as string);
@@ -84,8 +81,13 @@ export default function Page({ params }: any) {
 
   const resetTooltipContent = () => setTimeout(() => setTooltipContent("Share"), 300);
 
+  useEffect(() => {
+    if (setTitle) setTitle("View Project");
+    if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
+  }, [setTitle, setPageKey]);
+
   return (
-    <PageContainer title="View Project" pageKey="Projects" goBack loading={isProjectLoading && isProjectTaskLoading}>
+    <Fragment>
       <Row gutter={[16, 16]} className="mb-3">
         <Col span={24} lg={{ span: 16 }}>
           <Card loading={isLoading} className="w-5rem h-full">
@@ -167,6 +169,8 @@ export default function Page({ params }: any) {
           </Card>
         </Col>
       </Row>
-    </PageContainer>
+    </Fragment>
   );
 }
+
+export default WithAuth(Page);

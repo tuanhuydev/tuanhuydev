@@ -2,11 +2,13 @@
 
 import { SearchOutlined, UserOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Loader from "@lib/components/commons/Loader";
+import WithAuth from "@lib/components/hocs/WithAuth";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetUsersQuery } from "@lib/store/slices/apiSlice";
 import { User } from "@prisma/client";
 import { ColumnsType } from "antd/es/table";
 import dynamic from "next/dynamic";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 const Flex = dynamic(async () => (await import("antd/es/flex")).default, {
   ssr: false,
@@ -27,19 +29,14 @@ const Input = dynamic(async () => (await import("antd/es/input")).default, {
   loading: () => <Loader />,
 });
 
-const PageContainer = dynamic(async () => (await import("@lib/DashboardModule/PageContainer")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
 const Table = dynamic(async () => (await import("antd/es/table")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
 
-export default function Page() {
+function Page({ setTitle, setPageKey }: any) {
   const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery({});
-  console.log(users, isUserLoading);
+
   const searchProject = () => {
     // TODO: Implement this function
   };
@@ -72,8 +69,13 @@ export default function Page() {
     },
   ];
 
+  useEffect(() => {
+    if (setTitle) setTitle("Users");
+    if (setPageKey) setPageKey(Permissions.VIEW_USERS);
+  }, [setTitle, setPageKey]);
+
   return (
-    <PageContainer title="Users" pageKey="Users">
+    <Fragment>
       <Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
         <Input
           size="large"
@@ -95,8 +97,9 @@ export default function Page() {
       </Flex>
       <div className="grow overflow-auto pb-3">
         <Table columns={columns} dataSource={users} />
-        {/* {isLoading ? <Loader /> : posts.length ? RenderPosts : <Empty className="my-36" />} */}
       </div>
-    </PageContainer>
+    </Fragment>
   );
 }
+
+export default WithAuth(Page);

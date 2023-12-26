@@ -35,18 +35,18 @@ export default function Contact() {
         </div>
         <div className="col-start-1 col-span-full lg:col-start-7">
           <ul role="list" className={styles.points}>
-            <li className="text-lg font-medium" data-icon="&#9757;">
+            <li className="text-sm lg:text-lg font-medium" data-icon="&#9757;">
               New features implementation
             </li>
-            <li className="text-lg font-medium" data-icon="&#128161;">
+            <li className="text-sm lg:text-lg font-medium" data-icon="&#128161;">
               Kick-off new projects
             </li>
-            <li className="text-lg font-medium" data-icon="&#x1F4C8;">
+            <li className="text-sm lg:text-lg font-medium" data-icon="&#x1F4C8;">
               Maintainer for your system
             </li>
           </ul>
           <div className="flex flex-col lg:flex-row">
-            <h6 className="font-semibold my-5 text-xl text-center lg:text-left lg:text-3xl mr-3">
+            <h6 className="font-semibold my-5 text-xl text-center lg:text-left lg:text-3xl lg:mr-3">
               Let connect and discuss
             </h6>
             <div className="flex gap-3 self-center">{Contacts}</div>

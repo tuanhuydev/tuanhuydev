@@ -42,11 +42,13 @@ export class TaskController implements BaseController {
       const schema = object({
         title: string().required(),
         description: string().required(),
+        statusId: string().required(),
         projectId: number().nullable(),
       });
 
       const body = await request.json();
       const validatedBody = await this.validate(body, schema);
+      validatedBody.statusId = parseInt(validatedBody.statusId, 10);
       const newTask = await TaskService.createTask(validatedBody);
 
       return network.successResponse(newTask);
@@ -83,6 +85,7 @@ export class TaskController implements BaseController {
     if (!id || !body) throw new BadRequestError();
 
     const network = Network(request);
+    if (body.statusId) body.statusId = Number.parseInt(body.statusId, 10);
     try {
       const updated = await TaskService.updateTask(Number(id), body);
       return network.successResponse(updated);

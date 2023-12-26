@@ -1,9 +1,8 @@
+import Loader from "@lib/components/commons/Loader";
 import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
 import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
 import React from "react";
-
-const Loader = dynamic(async () => (await import("@lib/components/commons/Loader")).default, { ssr: false });
 
 const ImageWithFallback = dynamic(async () => (await import("@lib/components/commons/ImageWithFallback")).default, {
   ssr: false,
@@ -40,8 +39,8 @@ export default async function Page({ params }: any) {
       </div>
       <div className="grid lg:grid-cols-12 -mt-10 relative z-20">
         <div className="col-start-3 col-span-9 p-4 shadow-md rounded-md">
-          <h1 className=" text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
-          <div className="text-sm lg:text-base bg-white p-3">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
+          <div className="!text-sm lg:!text-base bg-white p-3">
             <MarkdownPreview value={post.content} readOnly />
           </div>
         </div>

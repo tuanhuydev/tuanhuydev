@@ -1,9 +1,11 @@
 "use client";
 
+import WithAuth from "@lib/components/hocs/WithAuth";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { useGetProjectsQuery } from "@lib/store/slices/apiSlice";
 import dynamic from "next/dynamic";
-import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 const Loader = dynamic(async () => (await import("@lib/components/commons/Loader")).default, { ssr: false });
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
@@ -31,10 +33,6 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, {
   loading: () => <Loader />,
 });
 
-const PageContainer = dynamic(async () => (await import("@lib/DashboardModule/PageContainer")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const ProjectForm = dynamic(async () => (await import("@lib/ProjectModule/ProjectForm")).default, {
   ssr: false,
   loading: () => <Loader />,
@@ -46,7 +44,7 @@ const ProjectCard = dynamic(async () => (await import("@lib/ProjectModule/Projec
 
 const modalStyles = { header: { marginBottom: 24 } };
 
-export default function Page() {
+function Page({ setTitle, setPageKey }: any) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<ObjectType>({});
 
@@ -71,8 +69,14 @@ export default function Page() {
     ),
     [projects],
   );
+
+  useEffect(() => {
+    if (setTitle) setTitle("Projects");
+    if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
+  }, [setTitle, setPageKey]);
+
   return (
-    <PageContainer title="Projects" pageKey="Projects">
+    <Fragment>
       <div className="flex items-center mb-6" data-testid="dashboard-posts-page-testid">
         <Input
           size="large"
@@ -99,6 +103,8 @@ export default function Page() {
         maskClosable={false}>
         <ProjectForm callback={toggleModal(false)} />
       </Modal>
-    </PageContainer>
+    </Fragment>
   );
 }
+
+export default WithAuth(Page);
