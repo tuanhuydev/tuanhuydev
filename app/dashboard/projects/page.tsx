@@ -9,13 +9,11 @@ import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState
 
 const Loader = dynamic(async () => (await import("@lib/components/commons/Loader")).default, { ssr: false });
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
-const SearchOutlined = dynamic(async () => (await import("@ant-design/icons")).SearchOutlined, {
+const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
   ssr: false,
-  loading: () => <Loader />,
 });
-const PlusCircleOutlined = dynamic(async () => (await import("@ant-design/icons")).PlusCircleOutlined, {
+const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
   ssr: false,
-  loading: () => <Loader />,
 });
 
 const Modal = dynamic(async () => (await import("antd/es/modal")).default, {
@@ -83,9 +81,13 @@ function Page({ setTitle, setPageKey }: any) {
           onChange={onSearchProjects}
           placeholder="Find your project"
           className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined />}
+          prefix={<SearchOutlined className="!text-lg text-white" />}
         />
-        <Button size="large" type="primary" icon={<PlusCircleOutlined />} onClick={toggleModal(true)}>
+        <Button
+          size="large"
+          type="primary"
+          icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}
+          onClick={toggleModal(true)}>
           New Project
         </Button>
       </div>

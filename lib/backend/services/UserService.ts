@@ -41,20 +41,21 @@ class UserService {
     let defaultWhere: ObjectType = { deletedAt: null };
     if (!filter) return await prismaClient.user.findMany({ where: defaultWhere });
     const { page = 1, pageSize = 10, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
-
     if (search) {
       defaultWhere = {
         ...defaultWhere,
-        name: { contains: search },
+        OR: [
+          {
+            name: { contains: search },
+          },
+          {
+            email: { contains: search },
+          },
+        ],
       };
     }
     let query: any = {
-      where: {
-        deletedAt: null,
-        name: {
-          contains: search,
-        },
-      },
+      where: defaultWhere,
       take: pageSize,
       skip: (page - 1) * pageSize,
       orderBy: orderBy.map((order) => ({

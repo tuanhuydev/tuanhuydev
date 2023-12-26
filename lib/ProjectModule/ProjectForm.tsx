@@ -62,7 +62,7 @@ export default function ProjectForm({ project, callback }: ProjectFormProps) {
             value: "id",
           },
         },
-        validate: { required: true },
+        validate: { required: true, multiple: true },
       },
       {
         name: "description",

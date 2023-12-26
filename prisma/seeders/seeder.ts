@@ -50,7 +50,21 @@ async function main() {
   });
 
   await prisma.status.createMany({
-    data: [{ id: 1, name: "Default", description: "Default status", color: "" }],
+    data: [
+      {
+        id: 1,
+        name: "Default",
+        description: "Default status",
+        color: "",
+      },
+      {
+        id: 2,
+        name: "Backlog",
+        description: "Task's backlog",
+        color: "",
+        type: "task",
+      },
+    ],
     skipDuplicates: true,
   });
 

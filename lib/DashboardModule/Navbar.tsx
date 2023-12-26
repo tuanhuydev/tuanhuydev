@@ -4,7 +4,7 @@ import { RootState } from "@lib/configs/types";
 import { authActions } from "@lib/store/slices/authSlice";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });

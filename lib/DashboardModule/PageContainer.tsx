@@ -1,10 +1,9 @@
 "use client";
 
 import { currentUserSelector } from "@lib/store/slices/authSlice";
-import { Resource } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, PropsWithChildren, ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { PropsWithChildren, ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Navbar = dynamic(() => import("./Navbar"), { ssr: false });
