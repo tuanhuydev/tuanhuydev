@@ -34,9 +34,9 @@ export interface ElementType {
   name: string;
   type: "text" | "number" | "email" | "password" | "textarea" | "select" | "richeditor" | "datepicker";
   label?: "string";
-  options?: {};
-  validate?: {};
-  style?: {};
+  options?: ObjectType;
+  validate?: ObjectType;
+  style?: ObjectType;
   className?: string;
 }
 
@@ -56,14 +56,19 @@ export interface DynamicFormConfig {
 const mapValidation = (type: any, validate: ObjectType) => {
   // make yup base on type
   let rule;
-  if (type === "number") {
-    rule = yup.number();
-  } else if (type === "datepicker") {
-    rule = yup.date();
-  } else if (type === "select") {
-    rule = yup.string();
-  } else {
-    rule = yup.string();
+  switch (type) {
+    case "number":
+      rule = yup.number();
+      break;
+    case "datepicker":
+      rule = yup.date();
+      break;
+    case "select":
+      const isMultipleSelect = "multiple" in validate && validate?.multiple;
+      rule = isMultipleSelect ? yup.array() : yup.string();
+      break;
+    default:
+      rule = yup.string();
   }
 
   // Apply rules
