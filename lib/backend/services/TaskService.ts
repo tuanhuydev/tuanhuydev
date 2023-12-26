@@ -22,7 +22,12 @@ class TaskService {
   async getTasks(filter?: FilterType) {
     try {
       let defaultWhere: ObjectType = { deletedAt: null };
-      if (!filter) return await prismaClient.task.findMany({ where: defaultWhere });
+      const defaultInclude: ObjectType = { status: true };
+      if (!filter)
+        return await prismaClient.task.findMany({
+          where: defaultWhere,
+          include: defaultInclude,
+        });
 
       const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
 
@@ -37,6 +42,7 @@ class TaskService {
       }
       let query: any = {
         where: defaultWhere,
+        include: defaultInclude,
         orderBy: orderBy.map((order) => ({
           [order.field]: order.direction.toLowerCase(),
         })),

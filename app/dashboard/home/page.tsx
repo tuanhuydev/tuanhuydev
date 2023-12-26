@@ -1,24 +1,20 @@
 "use client";
 
+import WithAuth from "@lib/components/hocs/WithAuth";
 import { useGetPostsQuery, useGetProjectsQuery } from "@lib/store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { ReactNode } from "react";
 
 const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
 
-const PageContainer = dynamic(async () => (await import("@lib/DashboardModule/PageContainer")).default, {
+const GridViewOutlined = dynamic(async () => (await import("@mui/icons-material/GridViewOutlined")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const AppstoreOutlined = dynamic(() => import("@ant-design/icons/AppstoreOutlined"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const ContainerOutlined = dynamic(() => import("@ant-design/icons/ContainerOutlined"), {
+const ArticleOutlined = dynamic(async () => (await import("@mui/icons-material/ArticleOutlined")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -53,38 +49,43 @@ const HomeCard = React.memo(({ url, name, value, loading = false, icon }: HomeCa
 });
 HomeCard.displayName = "HomeCard";
 
-export default function Page() {
+function Page({ setTitle, setPageKey }: any) {
   const { data: projects = [], isLoading: isProjectLoading } = useGetProjectsQuery({});
   const { data: posts = [], isLoading: isPostLoading } = useGetPostsQuery({});
 
+  useEffect(() => {
+    if (setTitle) setTitle("Home");
+    if (setPageKey) setPageKey("Home");
+  }, [setTitle, setPageKey]);
+
   return (
-    <PageContainer title="Home" pageKey="Home">
-      <div className="flex wrap gap-4">
-        <Card style={{ width: 300, height: 350 }}>
-          <Calendar
-            fullscreen={false}
-            headerRender={() => (
-              <div className="flex justify-between font-thin text-lg text-slate-400 mb-3">
-                <span className="block ">Calendar</span>
-              </div>
-            )}
-          />
-        </Card>
-        <HomeCard
-          url={"/dashboard/projects"}
-          name={"Projects"}
-          value={projects?.length}
-          loading={isProjectLoading}
-          icon={<AppstoreOutlined />}
+    <div className="flex wrap gap-4">
+      <Card style={{ width: 300, height: 350 }}>
+        <Calendar
+          fullscreen={false}
+          headerRender={() => (
+            <div className="flex justify-between font-thin text-lg text-slate-400 mb-3">
+              <span className="block ">Calendar</span>
+            </div>
+          )}
         />
-        <HomeCard
-          url={"/dashboard/posts"}
-          name={"Posts"}
-          value={posts?.length}
-          loading={isPostLoading}
-          icon={<ContainerOutlined />}
-        />
-      </div>
-    </PageContainer>
+      </Card>
+      <HomeCard
+        url={"/dashboard/projects"}
+        name={"Projects"}
+        value={projects?.length}
+        loading={isProjectLoading}
+        icon={<GridViewOutlined />}
+      />
+      <HomeCard
+        url={"/dashboard/posts"}
+        name={"Posts"}
+        value={posts?.length}
+        loading={isPostLoading}
+        icon={<ArticleOutlined />}
+      />
+    </div>
   );
 }
+
+export default WithAuth(Page);

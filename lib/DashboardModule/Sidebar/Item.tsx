@@ -28,7 +28,7 @@ export default function Item({ label, icon, path }: ItemProps) {
         <li
           className={`ease-in duration-200 rounded-sm mb-1 text-slate-600 cursor-pointer py-2 px-3 hover:bg-primary hover:text-white ${activeClass}`}>
           <div className="capitalize flex items-center relative min-w-0">
-            <span className="mr-4">{icon}</span>
+            <span className="mr-3 leading-none align-middle">{icon}</span>
             <span className="truncate">{label}</span>
           </div>
         </li>

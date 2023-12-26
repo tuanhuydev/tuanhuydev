@@ -129,6 +129,7 @@ model Status {
   id          Int       @id @default(autoincrement())
   name        String    @db.VarChar(255)
   description String    @db.Text
+  type        String    @default("default")
   color       String    @db.VarChar(255)
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)

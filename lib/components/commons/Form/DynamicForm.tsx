@@ -48,6 +48,7 @@ export interface DynamicFormProps {
   submitProps?: Partial<ButtonProps>;
   customSubmit?: ReactNode;
 }
+
 export interface DynamicFormConfig {
   fields: ElementType[];
 }
@@ -60,7 +61,7 @@ const mapValidation = (type: any, validate: ObjectType) => {
   } else if (type === "datepicker") {
     rule = yup.date();
   } else if (type === "select") {
-    rule = yup.array();
+    rule = yup.string();
   } else {
     rule = yup.string();
   }
@@ -119,7 +120,14 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
             return <DynamicDatepicker key={name} {...elementProps} {...restFieldProps} />;
           default:
             return (
-              <DynamicText key={name} {...elementProps} {...restFieldProps} type={type} keyProp={`${name} - ${type}`} />
+              <DynamicText
+                key={name}
+                {...elementProps}
+                disabled={true}
+                {...restFieldProps}
+                type={type}
+                keyProp={`${name} - ${type}`}
+              />
             );
         }
       }),
@@ -141,8 +149,8 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
 
   return (
     <form onSubmit={handleSubmit(submit)} className="w-full">
-      <div className="flex flex-wrap relative overflow-auto p-2">{registerFields}</div>
-      <div className="flex py-2 px-4">
+      <div className="flex flex-wrap relative overflow-auto">{registerFields}</div>
+      <div className="flex p-2">
         <Button
           {...submitProps}
           type="primary"

@@ -91,7 +91,6 @@ export default function BaseMarkdown({
     return basePlugins;
   }, [readOnly]);
   const localRef = useRef<MDXEditorMethods | null>(null);
-  const [typing, setTyping] = useState<boolean>(false);
 
   useEffect(() => {
     if (localRef.current && !localRef.current?.getMarkdown()) {
@@ -100,7 +99,10 @@ export default function BaseMarkdown({
   }, [value]);
 
   return (
-    <div className="block gap-4 !border !border-solid !border-slate-300 focus-within:outline outline-2 transition-all ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-scroll">
+    <div
+      className={`block gap-4 flex-1 !border !border-solid ${
+        readOnly ? "border-transparent" : "!border-slate-300"
+      } focus-within:outline outline-2 transition-all ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto`}>
       <div className="flex-1 relative">
         <MDXEditor
           placeholder={placeholder}

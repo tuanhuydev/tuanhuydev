@@ -2,7 +2,7 @@
   "semi": true,
   "singleQuote": false,
   "bracketSameLine": true,
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "plugins": ["prettier-plugin-tailwindcss"],
   "trailingComma": "all",
   "printWidth": 120,

@@ -29,8 +29,10 @@ export default function DynamicMarkdown({
   const { invalid, error } = fieldState;
   const { ref, ...restField } = field;
   return (
-    <div className={`p-2 self-stretch w-full ${className}`}>
-      <BaseMarkdown key={keyProp} {...restField} {...options} />
+    <div className={"p-2 self-stretch w-full flex flex-col"}>
+      <div className={className}>
+        <BaseMarkdown key={keyProp} {...restField} {...options} />
+      </div>
       {invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
     </div>
   );
