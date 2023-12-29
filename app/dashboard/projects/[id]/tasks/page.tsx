@@ -79,7 +79,7 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-function Page({ params, setTitle, setPageKey }: any) {
+function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const { id } = params;
   const [notify, contextHolder] = notification.useNotification();
   const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
@@ -92,7 +92,7 @@ function Page({ params, setTitle, setPageKey }: any) {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
 
-  const drawerTitle = selectedTask ? `Task [ #${selectedTask.id} ]` : "Create new task";
+  const drawerTitle = selectedTask ? `Task #${selectedTask.id}` : "Create new task";
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
   const toggleDrawer = (value: boolean) => () => {
@@ -205,11 +205,6 @@ function Page({ params, setTitle, setPageKey }: any) {
       <div className="px-3">
         <div className="flex gap-3 relative">
           <h1 className="text-lg capitalize px-3 m-0 font-medium truncate">{selectedTask?.title ?? EMPTY_STRING}</h1>
-          <span
-            className="px-2 py-1 text-white rounded-full flex items-center"
-            style={{ background: (selectedTask as any)?.status?.color }}>
-            {(selectedTask as any)?.status?.name}
-          </span>
         </div>
         <BaseMarkdown value={selectedTask?.description ?? EMPTY_STRING} readOnly></BaseMarkdown>
       </div>
@@ -219,7 +214,8 @@ function Page({ params, setTitle, setPageKey }: any) {
   useEffect(() => {
     if (setTitle) setTitle(`${project?.name}'s tasks`);
     if (setPageKey) setPageKey(Permissions.VIEW_TASKS);
-  }, [setTitle, setPageKey, project?.name]);
+    if (setGoBack) setGoBack(true);
+  }, [setTitle, setPageKey, project?.name, setGoBack]);
 
   return (
     <Fragment>
@@ -241,14 +237,21 @@ function Page({ params, setTitle, setPageKey }: any) {
       <div className="grow overflow-auto pb-3">{RenderTaskGroup}</div>
       <Drawer size="large" placement="right" destroyOnClose styles={drawerStyle} open={openDrawer}>
         <div className="bg-slate-700 mb-3 flex justify-between">
-          <div className="w-fit px-3 bg-primary text-white">
-            <div className="flex items-center py-2">
-              <h1
-                className={`m-0 p-0 text-base cursor-pointer ${selectedTask ? "hover:underline" : ""}`}
-                onClick={copyTaskLink}>
-                {drawerTitle}
-              </h1>
-            </div>
+          <div className="flex items-baseline">
+            <h1
+              className={`my-0 mr-3 px-3 py-2 bg-primary text-white text-base cursor-pointer ${
+                selectedTask ? "hover:underline" : ""
+              }`}
+              onClick={copyTaskLink}>
+              {drawerTitle}
+            </h1>
+            {selectedTask && (
+              <span
+                className="px-2 py-1 text-white rounded-md flex items-center bg-blue-500 leading-none"
+                style={{ background: (selectedTask as any)?.status?.color ?? "transparent" }}>
+                {(selectedTask as any)?.status?.name}
+              </span>
+            )}
           </div>
           {RenderDrawerExtra}
         </div>

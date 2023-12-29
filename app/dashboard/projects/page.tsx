@@ -81,7 +81,7 @@ function Page({ setTitle, setPageKey }: any) {
           onChange={onSearchProjects}
           placeholder="Find your project"
           className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined className="!text-lg text-white" />}
+          prefix={<SearchOutlined className="!text-lg " />}
         />
         <Button
           size="large"
