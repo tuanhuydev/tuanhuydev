@@ -13,30 +13,25 @@ import { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from
 
 const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
 
-const ExclamationCircleFilled = dynamic(async () => (await import("@ant-design/icons")).ExclamationCircleFilled, {
+const ErrorOutlineOutlined = dynamic(async () => await import("@mui/icons-material/ErrorOutlineOutlined"), {
   ssr: false,
-  loading: () => <Loader />,
-});
-const DeleteOutlined = dynamic(async () => (await import("@ant-design/icons")).DeleteOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const EyeOutlined = dynamic(async () => (await import("@ant-design/icons")).EyeOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const DownloadOutlined = dynamic(async () => (await import("@ant-design/icons")).DownloadOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const SearchOutlined = dynamic(async () => (await import("@ant-design/icons")).SearchOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
 });
 
-const DownOutlined = dynamic(async () => (await import("@ant-design/icons")).DownOutlined, {
+const DeleteOutlineOutlined = dynamic(async () => await import("@mui/icons-material/DeleteOutlineOutlined"), {
   ssr: false,
-  loading: () => <Loader />,
+});
+
+const VisibilityOutlined = dynamic(async () => await import("@mui/icons-material/VisibilityOutlined"), {
+  ssr: false,
+});
+const FileDownloadOutlinedIcon = dynamic(async () => await import("@mui/icons-material/FileDownloadOutlined"), {
+  ssr: false,
+});
+const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
+  ssr: false,
+});
+const KeyboardArrowDownOutlined = dynamic(async () => await import("@mui/icons-material/KeyboardArrowDownOutlined"), {
+  ssr: false,
 });
 
 const PostCard = dynamic(() => import("@lib/PostModule/PostCard"), {
@@ -69,7 +64,7 @@ function Page({ setTitle, setPageKey }: any) {
       event.stopPropagation();
       confirm({
         title: "Are you sure to delete ?",
-        icon: <ExclamationCircleFilled />,
+        icon: <ErrorOutlineOutlined />,
         okText: "Delete",
         okType: "danger",
         cancelText: "Cancel",
@@ -92,9 +87,9 @@ function Page({ setTitle, setPageKey }: any) {
 
   const makePostCardActions = useCallback(
     ({ id, slug, publishedAt }: Post) => {
-      const actions = [<DeleteOutlined key="delete" onClick={triggerDeletePost(id)} />];
+      const actions = [<DeleteOutlineOutlined className="!w-4 !h-4" key="delete" onClick={triggerDeletePost(id)} />];
       if (publishedAt) {
-        actions.push(<EyeOutlined key="view" onClick={openPostInNewTab(slug)} />);
+        actions.push(<VisibilityOutlined className="!w-4 !h-4" key="view" onClick={openPostInNewTab(slug)} />);
       }
       return actions;
     },
@@ -155,7 +150,7 @@ function Page({ setTitle, setPageKey }: any) {
     {
       key: "1",
       label: "Export JSON",
-      icon: <DownloadOutlined />,
+      icon: <FileDownloadOutlinedIcon />,
       onClick: exportPostsToJson,
     },
   ];
@@ -186,7 +181,7 @@ function Page({ setTitle, setPageKey }: any) {
             type="primary"
             onClick={navigatePostCreate}
             className="rounded-sm"
-            icon={<DownOutlined />}
+            icon={<KeyboardArrowDownOutlined />}
             menu={{ items: menuItems }}>
             Write New
           </DropdownButton>

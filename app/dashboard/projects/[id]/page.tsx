@@ -38,11 +38,11 @@ const Progress = dynamic(async () => (await import("antd/es/progress")).default,
 });
 
 const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
-const EditOutlined = dynamic(async () => (await import("@ant-design/icons")).EditOutlined, {
+
+const EditOutlined = dynamic(async () => (await import("@mui/icons-material/EditOutlined")).default, {
   ssr: false,
-  loading: () => <Loader />,
 });
-const ShareAltOutlined = dynamic(async () => (await import("@ant-design/icons")).ShareAltOutlined, {
+const ShareOutlined = dynamic(async () => (await import("@mui/icons-material/ShareOutlined")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -51,7 +51,7 @@ const LinkOutlined = dynamic(async () => (await import("@ant-design/icons")).Lin
   loading: () => <Loader />,
 });
 
-function Page({ params, setTitle, setPageKey }: any) {
+function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const router = useRouter();
 
   const { data: project, isLoading, isError: isProjectLoading } = useGetProjectQuery(params.id as string);
@@ -69,7 +69,6 @@ function Page({ params, setTitle, setPageKey }: any) {
   const diffStartToNow = startDate ? differenceInDays(new Date(), new Date(startDate)) : 0;
   const diffStartToEndDate = startDate && endDate ? differenceInDays(new Date(endDate), new Date(startDate)) : 0;
   const completedPercentage = +((diffStartToNow / diffStartToEndDate) * 100).toFixed(2);
-
   const navigateProjectTasks = () => {
     router.push(`/dashboard/projects/${params.id as string}/tasks`);
   };
@@ -78,13 +77,25 @@ function Page({ params, setTitle, setPageKey }: any) {
     await navigator.clipboard.writeText(window.location.href);
     setTooltipContent("Copied");
   };
+  const titleByPercent = () => {
+    const currentDate = new Date();
+    if (completedPercentage >= 100) return "Done";
+
+    if (startDate && currentDate < new Date(startDate)) return "Not Started";
+
+    if (startDate && endDate && currentDate >= new Date(startDate) && currentDate <= new Date(endDate)) {
+      return formatDistanceToNow(new Date(startDate));
+    }
+    return "-";
+  };
 
   const resetTooltipContent = () => setTimeout(() => setTooltipContent("Share"), 300);
 
   useEffect(() => {
     if (setTitle) setTitle("View Project");
+    if (setGoBack) setGoBack(true);
     if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
-  }, [setTitle, setPageKey]);
+  }, [setTitle, setPageKey, setGoBack]);
 
   return (
     <Fragment>
@@ -96,7 +107,7 @@ function Page({ params, setTitle, setPageKey }: any) {
               <div className="flex gap-3">
                 <Button size="large" type="text" icon={<EditOutlined />}></Button>
                 <Tooltip title={tooltipContent} fresh={true} onOpenChange={resetTooltipContent}>
-                  <Button size="large" type="text" onClick={onShareProject} icon={<ShareAltOutlined />}></Button>
+                  <Button size="large" type="text" onClick={onShareProject} icon={<ShareOutlined />}></Button>
                 </Tooltip>
               </div>
             </div>
@@ -128,10 +139,14 @@ function Page({ params, setTitle, setPageKey }: any) {
           <Card className="h-full">
             <small className="text-sm capitalize text-slate-400">status</small>
             <div className="mt-4 flex flex-col items-center gap-4">
-              <Progress steps={5} percent={completedPercentage} size={[40, 40]} showInfo={false} />
-              <p className="text-xl font-medium capitalize">
-                {startDate ? formatDistanceToNow(new Date(startDate)) : "-"}
-              </p>
+              <Progress
+                steps={5}
+                percent={completedPercentage}
+                strokeColor={"#16A34A"}
+                size={[40, 40]}
+                showInfo={false}
+              />
+              <p className="text-xl font-medium capitalize">{titleByPercent()}</p>
               <div className="flex justify-between w-full">
                 <span className="text-xs">
                   <b>Start Date:&nbsp;</b>

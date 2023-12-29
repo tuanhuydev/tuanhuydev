@@ -1,4 +1,3 @@
-import Loader from "@lib/components/commons/Loader";
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@lib/store/slices/authSlice";
@@ -12,18 +11,15 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, { s
 
 const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
   ssr: false,
-  loading: () => <Loader />,
 });
 const KeyboardArrowLeftOutlined = dynamic(
   async () => (await import("@mui/icons-material/KeyboardArrowLeftOutlined")).default,
   {
     ssr: false,
-    loading: () => <Loader />,
   },
 );
 const ExitToAppOutlined = dynamic(async () => (await import("@mui/icons-material/ExitToAppOutlined")).default, {
   ssr: false,
-  loading: () => <Loader />,
 });
 interface NavbarProps extends PropsWithChildren {
   title?: string;
