@@ -12,9 +12,5 @@ const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer")
 });
 
 export default function Page() {
-  return (
-    <PageContainer title="Tasks" pageKey="Tasks">
-      Hello
-    </PageContainer>
-  );
+  return <PageContainer>Hello</PageContainer>;
 }

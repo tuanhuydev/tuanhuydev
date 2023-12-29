@@ -55,7 +55,7 @@ function Page({ setTitle, setPageKey }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle("Home");
-    if (setPageKey) setPageKey("Home");
+    if (setPageKey) setPageKey("home");
   }, [setTitle, setPageKey]);
 
   return (

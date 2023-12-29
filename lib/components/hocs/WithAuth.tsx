@@ -1,5 +1,8 @@
+import Loader from "../commons/Loader";
 import PageContainer from "@lib/DashboardModule/PageContainer";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { clearLocalStorage, getLocalStorage, setLocalStorage } from "@lib/shared/utils/dom";
 import { authActions } from "@lib/store/slices/authSlice";
@@ -7,7 +10,7 @@ import { User } from "@prisma/client";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { FC, Fragment, useCallback, useEffect, useState } from "react";
+import React, { FC, Fragment, useCallback, useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type UserWithPermission = User & { permissionId: number };
@@ -15,11 +18,12 @@ type UserWithPermission = User & { permissionId: number };
 const Sidebar = dynamic(() => import("@lib/DashboardModule/Sidebar"), { ssr: false });
 
 export default function WithAuth(WrappedComponent: FC<any>) {
+  const DEFAULT_PAGEKEYS = ["home", "setting"];
+
   const WithAuthWrapper = (props: any) => {
-    const [validated, setValidate] = useState(false);
-    const [title, setTitle] = useState<string>("Title");
-    const [pageKey, setPageKey] = useState<string>("Home");
-    const storageUser: UserWithPermission = getLocalStorage("currentUser");
+    const [pageKey, setPageKey] = useState<string>("home");
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [hasPermission, setHasPermission] = useState<boolean>(false);
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -33,7 +37,8 @@ export default function WithAuth(WrappedComponent: FC<any>) {
       const response: any = await fetch(`${BASE_URL}/api/resources/permission/${permissionId}`, {
         headers: { authorization: `Bearer ${Cookies.get("jwt")}` },
       });
-      if (!response.ok) throw new Error("Resources not found");
+      if (response?.status === 401) throw new UnauthorizedError("Resources not found");
+      if (!response.ok) throw new BaseError("Resources not found");
 
       const { data = [] } = await response.json();
       const resources = new Map();
@@ -45,48 +50,64 @@ export default function WithAuth(WrappedComponent: FC<any>) {
       return resources;
     }, []);
 
-    const init = useCallback(async () => {
-      try {
-        if (!storageUser || !storageUser.permissionId) throw new Error("Credential not found");
-
-        const resources = await fetchResource(storageUser.permissionId);
-        const userWithResources = { ...storageUser, resources };
+    const updateUserWithResources = useCallback(
+      (user: UserWithPermission, resources: Map<string, ObjectType>) => {
+        const userWithResources = { ...user, resources };
 
         dispatch(authActions.setCurrentUser(userWithResources));
         setLocalStorage("currentUser", JSON.stringify(userWithResources));
+      },
+      [dispatch],
+    );
+
+    const checkPermission = useCallback(async () => {
+      try {
+        const storageUser: UserWithPermission = getLocalStorage("currentUser");
+
+        if (!storageUser || !storageUser?.permissionId) {
+          throw new BaseError("Credential not found");
+        }
+
+        const resources = await fetchResource(storageUser.permissionId);
+        updateUserWithResources(storageUser, resources);
 
         const hasCookie = !!Cookies.get("jwt");
         const hasCredential = !!getLocalStorage(STORAGE_CREDENTIAL_KEY) as boolean;
-        const hasStorageUser = !!storageUser;
-
-        setValidate(hasCookie && hasCredential && hasStorageUser);
+        const hasResource = resources.has(pageKey) || DEFAULT_PAGEKEYS.includes(pageKey);
+        setHasPermission(hasCookie && hasCredential && hasResource);
       } catch (error) {
-        clearAuth();
+        if (error instanceof UnauthorizedError) return clearAuth();
+        return router.replace("/dashboard/home");
+      } finally {
+        setIsLoading(false);
       }
-    }, [clearAuth, dispatch, fetchResource, storageUser]);
+    }, [clearAuth, fetchResource, pageKey, router, updateUserWithResources]);
 
-    useEffect(() => {
-      init();
-    }, [init]);
+    useLayoutEffect(() => {
+      checkPermission();
+    }, [checkPermission]);
 
     const enhancedProps = {
       ...props,
-      setTitle,
       setPageKey,
     };
 
-    return validated ? (
-      <div className="w-full h-screen overflow-hidden flex flex-nowrap">
-        <div className="flex w-full relative">
-          <Sidebar />
-          <PageContainer pageKey={pageKey} title={title}>
-            <WrappedComponent {...enhancedProps} />
-          </PageContainer>
+    if (isLoading) return <Loader />;
+
+    if (hasPermission) {
+      return (
+        <div className="w-full h-screen overflow-hidden flex flex-nowrap">
+          <div className="flex w-full relative">
+            <Sidebar />
+            <PageContainer>
+              <WrappedComponent {...enhancedProps} />
+            </PageContainer>
+          </div>
         </div>
-      </div>
-    ) : (
-      <Fragment />
-    );
+      );
+    }
+    return <Fragment />;
   };
+
   return WithAuthWrapper;
 }
