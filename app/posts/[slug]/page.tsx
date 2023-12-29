@@ -1,29 +1,50 @@
-import ImageWithFallback from 'lib/components/commons/ImageWithFallback';
-import React from 'react';
+import Loader from "@lib/components/commons/Loader";
+import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
+import "@mdxeditor/editor/style.css";
+import dynamic from "next/dynamic";
+import React from "react";
 
-import { EMPTY_STRING } from '@shared/configs/constants';
+const ImageWithFallback = dynamic(async () => (await import("@lib/components/commons/ImageWithFallback")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const MarkdownPreview = dynamic(async () => (await import("@lib/components/commons/BaseMarkdown")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
-import PostService from '@backend/services/PostService';
+async function getData(slug: string) {
+  const response = await fetch(`${BASE_URL}/api/posts/${slug}`, { cache: "no-store" });
+  if (!response.ok) return {};
+
+  const { data: post } = await response.json();
+  return post;
+}
 
 export default async function Page({ params }: any) {
-	'use server';
-	const { slug } = params;
-	const post = await PostService.getPostBySlug(slug);
-	if (!post) return <h1>Not Found</h1>;
+  const { slug } = params;
+  const post = await getData(slug);
+  if (!post) return <h1>Not Found</h1>;
 
-	return (
-		<div className="grid grid-rows-post">
-			<div className="background row-start-1 col-span-full relative opacity-40">
-				<ImageWithFallback src={post.thumbnail ?? EMPTY_STRING} alt={post.title} fill className="object-cover" />
-			</div>
-			<div className="grid grid-cols-12 -mt-10 relative z-20">
-				<div className="col-start-1 col-span-1"></div>
-				<div className="col-start-3 col-span-9 p-4 bg-white rounded-md shadow-md">
-					<h1 className="text-5xl font-bold">{post.title}</h1>
-					<div className="mt-6" dangerouslySetInnerHTML={{ __html: post.content }}></div>
-				</div>
-				<div className="col-start-11"></div>
-			</div>
-		</div>
-	);
+  return (
+    <div className="grid grid-rows-post">
+      <div className="background row-start-1 col-span-full relative opacity-40">
+        <ImageWithFallback
+          src={post.thumbnail ?? EMPTY_STRING}
+          alt={post.title}
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="grid lg:grid-cols-12 -mt-10 relative z-20">
+        <div className="col-start-3 col-span-9 p-4 shadow-md rounded-md">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
+          <div className="!text-sm lg:!text-base bg-white p-3">
+            <MarkdownPreview value={post.content} readOnly />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

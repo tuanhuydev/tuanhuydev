@@ -1,11 +1,24 @@
-import PostForm from '@lib/PostModule/PostForm';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
-import React, { memo } from 'react';
+"use client";
 
-export default memo(function Page() {
-	return (
-		<WithAnimation>
-			<PostForm />
-		</WithAnimation>
-	);
+import WithAuth from "@lib/components/hocs/WithAuth";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
+import dynamic from "next/dynamic";
+import React, { useEffect } from "react";
+
+const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
+
+const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), {
+  ssr: false,
+  loading: () => <Loader />,
 });
+
+function Page({ setTitle, setPageKey }: any) {
+  useEffect(() => {
+    if (setTitle) setTitle("Create new post");
+    if (setPageKey) setPageKey(Permissions.CREATE_POST);
+  }, [setTitle, setPageKey]);
+
+  return <PostForm />;
+}
+
+export default WithAuth(Page);

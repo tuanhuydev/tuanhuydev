@@ -1,34 +1,36 @@
-import Blog from '@lib/HomeModule/BlogSection';
-import HomeLayout from '@lib/HomeModule/HomeLayout';
-import { Post } from '@prisma/client';
-import React, { Fragment, lazy } from 'react';
+import HomeLayout from "@lib/HomeModule/HomeLayout";
+import Loader from "@lib/components/commons/Loader";
+import { BASE_URL } from "@lib/configs/constants";
+import { Post } from "@prisma/client";
+import dynamic from "next/dynamic";
+import React from "react";
 
-import PostService from '@backend/services/PostService';
+const Hero = dynamic(async () => import("@lib/HomeModule/Hero"), { loading: () => <Loader /> });
+const Contact = dynamic(async () => import("@lib/HomeModule/Contact"), { loading: () => <Loader /> });
+const Services = dynamic(async () => import("@lib/HomeModule/Services"), { loading: () => <Loader /> });
+const BlogSection = dynamic(async () => import("@lib/HomeModule/BlogSection"), { loading: () => <Loader /> });
 
-const Hero = lazy(() => import('@lib/HomeModule/Hero'));
-const Contact = lazy(() => import('@lib/HomeModule/Contact'));
-const Services = lazy(() => import('@lib/HomeModule/Services'));
+async function getData() {
+  const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: "no-store" });
+  if (!response.ok) return [];
 
-export const metadata = {
-	title: 'tuanhuydev - Fullstack Software Engineer',
-	description:
-		"tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
-};
+  const { data: posts } = await response.json();
+  return posts;
+}
 
 export default async function Home() {
-	'use server';
-	const posts: Array<Post> = await PostService.getPosts({ page: 1, pageSize: 4, active: true });
+  const posts: Post[] = await getData();
 
-	return (
-		<HomeLayout>
-			<Hero />
-			<Services />
-			{posts.length ? <Blog posts={posts} /> : <Fragment />}
-			<Contact />
-			<audio id="audio" src="/assets/sounds/click.wav">
-				Your browser does not support the
-				<code>audio</code> element.
-			</audio>
-		</HomeLayout>
-	);
+  return (
+    <HomeLayout>
+      <Hero />
+      <Services />
+      <BlogSection posts={posts} />
+      <Contact />
+      <audio id="audio" src="/assets/sounds/click.wav">
+        Your browser does not support the
+        <code>audio</code> element.
+      </audio>
+    </HomeLayout>
+  );
 }

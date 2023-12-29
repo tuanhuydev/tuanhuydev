@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -25,18 +26,53 @@ model Post {
   @@map("posts")
 }
 
+model Permission {
+  id                  Int                  @id @default(autoincrement())
+  name                String               @db.VarChar(255)
+  createdAt           DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt           DateTime             @default(now()) @db.Timestamp(6)
+  deletedAt           DateTime?            @db.Timestamp(6)
+  users               User[]
+  resourcePermissions ResourcePermission[]
+
+  @@map("permissions")
+}
+
 model User {
-  id          String        @unique @db.Uuid
-  name        String        @db.VarChar(50)
-  email       String        @unique @db.VarChar(50)
-  password    String        @default("0") @db.VarChar(255)
-  createdAt   DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime      @default(now()) @db.Timestamp(6)
-  deletedAt   DateTime?     @db.Timestamp(6)
-  posts       Post[]
-  ProjectUser ProjectUser[]
+  id           String        @unique @db.Uuid
+  name         String        @db.VarChar(50)
+  email        String        @unique @db.VarChar(50)
+  password     String        @default("0") @db.VarChar(255)
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime      @default(now()) @db.Timestamp(6)
+  deletedAt    DateTime?     @db.Timestamp(6)
+  posts        Post[]
+  projectUsers ProjectUser[]
+  tasks        Task[]
+  permission   Permission    @relation(fields: [permissionId], references: [id])
+  permissionId Int
 
   @@map("users")
+}
+
+model Resource {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  ResourcePermissions ResourcePermission[]
+
+  @@map("resources")
+}
+
+model ResourcePermission {
+  resourceId   Int
+  permissionId Int
+  resourceType String
+
+  Resource   Resource   @relation(fields: [resourceId], references: [id])
+  Permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([resourceId, permissionId])
+  @@map("resource_permissions")
 }
 
 model Project {
@@ -44,11 +80,13 @@ model Project {
   name        String        @db.VarChar(255)
   description String        @db.Text
   thumbnail   String?       @db.VarChar(255)
+  startDate   DateTime?     @db.Timestamp(6)
+  endDate     DateTime?     @db.Timestamp(6)
   createdAt   DateTime      @default(now()) @db.Timestamp(6)
   updatedAt   DateTime      @default(now()) @db.Timestamp(6)
   deletedAt   DateTime?     @db.Timestamp(6)
-  Task        Task[]
-  ProjectUser ProjectUser[]
+  tasks       Task[]
+  users       ProjectUser[]
 
   @@map("projects")
 }
@@ -57,28 +95,47 @@ model Task {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(255)
   description String    @db.Text
-  projectId   Int
-  statusId    Int       @unique
+  projectId   Int?
+  statusId    Int?
+  sprintId    Int?
+  createdBy   String?   @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
 
-  project Project @relation(fields: [projectId], references: [id])
-  status  Status  @relation(fields: [statusId], references: [id])
+  user    User?    @relation(fields: [createdBy], references: [id])
+  project Project? @relation(fields: [projectId], references: [id])
+  status  Status?  @relation(fields: [statusId], references: [id])
+  sprint  Sprint?  @relation(fields: [sprintId], references: [id])
 
   @@index([title])
   @@map("tasks")
+}
+
+model Sprint {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  fromDate    DateTime? @db.Timestamp(6)
+  toDate      DateTime  @db.Timestamp(6)
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(6)
+  tasks       Task[]
+
+  @@index([name])
+  @@map("sprints")
 }
 
 model Status {
   id          Int       @id @default(autoincrement())
   name        String    @db.VarChar(255)
   description String    @db.Text
+  type        String    @default("default")
   color       String    @db.VarChar(255)
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
-  Task        Task?
+  tasks       Task[]
 
   @@map("statuses")
 }
@@ -136,5 +193,6 @@ model Meta {
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @default(now()) @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
-	 @@map("meta")
+
+  @@map("meta")
 }

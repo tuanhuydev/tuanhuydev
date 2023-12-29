@@ -1,52 +1,53 @@
-import { CompleteMultipartUploadOutput } from '@aws-sdk/client-s3';
-import BadRequestError from '@lib/shared/commons/errors/BadRequestError';
-import { NextRequest } from 'next/server';
-
-import BaseError from '@shared/commons/errors/BaseError';
-
-import S3Service from '@backend/services/S3Service';
-import Network from '@backend/utils/Network';
-
-import assetService, { AssetService } from '../services/AssetService';
+import assetService, { AssetService } from "../services/AssetService";
+import { CompleteMultipartUploadOutput } from "@aws-sdk/client-s3";
+import S3Service from "@backend/services/S3Service";
+import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import Network from "@lib/shared/utils/network";
+import BaseError from "@shared/commons/errors/BaseError";
+import { NextRequest } from "next/server";
 
 class StorageController {
-	#assetService: AssetService;
+  #assetService: AssetService;
+  static #instance: StorageController;
 
-	constructor(assetService: AssetService) {
-		this.#assetService = assetService;
-	}
+  static makeInstance(assetService: AssetService) {
+    return StorageController.#instance ?? new StorageController(assetService);
+  }
 
-	async extractFileFromRequest(request: NextRequest): Promise<File> {
-		const formData = await request.formData();
-		const file = formData.get('file') as unknown;
+  constructor(assetService: AssetService) {
+    this.#assetService = assetService;
+  }
 
-		if (!file) throw new BaseError('Invalid File');
-		return file as File;
-	}
+  async extractFileFromRequest(request: NextRequest): Promise<File> {
+    const formData = await request.formData();
+    const file = formData.get("file") as unknown;
 
-	validateFile = (file: File) => {
-		const maxSizeInBytes = 1024 * 1024 * 2; // 2 MB
-		if (file.size > maxSizeInBytes) throw new BadRequestError('File is too heavy');
-	};
+    if (!file) throw new BaseError("Invalid File");
+    return file as File;
+  }
 
-	async uploadFile(request: NextRequest, { type }: any) {
-		const network = Network(request);
-		try {
-			const file: File = await this.extractFileFromRequest(request);
+  validateFile = (file: File) => {
+    const maxSizeInBytes = 1024 * 1024 * 2; // 2 MB
+    if (file.size > maxSizeInBytes) throw new BadRequestError("File is too heavy");
+  };
 
-			this.validateFile(file);
+  async uploadFile(request: NextRequest, { type }: any) {
+    const network = Network(request);
+    try {
+      const file: File = await this.extractFileFromRequest(request);
 
-			const data: CompleteMultipartUploadOutput = await S3Service.save(file as File, type as string);
-			if (!data) throw new BaseError('Unable to upload file');
+      this.validateFile(file);
 
-			const asset = await assetService.saveAsset(data.Location as string, type);
+      const data: CompleteMultipartUploadOutput = await S3Service.save(file as File, type as string);
+      if (!data) throw new BaseError("Unable to upload file");
 
-			return network.successResponse(asset);
-		} catch (error) {
-			return network.failResponse(error as BaseError);
-		}
-	}
+      const asset = await assetService.saveAsset(data.Location as string, type);
+
+      return network.successResponse(asset);
+    } catch (error) {
+      return network.failResponse(error as BaseError);
+    }
+  }
 }
 
-const storageController = new StorageController(assetService);
-export default storageController;
+export default StorageController.makeInstance(assetService);

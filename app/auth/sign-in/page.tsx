@@ -1,140 +1,123 @@
-'use client';
+"use client";
 
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import WithAnimation from '@lib/components/hocs/WithAnimation';
-import { Button, Divider, Form, Input } from 'antd';
-import { AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
-import { AppContext } from 'lib/components/hocs/WithProvider';
-import apiClient from 'lib/configs/apiClient';
-import { RootState } from 'lib/configs/types';
-import { authActions } from 'lib/store/slices/authSlice';
-import { useRouter } from 'next/navigation';
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { DynamicFormConfig } from "@lib/components/commons/Form/DynamicForm";
+import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
+import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
+import BaseError from "@shared/commons/errors/BaseError";
+import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
+import { ObjectType } from "@shared/interfaces/base";
+import { getLocalStorage, setLocalStorage } from "@shared/utils/dom";
+import notification from "antd/es/notification";
+import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import React, { Fragment, useCallback, useEffect } from "react";
 
-import BaseError from '@shared/commons/errors/BaseError';
-import UnauthorizedError from '@shared/commons/errors/UnauthorizedError';
-import { STORAGE_CREDENTIAL_KEY } from '@shared/configs/constants';
-import { ObjectType } from '@shared/interfaces/base';
-import { getLocalStorage, setLocalStorage } from '@shared/utils/dom';
+const Loader = dynamic(async () => await import("@lib/components/commons/Loader"));
 
-const INITIAL_SIGN_IN_FORM = {
-	email: '',
-	password: '',
+const DynamicForm = dynamic(() => import("@lib/components/commons/Form/DynamicForm"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const WithAnimation = dynamic(() => import("@lib/components/hocs/WithAnimation"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+// TODO: Move this one to API.
+const signInFormConfig: DynamicFormConfig = {
+  fields: [
+    {
+      name: "email",
+      type: "email",
+      options: {
+        size: "large",
+        placeholder: "Email",
+      },
+      validate: {
+        required: true,
+      },
+    },
+    {
+      name: "password",
+      type: "password",
+      options: {
+        size: "large",
+        placeholder: "Password",
+      },
+      validate: {
+        required: true,
+      },
+    },
+  ],
 };
 
-export default memo(function SignIn() {
-	// Hooks
-	const dispatch = useDispatch();
-	const [form] = Form.useForm();
-	const { context } = useContext(AppContext);
-	const router = useRouter();
+export default function SignIn() {
+  // Hooks
+  const router = useRouter();
+  const [api, contextHolder] = notification.useNotification();
 
-	// Selectors
-	const auth = useSelector((state: RootState) => state.auth);
+  const syncAuth = (credential: ObjectType) => {
+    if (!credential) throw new UnauthorizedError();
+    setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
+    Cookies.set("jwt", credential.accessToken);
+  };
 
-	// State
-	const [submiting, setSubmitState] = useState(false);
+  const getCurrentUser = async (userId: string) => {
+    const response = await fetch(`${BASE_URL}/api/users/${userId}`);
+    if (!response.ok) throw new NotFoundError("User not found");
 
-	const syncAuth = (credential: ObjectType) => {
-		if (!credential) throw new UnauthorizedError();
-		Cookies.set('jwt', credential.accessToken);
-		setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
-	};
+    const { data: currentUser } = await response.json();
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  };
 
-	const submit = async (formData: { email: string; password: string }) => {
-		setSubmitState(true);
-		try {
-			const { data: res }: AxiosResponse = await apiClient.post('/auth/sign-in', formData);
-			if (res) {
-				syncAuth(res.data);
-				router.push('/dashboard');
-			}
-		} catch (error) {
-			context.notify.error({ message: (error as BaseError).message });
-			clearForm();
-		} finally {
-			setSubmitState(false);
-		}
-	};
+  const submit = async (formData: any) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) throw new UnauthorizedError("Invalid sign in");
+      const { data: credential } = await response.json();
+      if (credential) {
+        syncAuth(credential);
+        if (credential?.userId) await getCurrentUser(credential?.userId);
+        router.push("/dashboard", {});
+      }
+    } catch (error) {
+      api.error({ message: (error as BaseError).message });
+    }
+  };
 
-	// TODO: Write custom hook
-	const isAuthenticatedByStore = useCallback(
-		(): boolean => auth.accessToken && auth.refreshToken,
-		[auth.refreshToken, auth.accessToken]
-	);
+  const isAuthenticatedByStorage = useCallback(() => {
+    const credential: ObjectType | null = getLocalStorage(STORAGE_CREDENTIAL_KEY);
+    return !!credential;
+  }, []);
 
-	const syncToStore = useCallback(
-		(credential: any) => {
-			dispatch(authActions.setAuth(credential));
-		},
-		[dispatch]
-	);
+  useEffect(() => {
+    const isAuthenticated: boolean = isAuthenticatedByStorage();
+    if (isAuthenticated) router.push("/dashboard/home");
+  }, [isAuthenticatedByStorage, router]);
 
-	const isAuthenticatedByStorage = useCallback(() => {
-		const credential: ObjectType | null = getLocalStorage(STORAGE_CREDENTIAL_KEY);
-		if (credential) syncToStore(credential);
-		return !!credential;
-	}, [syncToStore]);
-
-	const clearForm = () => form.resetFields();
-
-	useEffect(() => {
-		const isAuthenticated: boolean = isAuthenticatedByStore() || isAuthenticatedByStorage();
-		if (isAuthenticated) router.push('/dashboard/home');
-	}, [isAuthenticatedByStorage, isAuthenticatedByStore, router]);
-
-	return (
-		<WithAnimation>
-			<div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
-				<Form
-					form={form}
-					initialValues={INITIAL_SIGN_IN_FORM}
-					onFinish={submit}
-					className="form h-fit w-96 drop-shadow-md bg-white p-3">
-					<h1 className="font-sans text-2xl font-bold mb-4">Sign In</h1>
-					<Form.Item name="email" className="mb-4">
-						<Input
-							size="large"
-							placeholder="Email"
-							disabled={submiting}
-							prefix={<UserOutlined />}
-							type="email"
-							required
-						/>
-					</Form.Item>
-					<Form.Item name="password" className="mb-5">
-						<Input
-							size="large"
-							prefix={<LockOutlined />}
-							disabled={submiting}
-							placeholder="Password"
-							type="password"
-							required
-						/>
-					</Form.Item>
-
-					<Button
-						type="primary"
-						size="large"
-						className="w-full bg-primary capitalize border-transparent shadow-none"
-						loading={submiting}
-						disabled={submiting}
-						htmlType="submit">
-						submit
-					</Button>
-					<Divider className="my-3" />
-					<Button
-						size="large"
-						disabled={submiting}
-						className="w-full capitalize mr-3"
-						onClick={clearForm}
-						htmlType="button">
-						clear
-					</Button>
-				</Form>
-			</div>
-		</WithAnimation>
-	);
-});
+  return (
+    <WithAnimation>
+      <Fragment>
+        <div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
+          <div className="h-fit w-96 drop-shadow-md bg-white px-3 pt-3 pb-5">
+            <h1 className="font-sans text-2xl font-bold my-3">Sign In</h1>
+            <DynamicForm
+              config={signInFormConfig}
+              onSubmit={submit}
+              submitProps={{ size: "large", className: "w-full" }}
+            />
+          </div>
+        </div>
+        {contextHolder}
+      </Fragment>
+    </WithAnimation>
+  );
+}
