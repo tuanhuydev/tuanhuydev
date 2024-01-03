@@ -1,10 +1,18 @@
 "use client";
 
-import { WarningOutlined } from "@ant-design/icons";
+import Loader from "./Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { isURLValid } from "@shared/utils/helper";
-import Image, { ImageProps } from "next/image";
+import dynamic from "next/dynamic";
+import { ImageProps } from "next/image";
 import React, { memo, useEffect, useState } from "react";
+
+const Image = dynamic(() => import("next/image"), { ssr: false, loading: () => <Loader /> });
+
+const WarningOutlined = dynamic(() => import("@mui/icons-material/WarningAmberOutlined"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 interface ImageWithFallbackProps extends Partial<ImageProps> {
   src?: string;

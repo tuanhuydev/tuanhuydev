@@ -1,7 +1,7 @@
 import Navbar from "./Navbar";
 import Loader from "@lib/components/commons/Loader";
 import dynamic from "next/dynamic";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, memo } from "react";
 
 const Footer = dynamic(() => import("@lib/HomeModule/Footer"), { ssr: false, loading: () => <Loader /> });
 
@@ -19,4 +19,4 @@ function HomeLayout({ children }: PropsWithChildren) {
   );
 }
 
-export default HomeLayout;
+export default memo(HomeLayout);

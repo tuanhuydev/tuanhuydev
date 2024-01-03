@@ -160,8 +160,8 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
           {...submitProps}
           type="primary"
           htmlType="submit"
-          loading={isLoading || disabled}
-          disabled={isSubmitting}>
+          loading={isSubmitting}
+          disabled={isSubmitting || isLoading}>
           Submit
         </Button>
       </div>

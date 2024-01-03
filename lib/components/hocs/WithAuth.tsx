@@ -1,5 +1,3 @@
-import Loader from "../commons/Loader";
-import PageContainer from "@lib/DashboardModule/PageContainer";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
@@ -16,6 +14,8 @@ import { useDispatch } from "react-redux";
 type UserWithPermission = User & { permissionId: number };
 
 const Sidebar = dynamic(() => import("@lib/DashboardModule/Sidebar"), { ssr: false });
+const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer"), { ssr: false });
+const Loader = dynamic(() => import("../commons/Loader"), { ssr: false });
 
 export default function WithAuth(WrappedComponent: FC<any>) {
   const DEFAULT_PAGEKEYS = ["home", "setting"];
@@ -77,7 +77,7 @@ export default function WithAuth(WrappedComponent: FC<any>) {
         setHasPermission(hasCookie && hasCredential && hasResource);
       } catch (error) {
         if (error instanceof UnauthorizedError) return clearAuth();
-        return router.replace("/dashboard/home");
+        router.replace("/dashboard/home");
       } finally {
         setIsLoading(false);
       }
@@ -106,6 +106,7 @@ export default function WithAuth(WrappedComponent: FC<any>) {
         </div>
       );
     }
+    clearAuth();
     return <Fragment />;
   };
 

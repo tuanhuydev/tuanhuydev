@@ -9,18 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
 const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
-const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
+const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
   ssr: false,
 });
-const KeyboardArrowLeftOutlined = dynamic(
-  async () => (await import("@mui/icons-material/KeyboardArrowLeftOutlined")).default,
-  {
-    ssr: false,
-  },
-);
-const ExitToAppOutlined = dynamic(async () => (await import("@mui/icons-material/ExitToAppOutlined")).default, {
+const KeyboardArrowLeftOutlined = dynamic(() => import("@mui/icons-material/KeyboardArrowLeftOutlined"), {
   ssr: false,
 });
+const ExitToAppOutlined = dynamic(() => import("@mui/icons-material/ExitToAppOutlined"), {
+  ssr: false,
+});
+
 interface NavbarProps extends PropsWithChildren {
   title?: string;
   goBack?: boolean;
@@ -28,7 +26,7 @@ interface NavbarProps extends PropsWithChildren {
   endComponent?: ReactNode;
 }
 
-const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endComponent = <Fragment /> }: NavbarProps) => {
+const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
   const dispatch = useDispatch();
@@ -54,18 +52,15 @@ const Navbar = ({ title, goBack = false, startComponent = <Fragment />, endCompo
   );
 
   const renderStart = useMemo(() => {
+    if (startComponent) return startComponent;
     if (title)
       return (
         <div className="flex items-center gap-1">
-          {goBack ? (
-            <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />}></Button>
-          ) : (
-            <Fragment />
-          )}
+          {goBack && <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />} />}
           <h1 className="my-auto text-xl font-bold capitalize">{title}</h1>
         </div>
       );
-    return startComponent;
+    return <Fragment />;
   }, [goBack, router, startComponent, title]);
 
   const renderEnd = useMemo(() => {

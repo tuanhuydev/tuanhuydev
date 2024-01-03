@@ -4,34 +4,32 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [1.1.0](https://github.com/tuanhuydev/tuanhuydev/compare/v1.0.0...v1.1.0) (2023-12-29)
 
-
 ### Features
 
-* **account:** account list ([a335022](https://github.com/tuanhuydev/tuanhuydev/commit/a335022bd14748a389cc16082fbb8ba9964f6c6b))
-* **be:** project api ([3099ab5](https://github.com/tuanhuydev/tuanhuydev/commit/3099ab51f4c6d2302fb2a99d8328c3cab6015249))
-* **permission:** backend resources permissions ([df31f77](https://github.com/tuanhuydev/tuanhuydev/commit/df31f77c3db31e61942c0d5b12ff0b8317659262))
-* **posts:** integrate posts search ([5fd26e3](https://github.com/tuanhuydev/tuanhuydev/commit/5fd26e3aeee8f39855aa6908fe9ac14aa837c37c))
-* **project:** project form ([d73fdbd](https://github.com/tuanhuydev/tuanhuydev/commit/d73fdbd6fdf2d62594b044bce21839deb031b2c6))
-* **project:** view project ([21429d8](https://github.com/tuanhuydev/tuanhuydev/commit/21429d86b5b09e51e5d7286207b84fe1a0ef1ded))
-* **project:** view task ([e220935](https://github.com/tuanhuydev/tuanhuydev/commit/e220935d7e1fa43588d0f4c57bf53534a8933e3f))
-* **task:** edit task ([aa481d2](https://github.com/tuanhuydev/tuanhuydev/commit/aa481d25013742a48691ce3f8feaf960acb8c041))
-* **task:** task api ([bc956e7](https://github.com/tuanhuydev/tuanhuydev/commit/bc956e77119ed7f2de7d486ffd7193ab5a527926))
-* **users:** search users by name or email ([820f132](https://github.com/tuanhuydev/tuanhuydev/commit/820f13273bdc4ac8554cee34354f03953deb530f))
-
+- **account:** account list ([a335022](https://github.com/tuanhuydev/tuanhuydev/commit/a335022bd14748a389cc16082fbb8ba9964f6c6b))
+- **be:** project api ([3099ab5](https://github.com/tuanhuydev/tuanhuydev/commit/3099ab51f4c6d2302fb2a99d8328c3cab6015249))
+- **permission:** backend resources permissions ([df31f77](https://github.com/tuanhuydev/tuanhuydev/commit/df31f77c3db31e61942c0d5b12ff0b8317659262))
+- **posts:** integrate posts search ([5fd26e3](https://github.com/tuanhuydev/tuanhuydev/commit/5fd26e3aeee8f39855aa6908fe9ac14aa837c37c))
+- **project:** project form ([d73fdbd](https://github.com/tuanhuydev/tuanhuydev/commit/d73fdbd6fdf2d62594b044bce21839deb031b2c6))
+- **project:** view project ([21429d8](https://github.com/tuanhuydev/tuanhuydev/commit/21429d86b5b09e51e5d7286207b84fe1a0ef1ded))
+- **project:** view task ([e220935](https://github.com/tuanhuydev/tuanhuydev/commit/e220935d7e1fa43588d0f4c57bf53534a8933e3f))
+- **task:** edit task ([aa481d2](https://github.com/tuanhuydev/tuanhuydev/commit/aa481d25013742a48691ce3f8feaf960acb8c041))
+- **task:** task api ([bc956e7](https://github.com/tuanhuydev/tuanhuydev/commit/bc956e77119ed7f2de7d486ffd7193ab5a527926))
+- **users:** search users by name or email ([820f132](https://github.com/tuanhuydev/tuanhuydev/commit/820f13273bdc4ac8554cee34354f03953deb530f))
 
 ### Bug Fixes
 
-* **common:** import cost and dependencies optimization ([4ae830f](https://github.com/tuanhuydev/tuanhuydev/commit/4ae830f1fdd0cc517c6b7d37ecad45f1925fd368))
-* **fe:** delete post should show notification ([d2d8342](https://github.com/tuanhuydev/tuanhuydev/commit/d2d83429a0ca18e7a02d3e9df5b3feb957c02b13))
-* **fe:** fix slow navigation on post links ([178609f](https://github.com/tuanhuydev/tuanhuydev/commit/178609f8d814eb7ab49d30dd4c98c3e321dae559))
-* **fe:** home page posts unable to load ([6bc28b7](https://github.com/tuanhuydev/tuanhuydev/commit/6bc28b79d56ba49939ef2de4067f99616efdf876))
-* **home:** hero not center on mobile ([e21c972](https://github.com/tuanhuydev/tuanhuydev/commit/e21c9724f0a2a032728249cd0da2240c976da2bc))
-* **home:** home page links not working ([8f24809](https://github.com/tuanhuydev/tuanhuydev/commit/8f24809bb142ab9fb2c97c75b444dde7dc653a5f))
-* **home:** image optimization and slow navigation fixed ([04bd213](https://github.com/tuanhuydev/tuanhuydev/commit/04bd213d4ed4447401db2b2cb50392d4cd987869))
-* **performance:** import modules ([9d79f3d](https://github.com/tuanhuydev/tuanhuydev/commit/9d79f3d4f4e1d27407c113fb4d3233071f4b4ed8))
-* **post:** inconsistent slug creating ([3ea8a64](https://github.com/tuanhuydev/tuanhuydev/commit/3ea8a649b5a191d1b7fdc1fb00c94f3924724cf7))
-* **post:** post by slug is not working ([555aac6](https://github.com/tuanhuydev/tuanhuydev/commit/555aac6333e17631937d3528ff9449bffd462976))
-* **posts:** unable to fetch ([91b02cd](https://github.com/tuanhuydev/tuanhuydev/commit/91b02cd78656b9ca771632882e332d70d6934bd7))
+- **common:** import cost and dependencies optimization ([4ae830f](https://github.com/tuanhuydev/tuanhuydev/commit/4ae830f1fdd0cc517c6b7d37ecad45f1925fd368))
+- **fe:** delete post should show notification ([d2d8342](https://github.com/tuanhuydev/tuanhuydev/commit/d2d83429a0ca18e7a02d3e9df5b3feb957c02b13))
+- **fe:** fix slow navigation on post links ([178609f](https://github.com/tuanhuydev/tuanhuydev/commit/178609f8d814eb7ab49d30dd4c98c3e321dae559))
+- **fe:** home page posts unable to load ([6bc28b7](https://github.com/tuanhuydev/tuanhuydev/commit/6bc28b79d56ba49939ef2de4067f99616efdf876))
+- **home:** hero not center on mobile ([e21c972](https://github.com/tuanhuydev/tuanhuydev/commit/e21c9724f0a2a032728249cd0da2240c976da2bc))
+- **home:** home page links not working ([8f24809](https://github.com/tuanhuydev/tuanhuydev/commit/8f24809bb142ab9fb2c97c75b444dde7dc653a5f))
+- **home:** image optimization and slow navigation fixed ([04bd213](https://github.com/tuanhuydev/tuanhuydev/commit/04bd213d4ed4447401db2b2cb50392d4cd987869))
+- **performance:** import modules ([9d79f3d](https://github.com/tuanhuydev/tuanhuydev/commit/9d79f3d4f4e1d27407c113fb4d3233071f4b4ed8))
+- **post:** inconsistent slug creating ([3ea8a64](https://github.com/tuanhuydev/tuanhuydev/commit/3ea8a649b5a191d1b7fdc1fb00c94f3924724cf7))
+- **post:** post by slug is not working ([555aac6](https://github.com/tuanhuydev/tuanhuydev/commit/555aac6333e17631937d3528ff9449bffd462976))
+- **posts:** unable to fetch ([91b02cd](https://github.com/tuanhuydev/tuanhuydev/commit/91b02cd78656b9ca771632882e332d70d6934bd7))
 
 ## [1.0.0](https://github.com/tuanhuydev/tuanhuydev/compare/v0.2.0...v1.0.0) (2023-09-29)
 
