@@ -1,12 +1,23 @@
+"use client";
+
 import { sourceCodeFont } from "./font";
 import StyledComponentsRegistry from "@lib/components/commons/AntdRegistry";
+import Loader from "@lib/components/commons/Loader";
+import theme from "@lib/configs/theme";
+import store from "@lib/store";
 import "@lib/styles/globals.scss";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
+import { Provider as ReduxProvider } from "react-redux";
 
 const GoogleAdsense = dynamic(() => import("@lib/components/google/GoogleAdsense"), { ssr: false });
 const GoogleAnalytic = dynamic(() => import("@lib/components/google/GoogleAnalytic"), { ssr: false });
 const GoogleTag = dynamic(() => import("@lib/components/google/GoogleTag"), { ssr: false });
+
+const ConfigProvider = dynamic(async () => (await import("antd/es/config-provider")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -45,7 +56,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <GoogleAnalytic />
       </head>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <StyledComponentsRegistry>
+          <ConfigProvider theme={theme}>
+            <ReduxProvider store={store}>{children}</ReduxProvider>
+          </ConfigProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

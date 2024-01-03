@@ -12,11 +12,12 @@ const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), {
   loading: () => <Loader />,
 });
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle, setPageKey, setGoBack }: any) {
   useEffect(() => {
     if (setTitle) setTitle("Create new post");
     if (setPageKey) setPageKey(Permissions.CREATE_POST);
-  }, [setTitle, setPageKey]);
+    if (setGoBack) setGoBack(true);
+  }, [setTitle, setPageKey, setGoBack]);
 
   return <PostForm />;
 }

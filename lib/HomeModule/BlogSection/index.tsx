@@ -1,19 +1,26 @@
 import Loader from "@lib/components/commons/Loader";
+import { BASE_URL } from "@lib/configs/constants";
 import { Post } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React from "react";
 
 const HighlightPost = dynamic(() => import("./HighlightPost"), { ssr: false, loading: () => <Loader /> });
 
-interface BlogSectionProps {
-  posts: Post[];
+async function getData() {
+  const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: "no-store" });
+  if (!response.ok) return [];
+
+  const { data: posts } = await response.json();
+  return posts;
 }
 
-function BlogSection({ posts = [] }: BlogSectionProps) {
+async function BlogSection() {
   const makeColumn = (index: number) => {
     const firstItemIndex = 0;
     return index === firstItemIndex ? "lg:row-span-full" : "lg:row-span-3";
   };
+
+  const posts: Post[] = await getData();
 
   if (!posts.length) return <></>;
 
