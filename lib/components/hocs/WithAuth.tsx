@@ -1,3 +1,6 @@
+"use client";
+
+import Loader from "../commons/Loader";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
@@ -15,7 +18,6 @@ type UserWithPermission = User & { permissionId: number };
 
 const Sidebar = dynamic(() => import("@lib/DashboardModule/Sidebar"), { ssr: false });
 const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer"), { ssr: false });
-const Loader = dynamic(() => import("../commons/Loader"), { ssr: false });
 
 export default function WithAuth(WrappedComponent: FC<any>) {
   const DEFAULT_PAGEKEYS = ["home", "setting"];

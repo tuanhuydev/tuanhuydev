@@ -7,7 +7,7 @@ import { RootState } from "@lib/configs/types";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetProjectQuery, useGetTasksQuery } from "@lib/store/slices/apiSlice";
 import { Task } from "@prisma/client";
-import { CollapseProps, notification } from "antd";
+import { App, CollapseProps } from "antd";
 import dynamic from "next/dynamic";
 import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -81,7 +81,7 @@ const COMPONENT_MODE = {
 
 function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const { id } = params;
-  const [notify, contextHolder] = notification.useNotification();
+  const { notification } = App.useApp();
   const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
   const { resources } = currentUser;
 
@@ -163,13 +163,13 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
 
   const onError = useCallback(
     (error: Error) => {
-      notify.error({
+      notification.error({
         message: "Error",
         description: error.message,
         placement: "topRight",
       });
     },
-    [notify],
+    [notification],
   );
 
   const RenderTaskGroup = useMemo(() => {
@@ -257,7 +257,6 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
         </div>
         {RenderTaskDetail}
       </Drawer>
-      {contextHolder}
     </Fragment>
   );
 }
