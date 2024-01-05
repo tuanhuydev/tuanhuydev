@@ -1,13 +1,15 @@
+"use client";
+
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@lib/store/slices/authSlice";
+import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
-const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
 const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
   ssr: false,
@@ -55,9 +57,9 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     if (startComponent) return startComponent;
     if (title)
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl">
           {goBack && <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />} />}
-          <h1 className="my-auto text-xl font-bold capitalize">{title}</h1>
+          <h1 className="my-auto text-xl font-bold capitalize grow truncate">{title}</h1>
         </div>
       );
     return <Fragment />;
@@ -69,7 +71,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         placement="bottom"
         title={currentUser.name}
         content={
-          <ul className="block m-0 p-0 list-none ">
+          <ul className="block m-0 p-0 list-none">
             <li className="mb-2 text-xs text-slate-500">{currentUser.email}</li>
             <li
               className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer flex items-center"

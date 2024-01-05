@@ -1,8 +1,8 @@
 "use client";
 
+import Loader from "@lib/components/commons/Loader";
 import dynamic from "next/dynamic";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
 const PageContainer = dynamic(() => import("@lib/DashboardModule/PageContainer").then((module) => module.default), {
   ssr: false,
   loading: () => <Loader />,

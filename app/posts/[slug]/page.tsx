@@ -1,11 +1,9 @@
 import Loader from "@lib/components/commons/Loader";
 import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
-import "@mdxeditor/editor/style.css";
-import { serialize } from "next-mdx-remote/serialize";
+import { MDXRemoteSerializeResult } from "next-mdx-remote/dist/types";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import dynamic from "next/dynamic";
 import React from "react";
-
-const MDXRemote = dynamic(() => import("next-mdx-remote/rsc").then((mod) => mod.MDXRemote));
 
 const ImageWithFallback = dynamic(async () => (await import("@lib/components/commons/ImageWithFallback")).default, {
   ssr: false,
@@ -22,10 +20,9 @@ async function getData(slug: string) {
 
 export default async function Page({ params }: any) {
   const { slug } = params;
+
   const post = await getData(slug);
   if (!post) return <h1>Not Found</h1>;
-
-  const mdxSource = await serialize(post.content);
 
   return (
     <div className="grid grid-rows-post">
@@ -42,7 +39,7 @@ export default async function Page({ params }: any) {
         <div className="col-start-3 col-span-9 p-4 shadow-md rounded-md">
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
           <div className="!text-sm lg:!text-base bg-white p-3">
-            <MDXRemote source={post.content} />
+            {(<MDXRemote source={post.content as MDXRemoteSerializeResult} />) as any}
           </div>
         </div>
       </div>

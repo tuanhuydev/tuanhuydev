@@ -30,6 +30,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/components/hocs/WithAuth.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "lib/components/hocs/WithAuth.tsx",
+    "app/posts/[slug]/page.tsx"
+  ],
   "exclude": ["node_modules"]
 }
