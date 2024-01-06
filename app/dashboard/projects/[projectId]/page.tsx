@@ -1,5 +1,6 @@
 "use client";
 
+import WithTooltip from "@app/_components/hocs/WithTooltip";
 import Loader from "@lib/components/commons/Loader";
 import WithAuth from "@lib/components/hocs/WithAuth";
 import { DATE_FORMAT } from "@lib/configs/constants";
@@ -11,7 +12,7 @@ import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 
 const Row = dynamic(async () => (await import("antd/es/row")).default, {
   ssr: false,
@@ -23,15 +24,6 @@ const Col = dynamic(async () => (await import("antd/es/col")).default, {
   loading: () => <Loader />,
 });
 
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const Progress = dynamic(async () => (await import("antd/es/progress")).default, {
   ssr: false,
   loading: () => <Loader />,
@@ -54,9 +46,8 @@ const LinkOutlined = dynamic(async () => (await import("@ant-design/icons")).Lin
 function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const router = useRouter();
 
-  const { data: project, isLoading, isError: isProjectLoading } = useGetProjectQuery(params.id as string);
-  const { data: tasks, isLoading: isProjectTaskLoading } = useGetTasksQuery(params.id as string);
-  const [tooltipContent, setTooltipContent] = useState("Share");
+  const { data: project, isLoading } = useGetProjectQuery(params.id as string);
+  const { data: tasks } = useGetTasksQuery(params.id as string);
 
   const {
     name = "",
@@ -69,14 +60,11 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const diffStartToNow = startDate ? differenceInDays(new Date(), new Date(startDate)) : 0;
   const diffStartToEndDate = startDate && endDate ? differenceInDays(new Date(endDate), new Date(startDate)) : 0;
   const completedPercentage = +((diffStartToNow / diffStartToEndDate) * 100).toFixed(2);
+
   const navigateProjectTasks = () => {
-    router.push(`/dashboard/projects/${params.id as string}/tasks`);
+    router.push(`/dashboard/projects/${params.projectId as string}/tasks`);
   };
 
-  const onShareProject = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setTooltipContent("Copied");
-  };
   const titleByPercent = () => {
     const currentDate = new Date();
     if (completedPercentage >= 100) return "Done";
@@ -89,8 +77,6 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
     return "-";
   };
 
-  const resetTooltipContent = () => setTimeout(() => setTooltipContent("Share"), 300);
-
   useEffect(() => {
     if (setTitle) setTitle("View Project");
     if (setGoBack) setGoBack(true);
@@ -102,13 +88,13 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
       <Row gutter={[16, 16]} className="mb-3">
         <Col span={24} lg={{ span: 16 }}>
           <Card loading={isLoading} className="w-5rem h-full">
-            <div className="flex items-center justify-between">
-              <h1 className="capitalize text-3xl mx-0 mt-0 mb-2">{name}</h1>
+            <div className="flex items-center justify-between min-w-0 overflow-hidden">
+              <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 truncate ">{name}</h1>
               <div className="flex gap-3">
-                <Button size="large" type="text" icon={<EditOutlined />}></Button>
-                <Tooltip title={tooltipContent} fresh={true} onOpenChange={resetTooltipContent}>
-                  <Button size="large" type="text" onClick={onShareProject} icon={<ShareOutlined />}></Button>
-                </Tooltip>
+                <EditOutlined />
+                <WithTooltip content={window.location.href} title="Share">
+                  <ShareOutlined />
+                </WithTooltip>
               </div>
             </div>
             <div className="mb-3">
