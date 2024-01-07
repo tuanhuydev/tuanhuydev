@@ -1,5 +1,5 @@
-import PostController from "@backend/controllers/PostController";
-import withAuthMiddleware from "@backend/middlewares/authMiddleware";
+import PostController from "@lib/controllers/PostController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
 
 const handleUpdate = withAuthMiddleware(async (request: NextRequest, params: any) => {

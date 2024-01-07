@@ -1,11 +1,11 @@
 "use client";
 
-import Loader from "@lib/components/commons/Loader";
-import WithAuth from "@lib/components/hocs/WithAuth";
+import WithAuth from "@app/_components/hocs/WithAuth";
+import Loader from "@components/commons/Loader";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
-import { useGetUsersQuery } from "@lib/store/slices/apiSlice";
 import { User } from "@prisma/client";
+import { useGetUsersQuery } from "@store/slices/apiSlice";
 import { ColumnsType } from "antd/es/table";
 import dynamic from "next/dynamic";
 import { Fragment, useEffect, useState } from "react";

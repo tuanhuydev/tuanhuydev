@@ -1,5 +1,5 @@
-import StorageController from "@backend/controllers/StorageController";
-import withAuthMiddleware from "@backend/middlewares/authMiddleware";
+import StorageController from "@lib/controllers/StorageController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
 
 const handlePost = withAuthMiddleware(async (request: NextRequest, params: any) =>

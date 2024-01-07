@@ -1,5 +1,5 @@
-import HomeLayout from "@lib/HomeModule/HomeLayout";
-import Loader from "@lib/components/commons/Loader";
+import HomeLayout from "@components/HomeModule/HomeLayout";
+import Loader from "@components/commons/Loader";
 import { BASE_URL } from "@lib/configs/constants";
 import dynamic from "next/dynamic";
 import React from "react";
@@ -11,10 +11,14 @@ async function getData() {
   const { data: posts } = await response.json();
   return posts;
 }
-const Hero = dynamic(async () => (await import("@lib/HomeModule/Hero")).default, { loading: () => <Loader /> });
-const Contact = dynamic(async () => (await import("@lib/HomeModule/Contact")).default, { loading: () => <Loader /> });
-const Services = dynamic(async () => (await import("@lib/HomeModule/Services")).default, { loading: () => <Loader /> });
-const BlogSection = dynamic(async () => (await import("@lib/HomeModule/BlogSection")).default, {
+const Hero = dynamic(async () => (await import("@components/HomeModule/Hero")).default, { loading: () => <Loader /> });
+const Contact = dynamic(async () => (await import("@components/HomeModule/Contact")).default, {
+  loading: () => <Loader />,
+});
+const Services = dynamic(async () => (await import("@components/HomeModule/Services")).default, {
+  loading: () => <Loader />,
+});
+const BlogSection = dynamic(async () => (await import("@components/HomeModule/BlogSection")).default, {
   ssr: false,
   loading: () => <Loader />,
 });

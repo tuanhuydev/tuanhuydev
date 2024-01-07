@@ -1,14 +1,14 @@
 "use client";
 
+import WithAuth from "@app/_components/hocs/WithAuth";
 import WithTooltip from "@app/_components/hocs/WithTooltip";
-import LogService from "@lib/backend/services/LogService";
-import Loader from "@lib/components/commons/Loader";
-import WithAuth from "@lib/components/hocs/WithAuth";
+import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
+import LogService from "@lib/services/LogService";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { useGetProjectQuery, useGetTasksQuery } from "@lib/store/slices/apiSlice";
 import { Task } from "@prisma/client";
+import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
 import { App, CollapseProps } from "antd";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -36,11 +36,11 @@ const Input = dynamic(async () => (await import("antd/es/input")).default, {
   loading: () => <Loader />,
 });
 
-const TaskForm = dynamic(async () => (await import("@lib/TaskModule/TaskForm")).default, {
+const TaskForm = dynamic(async () => (await import("@app/_components/TaskModule/TaskForm")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
-const TaskRow = dynamic(async () => (await import("@lib/TaskModule/TaskRow")).default, {
+const TaskRow = dynamic(async () => (await import("@app/_components/TaskModule/TaskRow")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -101,7 +101,6 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
-      console.log(value);
       if (!value) setSelectedTask(null);
       setOpenDrawer(value);
     },

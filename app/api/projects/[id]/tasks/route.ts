@@ -1,5 +1,5 @@
-import ProjectController from "@lib/backend/controllers/ProjectController";
-import withAuthMiddleware from "@lib/backend/middlewares/authMiddleware";
+import ProjectController from "@lib/controllers/ProjectController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { NextRequest } from "next/server";
 

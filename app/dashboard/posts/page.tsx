@@ -1,17 +1,17 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
+import WithAuth from "@app/_components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
-import { useDeletePostMutation, useGetPostsQuery } from "@lib/store/slices/apiSlice";
 import { Post } from "@prisma/client";
+import { useDeletePostMutation, useGetPostsQuery } from "@store/slices/apiSlice";
 import { App, MenuProps } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
+const Loader = dynamic(() => import("@components/commons/Loader"), { ssr: false });
 
 const ErrorOutlineOutlined = dynamic(async () => await import("@mui/icons-material/ErrorOutlineOutlined"), {
   ssr: false,
@@ -34,7 +34,7 @@ const KeyboardArrowDownOutlined = dynamic(async () => await import("@mui/icons-m
   ssr: false,
 });
 
-const PostCard = dynamic(() => import("@lib/PostModule/PostCard"), {
+const PostCard = dynamic(() => import("@components/PostModule/PostCard"), {
   ssr: false,
   loading: () => <Loader />,
 });

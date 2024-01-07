@@ -1,13 +1,13 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
+import WithAuth from "@app/_components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
-import { useGetProjectsQuery } from "@lib/store/slices/apiSlice";
+import { useGetProjectsQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
-const Loader = dynamic(async () => (await import("@lib/components/commons/Loader")).default, { ssr: false });
+const Loader = dynamic(async () => (await import("@components/commons/Loader")).default, { ssr: false });
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
 const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
   ssr: false,
@@ -31,11 +31,11 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, {
   loading: () => <Loader />,
 });
 
-const ProjectForm = dynamic(async () => (await import("@lib/ProjectModule/ProjectForm")).default, {
+const ProjectForm = dynamic(async () => (await import("@components/ProjectModule/ProjectForm")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
-const ProjectCard = dynamic(async () => (await import("@lib/ProjectModule/ProjectCard")).default, {
+const ProjectCard = dynamic(async () => (await import("@components/ProjectModule/ProjectCard")).default, {
   ssr: false,
   loading: () => <Loader />,
 });

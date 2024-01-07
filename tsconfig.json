@@ -22,7 +22,11 @@
       "@prismaClient/*": ["./prisma/*"],
       "@backend/*": ["lib/backend/*"],
       "@shared/*": ["lib/shared/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@components/*": ["app/_components/*"],
+      "@assets/*": ["app/_assets/*"],
+      "@store/*": ["app/_store/*"],
+      "@styles/*": ["app/_styles/*"]
     },
     "plugins": [
       {
@@ -30,13 +34,6 @@
       }
     ]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "lib/components/hocs/WithAuth.tsx",
-    "app/posts/[slug]/page.tsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

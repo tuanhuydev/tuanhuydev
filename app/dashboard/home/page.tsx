@@ -1,23 +1,17 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
-import { useGetPostsQuery, useGetProjectsQuery } from "@lib/store/slices/apiSlice";
+import Loader from "@components/commons/Loader";
+import WithAuth from "@components/hocs/WithAuth";
+import { RootState } from "@lib/configs/types";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
+import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
+import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
+import { useGetPostsQuery, useGetProjectsQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { ReactNode } from "react";
-
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
-
-const GridViewOutlined = dynamic(async () => (await import("@mui/icons-material/GridViewOutlined")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const ArticleOutlined = dynamic(async () => (await import("@mui/icons-material/ArticleOutlined")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+import { useSelector } from "react-redux";
 
 const Calendar = dynamic(async () => (await import("antd/es/calendar")).default, {
   ssr: false,
@@ -52,6 +46,7 @@ HomeCard.displayName = "HomeCard";
 function Page({ setTitle, setPageKey }: any) {
   const { data: projects = [], isLoading: isProjectLoading } = useGetProjectsQuery({});
   const { data: posts = [], isLoading: isPostLoading } = useGetPostsQuery({});
+  const { resources } = useSelector((state: RootState) => state.auth.currentUser) || {};
 
   useEffect(() => {
     if (setTitle) setTitle("Home");
@@ -70,20 +65,24 @@ function Page({ setTitle, setPageKey }: any) {
           )}
         />
       </Card>
-      <HomeCard
-        url={"/dashboard/projects"}
-        name={"Projects"}
-        value={projects?.length}
-        loading={isProjectLoading}
-        icon={<GridViewOutlined />}
-      />
-      <HomeCard
-        url={"/dashboard/posts"}
-        name={"Posts"}
-        value={posts?.length}
-        loading={isPostLoading}
-        icon={<ArticleOutlined />}
-      />
+      {resources.has(Permissions.VIEW_PROJECTS) && (
+        <HomeCard
+          url={"/dashboard/projects"}
+          name={"Projects"}
+          value={projects?.length}
+          loading={isProjectLoading}
+          icon={<GridViewOutlined />}
+        />
+      )}
+      {resources.has(Permissions.VIEW_POSTS) && (
+        <HomeCard
+          url={"/dashboard/posts"}
+          name={"Posts"}
+          value={posts?.length}
+          loading={isPostLoading}
+          icon={<ArticleOutlined />}
+        />
+      )}
     </div>
   );
 }

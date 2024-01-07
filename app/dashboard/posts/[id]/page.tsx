@@ -1,13 +1,13 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
+import WithAuth from "@app/_components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { useGetPostQuery } from "@lib/store/slices/apiSlice";
+import { useGetPostQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
-const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), { ssr: false, loading: () => <Loader /> });
+const Loader = dynamic(() => import("@components/commons/Loader"), { ssr: false });
+const PostForm = dynamic(() => import("@components/PostModule/PostForm"), { ssr: false, loading: () => <Loader /> });
 
 function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const { data: post, isLoading } = useGetPostQuery(params.id as string);
