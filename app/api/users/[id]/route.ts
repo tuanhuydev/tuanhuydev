@@ -1,5 +1,5 @@
-import UserController from "@backend/controllers/UserController";
-import withAuthMiddleware from "@backend/middlewares/authMiddleware";
+import UserController from "@lib/controllers/UserController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
 
 const handleUpdate = withAuthMiddleware(async (request: NextRequest, params: any) => {

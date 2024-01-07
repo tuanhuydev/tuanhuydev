@@ -1,5 +1,5 @@
-import TaskController from "@lib/backend/controllers/TaskController";
-import withAuthMiddleware from "@lib/backend/middlewares/authMiddleware";
+import TaskController from "@lib/controllers/TaskController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { NextRequest } from "next/server";
 

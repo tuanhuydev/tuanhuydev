@@ -1,5 +1,5 @@
-import StatusController from "@backend/controllers/StatusController";
-import withAuthMiddleware from "@backend/middlewares/authMiddleware";
+import StatusController from "@lib/controllers/StatusController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
 
 const getAll = withAuthMiddleware(async (request: NextRequest) => StatusController.getAll(request));

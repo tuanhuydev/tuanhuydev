@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicFormConfig } from "@lib/components/commons/Form/DynamicForm";
+import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import BaseError from "@shared/commons/errors/BaseError";
@@ -13,14 +13,14 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useCallback, useEffect } from "react";
 
-const Loader = dynamic(async () => await import("@lib/components/commons/Loader"));
+const Loader = dynamic(async () => await import("@components/commons/Loader"));
 
-const DynamicForm = dynamic(() => import("@lib/components/commons/Form/DynamicForm"), {
+const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const WithAnimation = dynamic(() => import("@lib/components/hocs/WithAnimation"), {
+const WithAnimation = dynamic(() => import("@components/hocs/WithAnimation"), {
   ssr: false,
   loading: () => <Loader />,
 });

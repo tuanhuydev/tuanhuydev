@@ -1,13 +1,13 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
+import WithAuth from "@app/_components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
+const Loader = dynamic(() => import("@components/commons/Loader"), { ssr: false });
 
-const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), {
+const PostForm = dynamic(() => import("@components/PostModule/PostForm"), {
   ssr: false,
   loading: () => <Loader />,
 });

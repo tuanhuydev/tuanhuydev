@@ -1,5 +1,5 @@
-import PostService from "@lib/backend/services/PostService";
 import { BASE_URL } from "@lib/configs/constants";
+import PostService from "@lib/services/PostService";
 import { Post } from "@prisma/client";
 import { MetadataRoute } from "next";
 

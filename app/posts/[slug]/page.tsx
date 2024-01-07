@@ -1,11 +1,11 @@
-import Loader from "@lib/components/commons/Loader";
+import Loader from "@components/commons/Loader";
 import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
 import { MDXRemoteSerializeResult } from "next-mdx-remote/dist/types";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import dynamic from "next/dynamic";
 import React from "react";
 
-const ImageWithFallback = dynamic(async () => (await import("@lib/components/commons/ImageWithFallback")).default, {
+const ImageWithFallback = dynamic(async () => (await import("@components/commons/ImageWithFallback")).default, {
   ssr: false,
   loading: () => <Loader />,
 });

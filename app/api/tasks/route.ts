@@ -1,5 +1,5 @@
-import withAuthMiddleware from "@backend/middlewares/authMiddleware";
-import TaskController from "@lib/backend/controllers/TaskController";
+import TaskController from "@lib/controllers/TaskController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
 
 const handlePost = withAuthMiddleware(async (request: NextRequest) => TaskController.store(request));

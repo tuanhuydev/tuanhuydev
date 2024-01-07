@@ -1,12 +1,15 @@
 "use client";
 
+import WithAuth from "@app/_components/hocs/WithAuth";
 import WithTooltip from "@app/_components/hocs/WithTooltip";
-import Loader from "@lib/components/commons/Loader";
-import WithAuth from "@lib/components/hocs/WithAuth";
+import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { useGetProjectQuery, useGetTasksQuery } from "@lib/store/slices/apiSlice";
-import { Project, ProjectUser } from "@prisma/client";
+import EditOutlined from "@mui/icons-material/EditOutlined";
+import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
+import ShareOutlined from "@mui/icons-material/ShareOutlined";
+import { Project, ProjectUser, Task } from "@prisma/client";
+import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
 import differenceInDays from "date-fns/differenceInDays";
 import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
@@ -31,22 +34,10 @@ const Progress = dynamic(async () => (await import("antd/es/progress")).default,
 
 const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
 
-const EditOutlined = dynamic(async () => (await import("@mui/icons-material/EditOutlined")).default, {
-  ssr: false,
-});
-const ShareOutlined = dynamic(async () => (await import("@mui/icons-material/ShareOutlined")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const LinkOutlined = dynamic(async () => (await import("@ant-design/icons")).LinkOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
 function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const router = useRouter();
 
-  const { data: project, isLoading } = useGetProjectQuery(params.id as string);
+  const { data: project, isLoading } = useGetProjectQuery(params.projectId as string);
   const { data: tasks } = useGetTasksQuery(params.id as string);
 
   const {
@@ -83,6 +74,9 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
     if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
   }, [setTitle, setPageKey, setGoBack]);
 
+  const backlogTasks = tasks?.filter((task: Task) => task.statusId === 2);
+  const percent = backlogTasks?.length ? (backlogTasks?.length / tasks?.length) * 100 : 0;
+
   return (
     <Fragment>
       <Row gutter={[16, 16]} className="mb-3">
@@ -109,11 +103,11 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
         </Col>
         <Col span={24} lg={{ span: 8 }} className="w-full">
           <div className="flex lg:flex-col gap-3">
-            <Card className="flex-1">
+            <Card className="flex-1" loading={isLoading}>
               <small className="text-sm capitalize text-slate-400">status</small>
               <div className="text-bold text-4xl text-center mt-5 mb-3 text-green-600">Active</div>
             </Card>
-            <Card className="flex-1">
+            <Card className="flex-1" loading={isLoading}>
               <small className="text-sm capitalize text-slate-400">people</small>
               <div className="text-bold text-4xl text-center mt-5 mb-1">{(users as ProjectUser[])?.length}</div>
             </Card>
@@ -122,7 +116,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
       </Row>
       <Row gutter={[12, 12]}>
         <Col span={24} lg={{ span: 8 }}>
-          <Card className="h-full">
+          <Card className="h-full" loading={isLoading}>
             <small className="text-sm capitalize text-slate-400">status</small>
             <div className="mt-4 flex flex-col items-center gap-4">
               <Progress
@@ -147,13 +141,13 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
           </Card>
         </Col>
         <Col span={24} lg={{ span: 8 }}>
-          <Card onClick={navigateProjectTasks}>
+          <Card onClick={navigateProjectTasks} loading={isLoading}>
             <div className="flex justify-between text-slate-400">
               <small className="text-sm capitalize">task</small>
-              <LinkOutlined />
+              <InsertLinkOutlined />
             </div>
             <div className="mt-4 flex flex-wrap gap-24">
-              <Progress type="circle" success={{ percent: 40 }} percent={30} size={150} />
+              <Progress type="circle" success={{ percent: percent }} percent={percent} size={150} />
               <span>
                 <b className="text-lg font-normal">Tasks:&nbsp;</b>
                 <h3 className="text-5xl my-4">{tasks?.length ?? 0}</h3>
@@ -162,7 +156,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
           </Card>
         </Col>
         <Col span={24} lg={{ span: 8 }}>
-          <Card className="h-full">
+          <Card className="h-full" loading={isLoading}>
             <small className="text-sm capitalize text-slate-400">type</small>
             <div className="mt-4 flex items-center justify-center">
               <h4 className="text-4xl text-cyan-500">Billable</h4>

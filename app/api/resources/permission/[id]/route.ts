@@ -1,5 +1,5 @@
-import ResourceController from "@lib/backend/controllers/ResourceController";
-import withAuthMiddleware from "@lib/backend/middlewares/authMiddleware";
+import ResourceController from "@lib/controllers/ResourceController";
+import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { NextRequest } from "next/server";
 

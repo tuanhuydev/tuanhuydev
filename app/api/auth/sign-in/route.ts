@@ -1,4 +1,4 @@
-import AuthController from "@backend/controllers/AuthController";
+import AuthController from "@lib/controllers/AuthController";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
