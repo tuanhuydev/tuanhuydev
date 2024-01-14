@@ -59,7 +59,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
       return (
         <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl">
           {goBack && <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />} />}
-          <h1 className="my-auto text-xl font-bold capitalize grow truncate">{title}</h1>
+          <h1 className="my-auto text-2xl font-bold capitalize grow truncate">{title}</h1>
         </div>
       );
     return <Fragment />;

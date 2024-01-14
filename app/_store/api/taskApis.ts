@@ -27,7 +27,7 @@ export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => (
     providesTags: (_result, _error, id) => [{ type: "Task", id }],
     transformResponse: (response: ObjectType) => response.data,
   }),
-  getTaskStatuses: builder.query({
+  getTaskStatus: builder.query({
     query: () => {
       const filter = { type: "task" };
       return `status?${QueryString.stringify(filter)}`;
