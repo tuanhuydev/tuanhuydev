@@ -1,8 +1,10 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
-import WithTooltip from "@app/_components/hocs/WithTooltip";
+import Badge from "@app/_components/commons/Badge";
+import { TaskWithStatus } from "@components/TaskModule/TaskRow";
 import Loader from "@components/commons/Loader";
+import WithAuth from "@components/hocs/WithAuth";
+import WithTooltip from "@components/hocs/WithTooltip";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";
@@ -126,7 +128,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
       <TaskRow
         active={task.id === selectedTask?.id}
         onView={viewTask}
-        task={task}
+        task={task as TaskWithStatus}
         projectId={projectId}
         key={task.id}
       />
@@ -269,11 +271,10 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
           <div className="flex items-baseline">
             {RenderHeader}
             {selectedTask && !isEditMode && (
-              <span
-                className="px-2 py-1 text-white rounded-md flex items-center bg-blue-500 leading-none"
-                style={{ background: (selectedTask as any)?.status?.color ?? "transparent" }}>
-                {(selectedTask as any)?.status?.name}
-              </span>
+              <Badge
+                color={(selectedTask as any)?.status?.color ?? "transparent"}
+                value={(selectedTask as any)?.status?.name ?? EMPTY_STRING}
+              />
             )}
           </div>
           {RenderDrawerExtra}

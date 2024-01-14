@@ -13,7 +13,7 @@ class StatusService {
     return StatusService.#instance ?? new StatusService();
   }
 
-  async getStatuses(filter?: StatusFilterType) {
+  async getStatus(filter?: StatusFilterType) {
     try {
       let defaultWhere: ObjectType = { deletedAt: null };
 
@@ -47,6 +47,38 @@ class StatusService {
       }
 
       return await prismaClient.status.findMany(query);
+    } catch (error) {
+      throw new BaseError((error as Error).message);
+    }
+  }
+
+  async getStatusById(id: number) {
+    try {
+      return await prismaClient.status.findUnique({ where: { deletedAt: null, id } });
+    } catch (error) {
+      throw new BaseError((error as Error).message);
+    }
+  }
+
+  async createStatus(data: ObjectType) {
+    try {
+      return await prismaClient.status.create({ data: data as any });
+    } catch (error) {
+      throw new BaseError((error as Error).message);
+    }
+  }
+
+  async updateStatus(id: number, data: ObjectType) {
+    try {
+      return await prismaClient.status.update({ where: { id }, data });
+    } catch (error) {
+      throw new BaseError((error as Error).message);
+    }
+  }
+
+  async deleteStatus(id: number) {
+    try {
+      return await prismaClient.status.update({ where: { id }, data: { deletedAt: new Date() } });
     } catch (error) {
       throw new BaseError((error as Error).message);
     }

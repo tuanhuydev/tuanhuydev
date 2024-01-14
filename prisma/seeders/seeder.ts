@@ -16,7 +16,7 @@ async function main() {
     data: [
       {
         id: "2e633db0-dc69-11ed-afa1-0242ac120002",
-        email: "tuanhuydev@gmail.com",
+        email: "root@tuanhuydev.com",
         password: "$2a$12$ymKDy1PXorHQJuhCqurBAuSX3azrpGmZE3AcppE0Jt57.XY2oOeqO", // 123456789
         name: "Huy Nguyen Tuan",
         deletedAt: null,
@@ -24,7 +24,7 @@ async function main() {
       },
       {
         id: "2e633db0-dc69-11ed-afa1-0242ac120003",
-        email: "dev1@email.com",
+        email: "dev@tuanhuydev.com",
         password: "$2a$12$ymKDy1PXorHQJuhCqurBAuSX3azrpGmZE3AcppE0Jt57.XY2oOeqO", // 123456789
         name: "dev 1",
         deletedAt: null,
@@ -32,7 +32,7 @@ async function main() {
       },
       {
         id: "2e633db0-dc69-11ed-afa1-0242ac120004",
-        email: "pm1@email.com",
+        email: "pm@tuanhuydev.com",
         password: "$2a$12$ymKDy1PXorHQJuhCqurBAuSX3azrpGmZE3AcppE0Jt57.XY2oOeqO", // 123456789
         name: "project manager 1",
         deletedAt: null,
@@ -53,16 +53,24 @@ async function main() {
     data: [
       {
         id: 1,
-        name: "Default",
-        description: "Default status",
+        name: "Default Task",
+        description: "Default task status",
         color: "",
+        type: "task",
       },
       {
         id: 2,
-        name: "Backlog",
-        description: "Task's backlog",
+        name: "Default Project",
+        description: "Default project status",
         color: "",
-        type: "task",
+        type: "project",
+      },
+      {
+        id: 3,
+        name: "Default User",
+        description: "Default user status",
+        color: "",
+        type: "project",
       },
     ],
     skipDuplicates: true,
@@ -73,11 +81,13 @@ async function main() {
     data: resourceData,
     skipDuplicates: true,
   });
+
   const resourcePermissionData = resourceData.map(({ id }) => ({
     permissionId: 1,
     resourceId: id,
     resourceType: "feature",
   }));
+
   await prisma.resourcePermission.createMany({
     data: [...resourcePermissionData, { permissionId: 2, resourceId: 2, resourceType: "feature" }],
     skipDuplicates: true,

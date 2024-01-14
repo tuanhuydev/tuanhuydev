@@ -1,6 +1,7 @@
 import styles from "./styles.module.scss";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { isPathActive } from "@lib/shared/utils/helper";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import React, { ReactNode, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 export interface ItemProps {
+  id: string;
   label: string;
   path: string;
   icon: ReactNode;
@@ -16,7 +18,7 @@ export interface ItemProps {
 
 const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 
-export default function Item({ label, icon, path }: ItemProps) {
+export default function Item({ label, icon, path, id }: ItemProps) {
   const pathName = usePathname();
   const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
 
@@ -24,7 +26,7 @@ export default function Item({ label, icon, path }: ItemProps) {
 
   const itemElement = useMemo(
     () => (
-      <Link href={path} key={path} prefetch={false}>
+      <Link href={path} key={path} prefetch={false} className={id === Permissions.VIEW_SETTINGS ? "mt-auto" : ""}>
         <li
           className={`ease-in duration-200 rounded-sm mb-1 text-slate-600 cursor-pointer py-2 px-3 hover:bg-primary hover:text-white ${activeClass}`}>
           <div className="capitalize flex items-center relative min-w-0">
@@ -34,7 +36,7 @@ export default function Item({ label, icon, path }: ItemProps) {
         </li>
       </Link>
     ),
-    [activeClass, icon, label, path],
+    [activeClass, icon, id, label, path],
   );
 
   if (sidebarOpen) return itemElement;

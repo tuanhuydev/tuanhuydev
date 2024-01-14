@@ -1,6 +1,7 @@
 "use client";
 
 import Loader from "../Loader";
+import DynamicColorPicker from "./DynamicColorPicker";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import { ButtonProps } from "antd";
@@ -32,7 +33,7 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, {
 
 export interface ElementType {
   name: string;
-  type: "text" | "number" | "email" | "password" | "textarea" | "select" | "richeditor" | "datepicker";
+  type: "text" | "number" | "email" | "password" | "textarea" | "select" | "richeditor" | "datepicker" | "colorpicker";
   label?: "string";
   options?: ObjectType;
   validate?: ObjectType;
@@ -123,16 +124,11 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
             return <DynamicMarkdown key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "datepicker":
             return <DynamicDatepicker key={name} {...elementProps} {...restFieldProps} />;
+          case "colorpicker":
+            return <DynamicColorPicker key={name} {...elementProps} {...restFieldProps} />;
           default:
             return (
-              <DynamicText
-                key={name}
-                {...elementProps}
-                disabled={true}
-                {...restFieldProps}
-                type={type}
-                keyProp={`${name} - ${type}`}
-              />
+              <DynamicText key={name} {...elementProps} {...restFieldProps} type={type} keyProp={`${name} - ${type}`} />
             );
         }
       }),

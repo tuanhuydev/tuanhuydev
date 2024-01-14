@@ -13,7 +13,7 @@ export default function WithAnimation({ children }: PropsWithChildren) {
   return (
     <AnimatePresence>
       <motion.div
-        className="h-full p-2 overflow-hidden"
+        className="h-full p-2 overflow-x-hidden overflow-y-auto"
         initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 45 }}>
