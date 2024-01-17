@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import metaReducer from "./slices/metaSlice";
 import postReducer from "./slices/postSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 // Attach and initialize store
 const store = configureStore({
@@ -19,5 +20,8 @@ const store = configureStore({
     apiSlice.middleware,
   ],
 });
+
+// Allow refetchOnFocus / refetchOnReconnect for all queries by default
+setupListeners(store.dispatch);
 
 export default store;

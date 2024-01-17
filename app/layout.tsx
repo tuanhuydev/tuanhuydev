@@ -10,9 +10,9 @@ import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 
-const GoogleAdsense = dynamic(() => import("@app/_components/GoogleAdsense"), { ssr: false });
-const GoogleAnalytic = dynamic(() => import("@app/_components/GoogleAnalytic"), { ssr: false });
-const GoogleTag = dynamic(() => import("@app/_components/GoogleTag"), { ssr: false });
+const GoogleAdsense = dynamic(() => import("@components/GoogleAdsense"), { ssr: false });
+const GoogleAnalytic = dynamic(() => import("@components/GoogleAnalytic"), { ssr: false });
+const GoogleTag = dynamic(() => import("@components/GoogleTag"), { ssr: false });
 
 const ConfigProvider = dynamic(async () => (await import("antd/es/config-provider")).default, {
   ssr: false,

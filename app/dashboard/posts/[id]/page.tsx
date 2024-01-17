@@ -1,12 +1,12 @@
 "use client";
 
+import Loader from "@app/_components/commons/Loader";
 import WithAuth from "@app/_components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetPostQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
-const Loader = dynamic(() => import("@components/commons/Loader"), { ssr: false });
 const PostForm = dynamic(() => import("@components/PostModule/PostForm"), { ssr: false, loading: () => <Loader /> });
 
 function Page({ params, setTitle, setPageKey, setGoBack }: any) {

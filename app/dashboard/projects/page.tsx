@@ -1,25 +1,18 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
+import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
+import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGetProjectsQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 const Loader = dynamic(async () => (await import("@components/commons/Loader")).default, { ssr: false });
-const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
-});
-const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
-  ssr: false,
-});
 
-const Modal = dynamic(async () => (await import("antd/es/modal")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
 
 const Input = dynamic(async () => (await import("antd/es/input")).default, {
   ssr: false,
@@ -31,24 +24,15 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, {
   loading: () => <Loader />,
 });
 
-const ProjectForm = dynamic(async () => (await import("@components/ProjectModule/ProjectForm")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const ProjectCard = dynamic(async () => (await import("@components/ProjectModule/ProjectCard")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const modalStyles = { header: { marginBottom: 24 } };
-
 function Page({ setTitle, setPageKey }: any) {
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<ObjectType>({});
-
+  const router = useRouter();
   const { data: projects = [], isLoading } = useGetProjectsQuery(filter);
-
-  const toggleModal = (openModal: boolean) => (event?: any) => setOpenModal(openModal);
 
   const onSearchProjects = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setTimeout(() => {
@@ -56,6 +40,10 @@ function Page({ setTitle, setPageKey }: any) {
       setFilter((filter) => ({ ...filter, search }));
     }, 500);
   }, []);
+
+  const createNewProject = useCallback(() => {
+    router.push("/dashboard/projects/create");
+  }, [router]);
 
   const renderProjects: JSX.Element = useMemo(
     () => (
@@ -87,24 +75,13 @@ function Page({ setTitle, setPageKey }: any) {
           size="large"
           type="primary"
           icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}
-          onClick={toggleModal(true)}>
+          onClick={createNewProject}>
           New Project
         </Button>
       </div>
       <div className="grow overflow-auto pb-3">
         {isLoading ? <Loader /> : projects.length ? renderProjects : <Empty className="my-36" />}
       </div>
-      <Modal
-        width={650}
-        title="Create Project"
-        styles={modalStyles}
-        open={openModal}
-        onCancel={toggleModal(false)}
-        footer={null}
-        keyboard={false}
-        maskClosable={false}>
-        <ProjectForm callback={toggleModal(false)} />
-      </Modal>
     </Fragment>
   );
 }

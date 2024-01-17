@@ -1,15 +1,18 @@
+import Badge from "../commons/Badge";
 import { Task } from "@prisma/client";
 import React from "react";
 
+export type TaskWithStatus = Task & { status: { name: string; color: string } };
+
 export interface TaskRowProps {
   onView: (task: Task) => void;
-  task: Task;
+  task: TaskWithStatus;
   active: boolean;
   projectId: number;
 }
 
 export default function TaskRow({ task, onView, active = false }: TaskRowProps) {
-  const { id, title } = task;
+  const { id, title, status } = task;
 
   const handleView = () => {
     if (onView) onView(task);
@@ -19,11 +22,12 @@ export default function TaskRow({ task, onView, active = false }: TaskRowProps) 
 
   return (
     <div
-      className={`flex w-full items-center justify-between p-2 mb-2 cursor-pointer transition-all duration-300 rounded-md ${activeClass} hover:bg-slate-100`}
+      className={`flex w-full items-center gap-5 p-2 mb-2 cursor-pointer transition-all duration-300 rounded-md ${activeClass} hover:bg-slate-100`}
       onClick={handleView}>
-      <h3 className="capitalize grow text-base font-normal m-0">
+      <h3 className="capitalize w-[3/5] text-base font-medium m-0">
         [#{id}] {title}
       </h3>
+      <Badge value={status.name} color={status.color} />
     </div>
   );
 }

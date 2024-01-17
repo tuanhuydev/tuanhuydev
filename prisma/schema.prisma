@@ -80,6 +80,7 @@ model Project {
   name        String        @db.VarChar(255)
   description String        @db.Text
   thumbnail   String?       @db.VarChar(255)
+  clientName  String?       @db.VarChar(255)
   startDate   DateTime?     @db.Timestamp(6)
   endDate     DateTime?     @db.Timestamp(6)
   createdAt   DateTime      @default(now()) @db.Timestamp(6)
@@ -137,7 +138,7 @@ model Status {
   deletedAt   DateTime? @db.Timestamp(6)
   tasks       Task[]
 
-  @@map("statuses")
+  @@map("status")
 }
 
 model Role {

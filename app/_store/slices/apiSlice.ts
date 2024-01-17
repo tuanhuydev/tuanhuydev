@@ -2,6 +2,7 @@
 
 import { postApis } from "../api/postApis";
 import { projectApis } from "../api/projectApis";
+import { statusApis } from "../api/statusApis";
 import { taskApis } from "../api/taskApis";
 import { userApis } from "../api/userApis";
 import { STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
@@ -63,12 +64,13 @@ export const apiSlice = createApi({
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === REHYDRATE) return action.payload[reducerPath];
   },
-  tagTypes: ["Post", "User", "Project", "Task"],
+  tagTypes: ["Post", "User", "Project", "Task", "Status"],
   endpoints: (builder) => ({
     ...postApis(builder),
     ...projectApis(builder),
     ...taskApis(builder),
     ...userApis(builder),
+    ...statusApis(builder),
   }),
 });
 
@@ -85,10 +87,15 @@ export const {
   useUpdateProjectMutation,
   useGetTasksQuery,
   useGetTaskQuery,
-  useGetTaskStatusesQuery,
+  useGetTaskStatusQuery,
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
   useGetUserQuery,
   useGetUsersQuery,
+  useGetStatusQuery,
+  useGetStatusByIdQuery,
+  useCreateStatusMutation,
+  useUpdateStatusMutation,
+  useDeleteStatusMutation,
 } = apiSlice;

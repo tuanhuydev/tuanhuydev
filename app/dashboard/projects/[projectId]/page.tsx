@@ -45,6 +45,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
     description = "",
     startDate,
     endDate,
+    clientName = "",
     users = [],
   }: Project & { users: ProjectUser[] } = project || {};
 
@@ -91,10 +92,12 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
                 </WithTooltip>
               </div>
             </div>
-            <div className="mb-3">
-              <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">client name: </h5>
-              <p className="text-sm m-0 p-0 inline">tuanhuydev</p>
-            </div>
+            {clientName && (
+              <div className="mb-3">
+                <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">client name: </h5>
+                <p className="text-sm m-0 p-0 inline">{clientName}</p>
+              </div>
+            )}
             <div className="line-clamp-6">
               <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">description</h5>
               <p className="text-sm m-0 p-0 inline">{description}</p>
