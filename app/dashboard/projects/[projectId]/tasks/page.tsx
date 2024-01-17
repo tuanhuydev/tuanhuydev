@@ -1,36 +1,29 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
-import WithTooltip from "@app/_components/hocs/WithTooltip";
+import Badge from "@app/_components/commons/Badge";
+import { TaskWithStatus } from "@components/TaskModule/TaskRow";
 import Loader from "@components/commons/Loader";
+import WithAuth from "@components/hocs/WithAuth";
+import WithTooltip from "@components/hocs/WithTooltip";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
+import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
+import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
+import EditOutlined from "@mui/icons-material/EditOutlined";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
-import { App, CollapseProps } from "antd";
+import { CollapseProps } from "antd/es/collapse";
+import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
 
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
-});
-const EditOffOutlined = dynamic(async () => (await import("@mui/icons-material/EditOffOutlined")).default, {
-  ssr: false,
-});
-const EditOutlined = dynamic(async () => (await import("@mui/icons-material/EditOutlined")).default, {
-  ssr: false,
-});
-const CloseOutlined = dynamic(async () => (await import("@mui/icons-material/CloseOutlined")).default, {
-  ssr: false,
-});
-const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
-  ssr: false,
-});
 const Input = dynamic(async () => (await import("antd/es/input")).default, {
   ssr: false,
   loading: () => <Loader />,
@@ -86,7 +79,8 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const pathname = usePathname();
   const taskId = searchParams.get("taskId");
 
-  const { notification } = App.useApp();
+  const [api, contextHolder] = notification.useNotification();
+
   const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
   const { resources } = currentUser;
 
@@ -126,7 +120,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
       <TaskRow
         active={task.id === selectedTask?.id}
         onView={viewTask}
-        task={task}
+        task={task as TaskWithStatus}
         projectId={projectId}
         key={task.id}
       />
@@ -172,9 +166,9 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   const onError = useCallback(
     (error: Error) => {
       LogService.log((error as Error).message);
-      notification.error({ message: (error as Error).message });
+      api.error({ message: (error as Error).message });
     },
-    [notification],
+    [api],
   );
 
   const RenderTaskGroup = useMemo(() => {
@@ -248,6 +242,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
 
   return (
     <Fragment>
+      {contextHolder}
       <div className="mb-3 flex items-center">
         <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
         <div className="flex gap-3">
@@ -269,11 +264,10 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
           <div className="flex items-baseline">
             {RenderHeader}
             {selectedTask && !isEditMode && (
-              <span
-                className="px-2 py-1 text-white rounded-md flex items-center bg-blue-500 leading-none"
-                style={{ background: (selectedTask as any)?.status?.color ?? "transparent" }}>
-                {(selectedTask as any)?.status?.name}
-              </span>
+              <Badge
+                color={(selectedTask as any)?.status?.color ?? "transparent"}
+                value={(selectedTask as any)?.status?.name ?? EMPTY_STRING}
+              />
             )}
           </div>
           {RenderDrawerExtra}

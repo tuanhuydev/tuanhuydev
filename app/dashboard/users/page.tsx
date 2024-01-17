@@ -4,29 +4,13 @@ import WithAuth from "@app/_components/hocs/WithAuth";
 import Loader from "@components/commons/Loader";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
+import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
 import { useGetUsersQuery } from "@store/slices/apiSlice";
 import { ColumnsType } from "antd/es/table";
 import dynamic from "next/dynamic";
 import { Fragment, useEffect, useState } from "react";
 
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
-});
-
-const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
-  ssr: false,
-});
-
-const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Flex = dynamic(async () => (await import("antd/es/flex")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const Button = dynamic(async () => (await import("antd/es/button")).default, {
   ssr: false,
   loading: () => <Loader />,
@@ -67,10 +51,10 @@ function Page({ setTitle, setPageKey }: any) {
       dataIndex: "name",
       key: "name",
       render: (text) => (
-        <Flex gap={8} align="center">
+        <div className="flex items-center gap-3">
           <Avatar size="small" icon={<PersonOutlineOutlined className="!h-5 !w-5" />} />
           <h3 className="m-0 capitalize">{text}</h3>
-        </Flex>
+        </div>
       ),
     },
     {
@@ -93,13 +77,13 @@ function Page({ setTitle, setPageKey }: any) {
 
   return (
     <Fragment>
-      <Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
+      <div data-testid="dashboard-posts-page-testid" className="mb-3 flex items-center">
         <Input
           size="large"
           placeholder="Find your user"
           onChange={searchUser}
           className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined className="!text-lg text-white" />}
+          prefix={<SearchOutlined className="!text-lg" />}
         />
         <div>
           <Button
@@ -111,9 +95,9 @@ function Page({ setTitle, setPageKey }: any) {
             New User
           </Button>
         </div>
-      </Flex>
+      </div>
       <div className="grow overflow-auto pb-3">
-        <Table columns={columns} dataSource={users} />
+        <Table columns={columns} dataSource={users} loading={isUserLoading} />
       </div>
     </Fragment>
   );

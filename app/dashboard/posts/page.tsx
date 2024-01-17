@@ -4,6 +4,12 @@ import WithAuth from "@app/_components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
+import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
+import ErrorOutlineOutlined from "@mui/icons-material/ErrorOutlineOutlined";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
+import VisibilityOutlined from "@mui/icons-material/VisibilityOutlined";
 import { Post } from "@prisma/client";
 import { useDeletePostMutation, useGetPostsQuery } from "@store/slices/apiSlice";
 import { App, MenuProps } from "antd";
@@ -12,27 +18,6 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 const Loader = dynamic(() => import("@components/commons/Loader"), { ssr: false });
-
-const ErrorOutlineOutlined = dynamic(async () => await import("@mui/icons-material/ErrorOutlineOutlined"), {
-  ssr: false,
-});
-
-const DeleteOutlineOutlined = dynamic(async () => await import("@mui/icons-material/DeleteOutlineOutlined"), {
-  ssr: false,
-});
-
-const VisibilityOutlined = dynamic(async () => await import("@mui/icons-material/VisibilityOutlined"), {
-  ssr: false,
-});
-const FileDownloadOutlinedIcon = dynamic(async () => await import("@mui/icons-material/FileDownloadOutlined"), {
-  ssr: false,
-});
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
-});
-const KeyboardArrowDownOutlined = dynamic(async () => await import("@mui/icons-material/KeyboardArrowDownOutlined"), {
-  ssr: false,
-});
 
 const PostCard = dynamic(() => import("@components/PostModule/PostCard"), {
   ssr: false,
@@ -150,7 +135,7 @@ function Page({ setTitle, setPageKey }: any) {
     {
       key: "1",
       label: "Export JSON",
-      icon: <FileDownloadOutlinedIcon />,
+      icon: <FileDownloadOutlined />,
       onClick: exportPostsToJson,
     },
   ];

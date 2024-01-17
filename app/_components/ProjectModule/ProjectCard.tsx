@@ -4,13 +4,14 @@ import { DATE_FORMAT } from "@lib/configs/constants";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { Project } from "@prisma/client";
-import { Button, Tooltip } from "antd";
 import format from "date-fns/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const Card = dynamic(async () => (await import("antd")).Card, { ssr: false });
+const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false });
+const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
+const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 
 export interface ProjectCard {
   project: Project;
