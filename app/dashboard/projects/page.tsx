@@ -5,7 +5,6 @@ import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ObjectType } from "@lib/shared/interfaces/base";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import { useGetProjectsQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -46,10 +45,6 @@ function Page({ setTitle, setPageKey }: any) {
     router.push("/dashboard/projects/create");
   }, [router]);
 
-  const configureProject = useCallback(() => {
-    router.push("/dashboard/projects/settings");
-  }, [router]);
-
   const renderProjects: JSX.Element = useMemo(
     () => (
       <div className="flex flex-wrap gap-2">
@@ -75,12 +70,6 @@ function Page({ setTitle, setPageKey }: any) {
           placeholder="Find your project"
           className="grow mr-2 rounded-sm"
           prefix={<SearchOutlined className="!text-lg " />}
-        />
-        <Button
-          size="large"
-          className="!px-3 mr-2"
-          onClick={configureProject}
-          icon={<SettingsOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}
         />
         <Button
           size="large"

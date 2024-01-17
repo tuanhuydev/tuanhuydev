@@ -6,8 +6,6 @@ import { ObjectType } from "@lib/shared/interfaces/base";
 import { Project } from "@prisma/client";
 import { useCreateProjectMutation } from "@store/slices/apiSlice";
 import { App } from "antd";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
 
 export interface ProjectFormProps {
   project?: Project;
@@ -48,6 +46,14 @@ export default function ProjectForm({ project, callback }: ProjectFormProps) {
         },
         validate: { required: true, min: "startDate" },
         className: "w-1/2",
+      },
+      {
+        name: "clientName",
+        type: "text",
+        options: {
+          placeholder: "Client Name",
+        },
+        validate: { required: true },
       },
       {
         name: "users",
