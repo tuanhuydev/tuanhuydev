@@ -3,7 +3,6 @@ import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
-import { ObjectType } from "@shared/interfaces/base";
 import { makeSlug, transformTextToDashed } from "@shared/utils/helper";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";

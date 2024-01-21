@@ -1,6 +1,5 @@
 "use client";
 
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { Color } from "antd/es/color-picker/color";
 import dynamic from "next/dynamic";
 import React from "react";

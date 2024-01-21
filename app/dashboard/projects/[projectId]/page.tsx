@@ -34,7 +34,7 @@ const Progress = dynamic(async () => (await import("antd/es/progress")).default,
 
 const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
 
-function Page({ params, setTitle, setPageKey, setGoBack }: any) {
+function Page({ params, setTitle, setGoBack }: any) {
   const router = useRouter();
 
   const { data: project, isLoading } = useGetProjectQuery(params.projectId as string);
@@ -72,8 +72,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   useEffect(() => {
     if (setTitle) setTitle("View Project");
     if (setGoBack) setGoBack(true);
-    if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
-  }, [setTitle, setPageKey, setGoBack]);
+  }, [setTitle, setGoBack]);
 
   const backlogTasks = tasks?.filter((task: Task) => task.statusId === 2);
   const percent = backlogTasks?.length ? (backlogTasks?.length / tasks?.length) * 100 : 0;
@@ -171,4 +170,4 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_PROJECTS);

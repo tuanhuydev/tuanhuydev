@@ -1,6 +1,5 @@
 "use client";
 
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { Select } from "antd";
 import Cookies from "js-cookie";
 import React, { useCallback, useEffect, useState } from "react";
@@ -18,13 +17,14 @@ export default function DynamicSelect({
   className = "w-full",
   ...restProps
 }: DynamicSelectProps) {
-  const { options: staticOptions = [], remote, ...restSelectOptions } = selectOptions;
+  const { options: staticOptions = [], remote, mode = "single", ...restSelectOptions } = selectOptions;
 
-  const [options, setOptions] = useState(staticOptions);
+  const [options, setOptions] = useState<SelectOption[]>(staticOptions);
 
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
+  const { onChange, ...restField } = field;
 
   const fetchOptions = useCallback(async () => {
     const { url, label, value } = remote;
@@ -47,13 +47,31 @@ export default function DynamicSelect({
       });
   }, [fetchOptions, remote]);
 
+  const handleChange = (newOptions: any[]) => {
+    if (mode === "multiple") {
+      const isStringArray = newOptions.every((option) => typeof option === "string");
+      if (isStringArray) {
+        let objectOptions = [];
+        for (let option of newOptions) {
+          const foundOption = options.find(({ value }: ObjectType) => value === option);
+          if (foundOption) objectOptions.push(foundOption);
+        }
+        return onChange(objectOptions);
+      }
+      return onChange(newOptions);
+    }
+    return onChange(newOptions);
+  };
+
   return (
     <div className={`p-2 self-stretch ${className}`}>
       <div className=" mb-1">
         <Select
           key={keyProp}
-          {...field}
+          {...restField}
           {...restSelectOptions}
+          onChange={handleChange}
+          mode={mode}
           options={options}
           className="w-full"
           disabled={isSubmitting}

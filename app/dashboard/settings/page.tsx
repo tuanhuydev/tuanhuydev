@@ -11,7 +11,6 @@ import {
 import ConfigSection from "@components/SettingModule/ConfigSection";
 import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Status } from "@prisma/client";
@@ -26,7 +25,7 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, { s
 const Popconfirm = dynamic(async () => (await import("antd/es/popconfirm")).default, { ssr: false });
 const Table = dynamic(async () => (await import("antd/es/table")).default, { ssr: false });
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle }: any) {
   const [api, contextHolder] = notification.useNotification();
 
   const { data: status = [], isLoading, isError: isStatusError } = useGetStatusQuery({});
@@ -118,8 +117,7 @@ function Page({ setTitle, setPageKey }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle("Settings");
-    if (setPageKey) setPageKey(Permissions.VIEW_SETTINGS);
-  }, [setTitle, setPageKey]);
+  }, [setTitle]);
 
   useEffect(() => {
     if (deleteStatusSuccess) {
@@ -188,11 +186,16 @@ function Page({ setTitle, setPageKey }: any) {
           <Button>Upload Backup</Button>
         </div>
       </ConfigSection>
-      <Modal title="Create Status" open={statusModal} onCancel={() => setStatusModal(false)} footer={null}>
+      <Modal
+        title="Create Status"
+        getContainer={false}
+        open={statusModal}
+        onCancel={() => setStatusModal(false)}
+        footer={null}>
         <DynamicForm config={statusFormConfig} onSubmit={submitStatus} mapValues={editingStatus} />
       </Modal>
     </div>
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_SETTINGS);

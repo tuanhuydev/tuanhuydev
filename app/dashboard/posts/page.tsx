@@ -3,7 +3,6 @@
 import WithAuth from "@app/_components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import ErrorOutlineOutlined from "@mui/icons-material/ErrorOutlineOutlined";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
@@ -29,7 +28,7 @@ const Flex = dynamic(() => import("antd/es/flex"), { ssr: false });
 const DropdownButton = dynamic(async () => (await import("antd/es/dropdown")).default.Button, { ssr: false });
 const Input = dynamic(() => import("antd/es/input"), { ssr: false });
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle }: any) {
   const { notification, modal } = App.useApp();
 
   const [filter, setFilter] = useState<ObjectType>({});
@@ -147,8 +146,7 @@ function Page({ setTitle, setPageKey }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle("Posts");
-    if (setPageKey) setPageKey(Permissions.VIEW_POSTS);
-  }, [setTitle, setPageKey]);
+  }, [setTitle]);
 
   return (
     <Fragment>
@@ -178,4 +176,4 @@ function Page({ setTitle, setPageKey }: any) {
     </Fragment>
   );
 }
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_POSTS);

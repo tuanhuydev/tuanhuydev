@@ -3,7 +3,6 @@
 import WithAuth from "@app/_components/hocs/WithAuth";
 import Loader from "@components/commons/Loader";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
 import { useGetUsersQuery } from "@store/slices/apiSlice";
@@ -31,7 +30,7 @@ const Table = dynamic(async () => (await import("antd/es/table")).default, {
   loading: () => <Loader />,
 });
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle }: any) {
   const [filter, setFilter] = useState<ObjectType>({});
   const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery(filter);
 
@@ -72,8 +71,7 @@ function Page({ setTitle, setPageKey }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle("Users");
-    if (setPageKey) setPageKey(Permissions.VIEW_USERS);
-  }, [setTitle, setPageKey]);
+  }, [setTitle]);
 
   return (
     <Fragment>
@@ -103,4 +101,4 @@ function Page({ setTitle, setPageKey }: any) {
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_USERS);

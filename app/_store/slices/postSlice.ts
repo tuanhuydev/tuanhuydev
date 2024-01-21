@@ -1,5 +1,4 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { ObjectType } from "@shared/interfaces/base";
 import { RootState } from "lib/configs/types";
 
 const initialState: {

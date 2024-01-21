@@ -1,7 +1,6 @@
 import { Asset } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
 import BaseError from "@shared/commons/errors/BaseError";
-import { ObjectType } from "@shared/interfaces/base";
 
 export type PostFilter = {
   page?: number;

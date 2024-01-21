@@ -2,9 +2,8 @@
 
 import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { Project } from "@prisma/client";
-import { useCreateProjectMutation } from "@store/slices/apiSlice";
+import { useCreateProjectMutation, useUpdateProjectMutation } from "@store/slices/apiSlice";
 import { App } from "antd";
 
 export interface ProjectFormProps {
@@ -18,6 +17,7 @@ export default function ProjectForm({ project, callback }: ProjectFormProps) {
   const { notification } = App.useApp();
 
   const [createProject, { isLoading: isCreating }] = useCreateProjectMutation();
+  const [updateProject, { isLoading: isUpdating }] = useUpdateProjectMutation();
 
   const config: DynamicFormConfig = {
     fields: [
@@ -81,7 +81,7 @@ export default function ProjectForm({ project, callback }: ProjectFormProps) {
 
   const onSubmit = async (formData: ObjectType) => {
     try {
-      const { data }: any = await createProject(formData);
+      const { data }: any = isEditMode ? await updateProject(formData) : await createProject(formData);
       if (!data?.success) throw new Error("Unable to save");
 
       notification.success({ message: "Save successfully" });
@@ -91,5 +91,7 @@ export default function ProjectForm({ project, callback }: ProjectFormProps) {
     }
   };
 
-  return <DynamicForm config={config} onSubmit={onSubmit} submitProps={{ className: "ml-auto mr-2" }} />;
+  return (
+    <DynamicForm config={config} onSubmit={onSubmit} submitProps={{ className: "ml-auto mr-2" }} mapValues={project} />
+  );
 }

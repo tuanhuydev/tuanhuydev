@@ -4,7 +4,6 @@ import Loader from "@components/commons/Loader";
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { clearLocalStorage, getLocalStorage, setLocalStorage } from "@lib/shared/utils/dom";
 import { User } from "@prisma/client";
 import { authActions } from "@store/slices/authSlice";
@@ -19,11 +18,10 @@ type UserWithPermission = User & { permissionId: number };
 const Sidebar = dynamic(() => import("@components/DashboardModule/Sidebar"), { ssr: false });
 const PageContainer = dynamic(() => import("@components/DashboardModule/PageContainer"), { ssr: false });
 
-export default function WithAuth(WrappedComponent: FC<any>) {
+export default function WithAuth(WrappedComponent: FC<any>, pagePermission: string) {
   const DEFAULT_PAGEKEYS = ["home", "setting"];
 
   const WithAuthWrapper = (props: any) => {
-    const [pageKey, setPageKey] = useState<string>("home");
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [hasPermission, setHasPermission] = useState<boolean>(false);
 
@@ -75,7 +73,7 @@ export default function WithAuth(WrappedComponent: FC<any>) {
 
         const hasCookie = !!Cookies.get("jwt");
         const hasCredential = !!getLocalStorage(STORAGE_CREDENTIAL_KEY) as boolean;
-        const hasResource = resources.has(pageKey) || DEFAULT_PAGEKEYS.includes(pageKey);
+        const hasResource = resources.has(pagePermission) || DEFAULT_PAGEKEYS.includes(pagePermission);
         setHasPermission(hasCookie && hasCredential && hasResource);
       } catch (error) {
         if (error instanceof UnauthorizedError) return clearAuth();
@@ -83,16 +81,11 @@ export default function WithAuth(WrappedComponent: FC<any>) {
       } finally {
         setIsLoading(false);
       }
-    }, [clearAuth, fetchResource, pageKey, router, updateUserWithResources]);
+    }, [clearAuth, fetchResource, router, updateUserWithResources]);
 
     useLayoutEffect(() => {
       checkPermission();
     }, [checkPermission]);
-
-    const enhancedProps = {
-      ...props,
-      setPageKey,
-    };
 
     if (isLoading) return <Loader />;
 
@@ -102,7 +95,7 @@ export default function WithAuth(WrappedComponent: FC<any>) {
           <div className="flex w-full relative">
             <Sidebar />
             <PageContainer>
-              <WrappedComponent {...enhancedProps} />
+              <WrappedComponent {...props} />
             </PageContainer>
           </div>
         </div>
