@@ -43,15 +43,14 @@ const HomeCard = React.memo(({ url, name, value, loading = false, icon }: HomeCa
 });
 HomeCard.displayName = "HomeCard";
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle }: any) {
   const { data: projects = [], isLoading: isProjectLoading } = useGetProjectsQuery({});
   const { data: posts = [], isLoading: isPostLoading } = useGetPostsQuery({});
   const { resources } = useSelector((state: RootState) => state.auth.currentUser) || {};
 
   useEffect(() => {
     if (setTitle) setTitle("Home");
-    if (setPageKey) setPageKey("home");
-  }, [setTitle, setPageKey]);
+  }, [setTitle]);
 
   return (
     <div className="flex wrap gap-4">
@@ -87,4 +86,4 @@ function Page({ setTitle, setPageKey }: any) {
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, "home");

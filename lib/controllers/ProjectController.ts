@@ -4,9 +4,8 @@ import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
-import { ObjectType } from "@shared/interfaces/base";
 import { NextRequest } from "next/server";
-import { ObjectSchema, object, string, date, array } from "yup";
+import { ObjectSchema, object, string, date, array, mixed } from "yup";
 
 export class ProjectController implements BaseController {
   #schema: ObjectSchema<any>;
@@ -23,7 +22,14 @@ export class ProjectController implements BaseController {
       thumbnail: string().nullable(),
       startDate: date().nullable(),
       endDate: date().nullable(),
-      users: array().of(string()).nullable(),
+      users: array()
+        .of(
+          object({
+            label: string(),
+            value: mixed().nullable(),
+          }),
+        )
+        .nullable(),
     });
   }
 

@@ -2,7 +2,6 @@ import LogService from "./LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Task } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
-import { FilterType, ObjectType } from "@shared/interfaces/base";
 
 export type CreateTaskBody = Pick<Task, "title" | "description"> & {
   projectId?: number | null;

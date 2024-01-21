@@ -9,7 +9,6 @@ import {
 } from "@shared/commons/constants/encryption";
 import BaseError from "@shared/commons/errors/BaseError";
 import NotFoundError from "@shared/commons/errors/NotFoundError";
-import { ObjectType } from "@shared/interfaces/base";
 import bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";

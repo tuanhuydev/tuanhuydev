@@ -72,7 +72,7 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-function Page({ params, setTitle, setPageKey, setGoBack }: any) {
+function Page({ params, setTitle, setGoBack }: any) {
   const { projectId } = params;
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -189,9 +189,8 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle(`${project?.name}'s tasks`);
-    if (setPageKey) setPageKey(Permissions.VIEW_TASKS);
     if (setGoBack) setGoBack(true);
-  }, [setTitle, setPageKey, project?.name, setGoBack]);
+  }, [setTitle, project?.name, setGoBack]);
 
   useEffect(() => {
     if (tasks.length && taskId) {
@@ -259,7 +258,7 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
         </div>
       </div>
       <div className="grow overflow-auto pb-3">{RenderTaskGroup}</div>
-      <Drawer size="large" placement="right" destroyOnClose styles={drawerStyle} open={openDrawer}>
+      <Drawer size="large" placement="right" getContainer={false} destroyOnClose styles={drawerStyle} open={openDrawer}>
         <div className="bg-slate-700 mb-3 flex justify-between">
           <div className="flex items-baseline">
             {RenderHeader}
@@ -278,4 +277,4 @@ function Page({ params, setTitle, setPageKey, setGoBack }: any) {
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_TASKS);

@@ -1,8 +1,13 @@
-export interface ObjectType {
+interface ObjectType {
   [key: string]: any;
 }
 
-export type FilterType = {
+type SelectOption = {
+  label: string;
+  value: any;
+};
+
+type FilterType = {
   page?: number;
   pageSize?: number;
   active?: boolean;

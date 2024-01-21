@@ -1,13 +1,16 @@
 "use client";
 
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { ObjectType } from "@lib/shared/interfaces/base";
+import { RootState } from "@lib/configs/types";
+import { Permissions } from "@lib/shared/commons/constants/permissions";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Project } from "@prisma/client";
 import format from "date-fns/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false });
 const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
@@ -23,23 +26,41 @@ export interface ProjectCardExtraProps {
 
 const CardExtra = ({ id }: ProjectCardExtraProps) => {
   const router = useRouter();
+  const { resources = [] } = useSelector((state: RootState) => state.auth.currentUser) || { resources: [] };
 
   const navigateProjectTasks = (event: any) => {
     event.stopPropagation();
     if (id) router.push(`/dashboard/projects/${id}/tasks`);
   };
 
+  const navigateProjectEdit = (event: any) => {
+    event.stopPropagation();
+    if (id) router.push(`/dashboard/projects/${id}/edit`);
+  };
   return (
-    <div className="flex items-center gap-3">
-      <Tooltip title="Go to project'stasks" placement="top">
-        <Button
-          size="small"
-          icon={<CheckBoxOutlineBlankIcon className="!w-4 !h-4 !text-base" />}
-          type="text"
-          className="!leading-none"
-          onClick={navigateProjectTasks}
-        />
-      </Tooltip>
+    <div className="flex items-center gap-2">
+      {resources.has(Permissions.EDIT_PROJECT) && (
+        <Tooltip title="Go to project's edit" placement="top">
+          <Button
+            size="small"
+            icon={<EditOutlined className="!w-4 !h-4 !text-base" />}
+            type="text"
+            className="!leading-none"
+            onClick={navigateProjectEdit}
+          />
+        </Tooltip>
+      )}
+      {resources.has(Permissions.VIEW_TASKS) && (
+        <Tooltip title="Go to project's tasks" placement="top">
+          <Button
+            size="small"
+            icon={<CheckBoxOutlineBlankIcon className="!w-4 !h-4 !text-base" />}
+            type="text"
+            className="!leading-none"
+            onClick={navigateProjectTasks}
+          />
+        </Tooltip>
+      )}
     </div>
   );
 };

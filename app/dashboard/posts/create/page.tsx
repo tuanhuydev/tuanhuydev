@@ -11,14 +11,13 @@ const PostForm = dynamic(() => import("@components/PostModule/PostForm"), {
   loading: () => <Loader />,
 });
 
-function Page({ setTitle, setPageKey, setGoBack }: any) {
+function Page({ setTitle, setGoBack }: any) {
   useEffect(() => {
     if (setTitle) setTitle("Create new post");
-    if (setPageKey) setPageKey(Permissions.CREATE_POST);
     if (setGoBack) setGoBack(true);
-  }, [setTitle, setPageKey, setGoBack]);
+  }, [setTitle, setGoBack]);
 
   return <PostForm />;
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.CREATE_POST);

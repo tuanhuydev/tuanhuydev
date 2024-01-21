@@ -1,6 +1,5 @@
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import prismaClient from "@prismaClient/prismaClient";
-import { FilterType, ObjectType } from "@shared/interfaces/base";
 
 export interface StatusFilterType extends FilterType {
   type: string;

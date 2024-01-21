@@ -1,6 +1,5 @@
 import StatusService, { StatusFilterType } from "../services/StatusService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import Network from "@lib/shared/utils/network";
 import { NextRequest } from "next/server";
 

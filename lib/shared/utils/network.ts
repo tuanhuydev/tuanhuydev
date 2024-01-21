@@ -1,7 +1,6 @@
 import { NODE_ENV } from "@lib/configs/constants";
 import { HTTP_CODE } from "@shared/commons/constants/httpCode";
 import BaseError from "@shared/commons/errors/BaseError";
-import { ObjectType } from "@shared/interfaces/base";
 import { NextRequest, NextResponse } from "next/server";
 
 class Network {

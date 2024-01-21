@@ -3,7 +3,6 @@
 import { UploadOutlined } from "@ant-design/icons";
 import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import { PostAsset } from "@prisma/client";
 import BaseError from "@shared/commons/errors/BaseError";
