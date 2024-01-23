@@ -1,9 +1,12 @@
 "use client";
 
-import { Select } from "antd";
+import Loader from "../Loader";
 import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
+
+const Select = dynamic(() => import("antd/es/select"), { ssr: false, loading: () => <Loader /> });
 
 export interface DynamicSelectProps extends UseControllerProps<any> {
   options?: ObjectType;
@@ -47,12 +50,12 @@ export default function DynamicSelect({
       });
   }, [fetchOptions, remote]);
 
-  const handleChange = (newOptions: any[]) => {
+  const handleChange = (newOptions: unknown) => {
     if (mode === "multiple") {
-      const isStringArray = newOptions.every((option) => typeof option === "string");
+      const isStringArray = (newOptions as SelectOption[]).every((option) => typeof option === "string");
       if (isStringArray) {
         let objectOptions = [];
-        for (let option of newOptions) {
+        for (let option of newOptions as SelectOption[]) {
           const foundOption = options.find(({ value }: ObjectType) => value === option);
           if (foundOption) objectOptions.push(foundOption);
         }

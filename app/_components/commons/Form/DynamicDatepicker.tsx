@@ -1,7 +1,10 @@
-import { DatePicker } from "antd";
+import Loader from "../Loader";
 import dayjs from "dayjs";
+import dynamic from "next/dynamic";
 import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
+
+const DatePicker = dynamic(() => import("antd/es/date-picker"), { ssr: false, loading: () => <Loader /> });
 
 export interface DynamicSelectProps extends UseControllerProps<any> {
   options?: ObjectType;
