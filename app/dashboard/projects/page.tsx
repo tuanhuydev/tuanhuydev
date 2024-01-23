@@ -2,7 +2,6 @@
 
 import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useGetProjectsQuery } from "@store/slices/apiSlice";
@@ -29,7 +28,7 @@ const ProjectCard = dynamic(async () => (await import("@components/ProjectModule
   loading: () => <Loader />,
 });
 
-function Page({ setTitle, setPageKey }: any) {
+function Page({ setTitle }: any) {
   const [filter, setFilter] = useState<ObjectType>({});
   const router = useRouter();
   const { data: projects = [], isLoading } = useGetProjectsQuery(filter);
@@ -58,8 +57,7 @@ function Page({ setTitle, setPageKey }: any) {
 
   useEffect(() => {
     if (setTitle) setTitle("Projects");
-    if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
-  }, [setTitle, setPageKey]);
+  }, [setTitle]);
 
   return (
     <Fragment>
@@ -86,4 +84,4 @@ function Page({ setTitle, setPageKey }: any) {
   );
 }
 
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.VIEW_PROJECTS);

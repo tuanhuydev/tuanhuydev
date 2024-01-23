@@ -1,3 +1,4 @@
+import { Post } from "@prisma/client";
 import Avatar from "@public/assets/images/avatar.png";
 import FlagIcon from "@public/assets/images/vietnam_flag.png";
 import Image from "next/image";
@@ -6,7 +7,11 @@ import React from "react";
 const matrixTypoStyles = "font-medium text-slate-700 dark:text-white text-[8px] sm:text-base";
 const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
-export default function Hero() {
+export interface HeroProps {
+  posts?: Post[];
+}
+
+export default function Hero({ posts = [] }: HeroProps) {
   return (
     <section
       id="about-me"

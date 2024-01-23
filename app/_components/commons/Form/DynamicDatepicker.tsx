@@ -1,5 +1,5 @@
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
 import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
@@ -21,7 +21,15 @@ export default function DynamicDatepicker({
   return (
     <div className={`p-2 self-stretch ${className}`}>
       <div className="w-full mb-1">
-        <DatePicker {...field} {...options} key={keyProp} disabled={isSubmitting} className="w-full" />
+        <DatePicker
+          {...field}
+          {...options}
+          key={keyProp}
+          disabled={isSubmitting}
+          value={dayjs(field.value as any)}
+          className="w-full"
+          format="YYYY/MM/DD"
+        />
       </div>
       {invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
     </div>

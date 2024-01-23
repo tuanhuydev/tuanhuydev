@@ -1,4 +1,3 @@
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { EndpointBuilder } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import QueryString from "qs";

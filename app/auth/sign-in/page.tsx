@@ -5,7 +5,6 @@ import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
-import { ObjectType } from "@shared/interfaces/base";
 import { getLocalStorage, setLocalStorage } from "@shared/utils/dom";
 import notification from "antd/es/notification";
 import Cookies from "js-cookie";

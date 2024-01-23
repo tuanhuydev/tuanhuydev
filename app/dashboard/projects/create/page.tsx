@@ -8,18 +8,17 @@ import React, { useEffect } from "react";
 
 const ProjectForm = dynamic(() => import("@components/ProjectModule/ProjectForm"), { ssr: false });
 
-function Page({ setTitle, setPageKey, setGoBack }: any) {
+function Page({ setTitle, setGoBack }: any) {
   const router = useRouter();
 
   useEffect(() => {
     if (setTitle) setTitle("Create new project");
-    if (setPageKey) setPageKey(Permissions.CREATE_PROJECT);
     if (setGoBack) setGoBack(true);
-  }, [setTitle, setPageKey, setGoBack]);
+  }, [setTitle, setGoBack]);
 
   const navigateBack = () => {
     router.back();
   };
   return <ProjectForm callback={navigateBack} />;
 }
-export default WithAuth(Page);
+export default WithAuth(Page, Permissions.CREATE_PROJECT);

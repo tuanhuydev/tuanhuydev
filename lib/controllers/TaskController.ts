@@ -1,6 +1,5 @@
 import LogService from "../services/LogService";
 import TaskService from "../services/TaskService";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";

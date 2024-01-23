@@ -17,8 +17,12 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
-import React, { useMemo, RefObject, useRef, useEffect } from "react";
+import React, { useMemo, RefObject, useRef, useEffect, memo } from "react";
 
+const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
   ssr: false,
   loading: () => <Loader />,
@@ -57,7 +61,7 @@ const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   },
 };
 
-export default function BaseMarkdown({
+export default memo(function BaseMarkdown({
   value = EMPTY_STRING,
   onChange,
   readOnly = false,
@@ -68,6 +72,7 @@ export default function BaseMarkdown({
       toolbarPlugin({
         toolbarContents: () => (
           <div className="flex gap-3 relative z-50">
+            <BlockTypeSelect />
             <BoldItalicUnderlineToggles />
             <CreateLink />
             <ListsToggle />
@@ -111,4 +116,4 @@ export default function BaseMarkdown({
       </div>
     </div>
   );
-}
+});

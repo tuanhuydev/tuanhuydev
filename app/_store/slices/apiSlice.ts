@@ -9,7 +9,6 @@ import { STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
 import { BaseQueryFn, createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ACCESS_TOKEN_LIFE } from "@shared/commons/constants/encryption";
-import { ObjectType } from "@shared/interfaces/base";
 import { getLocalStorage } from "@shared/utils/dom";
 import Cookies from "js-cookie";
 import { REHYDRATE } from "redux-persist";

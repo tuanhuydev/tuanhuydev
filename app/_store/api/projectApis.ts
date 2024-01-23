@@ -1,4 +1,3 @@
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { BaseQueryFn } from "@reduxjs/toolkit/dist/query";
 import { EndpointBuilder } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 import QueryString from "qs";
@@ -31,7 +30,7 @@ export const projectApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) =
     invalidatesTags: ["Project"],
   }),
   updateProject: builder.mutation<any, any>({
-    query: ({ id, body }) => ({ url: `projects/${id}`, method: "PATCH", body }),
+    query: ({ id, ...body }) => ({ url: `projects/${id}`, method: "PATCH", body }),
     invalidatesTags: (_result, _error, { id }) => [{ type: "Project", id }],
   }),
   deleteProject: builder.mutation({

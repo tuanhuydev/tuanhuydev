@@ -1,6 +1,5 @@
 import TaskController from "@lib/controllers/TaskController";
 import withAuthMiddleware from "@lib/middlewares/authMiddleware";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { NextRequest } from "next/server";
 
 const handleGetOne = withAuthMiddleware(async (request: NextRequest, params: ObjectType) =>
