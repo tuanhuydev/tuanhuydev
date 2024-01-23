@@ -1,7 +1,6 @@
 "use client";
 
 import Loader from "../Loader";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import dynamic from "next/dynamic";
 import React, { Ref, forwardRef } from "react";
 import { UseControllerProps, useController } from "react-hook-form";

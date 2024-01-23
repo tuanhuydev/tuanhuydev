@@ -3,7 +3,6 @@
 import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { Task } from "@prisma/client";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@store/slices/apiSlice";
 import React from "react";

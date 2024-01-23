@@ -24,7 +24,7 @@ export default function TaskRow({ task, onView, active = false }: TaskRowProps) 
     <div
       className={`flex w-full items-center gap-5 p-2 mb-2 cursor-pointer transition-all duration-300 rounded-md ${activeClass} hover:bg-slate-100`}
       onClick={handleView}>
-      <h3 className="capitalize w-[3/5] text-base font-medium m-0">
+      <h3 className="capitalize w-2/5 text-base font-medium m-0">
         [#{id}] {title}
       </h3>
       <Badge value={status.name} color={status.color} />

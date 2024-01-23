@@ -1,5 +1,3 @@
-import { ObjectType } from "@shared/interfaces/base";
-
 // Default Type
 export const EMPTY_OBJECT: ObjectType = {};
 export const EMPTY_STRING: string = "";

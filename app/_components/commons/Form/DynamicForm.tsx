@@ -2,8 +2,9 @@
 
 import Loader from "../Loader";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ObjectType } from "@lib/shared/interfaces/base";
 import { ButtonProps } from "antd";
+import { toDate } from "date-fns";
+import isDate from "date-fns/isDate";
 import dynamic from "next/dynamic";
 import { ReactNode, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
@@ -146,7 +147,13 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
     if (!mapValues) reset();
     if (mapValues) {
       for (let [key, value] of Object.entries(mapValues)) {
-        setValue(key, value);
+        let valueToUpdate = value;
+        const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+        const isDateValue = typeof value === "string" && regex.test(value);
+        if (isDateValue) {
+          valueToUpdate = new Date(value);
+        }
+        setValue(key, valueToUpdate, { shouldDirty: true, shouldValidate: true });
       }
     }
   }, [form, mapValues, reset, setValue]);

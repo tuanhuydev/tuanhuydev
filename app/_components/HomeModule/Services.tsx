@@ -1,15 +1,11 @@
 "use client";
 
 import Loader from "@components/commons/Loader";
+import IntegrationInstructionsOutlined from "@mui/icons-material/IntegrationInstructionsOutlined";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-
-const CodeOutlined = dynamic(async () => (await import("@ant-design/icons")).CodeOutlined, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 
 type DelightProps = {
   title: string;
@@ -43,8 +39,8 @@ const Delight = ({ title, value: target, gradient }: DelightProps) => {
     return () => clearInterval(interval);
   }, [target]);
   return (
-    <div className="text-center text-primary dark:text-slate-50 p-3 flex-1 self-stretch">
-      <h6 className={`text-sm md:text-xl mb-3 font-bold capitalize ${backgroundGradient}`}>
+    <div className="text-center text-primary dark:text-slate-50 p-3 self-stretch w-[16rem]">
+      <h6 className={`text-sm md:text-xl my-3 font-bold capitalize ${backgroundGradient}`}>
         &#60;{title}&nbsp;&#47;&#62;
       </h6>
       <div
@@ -84,7 +80,7 @@ const delights = [
 
 export default function Services() {
   return (
-    <section id="service" className="py-10 md:py-24">
+    <section id="service" className="py-8 md:py-10 lg:py-24">
       <h3 className="text-center text-primary dark:text-slate-50 font-bold text-base md:text-3xl lg:text-4xl mb-3">
         &ldquo;Elevating Excellence in Every Project &rdquo;
       </h3>
@@ -97,16 +93,16 @@ export default function Services() {
         </span>
       </h4>
 
-      <div className="grid grid-cols-12 gap-5 p-3 grid-flow-row">
-        <div className="col-start-2 col-span-10 md:col-start-4 md:col-span-6 flex justify-center">
+      <div className="flex flex-col items-center">
+        <div className="py-5">
           <Link href={"#contact"} legacyBehavior prefetch={false}>
-            <div className="w-56 h-56 md:w-96 md:h-96 flex flex-col justify-center items-center rounded-md transition-all bg-slate-50 text-primary dark:bg-slate-800 dark:text-slate-50 drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer">
-              <CodeOutlined className="text-5xl lg:text-[6rem]" />
-              <h3 className="text-xl md:text-3xl font-semibold mt-5">Web Development</h3>
+            <div className="w-56 h-56 md:w-84 md:h-84 flex flex-col justify-center items-center rounded-md transition-all bg-slate-50 text-primary dark:bg-slate-800 dark:text-slate-50 drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer">
+              <IntegrationInstructionsOutlined className="!text-[5rem] mb-4" />
+              <h3 className="text-xl md:text-xl font-semibold">Web Development</h3>
             </div>
           </Link>
         </div>
-        <div className="col-start-2 col-span-10 md:col-start-4 md:col-span-6 flex flex-wrap sm:flex-nowrap justify-between">
+        <div className="flex justify-center flex-wrap lg:mt-5">
           {delights.map((delight: DelightProps) => (
             <Delight key={delight.title} {...delight} />
           ))}

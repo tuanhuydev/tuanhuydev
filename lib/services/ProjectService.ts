@@ -1,11 +1,10 @@
 import LogService from "./LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { Project } from "@prisma/client";
+import { Project, User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
-import { FilterType, ObjectType } from "@shared/interfaces/base";
 
 export type CreateProjectBody = Pick<Project, "name" | "description" | "thumbnail"> & {
-  users: string[];
+  users: ObjectType[];
 };
 
 class ProjectService {
@@ -20,8 +19,12 @@ class ProjectService {
 
   async createProject({ users = [], ...restBody }: CreateProjectBody) {
     const project: Project = await prismaClient.project.create({ data: restBody });
-    if (users.length) {
-      const projectUsers = users.map((userId: string) => ({ projectId: project.id, userId, roleId: 1 }));
+    if (users?.length) {
+      const projectUsers = users.map(({ label, value }: ObjectType) => ({
+        projectId: project.id,
+        userId: value,
+        roleId: 1,
+      }));
       await prismaClient.projectUser.createMany({ data: projectUsers });
     }
     return project;
@@ -81,12 +84,26 @@ class ProjectService {
 
   async getProject(id: string) {
     try {
-      return await prismaClient.project.findFirst({
+      const project = await prismaClient.project.findFirst({
         where: { deletedAt: null, id: parseInt(id, 10) },
         include: {
-          users: true,
+          users: {
+            select: {
+              User: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       });
+      const projectUsers = project?.users.map(({ User }: { User: Partial<User> }) => ({
+        label: User.name,
+        value: User.id,
+      }));
+      return { ...project, users: projectUsers };
     } catch (error) {
       LogService.log((error as Error).message);
       throw new BaseError((error as Error).message);
@@ -94,7 +111,47 @@ class ProjectService {
   }
 
   async updateProject(id: number, data: ObjectType) {
-    return await prismaClient.project.update({ where: { id }, data });
+    const { users = [], ...restData } = data;
+
+    const updatedProject = await prismaClient.project.update({ where: { id }, data: restData });
+
+    const currentUserProject = await prismaClient.projectUser.findMany({
+      where: { projectId: id },
+    });
+
+    const deletedUsers = currentUserProject.filter(
+      ({ userId: currentUserId }: ObjectType) => !users.find(({ value }: ObjectType) => value === currentUserId),
+    );
+
+    const transaction = [];
+
+    if (deletedUsers.length) {
+      transaction.push(
+        prismaClient.projectUser.deleteMany({
+          where: {
+            projectId: id,
+            userId: {
+              in: deletedUsers.map(({ userId }: ObjectType) => userId),
+            },
+          },
+        }),
+      );
+    }
+
+    users.forEach(({ value: userId }: ObjectType) => {
+      const isExist = currentUserProject.find(({ userId: currentUserId }: ObjectType) => currentUserId === userId);
+      if (!isExist) {
+        transaction.push(
+          prismaClient.projectUser.create({
+            data: { projectId: id, userId, roleId: 1 }, // TODO: get roleId from request
+          }),
+        );
+      }
+    });
+
+    await prismaClient.$transaction(transaction);
+
+    return updatedProject;
   }
 
   async deleteProject(id: number) {

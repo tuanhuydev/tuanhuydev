@@ -1,7 +1,6 @@
 "use client";
 
 import { EMPTY_OBJECT } from "@lib/configs/constants";
-import { ObjectType } from "@shared/interfaces/base";
 import React, { PropsWithChildren, useReducer } from "react";
 import { createContext } from "react";
 
