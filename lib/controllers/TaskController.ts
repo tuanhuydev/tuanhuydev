@@ -23,10 +23,6 @@ export class TaskController implements BaseController {
     });
   }
 
-  // makeResource(projects: any[]) {
-  // 	return projects.map(({ ProjectUser: users, ...rest }: any) => ({ ...rest, users }));
-  // }
-
   async validate(body: any, schema: ObjectSchema<any>) {
     try {
       return schema.validate(body);
@@ -35,7 +31,7 @@ export class TaskController implements BaseController {
     }
   }
 
-  async store(request: NextRequest) {
+  async store(request: NextRequest, params: ObjectType) {
     const network = Network(request);
     try {
       const schema = object({
@@ -48,6 +44,9 @@ export class TaskController implements BaseController {
       const body = await request.json();
       const validatedBody = await this.validate(body, schema);
       validatedBody.statusId = parseInt(validatedBody.statusId, 10);
+      if ("userId" in params) {
+        validatedBody.createdById = params.userId;
+      }
       const newTask = await TaskService.createTask(validatedBody);
 
       return network.successResponse(newTask);

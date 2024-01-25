@@ -20,7 +20,7 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
 
-  const submit = async ({ id: taskId, ...restForm }: ObjectType, form: UseFormReturn) => {
+  const submit = async ({ id: taskId, assignee, createdBy, ...restForm }: ObjectType, form: UseFormReturn) => {
     try {
       const response = taskId
         ? await updateTask({ ...restForm, taskId })
@@ -42,6 +42,19 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
         type: "text",
         options: {
           placeholder: "Task Title",
+        },
+        validate: { required: true },
+      },
+      {
+        name: "assigneeId",
+        type: "select",
+        options: {
+          placeholder: "Select Assignee",
+          remote: {
+            url: `${BASE_URL}/api/users`,
+            label: "name",
+            value: "id",
+          },
         },
         validate: { required: true },
       },

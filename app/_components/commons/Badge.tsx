@@ -23,7 +23,7 @@ export default function Badge({ className, color, value }: BadgeProps) {
     }
   }, [className, color]);
   return (
-    <span ref={ref} className="capitalize rounded-full px-3 py-1 text-white">
+    <span ref={ref} className="capitalize rounded-full px-3 py-1 text-white truncate">
       {value}
     </span>
   );

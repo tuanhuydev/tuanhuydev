@@ -39,18 +39,19 @@ model Permission {
 }
 
 model User {
-  id           String        @unique @db.Uuid
-  name         String        @db.VarChar(50)
-  email        String        @unique @db.VarChar(50)
-  password     String        @default("0") @db.VarChar(255)
-  createdAt    DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime      @default(now()) @db.Timestamp(6)
-  deletedAt    DateTime?     @db.Timestamp(6)
-  posts        Post[]
-  projectUsers ProjectUser[]
-  tasks        Task[]
-  permission   Permission    @relation(fields: [permissionId], references: [id])
-  permissionId Int
+  id            String        @unique @db.Uuid
+  name          String        @db.VarChar(50)
+  email         String        @unique @db.VarChar(50)
+  password      String        @default("0") @db.VarChar(255)
+  createdAt     DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime      @default(now()) @db.Timestamp(6)
+  deletedAt     DateTime?     @db.Timestamp(6)
+  posts         Post[]
+  projectUsers  ProjectUser[]
+  permission    Permission    @relation(fields: [permissionId], references: [id])
+  permissionId  Int
+  createdTasks  Task[]        @relation(name: "CreatedByUser")
+  assignedTasks Task[]        @relation(name: "AssigneeUser")
 
   @@map("users")
 }
@@ -99,15 +100,17 @@ model Task {
   projectId   Int?
   statusId    Int?
   sprintId    Int?
-  createdBy   String?   @db.Uuid
+  assigneeId  String?   @db.Uuid
+  createdById String?   @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
 
-  user    User?    @relation(fields: [createdBy], references: [id])
-  project Project? @relation(fields: [projectId], references: [id])
-  status  Status?  @relation(fields: [statusId], references: [id])
-  sprint  Sprint?  @relation(fields: [sprintId], references: [id])
+  createdBy User?    @relation(name: "CreatedByUser", fields: [createdById], references: [id])
+  assignee  User?    @relation(name: "AssigneeUser", fields: [assigneeId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
+  status    Status?  @relation(fields: [statusId], references: [id])
+  sprint    Sprint?  @relation(fields: [sprintId], references: [id])
 
   @@index([title])
   @@map("tasks")
