@@ -1,4 +1,5 @@
 import LogService from "./LogService";
+import TaskService from "./TaskService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Project, User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
@@ -159,21 +160,7 @@ class ProjectService {
   }
 
   async getProjectTasks(projectId: number) {
-    const projectTasks = await prismaClient.task.findMany({
-      where: { projectId },
-      include: {
-        status: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const projectTasks = await TaskService.getTasksByProjectId(projectId);
     return projectTasks;
   }
 }
