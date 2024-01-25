@@ -18,14 +18,14 @@ export default function Hero({ posts = [] }: HeroProps) {
       data-testid="homepage-about-me"
       className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-12 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
-        <h2 className="font-bold mb-3 dark:text-white">
+        <h1 className="font-bold mb-3 dark:text-white">
           <span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{" "}
           <br />
           <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
-        </h2>
+        </h1>
         <div className="relative mb-6">
           <h2 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
-            I&lsquo;m Huy, a software engineer <br /> from Viet Nam
+            I&lsquo;m Huy (tuanhuydev), a software engineer <br /> from Viet Nam
             <Image
               width={28}
               height={18}

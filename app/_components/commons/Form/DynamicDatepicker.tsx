@@ -21,11 +21,12 @@ export default function DynamicDatepicker({
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
+  const { ref, ...restField } = field;
   return (
     <div className={`p-2 self-stretch ${className}`}>
       <div className="w-full mb-1">
         <DatePicker
-          {...field}
+          {...restField}
           {...options}
           key={keyProp}
           disabled={isSubmitting}

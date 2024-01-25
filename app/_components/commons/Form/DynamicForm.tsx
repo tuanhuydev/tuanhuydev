@@ -2,32 +2,12 @@
 
 import Loader from "../Loader";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ButtonProps } from "antd";
+import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
 
-const DynamicText = dynamic(async () => (await import("@components/commons/Form/DynamicText")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const DynamicSelect = dynamic(async () => (await import("@components/commons/Form/DynamicSelect")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const DynamicMarkdown = dynamic(async () => (await import("@components/commons/Form/DynamicMarkdown")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const DynamicDatepicker = dynamic(async () => (await import("@components/commons/Form/DynamicDatepicker")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const DynamicColorPicker = dynamic(async () => (await import("@components/commons/Form/DynamicColorPicker")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 const Button = dynamic(async () => (await import("antd/es/button")).default, {
   ssr: false,
   loading: () => <Loader />,
@@ -46,7 +26,7 @@ export interface ElementType {
 export interface DynamicFormProps {
   config: DynamicFormConfig;
   disabled?: boolean;
-  onSubmit: (formData: FieldValues, form: UseFormReturn) => void;
+  onSubmit: (formData: FieldValues, form?: UseFormReturn) => void | Promise<any>;
   mapValues?: ObjectType;
   submitProps?: Partial<ButtonProps>;
   customSubmit?: ReactNode;
@@ -98,14 +78,14 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
   return yup.object(schema);
 };
 
-export default function DynamicForm({ config, onSubmit, disabled, mapValues, submitProps }: DynamicFormProps) {
+export default function DynamicForm({ config, onSubmit, mapValues, submitProps }: DynamicFormProps) {
   const form = useForm({ resolver: yupResolver(makeSchema(config)) });
   const {
     handleSubmit,
     control,
     setValue,
     reset,
-    formState: { isLoading, isSubmitting },
+    formState: { isSubmitting },
   } = form;
   const { fields } = config;
 
@@ -121,14 +101,46 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
         };
         switch (type) {
           case "select":
+            const DynamicSelect = dynamic(
+              async () => (await import("@components/commons/Form/DynamicSelect")).default,
+              {
+                ssr: false,
+                loading: () => <Loader />,
+              },
+            );
             return <DynamicSelect key={name} {...elementProps} {...restFieldProps} />;
           case "richeditor":
+            const DynamicMarkdown = dynamic(
+              async () => (await import("@components/commons/Form/DynamicMarkdown")).default,
+              {
+                ssr: false,
+                loading: () => <Loader />,
+              },
+            );
             return <DynamicMarkdown key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "datepicker":
+            const DynamicDatepicker = dynamic(
+              async () => (await import("@components/commons/Form/DynamicDatepicker")).default,
+              {
+                ssr: false,
+                loading: () => <Loader />,
+              },
+            );
             return <DynamicDatepicker key={name} {...elementProps} {...restFieldProps} />;
           case "colorpicker":
+            const DynamicColorPicker = dynamic(
+              async () => (await import("@components/commons/Form/DynamicColorPicker")).default,
+              {
+                ssr: false,
+                loading: () => <Loader />,
+              },
+            );
             return <DynamicColorPicker key={name} {...elementProps} {...restFieldProps} />;
           default:
+            const DynamicText = dynamic(async () => (await import("@components/commons/Form/DynamicText")).default, {
+              ssr: false,
+              loading: () => <Loader />,
+            });
             return (
               <DynamicText key={name} {...elementProps} {...restFieldProps} type={type} keyProp={`${name} - ${type}`} />
             );
@@ -137,9 +149,12 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
     [control, fields],
   );
 
-  const submit = (formData: FieldValues) => {
-    if (onSubmit) onSubmit(formData, form);
-  };
+  const submit = useCallback(
+    async (formData: FieldValues) => {
+      if (onSubmit) await onSubmit(formData, form);
+    },
+    [form, onSubmit],
+  );
 
   useEffect(() => {
     if (!mapValues) reset();
@@ -154,18 +169,17 @@ export default function DynamicForm({ config, onSubmit, disabled, mapValues, sub
         setValue(key, valueToUpdate, { shouldDirty: true, shouldValidate: true });
       }
     }
-  }, [form, mapValues, reset, setValue]);
-
+  }, [mapValues, reset, setValue]);
   return (
-    <form onSubmit={handleSubmit(submit)} className="w-full">
+    <form className="w-full">
       <div className="flex flex-wrap relative overflow-auto">{registerFields}</div>
       <div className="flex p-2">
         <Button
           {...submitProps}
           type="primary"
-          htmlType="submit"
+          onClick={handleSubmit(submit)}
           loading={isSubmitting}
-          disabled={isSubmitting || isLoading}>
+          disabled={isSubmitting}>
           Submit
         </Button>
       </div>

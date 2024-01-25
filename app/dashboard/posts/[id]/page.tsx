@@ -1,7 +1,7 @@
 "use client";
 
-import Loader from "@app/_components/commons/Loader";
-import WithAuth from "@app/_components/hocs/WithAuth";
+import Loader from "@components/commons/Loader";
+import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetPostQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
