@@ -1,7 +1,7 @@
 "use client";
 
-import Badge from "@app/_components/commons/Badge";
-import BaseLabel from "@app/_components/commons/BaseLabel";
+import Badge from "@components/commons/Badge";
+import BaseLabel from "@components/commons/BaseLabel";
 import Loader from "@components/commons/Loader";
 import WithAuth from "@components/hocs/WithAuth";
 import WithTooltip from "@components/hocs/WithTooltip";
@@ -18,7 +18,6 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
 import { CollapseProps } from "antd/es/collapse";
-import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
@@ -79,8 +78,6 @@ function Page({ params, setTitle, setGoBack }: any) {
   const router = useRouter();
   const pathname = usePathname();
   const taskId = searchParams.get("taskId");
-
-  const [api, contextHolder] = notification.useNotification();
 
   const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
   const { resources } = currentUser;
@@ -164,13 +161,9 @@ function Page({ params, setTitle, setGoBack }: any) {
     );
   }, [isEditMode, mode, resources, selectedTask, toggleDrawer]);
 
-  const onError = useCallback(
-    (error: Error) => {
-      LogService.log((error as Error).message);
-      api.error({ message: (error as Error).message });
-    },
-    [api],
-  );
+  const onError = useCallback((error: Error) => {
+    LogService.log((error as Error).message);
+  }, []);
 
   const RenderTaskGroup = useMemo(() => {
     if (!isProjectTaskLoading && !tasks.length) return <Empty className="my-36" />;
@@ -198,7 +191,7 @@ function Page({ params, setTitle, setGoBack }: any) {
       const task = tasks.find((task: Task) => task.id === Number(taskId));
       if (task) {
         viewTask(task);
-        router.push(pathname, { shallow: true });
+        router.push(pathname, { scroll: false });
       }
     }
   }, [pathname, router, searchParams, taskId, tasks, viewTask]);
@@ -246,7 +239,6 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   return (
     <Fragment>
-      {contextHolder}
       <div className="mb-3 flex items-center">
         <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
         <div className="flex gap-3">

@@ -11,7 +11,7 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import VisibilityOutlined from "@mui/icons-material/VisibilityOutlined";
 import { Post } from "@prisma/client";
 import { useDeletePostMutation, useGetPostsQuery } from "@store/slices/apiSlice";
-import { App, MenuProps } from "antd";
+import { MenuProps } from "antd/es/menu";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
@@ -29,10 +29,7 @@ const DropdownButton = dynamic(async () => (await import("antd/es/dropdown")).de
 const Input = dynamic(() => import("antd/es/input"), { ssr: false });
 
 function Page({ setTitle }: any) {
-  const { notification, modal } = App.useApp();
-
   const [filter, setFilter] = useState<ObjectType>({});
-  const { confirm } = modal;
   const router = useRouter();
 
   const { data: posts = [], isLoading } = useGetPostsQuery(filter);
@@ -46,18 +43,18 @@ function Page({ setTitle }: any) {
     (postId: number) => (event: any) => {
       event.preventDefault();
       event.stopPropagation();
-      confirm({
-        title: "Are you sure to delete ?",
-        icon: <ErrorOutlineOutlined />,
-        okText: "Delete",
-        okType: "danger",
-        cancelText: "Cancel",
-        onOk() {
-          deletePost(postId);
-        },
-      });
+      // confirm({
+      //   title: "Are you sure to delete ?",
+      //   icon: <ErrorOutlineOutlined />,
+      //   okText: "Delete",
+      //   okType: "danger",
+      //   cancelText: "Cancel",
+      //   onOk() {
+      //     deletePost(postId);
+      //   },
+      // });
     },
-    [confirm, deletePost],
+    [],
   );
 
   const openPostInNewTab = useCallback(
@@ -138,11 +135,6 @@ function Page({ setTitle }: any) {
       onClick: exportPostsToJson,
     },
   ];
-
-  useEffect(() => {
-    if (isSuccess) notification.success({ message: "Delete Post Successfully" });
-    if (isError) notification.error({ message: "Delete Post Fail" });
-  }, [notification, isError, isSuccess]);
 
   useEffect(() => {
     if (setTitle) setTitle("Posts");

@@ -6,7 +6,6 @@ import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Task } from "@prisma/client";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@store/slices/apiSlice";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
 
 export interface TaskFormProps {
   task?: Task;
@@ -20,7 +19,7 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
 
-  const submit = async ({ id: taskId, assignee, createdBy, ...restForm }: ObjectType, form: UseFormReturn) => {
+  const submit = async ({ id: taskId, assignee, createdBy, ...restForm }: ObjectType) => {
     try {
       const response = taskId
         ? await updateTask({ ...restForm, taskId })
