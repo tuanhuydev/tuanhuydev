@@ -1,7 +1,7 @@
 "use client";
 
 import Badge from "@app/_components/commons/Badge";
-import { TaskWithStatus } from "@components/TaskModule/TaskRow";
+import BaseLabel from "@app/_components/commons/BaseLabel";
 import Loader from "@components/commons/Loader";
 import WithAuth from "@components/hocs/WithAuth";
 import WithTooltip from "@components/hocs/WithTooltip";
@@ -9,6 +9,7 @@ import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
@@ -87,7 +88,7 @@ function Page({ params, setTitle, setGoBack }: any) {
   const { data: project } = useGetProjectQuery(projectId);
   const { data: tasks = [], isLoading: isProjectTaskLoading } = useGetTasksQuery(projectId);
 
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
 
@@ -109,18 +110,18 @@ function Page({ params, setTitle, setGoBack }: any) {
     setOpenDrawer(true);
   };
 
-  const viewTask = useCallback((task: Task) => {
+  const viewTask = useCallback((task: TaskStatusAssignee) => {
     setMode(COMPONENT_MODE.VIEW);
     setSelectedTask(task);
     setOpenDrawer(true);
   }, []);
 
   const renderTasks = useCallback(() => {
-    return tasks.map((task: Task) => (
+    return tasks.map((task: TaskStatusAssignee) => (
       <TaskRow
         active={task.id === selectedTask?.id}
         onView={viewTask}
-        task={task as TaskWithStatus}
+        task={task}
         projectId={projectId}
         key={task.id}
       />
@@ -227,13 +228,17 @@ function Page({ params, setTitle, setGoBack }: any) {
       );
     } else {
       return (
-        <div className="px-3">
-          <div className="flex gap-3 relative">
-            <h1 className="text-lg capitalize px-3 m-0 font-medium truncate cursor-pointer">
-              {selectedTask?.title ?? EMPTY_STRING}
-            </h1>
+        <div className="p-3">
+          <h1 className="text-3xl capitalize px-0 m-0 mb-2 font-bold truncate">
+            {selectedTask?.title ?? EMPTY_STRING}
+          </h1>
+          <div className="flex items-center gap-3 mb-2 text-base">
+            <BaseLabel>Assignee</BaseLabel>
+            {selectedTask?.assignee?.name}
           </div>
-          <ReactMarkdown>{selectedTask?.description ?? EMPTY_STRING}</ReactMarkdown>
+          <div className="mt-4 text-base">
+            <ReactMarkdown>{selectedTask?.description ?? EMPTY_STRING}</ReactMarkdown>
+          </div>
         </div>
       );
     }
