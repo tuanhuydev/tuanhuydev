@@ -16,7 +16,7 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
     <a
       href={`/posts/${post.slug}`}
       className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer ${className}`}>
-      <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-3">
+      <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 px-5 py-3">
         {thumbnail && (
           <div className="w-full h-72 lg:h-72 grow relative mb-2">
             <Image src={thumbnail} className="object-cover rounded-md" alt={title} fill sizes="50vw" />

@@ -8,7 +8,9 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   transpilePackages: ["@mdxeditor/editor", "date-fns"],
-
+  experimental: {
+    optimizePackageImports: ["antd"],
+  },
   async redirects() {
     return [
       {

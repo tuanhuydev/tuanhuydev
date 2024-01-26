@@ -21,7 +21,6 @@ const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm")
 
 const WithAnimation = dynamic(() => import("@components/hocs/WithAnimation"), {
   ssr: false,
-  loading: () => <Loader />,
 });
 
 // TODO: Move this one to API.

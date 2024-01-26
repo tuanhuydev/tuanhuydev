@@ -91,14 +91,9 @@ export default function WithAuth(WrappedComponent: FC<any>, pagePermission: stri
 
     if (hasPermission) {
       return (
-        <div className="w-full h-screen overflow-hidden flex flex-nowrap">
-          <div className="flex w-full relative">
-            <Sidebar />
-            <PageContainer>
-              <WrappedComponent {...props} />
-            </PageContainer>
-          </div>
-        </div>
+        <PageContainer>
+          <WrappedComponent {...props} />
+        </PageContainer>
       );
     }
     clearAuth();

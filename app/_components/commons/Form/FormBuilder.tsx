@@ -40,11 +40,11 @@ export default function FormBuilder() {
   return (
     <div className="flex">
       <div className="flex-1">
-        <DynamicForm config={builderConfig} onSubmit={addField} />
+        <DynamicForm config={builderConfig} onSubmit={addField as any} />
       </div>
       {fields.length && (
         <div className="flex-1">
-          <DynamicForm config={{ fields }} onSubmit={submit} />
+          <DynamicForm config={{ fields }} onSubmit={submit as any} />
         </div>
       )}
     </div>

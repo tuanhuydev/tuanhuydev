@@ -16,11 +16,10 @@ import BaseError from "@lib/shared/commons/errors/BaseError";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Status } from "@prisma/client";
-import { notification } from "antd";
 import { ColumnsType } from "antd/es/table";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
 const Modal = dynamic(async () => (await import("antd/es/modal/Modal")).default, { ssr: false });
@@ -70,8 +69,6 @@ const statusFormConfig: DynamicFormConfig = {
 };
 
 function Page({ setTitle }: any) {
-  const [api, contextHolder] = notification.useNotification();
-
   const { data: status = [], isLoading, isError: isStatusError } = useGetStatusQuery({});
   const [deleteStatus, { isSuccess: deleteStatusSuccess }] = useDeleteStatusMutation();
   const [createStatus, { isSuccess: createStatusSuccess }] = useCreateStatusMutation();
@@ -80,9 +77,12 @@ function Page({ setTitle }: any) {
   const [statusModal, setStatusModal] = React.useState(false);
   const [editingStatus, setEditingStatus] = React.useState<Status | undefined>(undefined);
 
-  const handleDelete = (id: string) => async () => {
-    await deleteStatus(Number.parseInt(id));
-  };
+  const handleDelete = useCallback(
+    (id: string) => async () => {
+      await deleteStatus(Number.parseInt(id));
+    },
+    [deleteStatus],
+  );
 
   const triggerStatusForm = (value: boolean, status?: Status) => () => {
     setStatusModal(value);
@@ -119,7 +119,7 @@ function Page({ setTitle }: any) {
     }
   };
 
-  const submitStatus = async (formData: FieldValues, form: UseFormReturn) => {
+  const submitStatus = async (formData: FieldValues, form?: UseFormReturn) => {
     const { id, ...restFormData } = formData;
     const savedRecord = id
       ? await updateStatus({ id: Number.parseInt(id), ...restFormData })
@@ -127,7 +127,7 @@ function Page({ setTitle }: any) {
 
     if (savedRecord) {
       setStatusModal(false);
-      form.reset();
+      form?.reset();
     }
   };
 
@@ -190,24 +190,15 @@ function Page({ setTitle }: any) {
         ),
       },
     ],
-    [],
+    [handleDelete],
   );
 
   useEffect(() => {
     if (setTitle) setTitle("Settings");
   }, [setTitle]);
 
-  useEffect(() => {
-    if (deleteStatusSuccess) {
-      api.success({ message: "Delete status successfully" });
-    } else if (createStatusSuccess || updateStatusSuccess) {
-      api.success({ message: "Save successfully" });
-    }
-  }, [api, deleteStatusSuccess, createStatusSuccess, updateStatusSuccess]);
-
   return (
     <div>
-      {contextHolder}
       <ConfigSection
         title="Status"
         extra={

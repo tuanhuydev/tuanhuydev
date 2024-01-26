@@ -27,7 +27,7 @@ export default function DynamicSelect({
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
-  const { onChange, ...restField } = field;
+  const { onChange, ref, ...restField } = field;
 
   const fetchOptions = useCallback(async () => {
     const { url, label, value } = remote;

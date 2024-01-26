@@ -1,6 +1,10 @@
 "use client";
 
+import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
 import { Post } from "@prisma/client";
+import Button from "antd/es/button";
+import { useTheme } from "next-themes";
 import { memo } from "react";
 
 export interface NavbarProps {
@@ -8,6 +12,8 @@ export interface NavbarProps {
 }
 
 export default memo(function Navbar({ posts = [] }: NavbarProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2">
       <div className="text-primary dark:text-slate-50 font-bold flex items-center">
@@ -25,16 +31,26 @@ export default memo(function Navbar({ posts = [] }: NavbarProps) {
           <h1 className="inline text-base lg:text-2xl">tuanhuydev</h1>
         </a>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-3">
         <ul className="flex md:justify-between list-none m-0 p-0">
           {posts?.length > 0 && (
-            <li className="mr-3.5 cursor-pointer text-sm lg:text-base rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
+            <li className="mr-1 lg:mr-3.5 cursor-pointer text-sm lg:text-base rounded-md hover:bg-slate-100 dark:hover:bg-slate-900">
               <a href="#blog">
                 <div className="block px-4 py-1 dark:text-white capitalize">Blog</div>
               </a>
             </li>
           )}
         </ul>
+        <Button
+          type="text"
+          icon={
+            theme === "dark" ? (
+              <DarkModeOutlined className=" !text-slate-50 !fill-slate-50" />
+            ) : (
+              <LightModeOutlined className=" !text-primary !fill-primary" />
+            )
+          }
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}></Button>
         <a
           href="#contact"
           className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 text-xs md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
