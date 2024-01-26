@@ -1,9 +1,7 @@
 "use client";
 
-import Loader from "@components/commons/Loader";
 import IntegrationInstructionsOutlined from "@mui/icons-material/IntegrationInstructionsOutlined";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
