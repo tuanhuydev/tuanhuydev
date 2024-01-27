@@ -37,13 +37,13 @@ export default function Hero({ posts = [] }: HeroProps) {
         </div>
         <div className="dark:text-white text-xs md:text-base mb-10">
           I&lsquo;m 4 years of&nbsp;
-          <h3 className="inline-flex font-medium">#experience</h3> in&nbsp;
-          <h3 className="inline-flex font-medium">#web development</h3>
+          <h3 className="inline-flex font-medium m-0">#experience</h3> in&nbsp;
+          <h3 className="inline-flex font-medium m-0">#web development</h3>
           &nbsp;with&nbsp;
           <br />
-          <h3 className="inline-flex font-medium">#passion</h3>&nbsp;
-          <h3 className="inline-flex font-medium">#professionalism</h3>&nbsp;
-          <h3 className="inline-flex font-medium">#empathy</h3>&nbsp;
+          <h3 className="inline-flex font-medium m-0 mb-2">#passion</h3>&nbsp;
+          <h3 className="inline-flex font-medium m-0 mb-2">#professionalism</h3>&nbsp;
+          <h3 className="inline-flex font-medium m-0 mb-2">#empathy</h3>&nbsp;
           <br />I had great <strong>opportunities</strong> to work on amazing projects, teams, cultures.
           <br />
           Contribute values to businesses&lsquo;s success, including&nbsp;
@@ -51,10 +51,14 @@ export default function Hero({ posts = [] }: HeroProps) {
           <br />
         </div>
         <a href="#service">
-          <h6
-            className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition ease-in`}>
+          <h6 className="inline-flex items-center rounded-full bg-slate-700 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition duration-200 ease-in group">
             My proudly accomplishments
-            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="16"
+              viewBox="0 96 960 960"
+              width="16"
+              className="ml-2 transition-transform duration-200 group-hover:rotate-90">
               <path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
             </svg>
           </h6>
