@@ -22,7 +22,7 @@ export default function PageContainer({ children, ...restProps }: PropsWithChild
   return (
     <div className="grow flex flex-col z-2">
       <Navbar title={title} goBack={goBack} />
-      <div className="h-full overflow-auto p-3 bg-white drop-shadow-lg">
+      <div className="h-full overflow-auto p-3 bg-slate-50 dark:bg-slate-700 drop-shadow-lg">
         <WithAnimation>{enhancedComponent}</WithAnimation>
       </div>
     </div>
