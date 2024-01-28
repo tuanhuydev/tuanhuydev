@@ -48,6 +48,7 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
         name: "assigneeId",
         type: "select",
         options: {
+          defaultOption: { label: "Unassigned", value: null },
           placeholder: "Select Assignee",
           remote: {
             url: `${BASE_URL}/api/users`,
@@ -55,7 +56,6 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
             value: "id",
           },
         },
-        validate: { required: true },
       },
       {
         name: "statusId",

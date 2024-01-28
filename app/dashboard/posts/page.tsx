@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
+import WithAuth from "@components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";

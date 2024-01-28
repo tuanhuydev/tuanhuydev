@@ -227,7 +227,7 @@ function Page({ params, setTitle, setGoBack }: any) {
           </h1>
           <div className="flex items-center gap-3 mb-2 text-base">
             <BaseLabel>Assignee</BaseLabel>
-            {selectedTask?.assignee?.name}
+            {selectedTask?.assignee?.name ?? "Unassigned"}
           </div>
           <div className="mt-4 text-base">
             <ReactMarkdown>{selectedTask?.description ?? EMPTY_STRING}</ReactMarkdown>

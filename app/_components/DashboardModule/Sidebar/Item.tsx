@@ -1,5 +1,3 @@
-import styles from "./styles.module.scss";
-import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { isPathActive } from "@lib/shared/utils/helper";

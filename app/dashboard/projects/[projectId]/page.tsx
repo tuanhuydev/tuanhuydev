@@ -1,8 +1,8 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
 import WithTooltip from "@app/_components/hocs/WithTooltip";
 import Loader from "@components/commons/Loader";
+import WithAuth from "@components/hocs/WithAuth";
 import { DATE_FORMAT } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import EditOutlined from "@mui/icons-material/EditOutlined";
