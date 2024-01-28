@@ -13,10 +13,7 @@ export interface HeroProps {
 
 export default function Hero({ posts = [] }: HeroProps) {
   return (
-    <section
-      id="about-me"
-      data-testid="homepage-about-me"
-      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-12 content-center">
+    <section id="about-me" className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-4 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
         <h1 className="font-bold mb-3 dark:text-white">
           <span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{" "}

@@ -1,6 +1,7 @@
 "use client";
 
 import Loader from "../Loader";
+import { set } from "date-fns";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ export default function DynamicSelect({
   className = "w-full",
   ...restProps
 }: DynamicSelectProps) {
-  const { options: staticOptions = [], remote, mode = "single", ...restSelectOptions } = selectOptions;
+  const { options: staticOptions = [], remote, defaultOption, mode = "single", ...restSelectOptions } = selectOptions;
 
   const [options, setOptions] = useState<SelectOption[]>(staticOptions);
 
@@ -44,11 +45,14 @@ export default function DynamicSelect({
   }, [remote]);
 
   useEffect(() => {
-    if (remote)
-      fetchOptions().then((options) => {
-        setOptions(options);
+    if (remote) {
+      fetchOptions().then((fetchedOptions) => {
+        setOptions(defaultOption ? [defaultOption, ...fetchedOptions] : fetchedOptions);
       });
-  }, [fetchOptions, remote]);
+    } else {
+      setOptions(defaultOption ? [defaultOption, ...staticOptions] : staticOptions);
+    }
+  }, [fetchOptions, remote, defaultOption, staticOptions]);
 
   const handleChange = (newOptions: unknown) => {
     if (mode === "multiple") {
@@ -73,6 +77,7 @@ export default function DynamicSelect({
           key={keyProp}
           {...restField}
           {...restSelectOptions}
+          defaultActiveFirstOption={true}
           onChange={handleChange}
           mode={mode}
           options={options}

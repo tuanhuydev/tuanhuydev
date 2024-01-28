@@ -29,12 +29,10 @@ export default function TaskRow({ task, onView, active = false }: TaskRowProps) 
         <label className="text-sm font-normal text-slate-300">Status: </label>
         <Badge value={status.name} color={status.color} />
       </div>
-      {assignee && (
-        <div className="flex items-center gap-3 shrink-0">
-          <label className="text-sm font-normal text-slate-300">Assignee: </label>
-          <span>{assignee.name}</span>
-        </div>
-      )}
+      <div className="flex items-center gap-3 shrink-0">
+        <label className="text-sm font-normal text-slate-300">Assignee: </label>
+        <span>{assignee?.name ?? "Unassigned"}</span>
+      </div>
     </div>
   );
 }

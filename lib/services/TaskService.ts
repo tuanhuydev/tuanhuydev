@@ -117,15 +117,17 @@ class TaskService {
 
   async updateTask(id: number, data: ObjectType) {
     const { statusId, assigneeId, projectId, sprintId, createdById, ...restData } = data;
-    return await prismaClient.task.update({
+
+    const bodyToUpdate: ObjectType = {
       where: { id },
       data: {
         ...restData,
         status: { connect: { id: statusId } },
-        assignee: { connect: { id: assigneeId } },
         project: { connect: { id: projectId } },
+        assignee: assigneeId ? { connect: { id: assigneeId } } : { disconnect: true },
       },
-    });
+    };
+    return await prismaClient.task.update(bodyToUpdate as any);
   }
 
   async deleteTask(id: number) {

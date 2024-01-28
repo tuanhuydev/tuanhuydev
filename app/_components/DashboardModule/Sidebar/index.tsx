@@ -12,6 +12,7 @@ import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
+import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { currentUserSelector } from "@store/slices/authSlice";
 import { metaAction } from "@store/slices/metaSlice";
 import dynamic from "next/dynamic";
@@ -21,7 +22,6 @@ import { useDispatch, useSelector } from "react-redux";
 const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false, loading: () => <Loader /> });
-const Image = dynamic(async () => (await import("next/image")).default, { ssr: false, loading: () => <Loader /> });
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ const Sidebar = () => {
   const renderRoutes = useMemo(() => {
     const routes: Array<ItemProps> = [
       { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
+      { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
     ];
     resources.forEach((resource: any) => {
       switch (resource.name) {
@@ -73,6 +74,7 @@ const Sidebar = () => {
           break;
       }
     });
+
     return routes.map((route: any) => {
       const { children = [] } = route;
       return children?.length ? <Group {...route} key={route.id} /> : <Item {...route} key={route.id} />;
@@ -106,6 +108,7 @@ const Sidebar = () => {
           />
         }
       />
+
       <ul
         className={`${styles.container} ${containerToggleStyles} ease-in duration-150 bg-slate-50 dark:bg-primary grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {renderRoutes}

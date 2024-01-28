@@ -3,13 +3,14 @@
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@store/slices/authSlice";
-import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
+
+const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
 const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
   ssr: false,

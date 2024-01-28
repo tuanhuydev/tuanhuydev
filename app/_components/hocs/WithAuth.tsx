@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux";
 
 type UserWithPermission = User & { permissionId: number };
 
-const Sidebar = dynamic(() => import("@components/DashboardModule/Sidebar"), { ssr: false });
 const PageContainer = dynamic(() => import("@components/DashboardModule/PageContainer"), { ssr: false });
 
 export default function WithAuth(WrappedComponent: FC<any>, pagePermission: string) {
