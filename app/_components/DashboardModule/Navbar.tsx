@@ -1,5 +1,6 @@
 "use client";
 
+import ThemeToggle from "../commons/ThemeToggle";
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@store/slices/authSlice";
@@ -104,9 +105,12 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   }, [currentUser.email, currentUser.name, open, toggleUserMenu]);
 
   return (
-    <div className="px-3 py-2 bg-slate-50 text-primary dark:bg-primary dark:text-slate-50 flex item-center justify-between">
+    <div className="px-3 py-2  text-primary  dark:text-slate-50 flex item-center justify-between">
       {renderStart}
-      {renderEnd}
+      <div>
+        <ThemeToggle />
+        {renderEnd}
+      </div>
     </div>
   );
 };

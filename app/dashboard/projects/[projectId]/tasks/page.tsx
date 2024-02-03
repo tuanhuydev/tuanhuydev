@@ -1,10 +1,10 @@
 "use client";
 
+import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import Badge from "@components/commons/Badge";
 import BaseLabel from "@components/commons/BaseLabel";
 import Loader from "@components/commons/Loader";
-import WithAuth from "@components/hocs/WithAuth";
-import WithTooltip from "@components/hocs/WithTooltip";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";

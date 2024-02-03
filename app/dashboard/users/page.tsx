@@ -1,7 +1,7 @@
 "use client";
 
+import WithAuth from "@app/_components/commons/hocs/WithAuth";
 import Loader from "@components/commons/Loader";
-import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";

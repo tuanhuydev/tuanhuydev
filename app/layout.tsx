@@ -1,43 +1,37 @@
 "use client";
 
 import { sourceCodeFont } from "./font";
-import Loader from "@components/commons/Loader";
-import StyledComponentsRegistry from "@components/hocs/AntdRegistry";
+import QueryProvider from "@components/commons/providers/QueryProvider";
+import ReduxProvider from "@components/commons/providers/ReduxProvider";
+import ThemeProvider from "@components/commons/providers/ThemeProvider";
 import { GOOGLE_TAG, NODE_ENV } from "@lib/configs/constants";
-import theme from "@lib/configs/theme";
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
-import store from "@store/index";
 import "@styles/globals.scss";
-import { Analytics } from "@vercel/analytics/react";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
-import { Provider as ReduxProvider } from "react-redux";
 
-const ThemeProvider = dynamic(() => import("next-themes").then((module) => module.ThemeProvider), { ssr: false });
+const App = dynamic(() => import("antd/es/app"), { ssr: false });
 const GoogleAdsense = dynamic(() => import("@components/GoogleAdsense"), { ssr: false });
-
-const ConfigProvider = dynamic(async () => (await import("antd/es/config-provider")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const Analytics = dynamic(async () => (await import("@vercel/analytics/react")).Analytics, { ssr: false });
 
 export default function RootLayout({ children }: PropsWithChildren) {
+  const isProductionEnv = NODE_ENV === "production";
   return (
     <html lang="en" className={sourceCodeFont.className}>
       <head>
         <GoogleAdsense />
-        {NODE_ENV === "production" && GOOGLE_TAG && <GoogleTagManager gtmId={GOOGLE_TAG} />}
-        {NODE_ENV === "production" && GOOGLE_TAG && <GoogleAnalytics gaId={GOOGLE_TAG} />}
+        {isProductionEnv && GOOGLE_TAG && <GoogleTagManager gtmId={GOOGLE_TAG} />}
+        {isProductionEnv && GOOGLE_TAG && <GoogleAnalytics gaId={GOOGLE_TAG} />}
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <StyledComponentsRegistry>
-            <ConfigProvider theme={theme}>
-              <ReduxProvider store={store}>{children}</ReduxProvider>
-            </ConfigProvider>
-          </StyledComponentsRegistry>
-        </ThemeProvider>
-        <Analytics />
+        <App>
+          <ThemeProvider>
+            <QueryProvider>
+              <ReduxProvider>{children}</ReduxProvider>
+            </QueryProvider>
+          </ThemeProvider>
+        </App>
+        {isProductionEnv && <Analytics />}
       </body>
     </html>
   );
