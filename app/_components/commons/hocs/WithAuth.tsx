@@ -10,7 +10,7 @@ import { authActions } from "@store/slices/authSlice";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { FC, Fragment, useCallback, useLayoutEffect, useState } from "react";
+import React, { FC, Fragment, useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type UserWithPermission = User & { permissionId: number };
@@ -82,7 +82,7 @@ export default function WithAuth(WrappedComponent: FC<any>, pagePermission: stri
       }
     }, [clearAuth, fetchResource, router, updateUserWithResources]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       checkPermission();
     }, [checkPermission]);
 

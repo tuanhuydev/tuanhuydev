@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@components/hocs/WithAuth";
+import WithAuth from "@app/_components/commons/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";

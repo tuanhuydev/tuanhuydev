@@ -1,8 +1,8 @@
 "use client";
 
 import Loader from "@app/_components/commons/Loader";
+import WithAuth from "@app/_components/commons/hocs/WithAuth";
 import { useGetProjectQuery } from "@app/_store/slices/apiSlice";
-import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";

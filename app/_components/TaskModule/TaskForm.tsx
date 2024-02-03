@@ -47,6 +47,7 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
       {
         name: "assigneeId",
         type: "select",
+        className: "w-1/2",
         options: {
           defaultOption: { label: "Unassigned", value: null },
           placeholder: "Select Assignee",
@@ -60,6 +61,7 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
       {
         name: "statusId",
         type: "select",
+        className: "w-1/2",
         options: {
           placeholder: "Select Status",
           remote: {

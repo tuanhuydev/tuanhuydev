@@ -8,6 +8,7 @@ import { RootState } from "@lib/configs/types";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
+import EventNoteOutlined from "@mui/icons-material/EventNoteOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
@@ -15,6 +16,7 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { currentUserSelector } from "@store/slices/authSlice";
 import { metaAction } from "@store/slices/metaSlice";
+import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +27,7 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, { s
 
 const Sidebar = () => {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
   const currentUser = useSelector(currentUserSelector);
@@ -36,12 +39,18 @@ const Sidebar = () => {
     const routes: Array<ItemProps> = [
       { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
       { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
+      {
+        label: "Sticky Notes",
+        icon: <EventNoteOutlined className="!text-base" />,
+        path: "/dashboard/notes",
+        id: "Note",
+      },
     ];
     resources.forEach((resource: any) => {
       switch (resource.name) {
         case Permissions.VIEW_POSTS:
           routes.push({
-            label: "Posts",
+            label: "Manage Posts",
             icon: <ArticleOutlined className="!text-base" />,
             path: "/dashboard/posts",
             id: Permissions.VIEW_POSTS,
@@ -49,16 +58,15 @@ const Sidebar = () => {
           break;
         case Permissions.VIEW_PROJECTS:
           routes.push({
-            label: "Projects",
+            label: "Manage Projects",
             icon: <GridViewOutlined className="!text-base" />,
             path: "/dashboard/projects",
             id: Permissions.VIEW_PROJECTS,
           });
           break;
-
         case Permissions.VIEW_USERS:
           routes.push({
-            label: "Users",
+            label: "Manage Users",
             icon: <PersonOutlineOutlined className="!text-base" />,
             path: "/dashboard/users",
             id: Permissions.VIEW_USERS,
@@ -84,8 +92,8 @@ const Sidebar = () => {
   const containerToggleStyles = sidebarOpen ? styles.open : EMPTY_STRING;
 
   return (
-    <div className="relative p-2 flex flex-col">
-      <div className="h-14 bg-slate-50 dark:bg-primary truncate flex items-center justify-center">
+    <div className="relative p-2 flex flex-col border-0 dark:border-r dark:border-solid dark:border-slate-800">
+      <div className="h-14 truncate flex items-center justify-center">
         <svg
           width="32"
           height="32"
@@ -110,7 +118,7 @@ const Sidebar = () => {
       />
 
       <ul
-        className={`${styles.container} ${containerToggleStyles} ease-in duration-150 bg-slate-50 dark:bg-primary grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
+        className={`${styles.container} ${containerToggleStyles} ease-in duration-150  grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {renderRoutes}
       </ul>
     </div>

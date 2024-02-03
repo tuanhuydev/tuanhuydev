@@ -2,6 +2,7 @@
 
 import Badge from "@app/_components/commons/Badge";
 import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
+import WithAuth from "@app/_components/commons/hocs/WithAuth";
 import {
   useCreateStatusMutation,
   useDeleteStatusMutation,
@@ -9,7 +10,6 @@ import {
   useUpdateStatusMutation,
 } from "@app/_store/slices/apiSlice";
 import ConfigSection from "@components/SettingModule/ConfigSection";
-import WithAuth from "@components/hocs/WithAuth";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import BaseError from "@lib/shared/commons/errors/BaseError";

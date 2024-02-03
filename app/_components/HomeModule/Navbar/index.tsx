@@ -1,10 +1,7 @@
 "use client";
 
-import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
+import ThemeToggle from "@app/_components/commons/ThemeToggle";
 import { Post } from "@prisma/client";
-import Button from "antd/es/button";
-import { useTheme } from "next-themes";
 import { memo } from "react";
 
 export interface NavbarProps {
@@ -12,8 +9,6 @@ export interface NavbarProps {
 }
 
 export default memo(function Navbar({ posts = [] }: NavbarProps) {
-  const { theme, setTheme } = useTheme();
-
   return (
     <header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2">
       <div className="text-primary dark:text-slate-50 font-bold flex items-center">
@@ -41,16 +36,7 @@ export default memo(function Navbar({ posts = [] }: NavbarProps) {
             </li>
           )}
         </ul>
-        <Button
-          type="text"
-          icon={
-            theme === "dark" ? (
-              <DarkModeOutlined className=" !text-slate-50 !fill-slate-50" />
-            ) : (
-              <LightModeOutlined className=" !text-primary !fill-primary" />
-            )
-          }
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}></Button>
+        <ThemeToggle />
         <a
           href="#contact"
           className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 text-xs md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">

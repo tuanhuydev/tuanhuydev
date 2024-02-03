@@ -19,7 +19,7 @@ const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm")
   loading: () => <Loader />,
 });
 
-const WithAnimation = dynamic(() => import("@components/hocs/WithAnimation"), {
+const WithAnimation = dynamic(() => import("@components/commons/hocs/WithAnimation"), {
   ssr: false,
 });
 
@@ -79,7 +79,7 @@ export default function SignIn() {
           "Content-Type": "application/json",
         },
       });
-      if (!response.ok) throw new UnauthorizedError("Invalid sign in");
+      if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
       const { data: credential } = await response.json();
       if (credential) {
         syncAuth(credential);
