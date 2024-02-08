@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import React, { Fragment, PropsWithChildren, ReactElement, useEffect, useState } from "react";
 
 const Navbar = dynamic(() => import("./Navbar"), { ssr: false, loading: () => <Loader /> });
+
 const WithAnimation = dynamic(() => import("@app/_components/commons/hocs/WithAnimation"), {
   ssr: false,
   loading: () => <Loader />,

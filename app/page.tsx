@@ -1,10 +1,11 @@
-import Footer from "@components/HomeModule/Footer";
 import Navbar from "@components/HomeModule/Navbar";
 import Loader from "@components/commons/Loader";
 import { BASE_URL } from "@lib/configs/constants";
 import { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
 import React from "react";
+
+const Hero = dynamic(() => import("@components/HomeModule/Hero"));
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/icon.png",
+    icon: "/favicon-16x16.png",
   },
   metadataBase: new URL("https://tuanhuy.dev"),
   keywords: "#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS",
@@ -69,8 +70,6 @@ async function getData() {
   return posts;
 }
 
-const Hero = dynamic(async () => (await import("@components/HomeModule/Hero")).default, { loading: () => <Loader /> });
-
 const Contact = dynamic(async () => (await import("@components/HomeModule/Contact")).default, {
   loading: () => <Loader />,
 });
@@ -78,6 +77,10 @@ const Services = dynamic(async () => (await import("@components/HomeModule/Servi
   loading: () => <Loader />,
 });
 const BlogSection = dynamic(async () => (await import("@components/HomeModule/BlogSection")).default, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const Footer = dynamic(async () => (await import("@components/HomeModule/Footer")).default, {
   ssr: false,
   loading: () => <Loader />,
 });

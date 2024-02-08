@@ -3,9 +3,28 @@ import { EndpointBuilder } from "@reduxjs/toolkit/dist/query/endpointDefinitions
 import QueryString from "qs";
 
 export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => ({
-  getTasks: builder.query({
+  getTasksByProject: builder.query({
     query: (projectId, filter?: any) => {
       return filter ? `projects/${projectId}/tasks?${QueryString.stringify(filter)}` : `projects/${projectId}/tasks`;
+    },
+    providesTags: (result: any) => {
+      const defaultTag = { type: "Task", id: "LIST" };
+      if (result) {
+        const resultTags = result.map(({ id, projectId }: ObjectType) => ({
+          type: "Task" as const,
+          projectId,
+          id,
+        }));
+        return [...resultTags, defaultTag];
+      }
+      return [defaultTag];
+    },
+    transformResponse: (response: ObjectType) => response.data,
+  }),
+
+  getTasks: builder.query({
+    query: (filter?: any) => {
+      return filter ? `tasks?${QueryString.stringify(filter)}` : "tasks";
     },
     providesTags: (result: any) => {
       const defaultTag = { type: "Task", id: "LIST" };
@@ -26,6 +45,7 @@ export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => (
     providesTags: (_result, _error, id) => [{ type: "Task", id }],
     transformResponse: (response: ObjectType) => response.data,
   }),
+
   getTaskStatus: builder.query({
     query: () => {
       const filter = { type: "task" };
@@ -33,6 +53,7 @@ export const taskApis = (builder: EndpointBuilder<BaseQueryFn, any, "api">) => (
     },
     transformResponse: (response: ObjectType) => response.data,
   }),
+
   createTask: builder.mutation<any, any>({
     query: (body) => ({ url: "tasks", method: "POST", body }),
     transformResponse: (response: ObjectType) => response.data,

@@ -1,47 +1,28 @@
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+"use client";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { persistQueryClient } from "@tanstack/react-query-persist-client";
-import Script from "next/script";
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
+import * as React from "react";
 
-const DEFAULT_STALE = 1000 * 60 * 5; // 5 minutes
-const DEFAULT_GC = 1000 * 60 * 60 * 24; // 24 hours
-
-let localStoragePersister;
-
-export default function QueryProvider({ children }: PropsWithChildren) {
-  const [queryClient] = useState(
+export function Providers(props: { children: React.ReactNode }) {
+  const [queryClient] = React.useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: DEFAULT_STALE,
-            gcTime: DEFAULT_GC,
+            staleTime: 5 * 1000,
           },
         },
       }),
   );
 
-  useEffect(() => {
-    localStoragePersister = createSyncStoragePersister({
-      storage: window.localStorage,
-      key: "queryClient",
-    });
-
-    persistQueryClient({
-      queryClient,
-      persister: localStoragePersister,
-    });
-  }, [queryClient]);
+  const isDevelopmentEnv = process.env.NODE_ENV !== "production";
 
   return (
-    <>
-      <Script strategy="beforeInteractive" id="localStorageScript">
-        {`
-          window.localStorage = window.localStorage || {};
-        `}
-      </Script>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
+      {/* {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />} */}
+    </QueryClientProvider>
   );
 }

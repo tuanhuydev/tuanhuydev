@@ -1,4 +1,4 @@
-import StyledComponentsRegistry from "@app/_components/commons/hocs/AntdRegistry";
+import AntdStyledProvider from "./AntdStyledProvider";
 import theme from "@lib/configs/theme";
 import dynamic from "next/dynamic";
 import React, { PropsWithChildren } from "react";
@@ -11,9 +11,9 @@ const NextThemeProvider = dynamic(() => import("next-themes").then((module) => m
 export default function ThemeProvider({ children }: PropsWithChildren) {
   return (
     <NextThemeProvider attribute="class" defaultTheme="light">
-      <StyledComponentsRegistry>
+      <AntdStyledProvider>
         <ConfigProvider theme={theme}>{children}</ConfigProvider>
-      </StyledComponentsRegistry>
+      </AntdStyledProvider>
     </NextThemeProvider>
   );
 }

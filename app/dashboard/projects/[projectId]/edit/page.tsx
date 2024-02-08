@@ -1,7 +1,7 @@
 "use client";
 
 import Loader from "@app/_components/commons/Loader";
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { useGetProjectQuery } from "@app/_store/slices/apiSlice";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
@@ -28,4 +28,4 @@ function Page({ params, setTitle, setGoBack }: any) {
   return <ProjectForm project={data} callback={navigateBack} />;
 }
 
-export default WithAuth(Page, Permissions.EDIT_PROJECT);
+export default WithPermission(Page, Permissions.EDIT_PROJECT);

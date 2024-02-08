@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
@@ -84,4 +84,4 @@ function Page({ setTitle }: any) {
   );
 }
 
-export default WithAuth(Page, Permissions.VIEW_PROJECTS);
+export default WithPermission(Page, Permissions.VIEW_PROJECTS);

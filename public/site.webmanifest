@@ -2,6 +2,7 @@
     "name": "tuanhuydev",
     "short_name": "tuanhuydev",
     "theme_color": "#0F172A",
+    "background_color": "#0F172A",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

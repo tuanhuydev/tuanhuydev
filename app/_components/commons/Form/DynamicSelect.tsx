@@ -41,18 +41,19 @@ export default function DynamicSelect({
     if (!response.ok) return [];
 
     const { data: options = [] } = await response.json();
-    return await options.map((option: ObjectType) => ({ label: option[label], value: option[value] }));
+    const fetchedOptions = options.map((option: ObjectType) => ({ label: option[label], value: option[value] }));
+    return fetchedOptions;
   }, [remote]);
 
+  const syncOptions = useCallback(async () => {
+    let optionsToUpdate = remote ? await fetchOptions() : staticOptions;
+    if (defaultOption) optionsToUpdate = [defaultOption, ...optionsToUpdate];
+    setOptions(optionsToUpdate);
+  }, [defaultOption, fetchOptions, remote, staticOptions]);
+
   useEffect(() => {
-    if (remote) {
-      fetchOptions().then((fetchedOptions) => {
-        setOptions(defaultOption ? [defaultOption, ...fetchedOptions] : fetchedOptions);
-      });
-    } else {
-      setOptions(defaultOption ? [defaultOption, ...staticOptions] : staticOptions);
-    }
-  }, [fetchOptions, remote, defaultOption, staticOptions]);
+    syncOptions();
+  }, [syncOptions, remote]); // Add 'remote' to the dependency array
 
   const handleChange = (newOptions: unknown) => {
     if (mode === "multiple") {

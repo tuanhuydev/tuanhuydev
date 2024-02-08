@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithAuth from "@app/_components/commons/hocs/WithPermission";
 import Loader from "@components/commons/Loader";
 import { RootState } from "@lib/configs/types";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
