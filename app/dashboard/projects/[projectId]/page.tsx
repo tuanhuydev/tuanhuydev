@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
@@ -9,7 +9,7 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { Project, ProjectUser, Task } from "@prisma/client";
-import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
+import { useGetProjectQuery, useGetTasksByProjectQuery } from "@store/slices/apiSlice";
 import differenceInDays from "date-fns/differenceInDays";
 import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
@@ -38,7 +38,7 @@ function Page({ params, setTitle, setGoBack }: any) {
   const router = useRouter();
 
   const { data: project, isLoading } = useGetProjectQuery(params.projectId as string);
-  const { data: tasks } = useGetTasksQuery(params.id as string);
+  const { data: tasks } = useGetTasksByProjectQuery(params.id as string);
 
   const {
     name = "",
@@ -170,4 +170,4 @@ function Page({ params, setTitle, setGoBack }: any) {
   );
 }
 
-export default WithAuth(Page, Permissions.VIEW_PROJECTS);
+export default WithPermission(Page, Permissions.VIEW_PROJECTS);

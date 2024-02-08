@@ -1,22 +1,20 @@
 "use client";
 
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
-import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
-import Badge from "@components/commons/Badge";
+import TaskFormTitle from "@app/_components/TaskModule/TaskFormTitle";
+import TaskPreview from "@app/_components/TaskModule/TaskPreview";
+import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import BaseLabel from "@components/commons/BaseLabel";
 import Loader from "@components/commons/Loader";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
-import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
-import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
-import EditOutlined from "@mui/icons-material/EditOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
-import { useGetProjectQuery, useGetTasksQuery } from "@store/slices/apiSlice";
+import { useGetProjectQuery, useGetTasksByProjectQuery } from "@store/slices/apiSlice";
 import { CollapseProps } from "antd/es/collapse";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -83,7 +81,7 @@ function Page({ params, setTitle, setGoBack }: any) {
   const { resources } = currentUser;
 
   const { data: project } = useGetProjectQuery(projectId);
-  const { data: tasks = [], isLoading: isProjectTaskLoading } = useGetTasksQuery(projectId);
+  const { data: tasks = [], isLoading: isProjectTaskLoading } = useGetTasksByProjectQuery(projectId);
 
   const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -99,67 +97,25 @@ function Page({ params, setTitle, setGoBack }: any) {
     [setSelectedTask, setOpenDrawer],
   );
 
-  const toggleMode = (value: string) => () => setMode(value);
-
   const createNewTask = () => {
     setMode(COMPONENT_MODE.EDIT);
     setSelectedTask(null);
     setOpenDrawer(true);
   };
 
-  const viewTask = useCallback((task: TaskStatusAssignee) => {
+  const onSelectTask = useCallback((task: TaskStatusAssignee) => {
     setMode(COMPONENT_MODE.VIEW);
     setSelectedTask(task);
     setOpenDrawer(true);
   }, []);
 
+  const toggleMode = (value: string) => setMode(value);
+
   const renderTasks = useCallback(() => {
     return tasks.map((task: TaskStatusAssignee) => (
-      <TaskRow
-        active={task.id === selectedTask?.id}
-        onView={viewTask}
-        task={task}
-        projectId={projectId}
-        key={task.id}
-      />
+      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} task={task} key={task.id} />
     ));
-  }, [projectId, selectedTask?.id, tasks, viewTask]);
-
-  const RenderDrawerExtra = useMemo(() => {
-    const isViewMode = mode === COMPONENT_MODE.VIEW;
-    const allowEditTask = selectedTask && resources.has(Permissions.EDIT_TASK);
-
-    return (
-      <div className="px-2 flex items-center">
-        {allowEditTask && (
-          <Fragment>
-            {isViewMode && (
-              <Button
-                type="link"
-                onClick={toggleMode(COMPONENT_MODE.EDIT)}
-                className="!leading-none"
-                icon={<EditOutlined className="!text-lg text-white" />}
-              />
-            )}
-            {isEditMode && (
-              <Button
-                type="link"
-                className="!leading-none"
-                onClick={toggleMode(COMPONENT_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-white" />}
-              />
-            )}
-          </Fragment>
-        )}
-        <Button
-          type="primary"
-          onClick={toggleDrawer(false)}
-          className="!leading-none"
-          icon={<CloseOutlined className="!text-lg text-white" />}
-        />
-      </div>
-    );
-  }, [isEditMode, mode, resources, selectedTask, toggleDrawer]);
+  }, [selectedTask?.id, tasks, onSelectTask]);
 
   const onError = useCallback((error: Error) => {
     LogService.log((error as Error).message);
@@ -190,28 +146,65 @@ function Page({ params, setTitle, setGoBack }: any) {
     if (tasks.length && taskId) {
       const task = tasks.find((task: Task) => task.id === Number(taskId));
       if (task) {
-        viewTask(task);
+        onSelectTask(task);
         router.push(pathname, { scroll: false });
       }
     }
-  }, [pathname, router, searchParams, taskId, tasks, viewTask]);
-
-  const RenderHeader = useMemo(() => {
-    const titleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
-    if (!selectedTask) return <h1 className={titleStyles}>Create new task</h1>;
-
-    return (
-      <WithTooltip content={`${window.location.href}?taskId=${selectedTask?.id}`} title="Copy task link">
-        <h1 className={`${titleStyles} hover:underline`}>{`Task #${selectedTask.id}`}</h1>
-      </WithTooltip>
-    );
-  }, [selectedTask]);
+  }, [pathname, router, searchParams, taskId, tasks, onSelectTask]);
 
   const RenderTaskDetails = useMemo(() => {
+    const taskFormConfig: DynamicFormConfig = {
+      fields: [
+        {
+          name: "title",
+          type: "text",
+          options: {
+            placeholder: "Task Title",
+          },
+          validate: { required: true },
+        },
+        {
+          name: "assigneeId",
+          type: "select",
+          className: "w-1/2",
+          options: {
+            defaultOption: { label: "Unassigned", value: null },
+            placeholder: "Select Assignee",
+            remote: {
+              url: `${BASE_URL}/api/users`,
+              label: "name",
+              value: "id",
+            },
+          },
+        },
+        {
+          name: "statusId",
+          type: "select",
+          className: "w-1/2",
+          options: {
+            placeholder: "Select Status",
+            remote: {
+              url: `${BASE_URL}/api/status?type=task`,
+              label: "name",
+              value: "id",
+            },
+          },
+          validate: { required: true },
+        },
+        {
+          name: "description",
+          type: "richeditor",
+          className: "min-h-[25rem]",
+          options: { placeholder: "Task Description" },
+          validate: { required: true },
+        },
+      ],
+    };
     if (isEditMode) {
       return (
         <div className="px-1">
           <TaskForm
+            config={taskFormConfig}
             projectId={projectId}
             onDone={toggleDrawer(false)}
             onError={onError}
@@ -219,22 +212,8 @@ function Page({ params, setTitle, setGoBack }: any) {
           />
         </div>
       );
-    } else {
-      return (
-        <div className="p-3">
-          <h1 className="text-3xl capitalize px-0 m-0 mb-2 font-bold truncate">
-            {selectedTask?.title ?? EMPTY_STRING}
-          </h1>
-          <div className="flex items-center gap-3 mb-2 text-base">
-            <BaseLabel>Assignee</BaseLabel>
-            {selectedTask?.assignee?.name ?? "Unassigned"}
-          </div>
-          <div className="mt-4 text-base">
-            <ReactMarkdown>{selectedTask?.description ?? EMPTY_STRING}</ReactMarkdown>
-          </div>
-        </div>
-      );
     }
+    return <TaskPreview task={selectedTask} />;
   }, [isEditMode, projectId, toggleDrawer, onError, selectedTask]);
 
   return (
@@ -256,22 +235,17 @@ function Page({ params, setTitle, setGoBack }: any) {
       </div>
       <div className="grow overflow-auto pb-3">{RenderTaskGroup}</div>
       <Drawer size="large" placement="right" getContainer={false} destroyOnClose styles={drawerStyle} open={openDrawer}>
-        <div className="bg-slate-700 mb-3 flex justify-between">
-          <div className="flex items-baseline">
-            {RenderHeader}
-            {selectedTask && !isEditMode && (
-              <Badge
-                color={(selectedTask as any)?.status?.color ?? "transparent"}
-                value={(selectedTask as any)?.status?.name ?? EMPTY_STRING}
-              />
-            )}
-          </div>
-          {RenderDrawerExtra}
-        </div>
+        <TaskFormTitle
+          task={selectedTask}
+          mode={mode as "VIEW" | "EDIT"}
+          allowEditTask={selectedTask && resources.has(Permissions.EDIT_TASK)}
+          onClose={toggleDrawer(false)}
+          onToggle={toggleMode}
+        />
         {RenderTaskDetails}
       </Drawer>
     </Fragment>
   );
 }
 
-export default WithAuth(Page, Permissions.VIEW_TASKS);
+export default WithPermission(Page, Permissions.VIEW_TASKS);

@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -21,4 +21,4 @@ function Page({ setTitle, setGoBack }: any) {
   };
   return <ProjectForm callback={navigateBack} />;
 }
-export default WithAuth(Page, Permissions.CREATE_PROJECT);
+export default WithPermission(Page, Permissions.CREATE_PROJECT);

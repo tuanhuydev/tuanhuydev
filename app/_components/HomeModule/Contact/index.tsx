@@ -42,9 +42,9 @@ export default function Contact() {
           </li>
         </ul>
         <div className="flex flex-col">
-          <h6 className="font-semibold my-5 text-xl text-center lg:text-left lg:text-3xl lg:mr-3">
+          <h5 className="font-semibold my-5 text-xl text-center lg:text-left lg:text-3xl lg:mr-3">
             Let connect and discuss
-          </h6>
+          </h5>
           <div className="flex gap-3 self-center">{Contacts}</div>
         </div>
       </div>

@@ -16,7 +16,6 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { currentUserSelector } from "@store/slices/authSlice";
 import { metaAction } from "@store/slices/metaSlice";
-import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +26,6 @@ const Button = dynamic(async () => (await import("antd/es/button")).default, { s
 
 const Sidebar = () => {
   const dispatch = useDispatch();
-  const queryClient = useQueryClient();
 
   const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
   const currentUser = useSelector(currentUserSelector);

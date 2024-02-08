@@ -2,7 +2,7 @@
 
 import Badge from "@app/_components/commons/Badge";
 import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import WithAuth from "@app/_components/commons/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import {
   useCreateStatusMutation,
   useDeleteStatusMutation,
@@ -228,4 +228,4 @@ function Page({ setTitle }: any) {
   );
 }
 
-export default WithAuth(Page, Permissions.VIEW_SETTINGS);
+export default WithPermission(Page, Permissions.VIEW_SETTINGS);

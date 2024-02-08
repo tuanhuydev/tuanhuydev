@@ -9,6 +9,7 @@ export default function ThemeToggle() {
   return (
     <Button
       type="text"
+      aria-label="Theme Toggle"
       icon={
         theme === "dark" ? (
           <DarkModeOutlined className=" !text-slate-50 !fill-slate-50" />

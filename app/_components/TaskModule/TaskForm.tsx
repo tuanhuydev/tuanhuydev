@@ -1,23 +1,24 @@
 "use client";
 
-import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
-import { BASE_URL } from "@lib/configs/constants";
+import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Task } from "@prisma/client";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@store/slices/apiSlice";
+import dynamic from "next/dynamic";
 import React from "react";
 
+const DynamicForm = dynamic(async () => (await import("@components/commons/Form/DynamicForm")).default, { ssr: false });
 export interface TaskFormProps {
   task?: Task;
+  config: DynamicFormConfig;
   onDone?: (response: ObjectType) => void;
   onError?: (error: Error) => void;
-  projectId: number;
-  readonly?: boolean;
+  projectId?: number;
 }
 
-export default function TaskForm({ task, projectId, readonly = true, onDone, onError }: TaskFormProps) {
+export default function TaskForm({ task, projectId, onDone, onError, config }: TaskFormProps) {
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
-  const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
 
   const submit = async ({ id: taskId, assignee, createdBy, ...restForm }: ObjectType) => {
     try {
@@ -33,55 +34,6 @@ export default function TaskForm({ task, projectId, readonly = true, onDone, onE
       if (onError) onError(error as Error);
     }
   };
-
-  const config: DynamicFormConfig = {
-    fields: [
-      {
-        name: "title",
-        type: "text",
-        options: {
-          placeholder: "Task Title",
-        },
-        validate: { required: true },
-      },
-      {
-        name: "assigneeId",
-        type: "select",
-        className: "w-1/2",
-        options: {
-          defaultOption: { label: "Unassigned", value: null },
-          placeholder: "Select Assignee",
-          remote: {
-            url: `${BASE_URL}/api/users`,
-            label: "name",
-            value: "id",
-          },
-        },
-      },
-      {
-        name: "statusId",
-        type: "select",
-        className: "w-1/2",
-        options: {
-          placeholder: "Select Status",
-          remote: {
-            url: `${BASE_URL}/api/status?type=task`,
-            label: "name",
-            value: "id",
-          },
-        },
-        validate: { required: true },
-      },
-      {
-        name: "description",
-        type: "richeditor",
-        className: "min-h-[25rem]",
-        options: { placeholder: "Task Description" },
-        validate: { required: true },
-      },
-    ],
-  };
-
   return (
     <DynamicForm
       disabled={isCreating}

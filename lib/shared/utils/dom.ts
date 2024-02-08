@@ -14,6 +14,8 @@ export const reflectSound = (playSound: boolean) => {
 };
 
 export const setLocalStorage = (key: string, value: any) => {
+  const hasKey = localStorage.getItem(key);
+  if (hasKey) localStorage.removeItem(key);
   localStorage.setItem(key, value);
 };
 
