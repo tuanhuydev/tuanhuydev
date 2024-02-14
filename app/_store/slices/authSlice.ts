@@ -26,6 +26,5 @@ export const currentUserSelector = createSelector(
   [(state: RootState) => state.auth],
   (authState) => authState.currentUser,
 );
-
 export const authActions = authSlice.actions;
 export default authSlice.reducer;

@@ -69,6 +69,12 @@ class TaskService {
           publishedAt: filter?.active ? { not: null } : null,
         };
       }
+      if ("userId" in filter) {
+        defaultWhere = {
+          ...defaultWhere,
+          OR: [{ assigneeId: filter.userId }, { createdBy: { id: filter.userId } }],
+        };
+      }
       let query: any = {
         where: defaultWhere,
         include: this.#defaultInclude,
@@ -117,15 +123,17 @@ class TaskService {
 
   async updateTask(id: number, data: ObjectType) {
     const { statusId, assigneeId, projectId, sprintId, createdById, ...restData } = data;
-    return await prismaClient.task.update({
+
+    const bodyToUpdate: ObjectType = {
       where: { id },
       data: {
         ...restData,
         status: { connect: { id: statusId } },
-        assignee: { connect: { id: assigneeId } },
-        project: { connect: { id: projectId } },
+        project: projectId ? { connect: { id: projectId } } : { disconnect: true },
+        assignee: assigneeId ? { connect: { id: assigneeId } } : { disconnect: true },
       },
-    });
+    };
+    return await prismaClient.task.update(bodyToUpdate as any);
   }
 
   async deleteTask(id: number) {

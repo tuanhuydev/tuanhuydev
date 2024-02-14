@@ -1,7 +1,7 @@
 "use client";
 
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import Loader from "@components/commons/Loader";
-import WithAuth from "@components/hocs/WithAuth";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { useGetPostQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
@@ -19,4 +19,4 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   return <div className="grow overflow-auto">{isLoading ? <Loader /> : <PostForm post={post} />}</div>;
 }
-export default WithAuth(Page, Permissions.EDIT_POST);
+export default WithPermission(Page, Permissions.EDIT_POST);
