@@ -1,9 +1,13 @@
 import LogService from "../services/LogService";
 import TaskService from "../services/TaskService";
+import { verifyJwt } from "@app/_utils/network";
+import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
+import * as jose from "jose";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string, number } from "yup";
 
@@ -31,7 +35,7 @@ export class TaskController implements BaseController {
     }
   }
 
-  async store(request: NextRequest, params: ObjectType) {
+  async store(request: NextRequest) {
     const network = Network(request);
     try {
       const schema = object({
@@ -43,12 +47,12 @@ export class TaskController implements BaseController {
 
       const body = await request.json();
       const validatedBody = await this.validate(body, schema);
-      validatedBody.statusId = parseInt(validatedBody.statusId, 10);
-      if ("userId" in params) {
-        validatedBody.createdById = params.userId;
-      }
-      const newTask = await TaskService.createTask(validatedBody);
 
+      validatedBody.statusId = parseInt(validatedBody.statusId, 10);
+      const { userId } = await verifyJwt(request.cookies.get("jwt"));
+      validatedBody.createdById = userId;
+
+      const newTask = await TaskService.createTask(validatedBody);
       return network.successResponse(newTask);
     } catch (error) {
       LogService.log((error as Error).message);

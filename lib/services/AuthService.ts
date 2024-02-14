@@ -1,4 +1,5 @@
-import { EMPTY_STRING, NODE_ENV, SALT_ROUNDS } from "@lib/configs/constants";
+import { NODE_ENV, SALT_ROUNDS } from "@lib/configs/constants";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
 import {
@@ -10,7 +11,7 @@ import {
 import BaseError from "@shared/commons/errors/BaseError";
 import NotFoundError from "@shared/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
+import * as jose from "jose";
 import { v4 as uuidv4 } from "uuid";
 
 class AuthService {
@@ -48,25 +49,40 @@ class AuthService {
   }
 
   async issueAccessToken(token: string) {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, REFRESH_TOKEN_SECRET, { ignoreExpiration: true }, async (err, decoded) => {
-        if (err || typeof decoded === "string") reject(new BaseError("Invalid Token"));
-        const { userId, userEmail } = (decoded as ObjectType) || { userId: EMPTY_STRING, userEmail: EMPTY_STRING };
-        const validUser = await prismaClient.user.findFirst({ where: { id: userId, email: userEmail } });
+    try {
+      const { payload } = await jose.jwtVerify(token, REFRESH_TOKEN_SECRET);
+      if (!payload) throw new UnauthorizedError("Invalid JWT");
 
-        if (!validUser) reject(new BaseError("Invalid Token"));
-        const accessToken = jwt.sign({ userId, userEmail }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFE });
-        resolve(accessToken);
-      });
-    });
+      const { userId, userEmail } = payload as { userId: string; userEmail: string };
+      const validUser = await prismaClient.user.findFirst({ where: { id: userId, email: userEmail } });
+
+      if (!validUser) throw new UnauthorizedError("Invalid JWT");
+
+      const accessToken = await new jose.SignJWT({ userId, userEmail })
+        .setExpirationTime(ACCESS_TOKEN_LIFE)
+        .setProtectedHeader({ alg: "HS256" })
+        .sign(ACCESS_TOKEN_SECRET);
+
+      return accessToken;
+    } catch (error: any) {
+      throw new UnauthorizedError((error as Error).message);
+    }
   }
 
   async signIn(email: string, password: string) {
     try {
       const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
-      const accessToken = jwt.sign({ userId, userEmail }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFE });
-      const refreshToken = jwt.sign({ userId, userEmail }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFE });
+      const accessToken = await new jose.SignJWT({ userId, userEmail })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("15m")
+        .sign(ACCESS_TOKEN_SECRET);
 
+      const refreshToken = await new jose.SignJWT({ userId, userEmail })
+        .setProtectedHeader({ alg: "HS256" })
+        .setExpirationTime("1h")
+        .setIssuedAt()
+        .sign(REFRESH_TOKEN_SECRET);
       return { userId, accessToken, refreshToken };
     } catch (error) {
       if (NODE_ENV !== "production") console.error(error);

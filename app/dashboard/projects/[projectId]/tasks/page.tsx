@@ -113,7 +113,7 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   const renderTasks = useCallback(() => {
     return tasks.map((task: TaskStatusAssignee) => (
-      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} task={task} key={task.id} />
+      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} showAssignee task={task} key={task.id} />
     ));
   }, [selectedTask?.id, tasks, onSelectTask]);
 

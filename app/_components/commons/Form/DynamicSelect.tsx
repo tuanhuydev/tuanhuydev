@@ -1,7 +1,6 @@
 "use client";
 
 import Loader from "../Loader";
-import { set } from "date-fns";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
@@ -23,7 +22,7 @@ export default function DynamicSelect({
 }: DynamicSelectProps) {
   const { options: staticOptions = [], remote, defaultOption, mode = "single", ...restSelectOptions } = selectOptions;
 
-  const [options, setOptions] = useState<SelectOption[]>(staticOptions);
+  const [options, setOptions] = useState<SelectOption[]>([]);
 
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
@@ -42,18 +41,9 @@ export default function DynamicSelect({
 
     const { data: options = [] } = await response.json();
     const fetchedOptions = options.map((option: ObjectType) => ({ label: option[label], value: option[value] }));
-    return fetchedOptions;
-  }, [remote]);
-
-  const syncOptions = useCallback(async () => {
-    let optionsToUpdate = remote ? await fetchOptions() : staticOptions;
-    if (defaultOption) optionsToUpdate = [defaultOption, ...optionsToUpdate];
-    setOptions(optionsToUpdate);
-  }, [defaultOption, fetchOptions, remote, staticOptions]);
-
-  useEffect(() => {
-    syncOptions();
-  }, [syncOptions, remote]); // Add 'remote' to the dependency array
+    if (defaultOption) fetchedOptions.unshift(defaultOption);
+    setOptions(fetchedOptions);
+  }, [defaultOption, remote]);
 
   const handleChange = (newOptions: unknown) => {
     if (mode === "multiple") {
@@ -70,6 +60,14 @@ export default function DynamicSelect({
     }
     return onChange(newOptions);
   };
+
+  useEffect(() => {
+    if (staticOptions.length) setOptions([defaultOption, ...staticOptions]);
+  }, [defaultOption, staticOptions]);
+
+  useEffect(() => {
+    if (remote) fetchOptions();
+  }, [remote, fetchOptions]);
 
   return (
     <div className={`p-2 self-stretch ${className}`}>

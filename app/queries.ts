@@ -26,3 +26,18 @@ export const useResourcesQuery = (permissionId: number) => {
     },
   });
 };
+
+export const usePostsQuery = () => {
+  return useQuery({
+    queryKey: ["posts"],
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    queryFn: async () => {
+      const response: any = await fetch(`${BASE_URL}/api/posts`);
+      if (response?.status === 401) throw new UnauthorizedError("Posts not found");
+      if (!response.ok) throw new BaseError("Posts not found");
+
+      const { data = [] } = await response.json();
+      return data;
+    },
+  });
+};
