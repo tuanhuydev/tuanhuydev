@@ -1,11 +1,11 @@
 "use client";
 
-import Loader from "@app/_components/commons/Loader";
-import ReduxProvider from "@app/_components/commons/providers/ReduxProvider";
+import getQueryClient from "@app/_configs/queryClient";
 import { authActions } from "@app/_store/slices/authSlice";
-import getQueryClient from "@app/test/queryClient";
+import Loader from "@components/commons/Loader";
+import { QueryProvider } from "@components/commons/providers/QueryProvider";
+import ReduxProvider from "@components/commons/providers/ReduxProvider";
 import { BASE_URL } from "@lib/configs/constants";
-import { RootState } from "@lib/configs/types";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { clearLocalStorage, getLocalStorage } from "@lib/shared/utils/dom";
@@ -15,7 +15,7 @@ import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren, useCallback, useLayoutEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const App = dynamic(async () => (await import("antd/es/app")).default, {
   ssr: false,
@@ -90,12 +90,14 @@ const Wrapper = ({ children }: PropsWithChildren) => {
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
-    <HydrationBoundary state={dehydrate(getQueryClient())}>
-      <ReduxProvider>
-        <App>
-          <Wrapper>{children}</Wrapper>
-        </App>
-      </ReduxProvider>
-    </HydrationBoundary>
+    <QueryProvider>
+      <HydrationBoundary state={dehydrate(getQueryClient())}>
+        <ReduxProvider>
+          <App>
+            <Wrapper>{children}</Wrapper>
+          </App>
+        </ReduxProvider>
+      </HydrationBoundary>
+    </QueryProvider>
   );
 }

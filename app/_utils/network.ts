@@ -1,9 +1,12 @@
 import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
-import { ACCESS_TOKEN_LIFE } from "@lib/shared/commons/constants/encryption";
+import { ACCESS_TOKEN_LIFE, ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { getLocalStorage } from "@lib/shared/utils/dom";
+import * as jose from "jose";
 import Cookies from "js-cookie";
+import { JWTPayload } from "middleware";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export const apiWithBearer = async (
   url: string,
@@ -35,4 +38,17 @@ export const apiWithBearer = async (
 
   const response = await request.json();
   return response;
+};
+
+export const verifyJwt = async (jwtToken?: RequestCookie): Promise<JWTPayload> => {
+  if (!jwtToken) throw new UnauthorizedError("No JWT found");
+
+  const { value: accessToken } = jwtToken;
+  const { payload } = await jose.jwtVerify(accessToken, ACCESS_TOKEN_SECRET);
+  if (!payload) throw new UnauthorizedError("Invalid JWT");
+
+  const { userEmail, userId, exp } = payload as JWTPayload;
+  if (!userEmail || !userId || !exp) throw new UnauthorizedError("Invalid JWT");
+
+  return payload as JWTPayload;
 };

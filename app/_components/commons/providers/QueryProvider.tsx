@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import * as React from "react";
 
-export function Providers(props: { children: React.ReactNode }) {
+export function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
@@ -17,12 +17,12 @@ export function Providers(props: { children: React.ReactNode }) {
       }),
   );
 
-  const isDevelopmentEnv = process.env.NODE_ENV !== "production";
+  const isDevelopmentEnv = process.env.NODE_ENV === "development";
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
-      {/* {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />} */}
+      {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

@@ -1,5 +1,5 @@
+import getQueryClient from "../_configs/queryClient";
 import TestComponent from "./TestComponent";
-import getQueryClient from "./queryClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import React from "react";
 
