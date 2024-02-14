@@ -19,9 +19,15 @@ const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm")
   loading: () => <Loader />,
 });
 
-const WithAnimation = dynamic(() => import("@components/hocs/WithAnimation"), {
+const WithAnimation = dynamic(() => import("@components/commons/hocs/WithAnimation"), {
   ssr: false,
 });
+
+type CredentialType = {
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+};
 
 // TODO: Move this one to API.
 const signInFormConfig: DynamicFormConfig = {
@@ -56,19 +62,12 @@ export default function SignIn() {
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const syncAuth = (credential: ObjectType) => {
-    if (!credential) throw new UnauthorizedError();
-    setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
-    Cookies.set("jwt", credential.accessToken);
-  };
-
-  const getCurrentUser = async (userId: string) => {
+  const getUserDetail = useCallback(async (userId: string) => {
     const response = await fetch(`${BASE_URL}/api/users/${userId}`);
     if (!response.ok) throw new NotFoundError("User not found");
-
-    const { data: currentUser } = await response.json();
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  };
+    const { data: userDetail } = await response.json();
+    return userDetail;
+  }, []);
 
   const submit = async (formData: any) => {
     try {
@@ -79,13 +78,18 @@ export default function SignIn() {
           "Content-Type": "application/json",
         },
       });
-      if (!response.ok) throw new UnauthorizedError("Invalid sign in");
+      if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
+
       const { data: credential } = await response.json();
-      if (credential) {
-        syncAuth(credential);
-        if (credential?.userId) await getCurrentUser(credential?.userId);
-        router.push("/dashboard", {});
-      }
+      const { accessToken, refreshToken, userId } = (credential as CredentialType) ?? {};
+      if (!accessToken || !refreshToken || !userId) throw new UnauthorizedError("Invalid Credentials");
+
+      Cookies.set("jwt", accessToken);
+      const userDetail = await getUserDetail(userId);
+      setLocalStorage("userDetail", JSON.stringify(userDetail));
+      setLocalStorage(STORAGE_CREDENTIAL_KEY, refreshToken);
+
+      router.push("/dashboard");
     } catch (error) {
       api.error({ message: (error as BaseError).message });
     }

@@ -1,9 +1,14 @@
+import Loader from "../commons/Loader";
 import ImageWithFallback from "@components/commons/ImageWithFallback";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { Card, Descriptions, Tag } from "antd";
 import { CardProps } from "antd/es/card";
+import Descriptions from "antd/es/descriptions";
 import format from "date-fns/format";
+import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
+
+const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
+const Tag = dynamic(async () => (await import("antd/es/tag")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface PostCardProps {
   post: any;

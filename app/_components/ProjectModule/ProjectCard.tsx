@@ -81,14 +81,16 @@ export default function ProjectCard({
 
   return (
     <Card
-      title={name}
       hoverable
       loading={!name}
       rootClassName="w-[18rem]"
-      headStyle={{ fontSize: 20 }}
-      className="cursor-pointer"
-      extra={<CardExtra id={id} />}
+      headStyle={{ display: "none" }}
+      className="cursor-pointer bg-slate-50 dark:bg-slate-900 dark:text-slate-50"
       onClick={navigateDetail}>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="m-0">{name}</h2>
+        <CardExtra id={id} />
+      </div>
       <p className="mt-0 mb-3 line-clamp-3 min-h-[4.5rem]">{description}</p>
       <div className="grid grid-cols-[minmax(max-content,_1fr)_minmax(max-content,_1fr)] gap-2 justify-between relative text-xs">
         <div>

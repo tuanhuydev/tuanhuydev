@@ -1,6 +1,6 @@
 "use client";
 
-import WithAuth from "@app/_components/hocs/WithAuth";
+import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
@@ -168,4 +168,4 @@ function Page({ setTitle }: any) {
     </Fragment>
   );
 }
-export default WithAuth(Page, Permissions.VIEW_POSTS);
+export default WithPermission(Page, Permissions.VIEW_POSTS);

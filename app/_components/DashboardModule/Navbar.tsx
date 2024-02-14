@@ -1,15 +1,17 @@
 "use client";
 
+import ThemeToggle from "../commons/ThemeToggle";
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import { authActions } from "@store/slices/authSlice";
-import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
+
+const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
 const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
   ssr: false,
@@ -57,8 +59,15 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     if (startComponent) return startComponent;
     if (title)
       return (
-        <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl">
-          {goBack && <Button type="text" onClick={() => router.back()} icon={<KeyboardArrowLeftOutlined />} />}
+        <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl text-primary dark:text-slate-50">
+          {goBack && (
+            <Button
+              type="text"
+              className="bg-primary"
+              onClick={() => router.back()}
+              icon={<KeyboardArrowLeftOutlined className="!fill-primary dark:!fill-slate-50" />}
+            />
+          )}
           <h1 className="my-auto text-2xl font-bold capitalize grow truncate">{title}</h1>
         </div>
       );
@@ -85,15 +94,23 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         trigger="click"
         open={open}
         onOpenChange={toggleUserMenu(false)}>
-        <Button shape="circle" type="text" size="large" icon={<PersonOutlineOutlined />} />
+        <Button
+          shape="circle"
+          type="text"
+          size="large"
+          icon={<PersonOutlineOutlined className="!fill-primary dark:!fill-slate-50" />}
+        />
       </Popover>
     );
   }, [currentUser.email, currentUser.name, open, toggleUserMenu]);
 
   return (
-    <div className="px-3 py-2 bg-white flex item-center justify-between">
+    <div className="px-3 py-2  text-primary  dark:text-slate-50 flex item-center justify-between">
       {renderStart}
-      {renderEnd}
+      <div>
+        <ThemeToggle />
+        {renderEnd}
+      </div>
     </div>
   );
 };

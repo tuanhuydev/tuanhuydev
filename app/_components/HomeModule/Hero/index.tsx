@@ -1,63 +1,52 @@
-import { Post } from "@prisma/client";
-import Avatar from "@public/assets/images/avatar.png";
-import FlagIcon from "@public/assets/images/vietnam_flag.png";
 import Image from "next/image";
 import React from "react";
 
 const matrixTypoStyles = "font-medium text-slate-700 dark:text-white text-[8px] sm:text-base";
 const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
-export interface HeroProps {
-  posts?: Post[];
-}
-
-export default function Hero({ posts = [] }: HeroProps) {
+export default function Hero() {
   return (
-    <section
-      id="about-me"
-      data-testid="homepage-about-me"
-      className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-12 content-center">
+    <section id="about-me" className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-4 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
-        <h1 className="font-bold mb-3 dark:text-white">
-          <span className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</span>{" "}
-          <br />
-          <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</span>
-        </h1>
+        <div className="font-bold mb-3 dark:text-white">
+          <div className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl">&#60;Developer&#47;&#62;</div>
+          <div className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</div>
+        </div>
         <div className="relative mb-6">
-          <h2 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
+          <h1 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
             I&lsquo;m Huy (tuanhuydev), a software engineer <br /> from Viet Nam
             <Image
               width={28}
-              height={18}
-              style={{ display: "inline", marginLeft: "0.5rem" }}
-              src={FlagIcon}
+              height={20}
+              className="inline-flex mx-2 leading-7"
+              src="/assets/images/vietnam_flag.png"
               alt="Viet Nam Flag"
             />
-          </h2>
+          </h1>
         </div>
         <div className="dark:text-white text-xs md:text-base mb-10">
-          I&lsquo;m 4 years of&nbsp;
-          <h3 className="inline-flex font-medium">#experience</h3> in&nbsp;
-          <h3 className="inline-flex font-medium">#web development</h3>
-          &nbsp;with&nbsp;
-          <br />
-          <h3 className="inline-flex font-medium">#passion</h3>&nbsp;
-          <h3 className="inline-flex font-medium">#professionalism</h3>&nbsp;
-          <h3 className="inline-flex font-medium">#empathy</h3>&nbsp;
-          <br />I had great <strong>opportunities</strong> to work on amazing projects, teams, cultures.
-          <br />
-          Contribute values to businesses&lsquo;s success, including&nbsp;
-          <strong>yours</strong>.😀&#128077;
-          <br />
+          <div className="mb-1">
+            I&lsquo;m 4 years of&nbsp; #experience in&nbsp; #web development &nbsp;with&nbsp; #passion&nbsp;
+            #professionalism&nbsp; #empathy&nbsp;
+          </div>
+          <div>
+            I had great <strong>opportunities</strong> to work on amazing projects, teams, cultures. Contribute values
+            to businesses&lsquo;s success, including&nbsp;
+            <strong>yours</strong>.😀&#128077;
+          </div>
         </div>
         <a href="#service">
-          <h6
-            className={`drop-shadow-md inline-flex items-center self-start rounded-full bg-slate-800 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition ease-in`}>
+          <h3 className="inline-flex items-center rounded-full bg-slate-700 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition duration-200 ease-in group">
             My proudly accomplishments
-            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16" className="ml-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="16"
+              viewBox="0 96 960 960"
+              width="16"
+              className="ml-2 transition-transform duration-200 group-hover:rotate-90">
               <path d="m480 902.218-56.131-57.131 230.042-229.478H153.782v-79.218h500.129L423.869 306.348 480 249.782 806.218 576 480 902.218Z" />
             </svg>
-          </h6>
+          </h3>
         </a>
       </div>
       <div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
@@ -74,7 +63,9 @@ export default function Hero({ posts = [] }: HeroProps) {
           <li className={`${graphicStyles} col-start-10 col-span-full row-start-2`}>#PHP Laravel</li>
           <li className="col-start-5 col-span-4 row-start-3 row-span-2 m-2 p-2 relative flex justify-center items-center">
             <Image
-              src={Avatar}
+              src="/assets/images/avatar.png"
+              width={200}
+              height={200}
               alt="avatar"
               className="rounded-full w-24 h-24 md:w-40 md:h-40 lg:w-48 lg:h-48"
               priority
