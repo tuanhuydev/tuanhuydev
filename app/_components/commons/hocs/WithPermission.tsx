@@ -1,12 +1,9 @@
 "use client";
 
 import Loader from "@components/commons/Loader";
-import { BASE_URL } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
-import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
-import { clearLocalStorage, getLocalStorage } from "@lib/shared/utils/dom";
-import Cookies from "js-cookie";
+import { clearLocalStorage } from "@lib/shared/utils/dom";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { FC, useCallback, useEffect, useState } from "react";
