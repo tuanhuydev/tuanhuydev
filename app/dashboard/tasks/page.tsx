@@ -13,7 +13,8 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import Button from "antd/es/button";
 import dynamic from "next/dynamic";
-import React, { CSSProperties, useCallback, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 const TaskFormTitle = dynamic(async () => (await import("@components/TaskModule/TaskFormTitle")).default, {
@@ -58,8 +59,13 @@ const COMPONENT_MODE = {
 function Page() {
   // Hooks
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const { data: tasks } = useGetTasksQuery({ userId: currentUser?.id });
+  const taskId = searchParams.get("taskId");
+
+  const { data: tasks = [], isLoading: isTasksLoading } = useGetTasksQuery({ userId: currentUser?.id });
   const [selectedTask, setSelectedTask] = React.useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
@@ -139,6 +145,16 @@ function Page() {
     setOpenDrawer(true);
   }, []);
 
+  useEffect(() => {
+    if (tasks.length && taskId) {
+      const task = tasks.find((task: Task) => task.id === Number(taskId));
+      if (task) {
+        onSelectTask(task);
+        router.push(pathname, { scroll: false });
+      }
+    }
+  }, [onSelectTask, pathname, router, taskId, tasks]);
+
   return (
     <PageContainer title="Tasks">
       <div className="mb-3 flex items-center">
@@ -154,7 +170,7 @@ function Page() {
           </Button>
         </div>
       </div>
-      <TaskList tasks={tasks} selectedTask={selectedTask} onSelectTask={onSelectTask} />
+      <TaskList tasks={tasks} selectedTask={selectedTask} onSelectTask={onSelectTask} isLoading={isTasksLoading} />
       <Drawer size="large" placement="right" getContainer={false} destroyOnClose styles={drawerStyle} open={openDrawer}>
         <TaskFormTitle
           task={selectedTask}
