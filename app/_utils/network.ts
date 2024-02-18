@@ -14,6 +14,7 @@ export const apiWithBearer = async (
 ) => {
   const request = await fetch(url, options);
   if (!request.ok && request.status === 401) {
+    console.log("Refreshing token");
     // Refresh the access token using the refresh token
     const token: string = getLocalStorage(STORAGE_CREDENTIAL_KEY);
     if (!token) throw new UnauthorizedError();

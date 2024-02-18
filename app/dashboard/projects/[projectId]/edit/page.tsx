@@ -2,7 +2,7 @@
 
 import Loader from "@app/_components/commons/Loader";
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
-import { useGetProjectQuery } from "@app/_store/slices/apiSlice";
+import { useGetProjectQuery } from "@app/_configs/store/slices/apiSlice";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
