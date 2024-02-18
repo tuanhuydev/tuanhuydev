@@ -1,11 +1,12 @@
-import Navbar from "@components/HomeModule/Navbar";
-import Loader from "@components/commons/Loader";
-import { BASE_URL } from "@lib/configs/constants";
+import BlogSection from "./_components/HomeModule/BlogSection";
+import Contact from "./_components/HomeModule/Contact";
+import Footer from "./_components/HomeModule/Footer";
+import Hero from "./_components/HomeModule/Hero";
+import Services from "./_components/HomeModule/ServiceSection/Services";
+import Navbar from "@app/_components/HomeModule/Navbar";
+import { getHighlightPosts } from "@server/actions/blog";
 import { Metadata, Viewport } from "next";
-import dynamic from "next/dynamic";
 import React from "react";
-
-const Hero = dynamic(() => import("@components/HomeModule/Hero"));
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",
@@ -62,37 +63,16 @@ export const viewport: Viewport = {
   ],
 };
 
-async function getData() {
-  const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: "no-store" });
-  if (!response.ok) return [];
-
-  const { data: posts } = await response.json();
-  return posts;
-}
-
-const Contact = dynamic(async () => (await import("@components/HomeModule/Contact")).default, {
-  loading: () => <Loader />,
-});
-const Services = dynamic(async () => (await import("@components/HomeModule/Services")).default, {
-  loading: () => <Loader />,
-});
-const BlogSection = dynamic(async () => (await import("@components/HomeModule/BlogSection")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const Footer = dynamic(async () => (await import("@components/HomeModule/Footer")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
 export default async function Home() {
-  const posts = await getData();
+  const posts = await getHighlightPosts({
+    page: 1,
+    pageSize: 4,
+    active: true,
+  });
   return (
     <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
       <div className="container mx-auto">
-        <div className="sticky top-0 z-10">
-          <Navbar posts={posts} />
-        </div>
+        <Navbar posts={posts} />
         <div className="relative">
           <Hero />
           <Services />

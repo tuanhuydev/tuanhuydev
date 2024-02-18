@@ -1,16 +1,15 @@
 "use client";
 
 import ThemeToggle from "@app/_components/commons/ThemeToggle";
-import { Post } from "@prisma/client";
 import { memo } from "react";
 
 export interface NavbarProps {
-  posts?: Post[];
+  posts?: ObjectType[];
 }
 
 export default memo(function Navbar({ posts = [] }: NavbarProps) {
   return (
-    <header className="flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2">
+    <header className=" sticky top-0 z-10 flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900 px-2">
       <div className="text-primary dark:text-slate-50 font-bold flex items-center">
         <a href="/" className="line-height-1 hover:underline flex items-center cursor-pointer">
           <svg

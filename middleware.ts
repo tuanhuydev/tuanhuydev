@@ -31,7 +31,12 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith("/dashboard")) {
     return dashboardMiddleware(request);
   }
-  if (pathname.startsWith("/api") && !pathname.startsWith("/api/auth/sign-in") && !pathname.startsWith("/api/posts")) {
+  if (
+    pathname.startsWith("/api") &&
+    !pathname.startsWith("/api/auth/sign-in") &&
+    !pathname.startsWith("/api/auth/refresh-token") &&
+    !pathname.startsWith("/api/posts")
+  ) {
     return apiMiddleware(request);
   }
 }

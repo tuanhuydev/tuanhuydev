@@ -2,6 +2,7 @@
 
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
+import { useGetProjectQuery, useGetTasksByProjectQuery } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
@@ -9,7 +10,6 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { Project, ProjectUser, Task } from "@prisma/client";
-import { useGetProjectQuery, useGetTasksByProjectQuery } from "@store/slices/apiSlice";
 import differenceInDays from "date-fns/differenceInDays";
 import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";

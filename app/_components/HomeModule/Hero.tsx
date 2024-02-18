@@ -4,7 +4,7 @@ import React from "react";
 const matrixTypoStyles = "font-medium text-slate-700 dark:text-white text-[8px] sm:text-base";
 const graphicStyles = `${matrixTypoStyles} drop-shadow-md m-auto rounded-md bg-slate-100 dark:bg-slate-700 p-2 transition duration-150 ease-out hover:ease-in `;
 
-export default function Hero() {
+export default async function Hero() {
   return (
     <section id="about-me" className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-4 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
@@ -52,15 +52,15 @@ export default function Hero() {
       <div className="col-start-1 col-span-full lg:col-start-7 relative overflow-x-hidden h-max sm:overflow-visible">
         <ul className="grid grid-cols-12 gap-1 md:gap-4 lg:gap-6 xl:gap-7 grid-rows-6 list-none m-0 p-0">
           <li className={`${graphicStyles} col-start-1 col-span-4`}>#Web Development</li>
-          <li className={`${graphicStyles} col-start-3 row-start-3`}>#HTML</li>
-          <li className={`${graphicStyles} col-start-2 row-start-4`}>#CSS</li>
+          <li className={`${graphicStyles} col-start-3 row-start-3`}>#NextJS</li>
+          <li className={`${graphicStyles} col-start-2 opacity-80 row-start-4`}>#CSS</li>
           <li className={`${graphicStyles} col-start-6 row-start-2`}>#Javascript</li>
-          <li className={`${graphicStyles} col-start-6`}>#NextJS</li>
+          <li className={`${graphicStyles} col-start-6 opacity-80`}>#HTML</li>
           <li className={`${graphicStyles} col-start-11 row-start-4`}>#Angular</li>
           <li className={`${graphicStyles} col-start-9 row-start-3`}>#Typescript</li>
-          <li className={`${graphicStyles} col-start-2 row-start-2`}>#Git</li>
-          <li className={`${graphicStyles} col-start-6 row-start-6`}>#ReactJS</li>
-          <li className={`${graphicStyles} col-start-10 col-span-full row-start-2`}>#PHP Laravel</li>
+          <li className={`${graphicStyles} col-start-2 opacity-80 row-start-2`}>#Git</li>
+          <li className={`${graphicStyles} col-start-6 opacity-80 row-start-6`}>#Docker</li>
+          <li className={`${graphicStyles} col-start-10 opacity-80 col-span-full row-start-2`}>#PHP Laravel</li>
           <li className="col-start-5 col-span-4 row-start-3 row-span-2 m-2 p-2 relative flex justify-center items-center">
             <Image
               src="/assets/images/avatar.png"
@@ -71,10 +71,10 @@ export default function Hero() {
               priority
             />
           </li>
-          <li className={`${graphicStyles} col-start-7 col-span-2 row-start-5`}>#Docker</li>
-          <li className={`${graphicStyles} col-start-10 col-span-2 row-start-5`}>#CI/CD</li>
-          <li className={`${graphicStyles} col-start-11 row-start-6`}>#AWS</li>
-          <li className={`${graphicStyles} col-start-3 col-span-2 row-start-5`}>#English</li>
+          <li className={`${graphicStyles} col-start-7 col-span-2 row-start-5`}>#ReactJS</li>
+          <li className={`${graphicStyles} col-start-10 opacity-80 col-span-2 row-start-5`}>#CI/CD</li>
+          <li className={`${graphicStyles} col-start-11 opacity-80 row-start-6`}>#AWS</li>
+          <li className={`${graphicStyles} col-start-3 opacity-80 col-span-2 row-start-5`}>#English</li>
           <li className={`${graphicStyles} col-start-1 col-span-3`}>#Work Hard</li>
           <li className={`${graphicStyles} col-start-9 col-span-3 row-start-1`}>#Communication</li>
         </ul>

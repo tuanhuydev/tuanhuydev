@@ -25,8 +25,8 @@
       "@public/*": ["public/*"],
       "@components/*": ["app/_components/*"],
       "@assets/*": ["app/_assets/*"],
-      "@store/*": ["app/_store/*"],
-      "@styles/*": ["app/_styles/*"]
+      "@styles/*": ["app/_styles/*"],
+      "@server/*": ["app/server/*"]
     },
     "plugins": [
       {
