@@ -1,9 +1,9 @@
 "use client";
 
 import ThemeToggle from "../commons/ThemeToggle";
+import { authActions } from "@app/_configs/store/slices/authSlice";
 import { EMPTY_OBJECT } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
-import { authActions } from "@store/slices/authSlice";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";

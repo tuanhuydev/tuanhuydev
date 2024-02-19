@@ -12,7 +12,7 @@ export default function ProjectWidget() {
   return (
     <Link href={"/dashboard/projects"} prefetch className="self-baseline">
       <Card
-        title="Posts"
+        title="Projects"
         className="w-[12rem] min-h-[8rem]"
         value={projects?.length}
         loading={isProjectLoading}

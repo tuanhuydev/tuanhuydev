@@ -1,10 +1,10 @@
+import { getHighlightPosts } from "./server/actions/blog";
 import { BASE_URL } from "@lib/configs/constants";
-import PostService from "@lib/services/PostService";
 import { Post } from "@prisma/client";
 import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = (await PostService.getPosts()) || [];
+  const posts = await getHighlightPosts({ active: true });
   const sites = [
     {
       url: BASE_URL,
@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  (posts as Array<Post>).forEach(({ publishedAt, deletedAt, updatedAt, slug }) => {
+  (posts as Post[]).forEach(({ publishedAt, deletedAt, updatedAt, slug }) => {
     if (publishedAt && !deletedAt) {
       sites.push({
         url: `${BASE_URL}/posts/${slug}`,

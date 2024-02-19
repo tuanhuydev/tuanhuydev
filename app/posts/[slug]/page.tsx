@@ -26,7 +26,7 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: post.title,
+    title: post?.title,
     metadataBase: new URL("https://tuanhuy.dev"),
     openGraph: {
       images: [post?.thumbnail, ...previousImages],
@@ -60,9 +60,9 @@ export default async function Page({ params }: any) {
         />
       </div>
       <div className="grid lg:grid-cols-12 -mt-20 relative z-20">
-        <div className="col-start-3 col-span-9 p-4 shadow-md bg-white rounded-md">
+        <div className="col-start-3 col-span-9 p-4 shadow-md bg-white text-slate-primary dark:bg-primary dark:text-slate-50 rounded-md">
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold rounded-md mb-3 p-3">{post.title}</h1>
-          <div className="!text-sm lg:!text-base bg-white p-3">
+          <div className="!text-sm lg:!text-base bg-white dark:bg-transparent p-3">
             {(<MDXRemote source={post.content as MDXRemoteSerializeResult} />) as any}
           </div>
         </div>

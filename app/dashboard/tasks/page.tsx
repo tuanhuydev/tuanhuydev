@@ -1,7 +1,7 @@
 "use client";
 
 import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import { useGetTasksQuery } from "@app/_store/slices/apiSlice";
+import { useGetTasksQuery } from "@app/_configs/store/slices/apiSlice";
 import PageContainer from "@components/DashboardModule/PageContainer";
 import Loader from "@components/commons/Loader";
 import { BASE_URL } from "@lib/configs/constants";

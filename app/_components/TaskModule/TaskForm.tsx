@@ -1,9 +1,9 @@
 "use client";
 
+import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/_configs/store/slices/apiSlice";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Task } from "@prisma/client";
-import { useCreateTaskMutation, useUpdateTaskMutation } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import React from "react";
 

@@ -1,4 +1,4 @@
-import store from "@app/_store";
+import store from "@app/_configs/store";
 import React, { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 

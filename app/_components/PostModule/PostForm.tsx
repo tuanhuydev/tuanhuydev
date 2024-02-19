@@ -1,13 +1,13 @@
 "use client";
 
 import { UploadOutlined } from "@ant-design/icons";
+import { useCreatePostMutation, useUpdatePostMutation } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import { PostAsset } from "@prisma/client";
 import BaseError from "@shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
-import { useCreatePostMutation, useUpdatePostMutation } from "@store/slices/apiSlice";
 import { App, Button, Form, Input, Upload } from "antd";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
