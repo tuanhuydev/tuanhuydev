@@ -8,7 +8,7 @@ import {
   useDeleteStatusMutation,
   useGetStatusQuery,
   useUpdateStatusMutation,
-} from "@app/_store/slices/apiSlice";
+} from "@app/_configs/store/slices/apiSlice";
 import ConfigSection from "@components/SettingModule/ConfigSection";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";

@@ -2,6 +2,8 @@
 
 import { ItemProps } from "./Item";
 import styles from "./styles.module.scss";
+import { currentUserSelector } from "@app/_configs/store/slices/authSlice";
+import { metaAction } from "@app/_configs/store/slices/metaSlice";
 import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
@@ -14,8 +16,6 @@ import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
-import { currentUserSelector } from "@store/slices/authSlice";
-import { metaAction } from "@store/slices/metaSlice";
 import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

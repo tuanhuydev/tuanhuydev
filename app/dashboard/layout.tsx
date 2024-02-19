@@ -1,7 +1,7 @@
 "use client";
 
 import getQueryClient from "@app/_configs/queryClient";
-import { authActions } from "@app/_store/slices/authSlice";
+import { authActions } from "@app/_configs/store/slices/authSlice";
 import Loader from "@components/commons/Loader";
 import { QueryProvider } from "@components/commons/providers/QueryProvider";
 import ReduxProvider from "@components/commons/providers/ReduxProvider";

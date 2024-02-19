@@ -1,9 +1,9 @@
 "use client";
 
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import { useGetPostQuery } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { useGetPostQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 

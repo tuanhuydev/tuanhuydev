@@ -1,9 +1,9 @@
 "use client";
 
+import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/_configs/store/slices/apiSlice";
 import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Project } from "@prisma/client";
-import { useCreateProjectMutation, useUpdateProjectMutation } from "@store/slices/apiSlice";
 import { App } from "antd";
 
 export interface ProjectFormProps {

@@ -1,6 +1,7 @@
 "use client";
 
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import { useDeletePostMutation, useGetPostsQuery } from "@app/_configs/store/slices/apiSlice";
 import { BASE_URL } from "@lib/configs/constants";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
@@ -10,7 +11,6 @@ import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutl
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import VisibilityOutlined from "@mui/icons-material/VisibilityOutlined";
 import { Post } from "@prisma/client";
-import { useDeletePostMutation, useGetPostsQuery } from "@store/slices/apiSlice";
 import { MenuProps } from "antd/es/menu";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";

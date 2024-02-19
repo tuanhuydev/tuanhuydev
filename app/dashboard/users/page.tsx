@@ -1,11 +1,11 @@
 "use client";
 
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import { useGetUsersQuery } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
-import { useGetUsersQuery } from "@store/slices/apiSlice";
 import { ColumnsType } from "antd/es/table";
 import dynamic from "next/dynamic";
 import { Fragment, useEffect, useState } from "react";

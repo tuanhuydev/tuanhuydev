@@ -1,10 +1,10 @@
 "use client";
 
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import { useGetProjectsQuery } from "@app/_configs/store/slices/apiSlice";
 import { Permissions } from "@lib/shared/commons/constants/permissions";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import { useGetProjectsQuery } from "@store/slices/apiSlice";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";

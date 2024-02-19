@@ -1,3 +1,4 @@
+import { apiWithBearer } from "./_utils/network";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
@@ -32,12 +33,8 @@ export const usePostsQuery = () => {
     queryKey: ["posts"],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
-      const response: any = await fetch(`${BASE_URL}/api/posts`);
-      if (response?.status === 401) throw new UnauthorizedError("Posts not found");
-      if (!response.ok) throw new BaseError("Posts not found");
-
-      const { data = [] } = await response.json();
-      return data;
+      const { data: posts = [] } = await apiWithBearer(`${BASE_URL}/api/posts`);
+      return posts;
     },
   });
 };
