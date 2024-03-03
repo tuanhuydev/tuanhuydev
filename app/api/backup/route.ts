@@ -1,9 +1,8 @@
-import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import prismaClient from "@prismaClient/prismaClient";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const handleBackup = withAuthMiddleware(async (request: NextRequest, params: any) => {
+export async function GET(request: NextRequest) {
   const posts = await prismaClient.post.findMany({});
   const permissions = await prismaClient.permission.findMany({});
   const users = await prismaClient.user.findMany({});
@@ -42,8 +41,4 @@ const handleBackup = withAuthMiddleware(async (request: NextRequest, params: any
   response.headers.set("Content-Disposition", `attachment; filename=${fileName}`);
 
   return response;
-});
-
-export async function GET(request: NextRequest) {
-  return handleBackup(request);
 }

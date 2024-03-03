@@ -14,12 +14,12 @@ model Post {
   content     String      @db.Text
   thumbnail   String?     @db.VarChar(255)
   publishedAt DateTime?   @db.Timestamp(6)
-  authorId    String      @db.Uuid
+  authorId    String?     @db.Uuid
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
   updatedAt   DateTime    @default(now()) @db.Timestamp(6)
   slug        String
   deletedAt   DateTime?   @db.Timestamp(6)
-  User        User        @relation(fields: [authorId], references: [id])
+  author      User?       @relation(fields: [authorId], references: [id])
   PostAsset   PostAsset[]
 
   @@index([title, authorId])

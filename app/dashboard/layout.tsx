@@ -2,6 +2,7 @@
 
 import getQueryClient from "@app/_configs/queryClient";
 import { authActions } from "@app/_configs/store/slices/authSlice";
+import { apiWithBearer } from "@app/_utils/network";
 import Loader from "@components/commons/Loader";
 import { QueryProvider } from "@components/commons/providers/QueryProvider";
 import ReduxProvider from "@components/commons/providers/ReduxProvider";
@@ -36,13 +37,7 @@ const Wrapper = ({ children }: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchResources = useCallback(async (permissionId: number) => {
-    const response: any = await fetch(`${BASE_URL}/api/resources/permission/${permissionId}`, {
-      headers: { authorization: `Bearer ${Cookies.get("jwt")}` },
-    });
-    if (response?.status === 401) throw new UnauthorizedError("Resources not found");
-    if (!response.ok) throw new BaseError("Resources not found");
-
-    const { data: items = [] } = await response.json();
+    const { data: items } = (await apiWithBearer(`${BASE_URL}/api/resources/permission/${permissionId}`)) || [];
     const resources = new Map();
 
     for (let item of items) {
@@ -65,6 +60,7 @@ const Wrapper = ({ children }: PropsWithChildren) => {
       };
       dispatch(authActions.setCurrentUser(updatedUser));
     } catch (error) {
+      console.log(error);
       clearLocalStorage();
       router.replace("/auth/sign-in");
     } finally {
