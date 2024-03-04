@@ -84,7 +84,7 @@ export default function SignIn() {
       const { accessToken, refreshToken, userId } = (credential as CredentialType) ?? {};
       if (!accessToken || !refreshToken || !userId) throw new UnauthorizedError("Invalid Credentials");
 
-      Cookies.set("jwt", accessToken);
+      Cookies.set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
       const userDetail = await getUserDetail(userId);
       setLocalStorage("userDetail", JSON.stringify(userDetail));
       setLocalStorage(STORAGE_CREDENTIAL_KEY, refreshToken);

@@ -40,7 +40,6 @@ class TaskService {
     if (assigneeId) {
       body = { ...body, assignee: { connect: { id: assigneeId } } };
     }
-    console.log(createdById);
     if (createdById) {
       body = { ...body, createdBy: { connect: { id: createdById } } };
     }

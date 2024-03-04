@@ -35,7 +35,7 @@ const baseQueryWithAuth: BaseQueryFn = async (args, api, extraOptions) => {
 
       if (tokenResponse) {
         const { data: newAccessToken } = tokenResponse as ObjectType;
-        Cookies.set("jwt", newAccessToken, { expires: ACCESS_TOKEN_LIFE });
+        Cookies.set("jwt", newAccessToken, { sameSite: "strict", httpOnly: true });
         // Update the Authorization header for subsequent requests
         const updatedExtraOptions = {
           ...extraOptions,

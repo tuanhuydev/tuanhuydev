@@ -14,7 +14,6 @@ export const apiWithBearer = async (
 ) => {
   const request = await fetch(url, options);
   if (!request.ok && request.status === 401) {
-    console.log("Refreshing token");
     // Refresh the access token using the refresh token
     const token: string = getLocalStorage(STORAGE_CREDENTIAL_KEY);
     if (!token) throw new UnauthorizedError();
@@ -29,7 +28,7 @@ export const apiWithBearer = async (
     if (!newAccessToken) throw new UnauthorizedError();
 
     // Update the request headers with the new access token
-    Cookies.set("jwt", newAccessToken, { expires: ACCESS_TOKEN_LIFE });
+    Cookies.set("jwt", newAccessToken, { sameSite: "strict", httpOnly: true });
 
     // Re-fetch the request with the updated headers
     options.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -43,8 +42,8 @@ export const apiWithBearer = async (
 
 export const verifyJwt = async (jwtToken?: RequestCookie): Promise<JWTPayload> => {
   if (!jwtToken) throw new UnauthorizedError("No JWT found");
-
   const { value: accessToken } = jwtToken;
+
   const { payload } = await jose.jwtVerify(accessToken, ACCESS_TOKEN_SECRET);
   if (!payload) throw new UnauthorizedError("Invalid JWT");
 
