@@ -25,12 +25,14 @@ export class PostController implements BaseController {
     }
   }
 
-  async store(request: NextRequest, params: any) {
+  async store(request: NextRequest, params: ObjectType) {
     const network = Network(request);
     try {
       const { assets = [], ...body } = await request.json();
       const validatedFields = await this.validateStoreRequest(body);
-      if (params) validatedFields.authorId = params.userId;
+      if (params?.userId) {
+        validatedFields.author = { connect: { id: params.userId } };
+      }
       validatedFields.slug = makeSlug(validatedFields.slug);
 
       const newPost = await postService.createPost(validatedFields);

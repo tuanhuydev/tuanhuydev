@@ -2,12 +2,7 @@ import { NODE_ENV, SALT_ROUNDS } from "@lib/configs/constants";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
-import {
-  ACCESS_TOKEN_LIFE,
-  ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_LIFE,
-  REFRESH_TOKEN_SECRET,
-} from "@shared/commons/constants/encryption";
+import { ACCESS_TOKEN_LIFE, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "@shared/commons/constants/encryption";
 import BaseError from "@shared/commons/errors/BaseError";
 import NotFoundError from "@shared/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";

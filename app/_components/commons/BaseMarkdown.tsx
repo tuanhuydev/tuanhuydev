@@ -43,6 +43,7 @@ const ListsToggle = dynamic(async () => (await import("@mdxeditor/editor")).List
 export interface EditorProps {
   value: string;
   onChange?: any;
+  className?: string;
   readOnly?: boolean;
   editorRef?: RefObject<MDXEditorMethods | null>;
   placeholder?: string;
@@ -65,6 +66,7 @@ export default memo(function BaseMarkdown({
   value = EMPTY_STRING,
   onChange,
   readOnly = false,
+  className = "",
   placeholder = "Placeholder",
 }: EditorProps) {
   const getPlugins = useMemo(() => {
@@ -102,18 +104,16 @@ export default memo(function BaseMarkdown({
     <div
       className={`block gap-4 flex-1 !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
-      } focus-within:outline outline-2 transition-all ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
-      <div className="flex-1 relative">
-        <MDXEditor
-          placeholder={placeholder}
-          ref={localRef}
-          markdown={EMPTY_STRING}
-          onChange={onChange}
-          readOnly={readOnly}
-          contentEditableClassName="min-[16rem]"
-          plugins={getPlugins}
-        />
-      </div>
+      } ${className} focus-within:outline outline-2 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
+      <MDXEditor
+        placeholder={placeholder}
+        ref={localRef}
+        markdown={EMPTY_STRING}
+        onChange={onChange}
+        readOnly={readOnly}
+        contentEditableClassName="min-[16rem]"
+        plugins={getPlugins}
+      />
     </div>
   );
 });

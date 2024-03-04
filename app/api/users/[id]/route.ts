@@ -1,23 +1,14 @@
 import UserController from "@lib/controllers/UserController";
-import withAuthMiddleware from "@lib/middlewares/authMiddleware";
 import { NextRequest } from "next/server";
-
-const handleUpdate = withAuthMiddleware(async (request: NextRequest, params: any) => {
-  return UserController.update(request, params);
-});
-
-const handleDelete = withAuthMiddleware(async (request: NextRequest, params: any) => {
-  return UserController.delete(request, params);
-});
 
 export async function GET(request: NextRequest, { params }: any) {
   return UserController.getOne(request, params);
 }
 
 export async function PATCH(request: NextRequest, { params }: any) {
-  return handleUpdate(request, params);
+  return UserController.update(request, params);
 }
 
 export async function DELETE(request: NextRequest, { params }: any) {
-  return handleDelete(request, params);
+  return UserController.delete(request, params);
 }

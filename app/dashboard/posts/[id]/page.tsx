@@ -17,6 +17,6 @@ function Page({ params, setTitle, setGoBack }: any) {
     if (setGoBack) setGoBack(true);
   }, [setTitle, setGoBack]);
 
-  return <div className="grow overflow-auto">{isLoading ? <Loader /> : <PostForm post={post} />}</div>;
+  return <div className="grow h-full">{isLoading ? <Loader /> : <PostForm post={post} />}</div>;
 }
 export default WithPermission(Page, Permissions.EDIT_POST);
