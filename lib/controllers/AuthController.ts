@@ -3,6 +3,7 @@ import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
 
@@ -30,6 +31,7 @@ class AuthController {
       const body = await request.json();
       const { email, password } = await this.validateSignIn(body);
       const auth = await AuthService.signIn(email, password);
+      cookies().set("jwt", auth?.accessToken ?? "", { sameSite: "strict", httpOnly: true });
       if (!auth) throw new UnauthorizedError("Authenticate Failed");
       return network.successResponse(auth);
     } catch (error) {

@@ -1,5 +1,7 @@
 import { verifyJwt } from "@app/_utils/network";
 import LogService from "@lib/services/LogService";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import { cookies } from "next/headers";
 import { NextResponse, NextRequest } from "next/server";
 
 export type JWTPayload = {
@@ -18,7 +20,10 @@ export function dashboardMiddleware(request: NextRequest) {
 
 export async function apiMiddleware(request: NextRequest) {
   try {
-    await verifyJwt(request.cookies.get("jwt"));
+    const jwt = cookies().get("jwt");
+    if (!jwt) throw new UnauthorizedError("No JWT found");
+
+    await verifyJwt(jwt?.value);
   } catch (error: any) {
     LogService.log(`[MIDDLEWARE ERROR]: ${(error as Error).message}, ${request.url}`);
     return Response.json({ success: false, message: "Authentication Failed" }, { status: 401 });

@@ -7,12 +7,10 @@ import Loader from "@components/commons/Loader";
 import { QueryProvider } from "@components/commons/providers/QueryProvider";
 import ReduxProvider from "@components/commons/providers/ReduxProvider";
 import { BASE_URL } from "@lib/configs/constants";
-import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { clearLocalStorage, getLocalStorage } from "@lib/shared/utils/dom";
 import "@styles/globals.scss";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren, useCallback, useLayoutEffect, useState } from "react";
@@ -48,11 +46,10 @@ const Wrapper = ({ children }: PropsWithChildren) => {
 
   const verifyAuth = useCallback(async () => {
     try {
-      const hasJwtKey = Cookies.get("jwt");
       const hasRefreshToken = getLocalStorage("credential");
       const userDetail = getLocalStorage("userDetail");
 
-      if (!hasJwtKey || !hasRefreshToken || !userDetail) throw new UnauthorizedError("Unauthorized");
+      if (!hasRefreshToken || !userDetail) throw new UnauthorizedError("Unauthorized");
       const resources = await fetchResources(userDetail.permissionId);
       const updatedUser = {
         ...userDetail,
