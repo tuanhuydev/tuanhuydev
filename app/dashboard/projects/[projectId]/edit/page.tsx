@@ -1,31 +1,29 @@
 "use client";
 
+import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import Loader from "@app/_components/commons/Loader";
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { useGetProjectQuery } from "@app/_configs/store/slices/apiSlice";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 const ProjectForm = dynamic(async () => (await import("@app/_components/ProjectModule/ProjectForm")).default, {
   ssr: false,
 });
 
-function Page({ params, setTitle, setGoBack }: any) {
+function Page({ params }: any) {
   const router = useRouter();
   const { data, isLoading } = useGetProjectQuery(params.projectId as string);
-
-  useEffect(() => {
-    if (setTitle) setTitle("Edit Project");
-    if (setGoBack) setGoBack(true);
-  }, [setTitle, setGoBack]);
 
   const navigateBack = () => router.back();
 
   if (isLoading) return <Loader />;
 
-  return <ProjectForm project={data} callback={navigateBack} />;
+  return (
+    <PageContainer title="Edit Project" goBack>
+      <ProjectForm project={data} callback={navigateBack} />
+    </PageContainer>
+  );
 }
 
-export default WithPermission(Page, Permissions.EDIT_PROJECT);
+export default Page;

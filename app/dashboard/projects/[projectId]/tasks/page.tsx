@@ -3,45 +3,30 @@
 import TaskFormTitle from "@app/_components/TaskModule/TaskFormTitle";
 import TaskPreview from "@app/_components/TaskModule/TaskPreview";
 import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import BaseInput from "@app/_components/commons/Inputs/BaseInput";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import ConfirmBox from "@app/_components/commons/modals/ConfirmBox";
 import { useGetProjectQuery, useGetTasksByProjectQuery } from "@app/_configs/store/slices/apiSlice";
-import BaseLabel from "@components/commons/BaseLabel";
 import Loader from "@components/commons/Loader";
-import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
+import { BASE_URL } from "@lib/configs/constants";
 import { RootState } from "@lib/configs/types";
 import LogService from "@lib/services/LogService";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
-import { CollapseProps } from "antd/es/collapse";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
-
-const Input = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 
 const TaskForm = dynamic(async () => (await import("@app/_components/TaskModule/TaskForm")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
+
 const TaskRow = dynamic(async () => (await import("@app/_components/TaskModule/TaskRow")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Collapse = dynamic(async () => (await import("antd/es/collapse")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -85,6 +70,7 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
 
   const isEditMode = mode === COMPONENT_MODE.EDIT;
@@ -96,6 +82,7 @@ function Page({ params, setTitle, setGoBack }: any) {
     },
     [setSelectedTask, setOpenDrawer],
   );
+  const toggleConfirm = (value: boolean) => () => setOpenConfirm(value);
 
   const createNewTask = () => {
     setMode(COMPONENT_MODE.EDIT);
@@ -111,11 +98,22 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   const toggleMode = (value: string) => setMode(value);
 
+  const deleteTask = useCallback((task: TaskStatusAssignee) => {
+    console.log("deleteTask", task);
+  }, []);
+
   const renderTasks = useCallback(() => {
     return tasks.map((task: TaskStatusAssignee) => (
-      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} showAssignee task={task} key={task.id} />
+      <TaskRow
+        active={task.id === selectedTask?.id}
+        onDelete={deleteTask}
+        onSelect={onSelectTask}
+        showAssignee
+        task={task}
+        key={task.id}
+      />
     ));
-  }, [selectedTask?.id, tasks, onSelectTask]);
+  }, [tasks, selectedTask?.id, deleteTask, onSelectTask]);
 
   const onError = useCallback((error: Error) => {
     LogService.log((error as Error).message);
@@ -125,16 +123,7 @@ function Page({ params, setTitle, setGoBack }: any) {
     if (!isProjectTaskLoading && !tasks.length) return <Empty className="my-36" />;
     if (isProjectTaskLoading) return <Loader />;
 
-    const taskGroups: CollapseProps["items"] = [
-      {
-        key: "backlog",
-        label: "[ backlog ]",
-        children: renderTasks(),
-        style: panelStyle,
-      },
-    ];
-
-    return <Collapse items={taskGroups} bordered={false} ghost defaultActiveKey={["backlog"]} />;
+    return renderTasks();
   }, [isProjectTaskLoading, tasks.length, renderTasks]);
 
   useEffect(() => {
@@ -218,18 +207,11 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   return (
     <Fragment>
-      <div className="mb-3 flex items-center">
-        <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
+      <div className="mb-3 flex gap-2 items-center">
+        <BaseInput placeholder="Find your task" className="grow mr-2 rounded-sm" startAdornment={<SearchOutlined />} />
         <div className="flex gap-3">
-          {resources.has(Permissions.CREATE_TASK) && (
-            <Button
-              size="large"
-              type="primary"
-              onClick={createNewTask}
-              className="rounded-sm"
-              icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
-              New Task
-            </Button>
+          {resources.has(UserPermissions.CREATE_TASK) && (
+            <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
           )}
         </div>
       </div>
@@ -238,14 +220,21 @@ function Page({ params, setTitle, setGoBack }: any) {
         <TaskFormTitle
           task={selectedTask}
           mode={mode as "VIEW" | "EDIT"}
-          allowEditTask={selectedTask && resources.has(Permissions.EDIT_TASK)}
+          allowEditTask={selectedTask && resources.has(UserPermissions.EDIT_TASK)}
           onClose={toggleDrawer(false)}
           onToggle={toggleMode}
+          onTriggerDelete={toggleConfirm(true)}
         />
         {RenderTaskDetails}
       </Drawer>
+      <ConfirmBox
+        open={openConfirm}
+        title="Delete Task"
+        description="Are you sure to delete this task ?"
+        onClose={toggleConfirm(false)}
+      />
     </Fragment>
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_TASKS);
+export default Page;

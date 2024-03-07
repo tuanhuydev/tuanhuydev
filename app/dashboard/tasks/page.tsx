@@ -1,6 +1,8 @@
 "use client";
 
 import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
+import BaseInput from "@app/_components/commons/Inputs/BaseInput";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import { useGetTasksQuery } from "@app/_configs/store/slices/apiSlice";
 import PageContainer from "@components/DashboardModule/PageContainer";
 import Loader from "@components/commons/Loader";
@@ -157,17 +159,10 @@ function Page() {
 
   return (
     <PageContainer title="Tasks">
-      <div className="mb-3 flex items-center">
-        <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
+      <div className="mb-3 flex gap-2 items-center">
+        <BaseInput placeholder="Find your task" className="grow mr-2 rounded-sm" startAdornment={<SearchOutlined />} />
         <div className="flex gap-3">
-          <Button
-            size="large"
-            type="primary"
-            onClick={createNewTask}
-            className="rounded-sm"
-            icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
-            New Task
-          </Button>
+          <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
         </div>
       </div>
       <TaskList tasks={tasks} selectedTask={selectedTask} onSelectTask={onSelectTask} isLoading={isTasksLoading} />

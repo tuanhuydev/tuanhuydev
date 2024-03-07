@@ -1,9 +1,7 @@
 "use client";
 
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
 import { useGetUsersQuery } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
 import { ColumnsType } from "antd/es/table";
@@ -101,4 +99,4 @@ function Page({ setTitle }: any) {
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_USERS);
+export default Page;

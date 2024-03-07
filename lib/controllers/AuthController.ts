@@ -31,7 +31,13 @@ class AuthController {
       const body = await request.json();
       const { email, password } = await this.validateSignIn(body);
       const auth = await AuthService.signIn(email, password);
-      cookies().set("jwt", auth?.accessToken ?? "", { sameSite: "strict", httpOnly: true });
+
+      cookies().set("jwt", auth?.accessToken ?? "", {
+        sameSite: "strict",
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 30), // 30 minutes
+      });
+
       if (!auth) throw new UnauthorizedError("Authenticate Failed");
       return network.successResponse(auth);
     } catch (error) {

@@ -163,6 +163,29 @@ class ProjectService {
     const projectTasks = await TaskService.getTasksByProjectId(projectId);
     return projectTasks;
   }
+
+  async getProjectUsers(projectId: number) {
+    const projectUsers = await prismaClient.projectUser.findMany({
+      where: { projectId },
+      include: {
+        User: true,
+      },
+    });
+    return projectUsers;
+  }
+
+  async getProjectsByUser(userId: string) {
+    const projects = await prismaClient.project.findMany({
+      where: {
+        users: {
+          some: {
+            userId,
+          },
+        },
+      },
+    });
+    return projects;
+  }
 }
 
 export default ProjectService.makeSingleton();

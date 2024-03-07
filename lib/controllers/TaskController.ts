@@ -8,6 +8,7 @@ import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import * as jose from "jose";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string, number } from "yup";
 
@@ -49,7 +50,7 @@ export class TaskController implements BaseController {
       const validatedBody = await this.validate(body, schema);
 
       validatedBody.statusId = parseInt(validatedBody.statusId, 10);
-      const { userId } = await verifyJwt(request.cookies.get("jwt"));
+      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
       validatedBody.createdById = userId;
 
       const newTask = await TaskService.createTask(validatedBody);

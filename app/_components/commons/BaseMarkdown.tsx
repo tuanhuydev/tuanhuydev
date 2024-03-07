@@ -104,7 +104,7 @@ export default memo(function BaseMarkdown({
     <div
       className={`block gap-4 flex-1 !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
-      } ${className} focus-within:outline outline-2 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
+      } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
       <MDXEditor
         placeholder={placeholder}
         ref={localRef}

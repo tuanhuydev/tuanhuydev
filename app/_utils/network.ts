@@ -2,10 +2,10 @@ import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
 import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import { JWTPayload } from "@lib/shared/interfaces/jwt";
 import { getLocalStorage } from "@lib/shared/utils/dom";
 import * as jose from "jose";
 import Cookies from "js-cookie";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export const apiWithBearer = async (
   url: string,
@@ -39,15 +39,12 @@ export const apiWithBearer = async (
   return response;
 };
 
-export const verifyJwt = async (jwtToken?: string): Promise<jose.JWTPayload> => {
-  // if (!jwtToken) throw new UnauthorizedError("No JWT found");
-  // const { value: accessToken } = jwtToken;
-
+export const verifyJwt = async (jwtToken?: string): Promise<JWTPayload> => {
   const { payload } = await jose.jwtVerify(jwtToken as string, ACCESS_TOKEN_SECRET);
   if (!payload) throw new UnauthorizedError("Invalid JWT");
 
-  const { userEmail, userId, exp } = payload as jose.JWTPayload;
+  const { userEmail, userId, exp } = payload as JWTPayload;
   if (!userEmail || !userId || !exp) throw new UnauthorizedError("Invalid JWT");
 
-  return payload as jose.JWTPayload;
+  return payload as JWTPayload;
 };
