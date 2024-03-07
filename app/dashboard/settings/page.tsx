@@ -11,7 +11,6 @@ import {
 } from "@app/_configs/store/slices/apiSlice";
 import ConfigSection from "@components/SettingModule/ConfigSection";
 import { BASE_URL } from "@lib/configs/constants";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
@@ -228,4 +227,4 @@ function Page({ setTitle }: any) {
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_SETTINGS);
+export default Page;

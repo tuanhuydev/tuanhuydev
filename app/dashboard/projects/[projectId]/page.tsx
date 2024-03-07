@@ -5,7 +5,7 @@ import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import { useGetProjectQuery, useGetTasksByProjectQuery } from "@app/_configs/store/slices/apiSlice";
 import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
@@ -170,4 +170,4 @@ function Page({ params, setTitle, setGoBack }: any) {
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_PROJECTS);
+export default Page;

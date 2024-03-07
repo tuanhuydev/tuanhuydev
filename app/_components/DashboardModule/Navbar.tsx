@@ -1,17 +1,14 @@
 "use client";
 
 import ThemeToggle from "../commons/ThemeToggle";
-import { authActions } from "@app/_configs/store/slices/authSlice";
-import { EMPTY_OBJECT } from "@lib/configs/constants";
+import BaseButton from "../commons/buttons/BaseButton";
 import { RootState } from "@lib/configs/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
-
-const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
 
 const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
   ssr: false,
@@ -33,7 +30,6 @@ interface NavbarProps extends PropsWithChildren {
 const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
-  const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
 
   // State
@@ -41,9 +37,8 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
 
   const signOut = useCallback(() => {
     localStorage.clear();
-    dispatch(authActions.setAuth(EMPTY_OBJECT));
     router.replace("/auth/sign-in");
-  }, [dispatch, router]);
+  }, [router]);
 
   const toggleUserMenu = useCallback(
     (value: boolean) => () => {
@@ -61,9 +56,8 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
       return (
         <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl text-primary dark:text-slate-50">
           {goBack && (
-            <Button
-              type="text"
-              className="bg-primary"
+            <BaseButton
+              variants="text"
               onClick={() => router.back()}
               icon={<KeyboardArrowLeftOutlined className="!fill-primary dark:!fill-slate-50" />}
             />
@@ -94,12 +88,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         trigger="click"
         open={open}
         onOpenChange={toggleUserMenu(false)}>
-        <Button
-          shape="circle"
-          type="text"
-          size="large"
-          icon={<PersonOutlineOutlined className="!fill-primary dark:!fill-slate-50" />}
-        />
+        <BaseButton variants="text" icon={<PersonOutlineOutlined />} />
       </Popover>
     );
   }, [currentUser.email, currentUser.name, open, toggleUserMenu]);
@@ -107,7 +96,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   return (
     <div className="px-3 py-2  text-primary  dark:text-slate-50 flex item-center justify-between">
       {renderStart}
-      <div>
+      <div className="flex gap-1 items-center">
         <ThemeToggle />
         {renderEnd}
       </div>

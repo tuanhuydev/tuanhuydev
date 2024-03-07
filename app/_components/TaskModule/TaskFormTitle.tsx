@@ -1,12 +1,13 @@
 "use client";
 
 import Badge from "../commons/Badge";
+import BaseButton from "../commons/buttons/BaseButton";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import Button from "antd/es/button";
 import dynamic from "next/dynamic";
 import React, { Fragment, useMemo } from "react";
 
@@ -15,9 +16,11 @@ const WithTooltip = dynamic(async () => (await import("@components/commons/hocs/
 export interface TaskFormTitleProps {
   task: TaskStatusAssignee | null;
   mode: "VIEW" | "EDIT";
-  allowEditTask: boolean;
+  allowEditTask?: boolean;
+  allowDeleteTask?: boolean;
   onClose: (open: boolean) => void;
   onToggle: (mode: string) => void;
+  onTriggerDelete?: () => void;
 }
 
 const COMPONENT_MODE = {
@@ -25,7 +28,14 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-export default function TaskFormTitle({ task, mode, allowEditTask = false, onClose, onToggle }: TaskFormTitleProps) {
+export default function TaskFormTitle({
+  task,
+  mode,
+  allowEditTask = false,
+  onClose,
+  onTriggerDelete,
+  onToggle,
+}: TaskFormTitleProps) {
   const isViewMode = mode === "VIEW";
   const isEditMode = mode === "EDIT";
 
@@ -37,36 +47,32 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     };
 
     return (
-      <div className="px-2 flex items-center">
+      <div className="px-2 flex gap-2 items-center relative">
         {allowEditTask && (
           <Fragment>
             {isViewMode && (
-              <Button
-                type="link"
+              <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.EDIT)}
-                className="!leading-none"
-                icon={<EditOutlined className="!text-lg text-white" />}
+                icon={<EditOutlined className="!text-lg text-slate-50" />}
               />
             )}
             {isEditMode && (
-              <Button
-                type="link"
-                className="!leading-none"
+              <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-white" />}
+                icon={<EditOffOutlined className="!text-lg text-slate-50" />}
               />
             )}
           </Fragment>
         )}
-        <Button
-          type="primary"
-          onClick={handleClose}
-          className="!leading-none"
-          icon={<CloseOutlined className="!text-lg text-white" />}
+        <BaseButton
+          className="border-r-2 border-red-400"
+          onClick={onTriggerDelete}
+          icon={<DeleteOutlined className="text-slate-50 !text-lg" />}
         />
+        <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
       </div>
     );
-  }, [allowEditTask, isEditMode, isViewMode, onClose, onToggle]);
+  }, [allowEditTask, isEditMode, isViewMode, onClose, onToggle, onTriggerDelete]);
 
   const RenderTitle = useMemo(() => {
     const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";

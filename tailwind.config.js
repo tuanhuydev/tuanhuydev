@@ -7,6 +7,7 @@ module.exports = {
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./lib/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      textColor: ["active"],
       height: {
         "screen-d": "100dvh",
       },
@@ -38,6 +39,15 @@ module.exports = {
       },
       gridTemplateColumns: {
         homePosts: "repeat(6, minmax(50px, 1fr))",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0, transform: "translateY(64px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 0.25s ease-in",
       },
     },
   },

@@ -2,7 +2,7 @@
 
 import Loader from "@app/_components/commons/Loader";
 import WithPermission from "@app/_components/commons/hocs/WithPermission";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 
@@ -20,4 +20,4 @@ function Page({ setTitle, setGoBack }: any) {
   return <PostForm />;
 }
 
-export default WithPermission(Page, Permissions.CREATE_POST);
+export default Page;
