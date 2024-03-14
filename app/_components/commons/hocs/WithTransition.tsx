@@ -1,5 +1,9 @@
 import React, { PropsWithChildren } from "react";
 
-export default function WithTransition({ children }: PropsWithChildren) {
-  return <div className="motion-safe:animate-fadeIn">{children}</div>;
+export interface WithTransitionProps extends PropsWithChildren {
+  className?: string;
+}
+
+export default function WithTransition({ className = "", children }: WithTransitionProps) {
+  return <div className={`motion-safe:animate-fadeIn ${className}`}>{children}</div>;
 }

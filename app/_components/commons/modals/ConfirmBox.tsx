@@ -36,13 +36,13 @@ export default function ConfirmBox({
     <BaseModal
       open={open}
       onClose={onClose}
-      className="w-sreen h-screen flex justify-center items-center z-1000 relative top-0 left-0 bg-primary bg-opacity-5"
       slots={{
+        root: ({ children }: PropsWithChildren) => <div>{children}</div>,
         backdrop: ({ children }: PropsWithChildren) => (
-          <div className="flex justify-center items-center">hello{children}</div>
+          <div className="absolute top-0 z-[2000] w-screen h-screen bg-slate-50 opacity-50 ">{children}</div>
         ),
       }}>
-      <div className="z-1000 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white border border-solid border-slate-100 shadow-sm rounded-md flex flex-col">
+      <div className="z-[3000] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white border border-solid border-slate-100 shadow-sm rounded-md flex flex-col">
         {title && <h4 className="text-lg mt-0 mb-3">{title}</h4>}
         {description && <p className=" mt-0 mb-3">{description}</p>}
         <div className="flex gap-2 justify-end w-full self-end">

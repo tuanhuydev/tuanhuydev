@@ -1,20 +1,25 @@
 "use client";
 
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import { useGetPostQuery } from "@app/_configs/store/slices/apiSlice";
+import { usePostQuery } from "@app/queries/postQueries";
 import Loader from "@components/commons/Loader";
 import dynamic from "next/dynamic";
 import React from "react";
 
 const PostForm = dynamic(() => import("@components/PostModule/PostForm"), { ssr: false, loading: () => <Loader /> });
 
-function Page({ params }: any) {
-  const { data: post, isLoading } = useGetPostQuery(params.id as string);
+interface PageProps {
+  params: any;
+}
+
+export default function Page({ params }: PageProps) {
+  const { data: post } = usePostQuery(Number.parseInt(params.id as unknown as string, 10));
 
   return (
     <PageContainer title="Edit Post" goBack>
-      <div className="grow h-full">{isLoading ? <Loader /> : <PostForm post={post} />}</div>
+      <div className="grow h-full">
+        <PostForm post={post} />
+      </div>
     </PageContainer>
   );
 }
-export default Page;

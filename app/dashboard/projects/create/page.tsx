@@ -1,21 +1,17 @@
-"use client";
-
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
+import Loader from "@app/_components/commons/Loader";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
-const ProjectForm = dynamic(() => import("@components/ProjectModule/ProjectForm"), { ssr: false });
+const ProjectForm = dynamic(() => import("@components/ProjectModule/ProjectForm"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
-function Page({ setTitle, setGoBack }: any) {
-  const router = useRouter();
-
-  const navigateBack = () => {
-    router.back();
-  };
+async function Page() {
   return (
     <PageContainer title="Create new project" goBack>
-      <ProjectForm callback={navigateBack} />;
+      <ProjectForm />;
     </PageContainer>
   );
 }

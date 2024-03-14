@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useMemo } from "react";
-import { useSelector } from "react-redux";
 
 export interface ItemProps {
   id: string;
@@ -18,7 +17,7 @@ const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, {
 
 export default function Item({ label, icon, path, id }: ItemProps) {
   const pathName = usePathname();
-  const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
+  const sidebarOpen = false;
 
   const activeClass = isPathActive(pathName, path)
     ? "bg-primary text-slate-50 dark:text-slate-50 dark:bg-slate-800"

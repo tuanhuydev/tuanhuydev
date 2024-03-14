@@ -81,7 +81,6 @@ export default function SignIn() {
       // const userDetail = await getUserDetail(userId);
       // setLocalStorage("userDetail", JSON.stringify(userDetail));
       router.push("/dashboard/home");
-      console.log("router push");
     } catch (error) {
       console.log((error as Error).message);
       api.error({ message: (error as BaseError).message });

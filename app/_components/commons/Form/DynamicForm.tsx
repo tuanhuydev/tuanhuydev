@@ -104,7 +104,7 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
                 loading: () => <Loader />,
               },
             );
-            return <DynamicSelect key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicSelect key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "richeditor":
             const DynamicMarkdown = dynamic(
               async () => (await import("@components/commons/Form/DynamicMarkdown")).default,

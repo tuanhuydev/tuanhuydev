@@ -1,4 +1,5 @@
 import BaseError from "@lib/shared/commons/errors/BaseError";
+import { Status } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
 
 export interface StatusFilterType extends FilterType {
@@ -59,7 +60,7 @@ class StatusService {
     }
   }
 
-  async createStatus(data: ObjectType) {
+  async createStatus(data: Partial<Status>) {
     try {
       return await prismaClient.status.create({ data: data as any });
     } catch (error) {
