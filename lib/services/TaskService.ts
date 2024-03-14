@@ -46,7 +46,7 @@ class TaskService {
     return await prismaClient.task.create({ data: body as any });
   }
 
-  async getTasks(filter?: FilterType) {
+  async getTasks(filter?: FilterType, userId?: string) {
     try {
       let defaultWhere: ObjectType = { deletedAt: null };
       if (!filter)

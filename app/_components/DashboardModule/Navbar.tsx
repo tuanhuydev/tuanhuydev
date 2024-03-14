@@ -2,11 +2,9 @@
 
 import ThemeToggle from "../commons/ThemeToggle";
 import BaseButton from "../commons/buttons/BaseButton";
-import { RootState } from "@lib/configs/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 
 const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
 
@@ -30,7 +28,6 @@ interface NavbarProps extends PropsWithChildren {
 const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
-  const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
 
   // State
   const [open, setOpenUserMenu] = useState(false);
@@ -72,10 +69,10 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     return (
       <Popover
         placement="bottom"
-        title={currentUser.name}
+        title={"hello"}
         content={
           <ul className="block m-0 p-0 list-none">
-            <li className="mb-2 text-xs text-slate-500">{currentUser.email}</li>
+            <li className="mb-2 text-xs text-slate-500">{"email"}</li>
             <li
               className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer flex items-center"
               onClick={toggleUserMenu(true)}>
@@ -91,7 +88,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         <BaseButton variants="text" icon={<PersonOutlineOutlined />} />
       </Popover>
     );
-  }, [currentUser.email, currentUser.name, open, toggleUserMenu]);
+  }, [open, toggleUserMenu]);
 
   return (
     <div className="px-3 py-2  text-primary  dark:text-slate-50 flex item-center justify-between">

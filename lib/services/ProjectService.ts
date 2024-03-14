@@ -171,7 +171,9 @@ class ProjectService {
         User: true,
       },
     });
-    return projectUsers;
+
+    if (!projectUsers.length) return [];
+    return projectUsers.map(({ User }: { User: User }) => User);
   }
 
   async getProjectsByUser(userId: string) {

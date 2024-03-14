@@ -7,7 +7,6 @@ import React from "react";
 export interface TaskRowProps {
   onSelect: (task: TaskStatusAssignee) => void;
   onPin?: (task: TaskStatusAssignee) => void;
-  onDelete?: (task: TaskStatusAssignee) => void;
   task: TaskStatusAssignee;
   active: boolean;
   isToday?: boolean;
@@ -18,7 +17,6 @@ export default function TaskRow({
   task,
   onSelect,
   onPin,
-  onDelete,
   active = false,
   isToday = false,
   showAssignee = false,

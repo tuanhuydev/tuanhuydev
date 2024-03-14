@@ -2,14 +2,18 @@
 
 import Badge from "../commons/Badge";
 import BaseButton from "../commons/buttons/BaseButton";
+import ConfirmBox from "../commons/modals/ConfirmBox";
+import { useDeleteTaskMutation } from "@app/queries/taskQueries";
 import { EMPTY_STRING } from "@lib/configs/constants";
+import LogService from "@lib/services/LogService";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import { notification } from "antd";
 import dynamic from "next/dynamic";
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, useCallback, useMemo, useState } from "react";
 
 const WithTooltip = dynamic(async () => (await import("@components/commons/hocs/WithTooltip")).default, { ssr: false });
 
@@ -20,7 +24,6 @@ export interface TaskFormTitleProps {
   allowDeleteTask?: boolean;
   onClose: (open: boolean) => void;
   onToggle: (mode: string) => void;
-  onTriggerDelete?: () => void;
 }
 
 const COMPONENT_MODE = {
@@ -28,24 +31,38 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-export default function TaskFormTitle({
-  task,
-  mode,
-  allowEditTask = false,
-  onClose,
-  onTriggerDelete,
-  onToggle,
-}: TaskFormTitleProps) {
+export default function TaskFormTitle({ task, mode, allowEditTask = false, onClose, onToggle }: TaskFormTitleProps) {
+  const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
+
   const isViewMode = mode === "VIEW";
   const isEditMode = mode === "EDIT";
+  const hasTask = !!task;
+
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+
+  const toggleConfirm = useCallback((open: boolean) => () => setOpenConfirm(open), [setOpenConfirm]);
+
+  const handleClose = useCallback(() => onClose(false), [onClose]);
+
+  const toggleMode = useCallback(
+    (mode: string) => () => {
+      onToggle(mode as "VIEW" | "EDIT");
+    },
+    [onToggle],
+  );
+  const handleDelete = useCallback(async () => {
+    try {
+      await deleteTaskMutation((task as TaskStatusAssignee).id.toString());
+      notification.success({ message: "Task deleted successfully" });
+    } catch (error) {
+      LogService.log(error);
+    } finally {
+      onClose(false);
+      setOpenConfirm(false);
+    }
+  }, [deleteTaskMutation, onClose, task]);
 
   const RenderHeaderExtra = useMemo(() => {
-    const handleClose = () => onClose(false);
-
-    const toggleMode = (mode: string) => () => {
-      onToggle(mode as "VIEW" | "EDIT");
-    };
-
     return (
       <div className="px-2 flex gap-2 items-center relative">
         {allowEditTask && (
@@ -64,15 +81,17 @@ export default function TaskFormTitle({
             )}
           </Fragment>
         )}
-        <BaseButton
-          className="border-r-2 border-red-400"
-          onClick={onTriggerDelete}
-          icon={<DeleteOutlined className="text-slate-50 !text-lg" />}
-        />
+        {hasTask && (
+          <BaseButton
+            className="border-r-2 border-red-400"
+            onClick={toggleConfirm(true)}
+            icon={<DeleteOutlined className="text-slate-50 !text-lg" />}
+          />
+        )}
         <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
       </div>
     );
-  }, [allowEditTask, isEditMode, isViewMode, onClose, onToggle, onTriggerDelete]);
+  }, [allowEditTask, handleClose, hasTask, isEditMode, isViewMode, toggleConfirm, toggleMode]);
 
   const RenderTitle = useMemo(() => {
     const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
@@ -92,6 +111,13 @@ export default function TaskFormTitle({
     <div className="bg-slate-700 mb-3 flex justify-between">
       {RenderTitle}
       {RenderHeaderExtra}
+      <ConfirmBox
+        open={openConfirm}
+        title="Delete Task"
+        description="Are you sure to delete this task ?"
+        onClose={toggleConfirm(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

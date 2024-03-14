@@ -1,42 +1,62 @@
 "use client";
 
-import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/_configs/store/slices/apiSlice";
+import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
-import BaseError from "@lib/shared/commons/errors/BaseError";
+import LogService from "@lib/services/LogService";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect } from "react";
+import { UseFormReturn } from "react-hook-form";
 
 const DynamicForm = dynamic(async () => (await import("@components/commons/Form/DynamicForm")).default, { ssr: false });
 export interface TaskFormProps {
   task?: Task;
   config: DynamicFormConfig;
-  onDone?: (response: ObjectType) => void;
+  onDone?: () => void;
   onError?: (error: Error) => void;
   projectId?: number;
 }
 
 export default function TaskForm({ task, projectId, onDone, onError, config }: TaskFormProps) {
-  const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
-  const [updateTask] = useUpdateTaskMutation();
+  const { mutateAsync: mutateCrateTask, isPending: isCreating, isSuccess: isCreateSuccess } = useCreateTaskMutation();
+  const { mutateAsync: mutateUpdateTask, isPending: isUpdating, isSuccess: isUpdateSuccess } = useUpdateTaskMutation();
 
-  const submit = async ({ id: taskId, assignee, createdBy, ...restForm }: ObjectType) => {
+  const isUpdatingTask: boolean = !!task;
+
+  const createTask = async (formData: ObjectType, form?: UseFormReturn) => {
     try {
-      const response = taskId
-        ? await updateTask({ ...restForm, taskId })
-        : await createTask({
-            ...restForm,
-            projectId,
-          });
-      if ((response as ObjectType)?.error) throw new BaseError("Unable to save task");
-      if (onDone) onDone(response);
+      const newTaskBody = { ...formData, projectId };
+      await mutateCrateTask(newTaskBody);
     } catch (error) {
-      if (onError) onError(error as Error);
+      LogService.log(error);
+    } finally {
+      form?.reset();
     }
   };
+
+  const updateTask = async (formData: ObjectType, form?: UseFormReturn) => {
+    const { id, description, projectId, statusId, title, assigneeId, ...restFormData } = formData;
+
+    try {
+      await mutateUpdateTask({ id, description, projectId, statusId, title, assigneeId });
+    } catch (error) {
+      LogService.log(error);
+    } finally {
+      form?.reset();
+    }
+  };
+
+  const submit = async (formData: ObjectType, form?: UseFormReturn) => {
+    if (isUpdatingTask) return updateTask(formData);
+    return createTask(formData, form);
+  };
+
+  useEffect(() => {
+    if ((isCreateSuccess || isUpdateSuccess) && onDone) onDone();
+  }, [isCreateSuccess, isUpdateSuccess, onDone]);
   return (
     <DynamicForm
-      disabled={isCreating}
+      disabled={isCreating || isUpdating}
       config={config}
       mapValues={task}
       submitProps={{

@@ -53,8 +53,8 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
         </span>
       ) : (
         <>
-          {icon && label && <span className="mr-2">{icon}</span>}
-          {icon && !label && <span>{icon}</span>}
+          {icon && label && <span className="mr-1 leading-none flex items-center">{icon}</span>}
+          {icon && !label && <span className="leading-none flex items-center">{icon}</span>}
           {label && <span className="shrink-0 text-sm">{label}</span>}
         </>
       )}
