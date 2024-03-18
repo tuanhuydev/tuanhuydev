@@ -75,7 +75,7 @@ class AuthService {
 
       const refreshToken = await new jose.SignJWT({ userId, userEmail })
         .setProtectedHeader({ alg: "HS256" })
-        .setExpirationTime("1h")
+        .setExpirationTime("7d")
         .setIssuedAt()
         .sign(REFRESH_TOKEN_SECRET);
       return { userId, accessToken, refreshToken };

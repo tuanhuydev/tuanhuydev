@@ -1,21 +1,24 @@
 "use client";
 
+import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import Badge from "@app/_components/commons/Badge";
 import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import {
   useCreateStatusMutation,
   useDeleteStatusMutation,
-  useGetStatusQuery,
+  useStatusQuery,
   useUpdateStatusMutation,
-} from "@app/_configs/store/slices/apiSlice";
+} from "@app/queries/statusQueries";
 import ConfigSection from "@components/SettingModule/ConfigSection";
 import { BASE_URL } from "@lib/configs/constants";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
+import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Status } from "@prisma/client";
+import App from "antd/es/app";
 import { ColumnsType } from "antd/es/table";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
@@ -56,6 +59,7 @@ const statusFormConfig: DynamicFormConfig = {
           { label: "User", value: "user" },
         ],
       },
+      validate: { required: true },
     },
     {
       name: "color",
@@ -64,24 +68,40 @@ const statusFormConfig: DynamicFormConfig = {
       options: {
         placeholder: "Color",
       },
+      validate: { required: true },
     },
   ],
 };
 
-function Page({ setTitle }: any) {
-  const { data: status = [], isLoading, isError: isStatusError } = useGetStatusQuery({});
-  const [deleteStatus, { isSuccess: deleteStatusSuccess }] = useDeleteStatusMutation();
-  const [createStatus, { isSuccess: createStatusSuccess }] = useCreateStatusMutation();
-  const [updateStatus, { isSuccess: updateStatusSuccess }] = useUpdateStatusMutation();
+function Page() {
+  const { data: status = [], isLoading: isStatusLoading, isError: isStatusError } = useStatusQuery();
+  const {
+    mutate: createStatusMutation,
+    isError: isCreateError,
+    isSuccess: isCreateSuccess,
+  } = useCreateStatusMutation();
+  const {
+    mutate: updateStatusMutation,
+    isError: isUpdateError,
+    isSuccess: isUpdateSuccess,
+  } = useUpdateStatusMutation();
+
+  const {
+    mutate: deleteStatusMutation,
+    isError: isDeleteError,
+    isSuccess: isDeleteSuccess,
+  } = useDeleteStatusMutation();
+
+  const { notification } = App.useApp();
 
   const [statusModal, setStatusModal] = React.useState(false);
   const [editingStatus, setEditingStatus] = React.useState<Status | undefined>(undefined);
 
   const handleDelete = useCallback(
     (id: string) => async () => {
-      await deleteStatus(Number.parseInt(id));
+      await deleteStatusMutation(Number.parseInt(id));
     },
-    [deleteStatus],
+    [deleteStatusMutation],
   );
 
   const triggerStatusForm = (value: boolean, status?: Status) => () => {
@@ -119,14 +139,14 @@ function Page({ setTitle }: any) {
     }
   };
 
-  const submitStatus = async (formData: FieldValues, form?: UseFormReturn) => {
-    const { id, ...restFormData } = formData;
-    const savedRecord = id
-      ? await updateStatus({ id: Number.parseInt(id), ...restFormData })
-      : await createStatus(restFormData);
-
-    if (savedRecord) {
-      setStatusModal(false);
+  const statusFormSubmit = async (formData: FieldValues, form?: UseFormReturn) => {
+    try {
+      const isUpdatingStatus = !!formData?.id;
+      if (isUpdatingStatus) return updateStatusMutation(formData);
+      return createStatusMutation(formData);
+    } catch (error) {
+      LogService.log(error);
+    } finally {
       form?.reset();
     }
   };
@@ -194,19 +214,31 @@ function Page({ setTitle }: any) {
   );
 
   useEffect(() => {
-    if (setTitle) setTitle("Settings");
-  }, [setTitle]);
+    if (isCreateSuccess || isUpdateSuccess || isDeleteSuccess) {
+      setEditingStatus(undefined);
+      setStatusModal(false);
+      notification.success({ message: `Status ${isDeleteSuccess ? "deleted" : "saved"} successfully` });
+    }
+  }, [isCreateSuccess, isDeleteSuccess, isUpdateSuccess, notification]);
+
+  useEffect(() => {
+    if (isCreateError || isUpdateError || isDeleteError) {
+      notification.error({ message: `Status ${isDeleteSuccess ? "deleted" : "saved"} failed` });
+    }
+  }, [isCreateError, isDeleteError, isDeleteSuccess, isUpdateError, notification]);
 
   return (
-    <div>
+    <PageContainer title="Setting">
       <ConfigSection
         title="Status"
         extra={
-          <Button type="primary" onClick={triggerStatusForm(true)}>
-            New Status
-          </Button>
+          <BaseButton
+            label="New Status"
+            icon={<ControlPointOutlined fontSize="small" />}
+            onClick={triggerStatusForm(true)}
+          />
         }>
-        {!isStatusError && <Table loading={isLoading} dataSource={status} columns={getColumns} rowKey="id" />}
+        {!isStatusError && <Table loading={isStatusLoading} dataSource={status} columns={getColumns} rowKey="id" />}
       </ConfigSection>
       <ConfigSection title="Backup" description="Backup application data">
         <div className="flex gap-3">
@@ -220,12 +252,13 @@ function Page({ setTitle }: any) {
         title="Create Status"
         getContainer={false}
         open={statusModal}
+        destroyOnClose
         onCancel={() => setStatusModal(false)}
         footer={null}>
-        <DynamicForm config={statusFormConfig} onSubmit={submitStatus} mapValues={editingStatus} />
+        <DynamicForm config={statusFormConfig} onSubmit={statusFormSubmit} mapValues={editingStatus} />
       </Modal>
-    </div>
+    </PageContainer>
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_SETTINGS);
+export default Page;

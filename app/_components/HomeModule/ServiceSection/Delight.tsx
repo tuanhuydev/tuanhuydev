@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
 export type DelightProps = {
@@ -41,7 +40,7 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
       </h4>
       <div
         className={`text-2xl md:text-5xl font-semibold text-slate-700 dark:text-slate-300 flex gap-2 justify-center `}>
-        <motion.div ref={ref}>{count}</motion.div>+
+        {count}+
       </div>
     </div>
   );

@@ -1,26 +1,20 @@
 "use client";
 
+import Loader from "@app/_components/commons/Loader";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
-import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
+import { BASE_URL } from "@lib/configs/constants";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
-import { getLocalStorage, setLocalStorage } from "@shared/utils/dom";
+import { setLocalStorage } from "@shared/utils/dom";
 import notification from "antd/es/notification";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useCallback, useEffect } from "react";
-
-const Loader = dynamic(async () => await import("@components/commons/Loader"));
+import React, { Fragment, useCallback } from "react";
 
 const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
-});
-
-const WithAnimation = dynamic(() => import("@components/commons/hocs/WithAnimation"), {
-  ssr: false,
 });
 
 type CredentialType = {
@@ -80,46 +74,32 @@ export default function SignIn() {
       });
       if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
 
-      const { data: credential } = await response.json();
-      const { accessToken, refreshToken, userId } = (credential as CredentialType) ?? {};
-      if (!accessToken || !refreshToken || !userId) throw new UnauthorizedError("Invalid Credentials");
+      // const { data: credential } = await response.json();
+      // const { userId } = (credential as CredentialType) ?? {};
+      // if (!userId) throw new UnauthorizedError("Invalid Credentials");
 
-      Cookies.set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
-      const userDetail = await getUserDetail(userId);
-      setLocalStorage("userDetail", JSON.stringify(userDetail));
-      setLocalStorage(STORAGE_CREDENTIAL_KEY, refreshToken);
-
-      router.push("/dashboard");
+      // const userDetail = await getUserDetail(userId);
+      // setLocalStorage("userDetail", JSON.stringify(userDetail));
+      router.push("/dashboard/home");
     } catch (error) {
+      console.log((error as Error).message);
       api.error({ message: (error as BaseError).message });
     }
   };
 
-  const isAuthenticatedByStorage = useCallback(() => {
-    const credential: ObjectType | null = getLocalStorage(STORAGE_CREDENTIAL_KEY);
-    return !!credential;
-  }, []);
-
-  useEffect(() => {
-    const isAuthenticated: boolean = isAuthenticatedByStorage();
-    if (isAuthenticated) router.push("/dashboard/home");
-  }, [isAuthenticatedByStorage, router]);
-
   return (
-    <WithAnimation>
-      <Fragment>
-        <div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
-          <div className="h-fit w-96 drop-shadow-md bg-white px-3 pt-3 pb-5">
-            <h1 className="font-sans text-2xl font-bold my-3">Sign In</h1>
-            <DynamicForm
-              config={signInFormConfig}
-              onSubmit={submit}
-              submitProps={{ size: "large", className: "w-full" }}
-            />
-          </div>
+    <Fragment>
+      <div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
+        <div className="h-fit w-96 drop-shadow-md bg-white px-3 pt-3 pb-5">
+          <h1 className="font-sans text-2xl font-bold my-3">Sign In</h1>
+          <DynamicForm
+            config={signInFormConfig}
+            onSubmit={submit}
+            submitProps={{ size: "large", className: "w-full" }}
+          />
         </div>
-        {contextHolder}
-      </Fragment>
-    </WithAnimation>
+      </div>
+      {contextHolder}
+    </Fragment>
   );
 }

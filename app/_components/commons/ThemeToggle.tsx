@@ -1,15 +1,15 @@
+import BaseButton from "./buttons/BaseButton";
 import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
-import Button from "antd/es/button";
 import { useTheme } from "next-themes";
 import React from "react";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   return (
-    <Button
-      type="text"
+    <BaseButton
       aria-label="Theme Toggle"
+      variants="text"
       icon={
         theme === "dark" ? (
           <DarkModeOutlined className=" !text-slate-50 !fill-slate-50" />
@@ -17,6 +17,6 @@ export default function ThemeToggle() {
           <LightModeOutlined className=" !text-primary !fill-primary" />
         )
       }
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}></Button>
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}></BaseButton>
   );
 }

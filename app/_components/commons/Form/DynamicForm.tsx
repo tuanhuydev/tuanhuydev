@@ -1,17 +1,13 @@
 "use client";
 
 import Loader from "../Loader";
+import BaseButton from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
-
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 
 export interface ElementType {
   name: string;
@@ -108,7 +104,7 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
                 loading: () => <Loader />,
               },
             );
-            return <DynamicSelect key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicSelect key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "richeditor":
             const DynamicMarkdown = dynamic(
               async () => (await import("@components/commons/Form/DynamicMarkdown")).default,
@@ -173,15 +169,16 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
   return (
     <form className="w-full">
       <div className="flex flex-wrap relative overflow-auto">{registerFields}</div>
+      <div className="h-px bg-gray-100 mt-1 mb-3  mx-2"></div>
+
       <div className="flex p-2">
-        <Button
+        <BaseButton
           {...submitProps}
-          type="primary"
+          type="submit"
+          label="Submit"
           onClick={handleSubmit(submit)}
           loading={isSubmitting}
-          disabled={isSubmitting}>
-          Submit
-        </Button>
+          disabled={isSubmitting}></BaseButton>
       </div>
     </form>
   );

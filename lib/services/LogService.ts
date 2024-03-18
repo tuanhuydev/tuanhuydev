@@ -6,9 +6,10 @@ class LogService {
   static makeInstance() {
     return LogService.#instance ?? new LogService();
   }
-  log(message: string) {
+  log(error: string | Error | unknown) {
     if (NODE_ENV !== "production") {
-      console.log(message);
+      if (error instanceof Error) return console.error((error as Error).message);
+      return console.log(error);
     }
   }
 }

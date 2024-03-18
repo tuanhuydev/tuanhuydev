@@ -62,7 +62,9 @@ export default function DynamicSelect({
   };
 
   useEffect(() => {
-    if (staticOptions.length) setOptions([defaultOption, ...staticOptions]);
+    if (staticOptions.length) {
+      setOptions(defaultOption ? [defaultOption, ...staticOptions] : staticOptions);
+    }
   }, [defaultOption, staticOptions]);
 
   useEffect(() => {

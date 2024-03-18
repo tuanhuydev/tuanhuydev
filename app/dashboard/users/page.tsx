@@ -1,9 +1,8 @@
 "use client";
 
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
-import { useGetUsersQuery } from "@app/_configs/store/slices/apiSlice";
+import PageContainer from "@app/_components/DashboardModule/PageContainer";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import Loader from "@components/commons/Loader";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
 import { ColumnsType } from "antd/es/table";
@@ -30,9 +29,10 @@ const Table = dynamic(async () => (await import("antd/es/table")).default, {
   loading: () => <Loader />,
 });
 
-function Page({ setTitle }: any) {
+function Page() {
   const [filter, setFilter] = useState<ObjectType>({});
-  const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery(filter);
+  const users: any[] = [];
+  const isUserLoading: boolean = false;
 
   const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTimeout(() => {
@@ -69,12 +69,8 @@ function Page({ setTitle }: any) {
     },
   ];
 
-  useEffect(() => {
-    if (setTitle) setTitle("Users");
-  }, [setTitle]);
-
   return (
-    <Fragment>
+    <PageContainer title="Users">
       <div data-testid="dashboard-posts-page-testid" className="mb-3 flex items-center">
         <Input
           size="large"
@@ -84,21 +80,17 @@ function Page({ setTitle }: any) {
           prefix={<SearchOutlined className="!text-lg" />}
         />
         <div>
-          <Button
-            size="large"
-            type="primary"
-            onClick={createUser}
-            className="rounded-sm"
-            icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
-            New User
-          </Button>
+          <BaseButton
+            label="New User"
+            icon={<ControlPointOutlined fontSize="small" />}
+            onClick={createUser}></BaseButton>
         </div>
       </div>
       <div className="grow overflow-auto pb-3">
         <Table columns={columns} dataSource={users} loading={isUserLoading} />
       </div>
-    </Fragment>
+    </PageContainer>
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_USERS);
+export default Page;

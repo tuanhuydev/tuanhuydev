@@ -1,11 +1,10 @@
 import { RootState } from "@lib/configs/types";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import { isPathActive } from "@lib/shared/utils/helper";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useMemo } from "react";
-import { useSelector } from "react-redux";
 
 export interface ItemProps {
   id: string;
@@ -18,7 +17,7 @@ const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, {
 
 export default function Item({ label, icon, path, id }: ItemProps) {
   const pathName = usePathname();
-  const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
+  const sidebarOpen = false;
 
   const activeClass = isPathActive(pathName, path)
     ? "bg-primary text-slate-50 dark:text-slate-50 dark:bg-slate-800"
@@ -26,7 +25,7 @@ export default function Item({ label, icon, path, id }: ItemProps) {
 
   const itemElement = useMemo(
     () => (
-      <Link href={path} key={path} prefetch={false} className={id === Permissions.VIEW_SETTINGS ? "mt-auto" : ""}>
+      <Link href={path} key={path} prefetch={false} className={id === UserPermissions.VIEW_SETTINGS ? "mt-auto" : ""}>
         <li
           className={`ease-in duration-200 rounded-sm mb-1 dark:text-slate-300  cursor-pointer py-2 px-3 hover:bg-primary hover:text-slate-50 dark:hover:bg-slate-800 dark:hover:text-slate-50 ${activeClass}`}>
           <div className="capitalize flex items-center relative min-w-0">
