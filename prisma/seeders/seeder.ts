@@ -1,4 +1,4 @@
-import { Permissions } from "../../lib/shared/commons/constants/permissions";
+import { UserPermissions } from "../../lib/shared/commons/constants/permissions";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -76,7 +76,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  const resourceData = Object.values(Permissions).map((name, id) => ({ id, name }));
+  const resourceData = Object.values(UserPermissions).map((name, id) => ({ id, name }));
   await prisma.resource.createMany({
     data: resourceData,
     skipDuplicates: true,

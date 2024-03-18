@@ -1,10 +1,10 @@
-import { getHighlightPosts } from "./server/actions/blog";
+import { getPosts } from "./server/actions/blog";
 import { BASE_URL } from "@lib/configs/constants";
 import { Post } from "@prisma/client";
 import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getHighlightPosts({ active: true });
+  const posts = await getPosts({ active: true });
   const sites = [
     {
       url: BASE_URL,

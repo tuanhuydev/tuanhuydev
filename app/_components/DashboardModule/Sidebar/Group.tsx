@@ -7,7 +7,6 @@ import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutl
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 const Tooltip = dynamic(() => import("antd/es/tooltip"), { ssr: false });
 
@@ -16,7 +15,7 @@ export interface GroupProps extends ItemProps {
 }
 
 export default function Group({ label, icon, children }: GroupProps) {
-  const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
+  const sidebarOpen = false;
   const pathName = usePathname();
 
   const [open, setOpen] = useState<boolean>(false);

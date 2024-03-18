@@ -1,4 +1,4 @@
-export const Permissions = {
+export const UserPermissions = {
   VIEW_PROJECTS: "VIEW_PROJECTS",
   CREATE_PROJECT: "CREATE_PROJECT",
   EDIT_PROJECT: "EDIT_PROJECT",

@@ -2,15 +2,11 @@
 
 import { ItemProps } from "./Item";
 import styles from "./styles.module.scss";
-import { currentUserSelector } from "@app/_configs/store/slices/authSlice";
-import { metaAction } from "@app/_configs/store/slices/metaSlice";
 import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
-import { RootState } from "@lib/configs/types";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
-import EventNoteOutlined from "@mui/icons-material/EventNoteOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
@@ -18,64 +14,57 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import dynamic from "next/dynamic";
 import React, { useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false, loading: () => <Loader /> });
 
-const Sidebar = () => {
-  const dispatch = useDispatch();
+export interface SidebarProps {
+  resources: Set<string>;
+}
 
-  const sidebarOpen = useSelector((state: RootState) => state.meta.sidebarOpen);
-  const currentUser = useSelector(currentUserSelector);
-  const { resources = [] } = currentUser || {};
-
-  const toggleSidebar = useCallback(() => dispatch(metaAction.setSidebarState(!sidebarOpen)), [dispatch, sidebarOpen]);
+const Sidebar = ({ resources = new Set<string>() }: SidebarProps) => {
+  const toggleSidebar = useCallback(() => {}, []);
+  const sidebarOpen = false;
 
   const renderRoutes = useMemo(() => {
     const routes: Array<ItemProps> = [
       { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
       { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
-      {
-        label: "Sticky Notes",
-        icon: <EventNoteOutlined className="!text-base" />,
-        path: "/dashboard/notes",
-        id: "Note",
-      },
     ];
-    resources.forEach((resource: any) => {
-      switch (resource.name) {
-        case Permissions.VIEW_POSTS:
+
+    resources.forEach((resource: string) => {
+      switch (resource) {
+        case UserPermissions.VIEW_POSTS:
           routes.push({
             label: "Manage Posts",
             icon: <ArticleOutlined className="!text-base" />,
             path: "/dashboard/posts",
-            id: Permissions.VIEW_POSTS,
+            id: UserPermissions.VIEW_POSTS,
           });
           break;
-        case Permissions.VIEW_PROJECTS:
+        case UserPermissions.VIEW_PROJECTS:
           routes.push({
             label: "Manage Projects",
             icon: <GridViewOutlined className="!text-base" />,
             path: "/dashboard/projects",
-            id: Permissions.VIEW_PROJECTS,
+            id: UserPermissions.VIEW_PROJECTS,
           });
           break;
-        case Permissions.VIEW_USERS:
+        case UserPermissions.VIEW_USERS:
           routes.push({
             label: "Manage Users",
             icon: <PersonOutlineOutlined className="!text-base" />,
             path: "/dashboard/users",
-            id: Permissions.VIEW_USERS,
+            id: UserPermissions.VIEW_USERS,
           });
           break;
-        case Permissions.VIEW_SETTINGS:
+        case UserPermissions.VIEW_SETTINGS:
           routes.push({
             label: "Settings",
             icon: <SettingsOutlined className="!text-base" />,
             path: "/dashboard/settings",
-            id: Permissions.VIEW_SETTINGS,
+            id: UserPermissions.VIEW_SETTINGS,
           });
           break;
       }

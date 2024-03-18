@@ -1,11 +1,12 @@
 "use client";
 
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
+import PageContainer from "@app/_components/DashboardModule/PageContainer";
+import BaseCard from "@app/_components/commons/Card";
 import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
-import { useGetProjectQuery, useGetTasksByProjectQuery } from "@app/_configs/store/slices/apiSlice";
+import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
+import { useTasksQuery } from "@app/queries/taskQueries";
 import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
@@ -15,7 +16,7 @@ import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useEffect } from "react";
+import React from "react";
 
 const Row = dynamic(async () => (await import("antd/es/row")).default, {
   ssr: false,
@@ -32,13 +33,10 @@ const Progress = dynamic(async () => (await import("antd/es/progress")).default,
   loading: () => <Loader />,
 });
 
-const Card = dynamic(async () => (await import("antd/es/card")).default, { ssr: false, loading: () => <Loader /> });
-
-function Page({ params, setTitle, setGoBack }: any) {
+function Page({ params }: any) {
   const router = useRouter();
-
-  const { data: project, isLoading } = useGetProjectQuery(params.projectId as string);
-  const { data: tasks } = useGetTasksByProjectQuery(params.id as string);
+  const { data: project, isLoading } = useProjectQuery(params.projectId);
+  const { data: tasks } = useProjectTasks(params.projectId);
 
   const {
     name = "",
@@ -69,23 +67,17 @@ function Page({ params, setTitle, setGoBack }: any) {
     return "-";
   };
 
-  useEffect(() => {
-    if (setTitle) setTitle("View Project");
-    if (setGoBack) setGoBack(true);
-  }, [setTitle, setGoBack]);
-
   const backlogTasks = tasks?.filter((task: Task) => task.statusId === 2);
   const percent = backlogTasks?.length ? (backlogTasks?.length / tasks?.length) * 100 : 0;
 
   return (
-    <Fragment>
+    <PageContainer title="View Project" goBack>
       <Row gutter={[16, 16]} className="mb-3">
         <Col span={24} lg={{ span: 16 }}>
-          <Card loading={isLoading} className="w-5rem h-full">
+          <BaseCard loading={isLoading} className="w-5rem h-full">
             <div className="flex items-center justify-between min-w-0 overflow-hidden">
               <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 truncate ">{name}</h1>
               <div className="flex gap-3">
-                <EditOutlined />
                 <WithTooltip content={window.location.href} title="Share">
                   <ShareOutlined />
                 </WithTooltip>
@@ -101,24 +93,24 @@ function Page({ params, setTitle, setGoBack }: any) {
               <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">description</h5>
               <p className="text-sm m-0 p-0 inline">{description}</p>
             </div>
-          </Card>
+          </BaseCard>
         </Col>
         <Col span={24} lg={{ span: 8 }} className="w-full">
           <div className="flex lg:flex-col gap-3">
-            <Card className="flex-1" loading={isLoading}>
+            <BaseCard className="flex-1" loading={isLoading}>
               <small className="text-sm capitalize text-slate-400">status</small>
               <div className="text-bold text-4xl text-center mt-5 mb-3 text-green-600">Active</div>
-            </Card>
-            <Card className="flex-1" loading={isLoading}>
+            </BaseCard>
+            <BaseCard className="flex-1" loading={isLoading}>
               <small className="text-sm capitalize text-slate-400">people</small>
               <div className="text-bold text-4xl text-center mt-5 mb-1">{(users as ProjectUser[])?.length}</div>
-            </Card>
+            </BaseCard>
           </div>
         </Col>
       </Row>
       <Row gutter={[12, 12]}>
         <Col span={24} lg={{ span: 8 }}>
-          <Card className="h-full" loading={isLoading}>
+          <BaseCard className="h-full" loading={isLoading}>
             <small className="text-sm capitalize text-slate-400">status</small>
             <div className="mt-4 flex flex-col items-center gap-4">
               <Progress
@@ -140,10 +132,10 @@ function Page({ params, setTitle, setGoBack }: any) {
                 </span>
               </div>
             </div>
-          </Card>
+          </BaseCard>
         </Col>
         <Col span={24} lg={{ span: 8 }}>
-          <Card onClick={navigateProjectTasks} loading={isLoading}>
+          <BaseCard onClick={navigateProjectTasks} loading={isLoading}>
             <div className="flex justify-between text-slate-400">
               <small className="text-sm capitalize">task</small>
               <InsertLinkOutlined />
@@ -155,19 +147,19 @@ function Page({ params, setTitle, setGoBack }: any) {
                 <h3 className="text-5xl my-4">{tasks?.length ?? 0}</h3>
               </span>
             </div>
-          </Card>
+          </BaseCard>
         </Col>
         <Col span={24} lg={{ span: 8 }}>
-          <Card className="h-full" loading={isLoading}>
+          <BaseCard className="h-full" loading={isLoading}>
             <small className="text-sm capitalize text-slate-400">type</small>
             <div className="mt-4 flex items-center justify-center">
               <h4 className="text-4xl text-cyan-500">Billable</h4>
             </div>
-          </Card>
+          </BaseCard>
         </Col>
       </Row>
-    </Fragment>
+    </PageContainer>
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_PROJECTS);
+export default Page;

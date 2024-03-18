@@ -1,47 +1,29 @@
 "use client";
 
+import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import TaskFormTitle from "@app/_components/TaskModule/TaskFormTitle";
 import TaskPreview from "@app/_components/TaskModule/TaskPreview";
 import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import WithPermission from "@app/_components/commons/hocs/WithPermission";
-import { useGetProjectQuery, useGetTasksByProjectQuery } from "@app/_configs/store/slices/apiSlice";
-import BaseLabel from "@components/commons/BaseLabel";
+import BaseInput from "@app/_components/commons/Inputs/BaseInput";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
 import Loader from "@components/commons/Loader";
-import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
-import { RootState } from "@lib/configs/types";
+import { BASE_URL } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
-import { CollapseProps } from "antd/es/collapse";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { CSSProperties, Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { useSelector } from "react-redux";
-
-const Input = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskForm = dynamic(async () => (await import("@app/_components/TaskModule/TaskForm")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
+
 const TaskRow = dynamic(async () => (await import("@app/_components/TaskModule/TaskRow")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Collapse = dynamic(async () => (await import("antd/es/collapse")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -56,10 +38,6 @@ const Empty = dynamic(async () => (await import("antd/es/empty")).default, {
   loading: () => <Loader />,
 });
 
-const panelStyle: CSSProperties = {
-  fontWeight: 500,
-  textTransform: "capitalize",
-};
 const drawerStyle: { [key: string]: CSSProperties } = {
   header: { display: "none" },
   body: { padding: 0 },
@@ -70,24 +48,68 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-function Page({ params, setTitle, setGoBack }: any) {
+function Page({ params }: any) {
   const { projectId } = params;
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const taskId = searchParams.get("taskId");
 
-  const currentUser = useSelector((state: RootState) => state.auth.currentUser) || {};
-  const { resources } = currentUser;
-
-  const { data: project } = useGetProjectQuery(projectId);
-  const { data: tasks = [], isLoading: isProjectTaskLoading } = useGetTasksByProjectQuery(projectId);
+  const { data: project, isLoading: isProjectLoading } = useProjectQuery(projectId);
+  const { data: tasks = [], isLoading: isProjectTaskLoading } = useProjectTasks(projectId);
 
   const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
 
   const isEditMode = mode === COMPONENT_MODE.EDIT;
+  const taskFormConfig: DynamicFormConfig = {
+    fields: [
+      {
+        name: "title",
+        type: "text",
+        options: {
+          placeholder: "Task Title",
+        },
+        validate: { required: true },
+      },
+      {
+        name: "assigneeId",
+        type: "select",
+        className: "w-1/2",
+        options: {
+          defaultOption: { label: "Unassigned", value: null },
+          placeholder: "Select Assignee",
+          remote: {
+            url: `${BASE_URL}/api/projects/${projectId}/users`,
+            label: "name",
+            value: "id",
+          },
+        },
+      },
+      {
+        name: "statusId",
+        type: "select",
+        className: "w-1/2",
+        options: {
+          placeholder: "Select Status",
+          remote: {
+            url: `${BASE_URL}/api/status?type=task`,
+            label: "name",
+            value: "id",
+          },
+        },
+        validate: { required: true },
+      },
+      {
+        name: "description",
+        type: "richeditor",
+        className: "min-h-[25rem]",
+        options: { placeholder: "Task Description" },
+        validate: { required: true },
+      },
+    ],
+  };
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
@@ -111,12 +133,6 @@ function Page({ params, setTitle, setGoBack }: any) {
 
   const toggleMode = (value: string) => setMode(value);
 
-  const renderTasks = useCallback(() => {
-    return tasks.map((task: TaskStatusAssignee) => (
-      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} showAssignee task={task} key={task.id} />
-    ));
-  }, [selectedTask?.id, tasks, onSelectTask]);
-
   const onError = useCallback((error: Error) => {
     LogService.log((error as Error).message);
   }, []);
@@ -125,22 +141,10 @@ function Page({ params, setTitle, setGoBack }: any) {
     if (!isProjectTaskLoading && !tasks.length) return <Empty className="my-36" />;
     if (isProjectTaskLoading) return <Loader />;
 
-    const taskGroups: CollapseProps["items"] = [
-      {
-        key: "backlog",
-        label: "[ backlog ]",
-        children: renderTasks(),
-        style: panelStyle,
-      },
-    ];
-
-    return <Collapse items={taskGroups} bordered={false} ghost defaultActiveKey={["backlog"]} />;
-  }, [isProjectTaskLoading, tasks.length, renderTasks]);
-
-  useEffect(() => {
-    if (setTitle) setTitle(`${project?.name}'s tasks`);
-    if (setGoBack) setGoBack(true);
-  }, [setTitle, project?.name, setGoBack]);
+    return tasks.map((task: TaskStatusAssignee) => (
+      <TaskRow active={task.id === selectedTask?.id} onSelect={onSelectTask} showAssignee task={task} key={task.id} />
+    ));
+  }, [isProjectTaskLoading, tasks, selectedTask?.id, onSelectTask]);
 
   useEffect(() => {
     if (tasks.length && taskId) {
@@ -153,53 +157,6 @@ function Page({ params, setTitle, setGoBack }: any) {
   }, [pathname, router, searchParams, taskId, tasks, onSelectTask]);
 
   const RenderTaskDetails = useMemo(() => {
-    const taskFormConfig: DynamicFormConfig = {
-      fields: [
-        {
-          name: "title",
-          type: "text",
-          options: {
-            placeholder: "Task Title",
-          },
-          validate: { required: true },
-        },
-        {
-          name: "assigneeId",
-          type: "select",
-          className: "w-1/2",
-          options: {
-            defaultOption: { label: "Unassigned", value: null },
-            placeholder: "Select Assignee",
-            remote: {
-              url: `${BASE_URL}/api/users`,
-              label: "name",
-              value: "id",
-            },
-          },
-        },
-        {
-          name: "statusId",
-          type: "select",
-          className: "w-1/2",
-          options: {
-            placeholder: "Select Status",
-            remote: {
-              url: `${BASE_URL}/api/status?type=task`,
-              label: "name",
-              value: "id",
-            },
-          },
-          validate: { required: true },
-        },
-        {
-          name: "description",
-          type: "richeditor",
-          className: "min-h-[25rem]",
-          options: { placeholder: "Task Description" },
-          validate: { required: true },
-        },
-      ],
-    };
     if (isEditMode) {
       return (
         <div className="px-1">
@@ -217,20 +174,11 @@ function Page({ params, setTitle, setGoBack }: any) {
   }, [isEditMode, projectId, toggleDrawer, onError, selectedTask]);
 
   return (
-    <Fragment>
-      <div className="mb-3 flex items-center">
-        <Input size="large" placeholder="Find your task" className="grow mr-2 rounded-sm" prefix={<SearchOutlined />} />
+    <PageContainer title={`${project?.name}'s tasks`} goBack>
+      <div className="mb-3 flex gap-2 items-center">
+        <BaseInput placeholder="Find your task" className="grow mr-2 rounded-sm" startAdornment={<SearchOutlined />} />
         <div className="flex gap-3">
-          {resources.has(Permissions.CREATE_TASK) && (
-            <Button
-              size="large"
-              type="primary"
-              onClick={createNewTask}
-              className="rounded-sm"
-              icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
-              New Task
-            </Button>
-          )}
+          <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
         </div>
       </div>
       <div className="grow overflow-auto pb-3">{RenderTaskGroup}</div>
@@ -238,14 +186,14 @@ function Page({ params, setTitle, setGoBack }: any) {
         <TaskFormTitle
           task={selectedTask}
           mode={mode as "VIEW" | "EDIT"}
-          allowEditTask={selectedTask && resources.has(Permissions.EDIT_TASK)}
+          allowEditTask={!!selectedTask}
           onClose={toggleDrawer(false)}
           onToggle={toggleMode}
         />
         {RenderTaskDetails}
       </Drawer>
-    </Fragment>
+    </PageContainer>
   );
 }
 
-export default WithPermission(Page, Permissions.VIEW_TASKS);
+export default Page;

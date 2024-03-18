@@ -1,19 +1,10 @@
 "use client";
 
+import BaseInput from "../Inputs/BaseInput";
 import Loader from "../Loader";
 import dynamic from "next/dynamic";
 import React, { Ref, forwardRef } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
-
-const InputText = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const InputPassword = dynamic(async () => (await import("antd/es/input")).default.Password, {
-  ssr: false,
-  loading: () => <Loader />,
-});
 
 const InputNumber = dynamic(async () => (await import("antd/es/input-number")).default, {
   ssr: false,
@@ -43,7 +34,7 @@ export default forwardRef(function DynamicText(
   let element;
   switch (type) {
     case "password":
-      element = <InputPassword key={keyProp} {...field} {...options} ref={ref} disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type={type} disabled={isSubmitting} />;
       break;
     case "number":
       element = (
@@ -54,7 +45,7 @@ export default forwardRef(function DynamicText(
       element = <TextArea key={keyProp} {...field} {...options} ref={ref} rows={4} disabled={isSubmitting} />;
       break;
     default:
-      element = <InputText key={keyProp} {...field} {...options} ref={ref} type={type} disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type={type} disabled={isSubmitting} />;
       break;
   }
   return (

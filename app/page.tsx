@@ -4,7 +4,7 @@ import Footer from "./_components/HomeModule/Footer";
 import Hero from "./_components/HomeModule/Hero";
 import Services from "./_components/HomeModule/ServiceSection/Services";
 import Navbar from "@app/_components/HomeModule/Navbar";
-import { getHighlightPosts } from "@server/actions/blog";
+import { getPosts } from "@server/actions/blog";
 import { Metadata, Viewport } from "next";
 import React from "react";
 
@@ -64,7 +64,7 @@ export const viewport: Viewport = {
 };
 
 export default async function Home() {
-  const posts = await getHighlightPosts({
+  const posts = await getPosts({
     page: 1,
     pageSize: 4,
     active: true,

@@ -111,6 +111,16 @@ export class ProjectController implements BaseController {
       return network.failResponse(error as BaseError);
     }
   }
+
+  async getProjectUsers(request: NextRequest, { id }: any) {
+    const network = Network(request);
+    try {
+      const users = await ProjectService.getProjectUsers(Number.parseInt(id));
+      return network.successResponse(users);
+    } catch (error) {
+      return network.failResponse(error as BaseError);
+    }
+  }
 }
 
 export default ProjectController.makeInstance();

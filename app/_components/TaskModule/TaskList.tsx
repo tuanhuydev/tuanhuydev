@@ -42,7 +42,7 @@ export default function TaskList({ tasks, onSelectTask, selectedTask, isLoading 
 
   if (isLoading) return <Loader />;
 
-  return tasks.map((task: TaskStatusAssignee) => {
+  const TaskRows = tasks.map((task: TaskStatusAssignee) => {
     const isTaskActive = selectedTask?.id === task.id;
     const isTaskToday = todayTasks.some((todayTask: TaskStatusAssignee) => todayTask.id === task.id);
 
@@ -57,4 +57,5 @@ export default function TaskList({ tasks, onSelectTask, selectedTask, isLoading 
       />
     );
   });
+  return <div className="flex-1 overflow-y-auto overflow-x-hidden">{TaskRows}</div>;
 }
