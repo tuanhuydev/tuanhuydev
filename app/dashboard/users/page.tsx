@@ -1,38 +1,34 @@
 "use client";
 
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
+import UserDetail from "@app/_components/UserModule/UserDetail";
+import UserRow from "@app/_components/UserModule/UserRow";
+import BaseDrawer from "@app/_components/commons/BaseDrawer";
+import BaseInput from "@app/_components/commons/Inputs/BaseInput";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import { useGetUsers } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
-import { ControlPointOutlined, PersonOutlineOutlined, SearchOutlined } from "@mui/icons-material";
+import { ControlPointOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
-import { ColumnsType } from "antd/es/table";
-import dynamic from "next/dynamic";
-import { Fragment, useEffect, useState } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { Empty } from "antd";
+import { useCallback, useRef, useState } from "react";
 
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+export default function Page() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-const Avatar = dynamic(async () => (await import("antd/es/avatar")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Input = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Table = dynamic(async () => (await import("antd/es/table")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-function Page() {
   const [filter, setFilter] = useState<ObjectType>({});
-  const users: any[] = [];
-  const isUserLoading: boolean = false;
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+
+  const { data: users = [], isLoading: isUserLoading } = useGetUsers(filter);
+
+  // The virtualizer
+  const { getTotalSize, getVirtualItems } = useVirtualizer({
+    count: users?.length || 0,
+    getScrollElement: () => containerRef.current,
+    estimateSize: () => 48,
+  });
 
   const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTimeout(() => {
@@ -40,57 +36,67 @@ function Page() {
       setFilter((currentFilter) => ({ ...currentFilter, search }));
     }, 500);
   };
+
   const createUser = () => {
-    // TODO: Implement this function
+    setSelectedUser(undefined);
+    setOpenDrawer(true);
   };
 
-  const columns: ColumnsType<Partial<User>> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => (
-        <div className="flex items-center gap-3">
-          <Avatar size="small" icon={<PersonOutlineOutlined className="!h-5 !w-5" />} />
-          <h3 className="m-0 capitalize">{text}</h3>
-        </div>
-      ),
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      dataIndex: "id",
-      key: "id",
-      fixed: "right",
-      render: (value) => <Fragment />,
-    },
-  ];
+  const closeDrawer = () => {
+    setSelectedUser(undefined);
+    setOpenDrawer(false);
+  };
+
+  const viewUser = (user: User) => () => {
+    setSelectedUser(user);
+    setOpenDrawer(true);
+  };
+
+  const RenderUsers = useCallback(() => {
+    if (!users.length && !isUserLoading) return <Empty description="No users found" />;
+    if (isUserLoading) return <Loader />;
+    return (
+      <div className="w-full mt-3 relative" style={{ height: `${getTotalSize()}px` }}>
+        {getVirtualItems().map((virtualItem) => {
+          const currentUser: User = users[virtualItem.index];
+          const activeUser = selectedUser?.id === currentUser.id;
+          return (
+            <div
+              key={currentUser.id}
+              onClick={viewUser(currentUser)}
+              className={`absolute top-0 left-0 flex items-center w-full p-3 ${
+                activeUser
+                  ? "bg-slate-200 hover:bg-slate-200 dark:bg-slate-800"
+                  : "hover:bg-slate-100 dark:hover:bg-slate-800"
+              } rounded-md cursor-pointer transition-all duration-100 ease-in-out`}
+              style={{ height: `${virtualItem.size}px`, transform: `translateY(${virtualItem.start}px)` }}>
+              <UserRow user={currentUser} active={activeUser} />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }, [users, isUserLoading, selectedUser, getTotalSize, getVirtualItems]);
 
   return (
     <PageContainer title="Users">
-      <div data-testid="dashboard-posts-page-testid" className="mb-3 flex items-center">
-        <Input
-          size="large"
+      <div data-testid="dashboard-posts-page-testid" className="mb-3 gap-2 flex items-center">
+        <BaseInput
+          startAdornment={<SearchOutlined className="!text-lg" />}
           placeholder="Find your user"
           onChange={searchUser}
           className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined className="!text-lg" />}
         />
         <div>
-          <BaseButton
-            label="New User"
-            icon={<ControlPointOutlined fontSize="small" />}
-            onClick={createUser}></BaseButton>
+          <BaseButton label="New User" icon={<ControlPointOutlined fontSize="small" />} onClick={createUser} />
         </div>
       </div>
-      <div className="grow overflow-auto pb-3">
-        <Table columns={columns} dataSource={users} loading={isUserLoading} />
+      <div className="grow overflow-auto" ref={containerRef}>
+        {RenderUsers()}
+        <BaseDrawer open={openDrawer} onClose={closeDrawer}>
+          <UserDetail user={selectedUser} onClose={closeDrawer} />
+        </BaseDrawer>
       </div>
     </PageContainer>
   );
 }
-
-export default Page;

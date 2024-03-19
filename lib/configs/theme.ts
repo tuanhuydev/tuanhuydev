@@ -11,6 +11,7 @@ const theme: ThemeConfig = {
       hoverBorderColor: "rgb(203 213 225)",
       colorBorder: "rgb(203 213 225)",
       borderRadius: 4,
+      hoverBg: "rgb(203 213 225)",
     },
     Button: {
       defaultShadow: "transparent",
@@ -24,6 +25,9 @@ const theme: ThemeConfig = {
       headerPadding: "12px 0",
       contentBg: "#FFF",
       headerBg: "#FFF",
+    },
+    Select: {
+      optionSelectedBg: "rgb(241 245 249)",
     },
   },
 };

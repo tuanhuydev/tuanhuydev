@@ -1,4 +1,4 @@
-import ImageWithFallback from "../commons/ImageWithFallback";
+import BaseImage from "../commons/BaseImage";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { Post } from "@prisma/client";
 import React from "react";
@@ -15,13 +15,7 @@ export default function PostPreview({ post }: PostPreviewProps) {
   return (
     <div className="grid grid-rows-post">
       <div className="background row-start-1 col-span-full relative opacity-75">
-        <ImageWithFallback
-          src={post.thumbnail ?? EMPTY_STRING}
-          alt={post.title}
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
+        <BaseImage src={post.thumbnail ?? EMPTY_STRING} alt={post.title} fill sizes="100vw" className="object-cover" />
       </div>
       <div className="grid lg:grid-cols-12 -mt-20 relative z-20">
         <div className="col-start-3 col-span-9 p-4 shadow-md bg-white text-slate-primary dark:bg-primary dark:text-slate-50 rounded-md">

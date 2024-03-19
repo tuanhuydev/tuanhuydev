@@ -62,6 +62,9 @@ const mapValidation = (type: any, validate: ObjectType) => {
   if ("required" in validate && validate.required) {
     rule = rule.required();
   }
+  if ("match" in validate) {
+    rule = (rule as yup.StringSchema).oneOf([yup.ref(validate.match)], "Passwords must match");
+  }
   return rule;
 };
 
@@ -100,7 +103,6 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
             const DynamicSelect = dynamic(
               async () => (await import("@components/commons/Form/DynamicSelect")).default,
               {
-                ssr: false,
                 loading: () => <Loader />,
               },
             );
@@ -109,7 +111,6 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
             const DynamicMarkdown = dynamic(
               async () => (await import("@components/commons/Form/DynamicMarkdown")).default,
               {
-                ssr: false,
                 loading: () => <Loader />,
               },
             );
@@ -118,7 +119,6 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
             const DynamicDatepicker = dynamic(
               async () => (await import("@components/commons/Form/DynamicDatepicker")).default,
               {
-                ssr: false,
                 loading: () => <Loader />,
               },
             );
@@ -127,14 +127,12 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
             const DynamicColorPicker = dynamic(
               async () => (await import("@components/commons/Form/DynamicColorPicker")).default,
               {
-                ssr: false,
                 loading: () => <Loader />,
               },
             );
             return <DynamicColorPicker key={name} {...elementProps} {...restFieldProps} />;
           default:
             const DynamicText = dynamic(async () => (await import("@components/commons/Form/DynamicText")).default, {
-              ssr: false,
               loading: () => <Loader />,
             });
             return (
