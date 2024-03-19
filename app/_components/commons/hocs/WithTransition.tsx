@@ -5,5 +5,7 @@ export interface WithTransitionProps extends PropsWithChildren {
 }
 
 export default function WithTransition({ className = "", children }: WithTransitionProps) {
-  return <div className={`motion-safe:animate-fadeIn ${className}`}>{children}</div>;
+  return (
+    <div className={`motion-safe:animate-fadeIn p-3 h-full flex flex-col overflow-auto ${className}`}>{children}</div>
+  );
 }

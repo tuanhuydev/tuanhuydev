@@ -14,10 +14,10 @@ const WarningOutlined = dynamic(() => import("@mui/icons-material/WarningAmberOu
   loading: () => <Loader />,
 });
 
-interface ImageWithFallbackProps extends Partial<ImageProps> {
+interface BaseImageProps extends Partial<ImageProps> {
   src?: string;
 }
-const ImageWithFallback = ({ src = EMPTY_STRING, alt = "image", ...restProps }: ImageWithFallbackProps) => {
+const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImageProps) => {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ const ImageWithFallback = ({ src = EMPTY_STRING, alt = "image", ...restProps }: 
   );
 };
 
-export default memo(ImageWithFallback);
+export default memo(BaseImage);

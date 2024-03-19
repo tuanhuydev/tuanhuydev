@@ -1,3 +1,5 @@
+"use client";
+
 import BaseLabel from "../commons/BaseLabel";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
