@@ -65,7 +65,8 @@ export class TaskController implements BaseController {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
-      const tasks = await TaskService.getTasks(params);
+      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
+      const tasks = await TaskService.getTasks(params, userId);
       return network.successResponse(tasks);
     } catch (error) {
       return network.failResponse(error as BaseError);

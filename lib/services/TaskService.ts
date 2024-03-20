@@ -48,9 +48,19 @@ class TaskService {
 
   async getTasks(filter?: FilterType, userId?: string) {
     try {
-      let defaultWhere: ObjectType = { deletedAt: null };
+      let defaultWhere: ObjectType = {
+        deletedAt: null,
+        OR: [
+          {
+            assigneeId: userId,
+          },
+          {
+            createdBy: { id: userId },
+          },
+        ],
+      };
       if (!filter)
-        return await prismaClient.task.findMany({
+        return prismaClient.task.findMany({
           where: defaultWhere,
           include: this.#defaultInclude,
           orderBy: this.#defaultOrderBy,
@@ -58,20 +68,22 @@ class TaskService {
 
       const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
 
-      if (search) {
-        defaultWhere = { ...defaultWhere, name: { startsWith: search, contains: search } };
+      if ("search" in filter) {
+        defaultWhere = { ...defaultWhere, title: { startsWith: search, contains: search } };
       }
 
       if ("active" in filter) {
         defaultWhere = {
           ...defaultWhere,
-          publishedAt: filter?.active ? { not: null } : null,
+          publishedAt: filter.active ? { not: null } : null,
         };
       }
+
       if ("userId" in filter) {
+        const { userId } = filter;
         defaultWhere = {
           ...defaultWhere,
-          OR: [{ assigneeId: filter.userId }, { createdBy: { id: filter.userId } }],
+          OR: [{ assigneeId: userId }, { createdBy: { id: userId } }],
         };
       }
       let query: any = {
@@ -89,7 +101,7 @@ class TaskService {
         query.take = pageSize;
       }
 
-      return await prismaClient.task.findMany(query);
+      return prismaClient.task.findMany(query);
     } catch (error) {
       throw new BaseError((error as Error).message);
     }

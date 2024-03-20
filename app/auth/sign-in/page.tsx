@@ -6,7 +6,6 @@ import { BASE_URL } from "@lib/configs/constants";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
-import { setLocalStorage } from "@shared/utils/dom";
 import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -16,12 +15,6 @@ const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm")
   ssr: false,
   loading: () => <Loader />,
 });
-
-type CredentialType = {
-  accessToken: string;
-  refreshToken: string;
-  userId: string;
-};
 
 // TODO: Move this one to API.
 const signInFormConfig: DynamicFormConfig = {
@@ -73,13 +66,6 @@ export default function SignIn() {
         },
       });
       if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
-
-      // const { data: credential } = await response.json();
-      // const { userId } = (credential as CredentialType) ?? {};
-      // if (!userId) throw new UnauthorizedError("Invalid Credentials");
-
-      // const userDetail = await getUserDetail(userId);
-      // setLocalStorage("userDetail", JSON.stringify(userDetail));
       router.push("/dashboard/home");
     } catch (error) {
       console.log((error as Error).message);
