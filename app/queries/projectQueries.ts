@@ -7,7 +7,6 @@ import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@
 export const useProjectsQuery = (filter: ObjectType = {}) => {
   return useQuery({
     queryKey: ["projects"],
-    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       let url = `${BASE_URL}/api/projects`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;

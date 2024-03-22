@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 export const usePostsQuery = (filter: ObjectType = {}) => {
   return useQuery({
     queryKey: ["posts"],
-    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       let url = `${BASE_URL}/api/posts`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
@@ -20,7 +19,6 @@ export const usePostsQuery = (filter: ObjectType = {}) => {
 export const usePostQuery = (id: number) => {
   return useQuery({
     queryKey: ["posts", id],
-    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       const response = await fetch(`${BASE_URL}/api/posts/${id}`);
       if (!response.ok) throw new Error(response.statusText);

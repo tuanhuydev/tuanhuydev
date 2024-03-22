@@ -8,7 +8,6 @@ import Cookies from "js-cookie";
 export const useResourcesQuery = (permissionId: number) => {
   return useQuery({
     queryKey: ["resources", permissionId],
-    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       const response: any = await fetch(`${BASE_URL}/api/resources/permission/${permissionId}`, {
         headers: { authorization: `Bearer ${Cookies.get("jwt")}` },
@@ -31,7 +30,6 @@ export const useResourcesQuery = (permissionId: number) => {
 export const usePostsQuery = () => {
   return useQuery({
     queryKey: ["posts"],
-    staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       const { data: posts = [] } = await apiWithBearer(`${BASE_URL}/api/posts`);
       return posts;
