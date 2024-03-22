@@ -30,16 +30,20 @@ function Page() {
 
   const navigateEdit = useCallback((id: number) => router.push(`/dashboard/posts/${id}`), [router]);
 
-  const searchTask: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    const search = e.currentTarget.value || "";
-    setTimeout(() => {
-      setFilter((prevFilter) => {
-        if (search?.length) return { ...prevFilter, search };
-        delete prevFilter?.search;
-        return prevFilter;
-      });
-    }, 300);
-  }, []);
+  const searchTask: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const search = e.currentTarget.value || "";
+      setTimeout(() => {
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 300);
+    },
+    [refetch],
+  );
 
   const triggerDeletePost = useCallback(
     () => (event: any) => {

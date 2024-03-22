@@ -14,7 +14,15 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  CSSProperties,
+  ChangeEventHandler,
+  EventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 const TaskFormTitle = dynamic(async () => (await import("@components/TaskModule/TaskFormTitle")).default, {
   ssr: false,
@@ -26,20 +34,11 @@ const TaskList = dynamic(async () => (await import("@components/TaskModule/TaskL
   loading: () => <Loader />,
 });
 
-const TaskPreview = dynamic(async () => (await import("@components/TaskModule/TaskPreview")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const TaskPreview = dynamic(() => import("@components/TaskModule/TaskPreview"), { loading: () => <Loader /> });
 
-const Drawer = dynamic(async () => (await import("antd/es/drawer")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const Drawer = dynamic(() => import("antd/es/drawer"), { loading: () => <Loader /> });
 
-const TaskForm = dynamic(async () => (await import("@app/_components/TaskModule/TaskForm")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const TaskForm = dynamic(() => import("@app/_components/TaskModule/TaskForm"), { loading: () => <Loader /> });
 
 const drawerStyle: { [key: string]: CSSProperties } = {
   header: { display: "none" },
@@ -92,11 +91,12 @@ function Page() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useTasksQuery();
-
   const [selectedTask, setSelectedTask] = React.useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
+  const [filter, setFilter] = useState<FilterType>({});
+
+  const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useTasksQuery(filter);
 
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
@@ -114,6 +114,14 @@ function Page() {
     [],
   );
   const toggleMode = (value: string) => setMode(value);
+
+  const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setTimeout(() => {
+      const search = event.target.value;
+      setFilter((filter) => ({ ...filter, search }));
+      refetchTasks();
+    }, 500);
+  };
 
   const mutateTaskError = useCallback((error: Error) => {
     LogService.log((error as Error).message);
@@ -159,7 +167,12 @@ function Page() {
   return (
     <PageContainer title="Tasks">
       <div className="mb-3 flex gap-2 items-center">
-        <BaseInput placeholder="Find your task" className="grow mr-2 rounded-sm" startAdornment={<SearchOutlined />} />
+        <BaseInput
+          placeholder="Find your task"
+          onChange={searchTasks}
+          className="grow mr-2 rounded-sm"
+          startAdornment={<SearchOutlined />}
+        />
         <div className="flex gap-3">
           <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
         </div>

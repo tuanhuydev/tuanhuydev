@@ -23,14 +23,22 @@ function Page() {
   const router = useRouter();
 
   const [filter, setFilter] = useState<ObjectType>({});
-  const { data: projects = [], isLoading } = useProjectsQuery(filter);
+  const { data: projects = [], isLoading, refetch } = useProjectsQuery(filter);
 
-  const onSearchProjects = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      const search = event.target.value;
-      setFilter((filter) => ({ ...filter, search }));
-    }, 500);
-  }, []);
+  const onSearchProjects = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTimeout(() => {
+        const search = event.target.value;
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 500);
+    },
+    [refetch],
+  );
 
   const createNewProject = useCallback(() => {
     router.push("/dashboard/projects/create");
