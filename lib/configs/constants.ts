@@ -16,6 +16,7 @@ export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
 export const isProductionEnv = NODE_ENV === "production";
 export const GOOGLE_ADSENSE: string = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.NEXT_PUBLIC_GOOGLE_TAG ?? EMPTY_STRING;
+export const GOOGLE_ANALYTIC: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTIC ?? EMPTY_STRING;
 export const BASE_URL = (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000").replace(/\/$/, ""); // Replace splash at the end
 
 export const POST_STATUS = {
