@@ -35,10 +35,10 @@ module.exports = {
       },
       gridTemplateRows: {
         post: "192px minmax(min-content, 1fr)",
-        homePosts: "repeat(6, 75px)",
+        homePosts: "repeat(6, minmax(25px, 1fr))",
       },
       gridTemplateColumns: {
-        homePosts: "repeat(6, minmax(50px, 1fr))",
+        homePosts: "repeat(6, minmax(25px, 1fr))",
       },
       keyframes: {
         fadeIn: {
