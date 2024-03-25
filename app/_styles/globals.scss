@@ -49,8 +49,14 @@ html {
 }
 
 a {
-  color: inherit;
   text-decoration: none;
+  color: theme("colors.primary");
+
+  &:hover,
+  &:visited,
+  &:active {
+    color: theme("colors.primary");
+  }
 }
 
 button,
