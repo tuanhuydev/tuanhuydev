@@ -1,4 +1,3 @@
-import { apiWithBearer } from "@app/_utils/network";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Project } from "@prisma/client";
@@ -11,8 +10,10 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
       let url = `${BASE_URL}/api/projects`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
 
-      const { data = [] } = await apiWithBearer(url);
-      return data;
+      const response = await fetch(url);
+      if (!response.ok) throw new BaseError("Unable to fetch projects");
+      const { data: projects = [] } = await response.json();
+      return projects;
     },
   });
 };
