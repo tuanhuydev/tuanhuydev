@@ -1,5 +1,5 @@
-import { apiWithBearer } from "@app/_utils/network";
 import { BASE_URL } from "@lib/configs/constants";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Post } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -10,8 +10,10 @@ export const usePostsQuery = (filter: ObjectType = {}) => {
       let url = `${BASE_URL}/api/posts`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
 
-      const { data = [] } = await apiWithBearer(url);
-      return data;
+      const response = await fetch(url);
+      if (!response.ok) throw new BaseError("Unable to fetch posts");
+      const { data: posts = [] } = await response.json();
+      return posts;
     },
   });
 };
