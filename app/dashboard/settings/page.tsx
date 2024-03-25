@@ -2,6 +2,7 @@
 
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import Badge from "@app/_components/commons/Badge";
+import BaseUpload from "@app/_components/commons/BaseUpload";
 import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import {
@@ -18,17 +19,16 @@ import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Status } from "@prisma/client";
-import App from "antd/es/app";
+import notification from "antd/es/notification";
 import { ColumnsType } from "antd/es/table";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { Fragment, useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
-const Modal = dynamic(async () => (await import("antd/es/modal/Modal")).default, { ssr: false });
-const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false });
-const Popconfirm = dynamic(async () => (await import("antd/es/popconfirm")).default, { ssr: false });
-const Table = dynamic(async () => (await import("antd/es/table")).default, { ssr: false });
+const Modal = dynamic(async () => import("antd/es/modal/Modal"), { ssr: false });
+const Popconfirm = dynamic(async () => import("antd/es/popconfirm"), { ssr: false });
+const Table = dynamic(async () => import("antd/es/table"), { ssr: false });
 
 const statusFormConfig: DynamicFormConfig = {
   fields: [
@@ -92,8 +92,6 @@ function Page() {
     isSuccess: isDeleteSuccess,
   } = useDeleteStatusMutation();
 
-  const { notification } = App.useApp();
-
   const [statusModal, setStatusModal] = React.useState(false);
   const [editingStatus, setEditingStatus] = React.useState<Status | undefined>(undefined);
 
@@ -138,6 +136,8 @@ function Page() {
       console.error(error);
     }
   };
+
+  const uploadBackup = async () => {};
 
   const statusFormSubmit = async (formData: FieldValues, form?: UseFormReturn) => {
     try {
@@ -190,23 +190,26 @@ function Page() {
         dataIndex: "id",
         key: "id",
         render: (id: string, record: any) => (
-          <Fragment>
-            <Button
-              type="text"
+          <div className="flex gap-2">
+            <BaseButton
+              variants="text"
               onClick={triggerStatusForm(true, record)}
-              icon={<EditOutlined className="text-slate-500" />}
+              icon={<EditOutlined className="text-slate-500" fontSize="small" />}
             />
             <Popconfirm
-              icon={<DeleteOutlineOutlined className="mr-2" />}
+              icon={<DeleteOutlineOutlined fontSize="small" className="mr-2" />}
               title="Delete the task"
               arrow={false}
               description="Are you sure to delete this status?"
               onConfirm={handleDelete(id)}
               okText="Delete"
               cancelText="Cancel">
-              <Button type="text" icon={<DeleteOutlineOutlined className="text-slate-500" />} />
+              <BaseButton
+                variants="text"
+                icon={<DeleteOutlineOutlined fontSize="small" className="text-slate-500" />}
+              />
             </Popconfirm>
-          </Fragment>
+          </div>
         ),
       },
     ],
@@ -219,13 +222,13 @@ function Page() {
       setStatusModal(false);
       notification.success({ message: `Status ${isDeleteSuccess ? "deleted" : "saved"} successfully` });
     }
-  }, [isCreateSuccess, isDeleteSuccess, isUpdateSuccess, notification]);
+  }, [isCreateSuccess, isDeleteSuccess, isUpdateSuccess]);
 
   useEffect(() => {
     if (isCreateError || isUpdateError || isDeleteError) {
       notification.error({ message: `Status ${isDeleteSuccess ? "deleted" : "saved"} failed` });
     }
-  }, [isCreateError, isDeleteError, isDeleteSuccess, isUpdateError, notification]);
+  }, [isCreateError, isDeleteError, isDeleteSuccess, isUpdateError]);
 
   return (
     <PageContainer title="Setting">
@@ -242,10 +245,9 @@ function Page() {
       </ConfigSection>
       <ConfigSection title="Backup" description="Backup application data">
         <div className="flex gap-3">
-          <Button type="primary" onClick={downloadBackup}>
-            Download Backup
-          </Button>
-          <Button>Upload Backup</Button>
+          <BaseButton variants="outline" onClick={downloadBackup} label="Download Backup" />
+          <BaseButton label="Upload Backup" onClick={uploadBackup} />
+          <BaseUpload />
         </div>
       </ConfigSection>
       <Modal
