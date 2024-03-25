@@ -1,7 +1,6 @@
 "use client";
 
 import BaseButton from "../commons/buttons/BaseButton";
-import PostPreview from "./PostPreview";
 import { makeFieldMap } from "@app/_utils/helper";
 import { useCreatePost, useUpdatePost } from "@app/queries/postQueries";
 import Loader from "@components/commons/Loader";
@@ -12,17 +11,21 @@ import { Post, PostAsset } from "@prisma/client";
 import BaseError from "@shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
-import { App, Form, Tabs, TabsProps } from "antd";
+import { Form, Tabs, TabsProps, notification } from "antd";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 const BaseMarkdown = dynamic(() => import("@components/commons/BaseMarkdown"), {
   ssr: false,
   loading: () => <Loader />,
 });
+
+const PostPreview = dynamic(() => import("./PostPreview"), { ssr: false });
+
 const Upload = dynamic(() => import("antd/es/upload"), { ssr: false });
+
 const Input = dynamic(() => import("antd/es/input"), { ssr: false });
 
 const initialValues = {
@@ -50,7 +53,6 @@ export default function PostForm({ post }: any) {
   } = useUpdatePost();
 
   // Hooks
-  const { notification } = App.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -184,7 +186,7 @@ export default function PostForm({ post }: any) {
     if (createError || updateError) {
       notification?.error({ message: "Save post failed" });
     }
-  }, [createError, createSuccess, notification, router, updateError, updateSuccess]);
+  }, [createError, createSuccess, router, updateError, updateSuccess]);
 
   const items: TabsProps["items"] = [
     {

@@ -34,7 +34,7 @@ export default forwardRef(function DynamicText(
   let element;
   switch (type) {
     case "password":
-      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type={type} disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...field} {...options} type="password" ref={ref} disabled={isSubmitting} />;
       break;
     case "number":
       element = (
@@ -45,7 +45,7 @@ export default forwardRef(function DynamicText(
       element = <TextArea key={keyProp} {...field} {...options} ref={ref} rows={4} disabled={isSubmitting} />;
       break;
     default:
-      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type={type} disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type="text" disabled={isSubmitting} />;
       break;
   }
   return (

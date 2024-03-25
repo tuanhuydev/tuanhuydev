@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
-const BaseMarkdown = dynamic(async () => (await import("../BaseMarkdown")).default, {
+const BaseMarkdown = dynamic(() => import("../BaseMarkdown"), {
   ssr: false,
   loading: () => <Loader />,
 });
