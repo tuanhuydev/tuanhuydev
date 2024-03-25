@@ -2,6 +2,7 @@
 
 import { ItemProps } from "./Item";
 import styles from "./styles.module.scss";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
@@ -79,7 +80,7 @@ const Sidebar = ({ resources = new Set<string>() }: SidebarProps) => {
   const containerToggleStyles = sidebarOpen ? styles.open : EMPTY_STRING;
 
   return (
-    <div className="relative p-2 flex flex-col border-0 dark:border-r dark:border-solid dark:border-slate-800">
+    <div className="relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-lg bg-slate-50 dark:bg-primary dark:border-slate-800">
       <div className="h-14 truncate flex items-center justify-center">
         <svg
           width="32"
@@ -92,20 +93,15 @@ const Sidebar = ({ resources = new Set<string>() }: SidebarProps) => {
           <path d="M14 10.6391V8.68913C14 8.57412 13.9302 8.4699 13.8218 8.42319L9.02184 6.35364C8.82346 6.26811 8.6 6.40898 8.6 6.61959V8.01495C8.6 8.13244 8.67282 8.23841 8.78462 8.28359L11.5354 9.39547C11.7815 9.49497 11.7815 9.83326 11.5354 9.93276L8.78462 11.0446C8.67282 11.0898 8.6 11.1958 8.6 11.3133V12.7086C8.6 12.9192 8.82346 13.0601 9.02184 12.9746L13.8218 10.905C13.9302 10.8583 14 10.7541 14 10.6391Z" />
         </svg>
       </div>
-      <Button
-        shape="circle"
-        className="!bg-slate-50 dark:!bg-primary text-slate-400 text-center !leading-none !absolute -right-4 top-1/2 z-[1] drop-shadow-sm"
-        type="text"
+      <BaseButton
+        className="!bg-slate-50 !rounded-full dark:!bg-primary text-slate-400 text-center absolute -right-3 top-1/2 z-[10]"
+        variants="text"
         onClick={toggleSidebar}
-        icon={
-          <ArrowCircleRightOutlined
-            className={`!text-lg text-primary dark:text-slate-50  ${sidebarOpen ? "rotate-180" : ""}`}
-          />
-        }
+        icon={<ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />}
       />
 
       <ul
-        className={`${styles.container} ${containerToggleStyles} ease-in duration-150  grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
+        className={`${styles.container} ${containerToggleStyles} ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {renderRoutes}
       </ul>
     </div>

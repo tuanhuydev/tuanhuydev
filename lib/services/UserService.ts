@@ -26,11 +26,19 @@ class UserService {
   }
 
   async createUser(body: ObjectType) {
+    delete body.confirmPassword;
     try {
       const existingUser = await prismaClient.user.findFirst({ where: { email: body.email } });
       if (existingUser) throw new BaseError("User already existed");
-
-      return await prismaClient.user.create({ data: body as any });
+      const { permission, project, ...userBody } = body;
+      return prismaClient.$transaction(async (tx) => {
+        const user = await prismaClient.user.create({ data: userBody as any });
+        if (project?.length) {
+          for (const projectId of project) {
+            await tx.projectUser.create({ data: { userId: user.id, projectId, roleId: 1 } });
+          }
+        }
+      });
     } catch (error: any) {
       throw new BaseError((error as Error).message);
     }
@@ -39,7 +47,7 @@ class UserService {
   async getUsers(filter?: UserFilter) {
     let defaultWhere: ObjectType = { deletedAt: null };
     if (!filter) return await prismaClient.user.findMany({ where: defaultWhere });
-    const { page = 1, pageSize = 10, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
+    const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
     if (search) {
       defaultWhere = {
         ...defaultWhere,
@@ -55,12 +63,16 @@ class UserService {
     }
     let query: any = {
       where: defaultWhere,
-      take: pageSize,
-      skip: (page - 1) * pageSize,
       orderBy: orderBy.map((order) => ({
         [order.field]: order.direction.toLowerCase(),
       })),
     };
+
+    if (page && pageSize) {
+      query.take = pageSize;
+      query.skip = (page - 1) * pageSize;
+    }
+
     try {
       const users = await prismaClient.user.findMany(query);
       const userWithoutPasswords = users.map((user: User) => this.exlude(user, ["password"]));

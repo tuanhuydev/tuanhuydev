@@ -11,7 +11,7 @@ export default function PageContainer({ title, goBack, children }: PageContainer
   return (
     <Fragment>
       <Navbar title={title} goBack={goBack} />
-      <div className="h-full overflow-auto p-3 drop-shadow-lg bg-slate-50 dark:bg-gray-950">
+      <div className="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-950">
         <WithTransition>{children}</WithTransition>
       </div>
     </Fragment>

@@ -14,15 +14,18 @@ import {
   toolbarPlugin,
   useCodeBlockEditorContext,
   MDXEditor,
+  diffSourcePlugin,
+  ConditionalContents,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
-import React, { useMemo, RefObject, useRef, useEffect, memo } from "react";
+import React, { RefObject, useRef, useEffect } from "react";
 
 const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
   ssr: false,
   loading: () => <Loader />,
 });
+
 const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
   ssr: false,
   loading: () => <Loader />,
@@ -36,6 +39,10 @@ const InsertCodeBlock = dynamic(async () => (await import("@mdxeditor/editor")).
   loading: () => <Loader />,
 });
 const ListsToggle = dynamic(async () => (await import("@mdxeditor/editor")).ListsToggle, {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const ChangeCodeMirrorLanguage = dynamic(async () => (await import("@mdxeditor/editor")).ChangeCodeMirrorLanguage, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -62,36 +69,13 @@ const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   },
 };
 
-export default memo(function BaseMarkdown({
+export default function BaseMarkdown({
   value = EMPTY_STRING,
   onChange,
   readOnly = false,
   className = "",
   placeholder = "Placeholder",
 }: EditorProps) {
-  const getPlugins = useMemo(() => {
-    let basePlugins = [
-      toolbarPlugin({
-        toolbarContents: () => (
-          <div className="flex gap-3 relative z-50">
-            <BlockTypeSelect />
-            <BoldItalicUnderlineToggles />
-            <CreateLink />
-            <ListsToggle />
-            <InsertCodeBlock />
-          </div>
-        ),
-      }),
-      linkDialogPlugin(),
-      headingsPlugin(),
-      listsPlugin(),
-      linkPlugin(),
-      codeBlockPlugin({ defaultCodeBlockLanguage: "txt", codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor] }),
-      codeMirrorPlugin({ codeBlockLanguages: { js: "JavaScript", css: "CSS", txt: "text", tsx: "TypeScript" } }),
-    ];
-    if (readOnly) basePlugins = basePlugins.slice(2);
-    return basePlugins;
-  }, [readOnly]);
   const localRef = useRef<MDXEditorMethods | null>(null);
 
   useEffect(() => {
@@ -112,8 +96,40 @@ export default memo(function BaseMarkdown({
         onChange={onChange}
         readOnly={readOnly}
         contentEditableClassName="min-[16rem]"
-        plugins={getPlugins}
+        plugins={[
+          toolbarPlugin({
+            toolbarContents: () => (
+              <div className="flex gap-3 relative z-50">
+                <BlockTypeSelect />
+                <BoldItalicUnderlineToggles />
+                <CreateLink />
+                <ListsToggle />
+                <ConditionalContents
+                  options={[
+                    {
+                      when: (editor) => editor?.editorType === "codeblock",
+                      contents: () => <ChangeCodeMirrorLanguage />,
+                    },
+                    {
+                      fallback: () => <InsertCodeBlock />,
+                    },
+                  ]}
+                />
+              </div>
+            ),
+          }),
+          diffSourcePlugin({ viewMode: "rich-text" }),
+          linkDialogPlugin(),
+          headingsPlugin(),
+          listsPlugin(),
+          linkPlugin(),
+          codeBlockPlugin({
+            defaultCodeBlockLanguage: "txt",
+            codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor],
+          }),
+          codeMirrorPlugin({ codeBlockLanguages: { js: "JavaScript", css: "CSS", txt: "text", tsx: "TypeScript" } }),
+        ]}
       />
     </div>
   );
-});
+}

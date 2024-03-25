@@ -171,7 +171,7 @@ function Page({ params }: any) {
       );
     }
     return <TaskPreview task={selectedTask} />;
-  }, [isEditMode, projectId, toggleDrawer, onError, selectedTask]);
+  }, [isEditMode, selectedTask, taskFormConfig, projectId, toggleDrawer, onError]);
 
   return (
     <PageContainer title={`${project?.name}'s tasks`} goBack>
