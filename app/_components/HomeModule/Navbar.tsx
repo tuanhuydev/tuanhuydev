@@ -38,7 +38,7 @@ export default memo(function Navbar({ posts = [] }: NavbarProps) {
         <ThemeToggle />
         <a
           href="#contact"
-          className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:text-primary text-slate-50 text-xs md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+          className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:!text-primary !text-slate-50 text-xs md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
           Contact
         </a>
       </div>

@@ -3,6 +3,7 @@
 import { Post } from "@prisma/client";
 import formatDistance from "date-fns/formatDistance";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export interface HighlightPostProps {
@@ -13,24 +14,30 @@ export interface HighlightPostProps {
 export default function HighlightPost({ post, className }: HighlightPostProps) {
   const { title, thumbnail = "", createdAt } = post;
   return (
-    <a
+    <Link
       href={`/posts/${post.slug}`}
-      className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl hover:scale-105 ease-in-out cursor-pointer ${className}`}>
-      <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 px-5 py-3">
+      className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl ease-in-out cursor-pointer ${className}`}>
+      <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-5">
         {thumbnail && (
-          <div className="w-full h-72 lg:h-72 grow relative mb-2">
-            <Image src={thumbnail} className="object-cover rounded-md" alt={title} fill sizes="50vw" />
+          <div className="w-full min-h-[14rem] grow relative mb-2 overflow-hidden rounded-md">
+            <Image
+              src={thumbnail}
+              className="object-cover transition-all duration-500 hover:scale-105"
+              alt={title}
+              fill
+              sizes="50vw"
+            />
           </div>
         )}
         <div className="mt-auto">
-          <h4 className="text-slate-900 dark:text-slate-50 text-base lg:text-2xl font-bold capitalize line-clamp-2">
+          <h4 className="text-slate-900 dark:text-slate-50 text-base lg:text-2xl my-0 mb-1 font-bold capitalize line-clamp-2">
             {title}
           </h4>
-          <p className="text-slate-600 dark:text-slate-200 text-xs md:text-sm capitalize">
+          <p className="text-slate-600 dark:text-slate-200 text-xs md:text-sm capitalize my-0">
             {formatDistance(new Date(createdAt), new Date(), { addSuffix: true })}
           </p>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

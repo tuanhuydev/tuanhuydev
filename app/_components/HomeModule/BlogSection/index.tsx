@@ -8,7 +8,7 @@ const HighlightPost = dynamic(() => import("./HighlightPost"), { ssr: false, loa
 export default function BlogSection({ posts }: { posts: Post[] }) {
   const makeColumn = (index: number) => {
     const firstItemIndex = 0;
-    return index === firstItemIndex ? "lg:row-span-full" : "lg:row-span-3";
+    return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";
   };
 
   if (!posts.length) return <></>;
@@ -23,7 +23,7 @@ export default function BlogSection({ posts }: { posts: Post[] }) {
           Explore new ideas and expand your understanding through my blog posts.
         </span>
       </h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-y-8 gap-x-6 p-3 grid-flow-row">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-y-6 gap-x-4 p-3 grid-flow-row">
         {posts.map((post: Post, index: number) => (
           <HighlightPost key={post.title} post={post} className={makeColumn(index)} />
         ))}
