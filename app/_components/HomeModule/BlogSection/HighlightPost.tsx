@@ -19,7 +19,7 @@ export default function HighlightPost({ post, className }: HighlightPostProps) {
       className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl ease-in-out cursor-pointer ${className}`}>
       <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-5">
         {thumbnail && (
-          <div className="w-full lg:min-h-[14rem] grow relative mb-2 overflow-hidden rounded-md">
+          <div className="w-full min-h-[14rem] grow relative mb-2 overflow-hidden rounded-md">
             <Image
               src={thumbnail}
               className="object-cover transition-all duration-500 hover:scale-105"

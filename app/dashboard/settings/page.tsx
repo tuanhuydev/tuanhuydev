@@ -23,7 +23,7 @@ import notification from "antd/es/notification";
 import { ColumnsType } from "antd/es/table";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
-import React, { Fragment, useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
 const Modal = dynamic(async () => import("antd/es/modal/Modal"), { ssr: false });
@@ -137,8 +137,6 @@ function Page() {
     }
   };
 
-  const uploadBackup = async () => {};
-
   const statusFormSubmit = async (formData: FieldValues, form?: UseFormReturn) => {
     try {
       const isUpdatingStatus = !!formData?.id;
@@ -190,7 +188,7 @@ function Page() {
         dataIndex: "id",
         key: "id",
         render: (id: string, record: any) => (
-          <div className="flex gap-2">
+          <div className="flex items-start content-start gap-2">
             <BaseButton
               variants="text"
               onClick={triggerStatusForm(true, record)}
@@ -244,9 +242,8 @@ function Page() {
         {!isStatusError && <Table loading={isStatusLoading} dataSource={status} columns={getColumns} rowKey="id" />}
       </ConfigSection>
       <ConfigSection title="Backup" description="Backup application data">
-        <div className="flex gap-3">
+        <div className="flex items-start gap-3">
           <BaseButton variants="outline" onClick={downloadBackup} label="Download Backup" />
-          <BaseButton label="Upload Backup" onClick={uploadBackup} />
           <BaseUpload />
         </div>
       </ConfigSection>
