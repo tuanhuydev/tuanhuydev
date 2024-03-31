@@ -18,7 +18,6 @@ import React, { useCallback, useMemo } from "react";
 
 const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
-const Button = dynamic(async () => (await import("antd/es/button")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface SidebarProps {
   resources: Set<string>;
