@@ -5,7 +5,7 @@ import BaseButton from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -76,6 +76,17 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
 
   return yup.object(schema);
 };
+const DynamicSelect = dynamic(() => import("@components/commons/Form/DynamicSelect"), { loading: () => <Loader /> });
+const DynamicMarkdown = dynamic(() => import("@components/commons/Form/DynamicMarkdown"), {
+  loading: () => <Loader />,
+});
+const DynamicDatepicker = dynamic(() => import("@components/commons/Form/DynamicDatepicker"), {
+  loading: () => <Loader />,
+});
+const DynamicColorPicker = dynamic(() => import("@components/commons/Form/DynamicColorPicker"), {
+  loading: () => <Loader />,
+});
+const DynamicText = dynamic(() => import("@components/commons/Form/DynamicText"), { loading: () => <Loader /> });
 
 export default function DynamicForm({ config, onSubmit, mapValues, submitProps }: DynamicFormProps) {
   const form = useForm({ resolver: yupResolver(makeSchema(config)) });
@@ -88,7 +99,7 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
   } = form;
   const { fields } = config;
 
-  const registerFields = useMemo(
+  const registerFields = useCallback(
     () =>
       (fields as Array<ElementType>).map((field: ElementType) => {
         const { name, type, options, ...restFieldProps } = field;
@@ -100,41 +111,14 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
         };
         switch (type) {
           case "select":
-            const DynamicSelect = dynamic(
-              async () => (await import("@components/commons/Form/DynamicSelect")).default,
-              {
-                loading: () => <Loader />,
-              },
-            );
             return <DynamicSelect key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "richeditor":
-            const DynamicMarkdown = dynamic(
-              async () => (await import("@components/commons/Form/DynamicMarkdown")).default,
-              {
-                loading: () => <Loader />,
-              },
-            );
             return <DynamicMarkdown key={name} {...elementProps} options={options} {...restFieldProps} />;
           case "datepicker":
-            const DynamicDatepicker = dynamic(
-              async () => (await import("@components/commons/Form/DynamicDatepicker")).default,
-              {
-                loading: () => <Loader />,
-              },
-            );
             return <DynamicDatepicker key={name} {...elementProps} {...restFieldProps} />;
           case "colorpicker":
-            const DynamicColorPicker = dynamic(
-              async () => (await import("@components/commons/Form/DynamicColorPicker")).default,
-              {
-                loading: () => <Loader />,
-              },
-            );
             return <DynamicColorPicker key={name} {...elementProps} {...restFieldProps} />;
           default:
-            const DynamicText = dynamic(async () => (await import("@components/commons/Form/DynamicText")).default, {
-              loading: () => <Loader />,
-            });
             return (
               <DynamicText key={name} {...elementProps} {...restFieldProps} type={type} keyProp={`${name} - ${type}`} />
             );
@@ -142,7 +126,6 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
       }),
     [control, fields],
   );
-
   const submit = useCallback(
     async (formData: FieldValues) => {
       if (onSubmit) await onSubmit(formData, form);
@@ -166,7 +149,7 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
   }, [mapValues, reset, setValue]);
   return (
     <form className="w-full">
-      <div className="flex flex-wrap relative overflow-auto">{registerFields}</div>
+      <div className="flex flex-wrap relative overflow-auto">{registerFields()}</div>
       <div className="h-px bg-gray-100 mt-1 mb-3  mx-2"></div>
 
       <div className="flex p-2">

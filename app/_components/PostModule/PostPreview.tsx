@@ -1,3 +1,5 @@
+"use client";
+
 import BaseImage from "../commons/BaseImage";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { Post } from "@prisma/client";
