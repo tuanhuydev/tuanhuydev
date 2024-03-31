@@ -1,5 +1,3 @@
-"use client";
-
 import { Post } from "@prisma/client";
 import formatDistance from "date-fns/formatDistance";
 import Image from "next/image";
@@ -11,11 +9,12 @@ export interface HighlightPostProps {
   className?: string;
 }
 
-export default function HighlightPost({ post, className }: HighlightPostProps) {
+export default async function HighlightPost({ post, className }: HighlightPostProps) {
   const { title, thumbnail = "", createdAt } = post;
   return (
     <Link
       href={`/posts/${post.slug}`}
+      prefetch
       className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-xl ease-in-out cursor-pointer ${className}`}>
       <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-5">
         {thumbnail && (

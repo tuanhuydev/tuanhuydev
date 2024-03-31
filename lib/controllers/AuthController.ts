@@ -45,6 +45,11 @@ class AuthController {
     }
   }
 
+  async signOut(request: NextRequest) {
+    cookies().delete("jwt");
+    return Network(request).successResponse({ message: "Sign out successfully" });
+  }
+
   async issueAccessToken(request: NextRequest) {
     const network = Network(request);
     try {

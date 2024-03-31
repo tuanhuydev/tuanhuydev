@@ -16,6 +16,19 @@ export const useGetUsers = (filter: ObjectType = {}) => {
   });
 };
 
+export const useCurrentUser = () => {
+  return useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      let url = `${BASE_URL}/api/users/me`;
+      const response = await fetch(url);
+      if (!response.ok) throw new BaseError(response.statusText);
+      const { data: currentUser = {} } = await response.json();
+      return currentUser;
+    },
+  });
+};
+
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -33,5 +46,3 @@ export const useCreateUser = () => {
     },
   });
 };
-
-export const useGetUserProjects = (userId: number) => {};

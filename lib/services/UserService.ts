@@ -1,7 +1,9 @@
+import { verifyJwt } from "@app/_utils/network";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import { User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
 import BaseError from "@shared/commons/errors/BaseError";
+import { cookies } from "next/headers";
 
 export type UserFilter = {
   page?: number;
@@ -91,6 +93,15 @@ class UserService {
       return this.exlude(user, ["password"]);
     } catch (error) {
       throw new BaseError((error as Error).message);
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
+      return this.getUserById(userId);
+    } catch (error) {
+      throw new BaseError("Unable to get current user");
     }
   }
 

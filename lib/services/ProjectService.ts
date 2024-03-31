@@ -1,8 +1,10 @@
 import LogService from "./LogService";
 import TaskService from "./TaskService";
+import { verifyJwt } from "@app/_utils/network";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Project, User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
+import { cookies } from "next/headers";
 
 export type CreateProjectBody = Pick<Project, "name" | "description" | "thumbnail"> & {
   users: ObjectType[];
@@ -54,6 +56,18 @@ class ProjectService {
         defaultWhere = {
           ...defaultWhere,
           publishedAt: filter?.active ? { not: null } : null,
+        };
+      }
+      if ("userId" in filter) {
+        const shouldGetCurrentUser = filter?.userId === "me";
+        let userId = filter?.userId;
+        if (shouldGetCurrentUser) {
+          const { userId: jwtUserId } = await verifyJwt(cookies().get("jwt")?.value);
+          userId = jwtUserId;
+        }
+        defaultWhere = {
+          ...defaultWhere,
+          users: { some: { userId } },
         };
       }
       let query: any = {
