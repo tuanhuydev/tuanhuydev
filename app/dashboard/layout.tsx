@@ -1,10 +1,14 @@
+"use client";
+
 import Sidebar from "@app/_components/DashboardModule/Sidebar";
 import WithTransition from "@app/_components/commons/hocs/WithTransition";
-import { getUserResources } from "@app/server/actions/user";
+import { useCurrentUserResources } from "@app/queries/resourceQueries";
 import { PropsWithChildren } from "react";
 
-export default async function DashboardLayout({ children }: PropsWithChildren) {
-  const userResources = await getUserResources();
+export default function DashboardLayout({ children }: PropsWithChildren) {
+  const { data: queryResources = [] } = useCurrentUserResources();
+  const userResources = new Set((queryResources as Array<any>).map(({ name }) => name));
+
   return (
     <div className="w-full h-screen overflow-hidden flex justify-center items-center flex-nowrap">
       <div className="flex self-stretch w-full relative">

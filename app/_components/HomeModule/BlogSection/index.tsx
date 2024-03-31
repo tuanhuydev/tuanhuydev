@@ -3,9 +3,9 @@ import { Post } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React from "react";
 
-const HighlightPost = dynamic(() => import("./HighlightPost"), { ssr: false, loading: () => <Loader /> });
+const HighlightPost = dynamic(() => import("./HighlightPost"), { loading: () => <Loader /> });
 
-export default function BlogSection({ posts }: { posts: Post[] }) {
+export default async function BlogSection({ posts }: { posts: Post[] }) {
   const makeColumn = (index: number) => {
     const firstItemIndex = 0;
     return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";

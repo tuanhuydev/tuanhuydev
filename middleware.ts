@@ -46,6 +46,7 @@ export function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/api") &&
     !pathname.startsWith("/api/auth/sign-in") &&
+    !pathname.startsWith("/api/auth/sign-out") &&
     !pathname.startsWith("/api/auth/refresh-token") &&
     !pathname.startsWith("/api/posts")
   ) {

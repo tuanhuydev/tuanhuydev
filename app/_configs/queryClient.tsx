@@ -2,8 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { cache } from "react";
 
 const DEFAULT_GC_TIME = 1000 * 60 * 60 * 24; // 24 hours
-const DEFAULT_STALE_TIME = 1000 * 60 * 5; // 3 minutes
-
+const DEFAULT_STALE_TIME = 1;
 // cache() is scoped per request, so we don't leak data between requests
 const getQueryClient = cache(
   () =>

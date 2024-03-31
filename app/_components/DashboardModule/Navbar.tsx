@@ -2,21 +2,17 @@
 
 import ThemeToggle from "../commons/ThemeToggle";
 import BaseButton from "../commons/buttons/BaseButton";
+import { useSignOut } from "@app/queries/authQueries";
+import { useCurrentUser } from "@app/queries/userQueries";
+import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
+import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
+import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
+import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 
-const Popover = dynamic(async () => (await import("antd/es/popover")).default, { ssr: false });
-
-const PersonOutlineOutlined = dynamic(() => import("@mui/icons-material/PersonOutlineOutlined"), {
-  ssr: false,
-});
-const KeyboardArrowLeftOutlined = dynamic(() => import("@mui/icons-material/KeyboardArrowLeftOutlined"), {
-  ssr: false,
-});
-const ExitToAppOutlined = dynamic(() => import("@mui/icons-material/ExitToAppOutlined"), {
-  ssr: false,
-});
+const Popover = dynamic(() => import("antd/es/popover"), { ssr: false });
 
 interface NavbarProps extends PropsWithChildren {
   title?: string;
@@ -28,14 +24,21 @@ interface NavbarProps extends PropsWithChildren {
 const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
+  const { data: currentUser = {} } = useCurrentUser();
+  const { mutateAsync: signUserOut } = useSignOut();
+  const queryClient = useQueryClient();
+
+  const { email, name } = currentUser;
 
   // State
   const [open, setOpenUserMenu] = useState(false);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    await signUserOut();
     localStorage.clear();
+    queryClient.invalidateQueries();
     router.replace("/auth/sign-in");
-  }, [router]);
+  }, [queryClient, router, signUserOut]);
 
   const toggleUserMenu = useCallback(
     (value: boolean) => () => {
@@ -66,17 +69,18 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   }, [goBack, router, startComponent, title]);
 
   const renderEnd = useMemo(() => {
+    if (endComponent) return endComponent;
     return (
       <Popover
         placement="bottom"
-        title={"hello"}
+        title={name || email || "User"}
         content={
           <ul className="block m-0 p-0 list-none">
-            <li className="mb-2 text-xs text-slate-500">{"email"}</li>
+            <li className="mb-2 text-xs text-slate-500">{email}</li>
             <li
               className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer flex items-center"
               onClick={toggleUserMenu(true)}>
-              <ExitToAppOutlined className="mr-2 !text-base leading-none" />
+              <ExitToAppOutlined className="mr-2" fontSize="small" />
               Sign out
             </li>
           </ul>
@@ -85,13 +89,13 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         trigger="click"
         open={open}
         onOpenChange={toggleUserMenu(false)}>
-        <BaseButton variants="text" icon={<PersonOutlineOutlined />} />
+        <BaseButton variants="text" icon={<PersonOutlineOutlined fontSize="small" />} />
       </Popover>
     );
-  }, [open, toggleUserMenu]);
+  }, [endComponent, name, email, toggleUserMenu, open]);
 
   return (
-    <div className="px-3 py-2  text-primary  dark:text-slate-50 flex item-center justify-between">
+    <div className="px-3 py-1  text-primary  dark:text-slate-50 flex item-center justify-between">
       {renderStart}
       <div className="flex gap-1 items-center">
         <ThemeToggle />

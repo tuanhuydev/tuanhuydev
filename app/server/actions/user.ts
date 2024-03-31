@@ -10,9 +10,7 @@ import { cookies } from "next/headers";
 type PermissionResource = ResourcePermission & { Resource: Resource };
 
 export const getUserResources = async (): Promise<Set<string>> => {
-  const jwt = cookies().get("jwt")?.value;
-  const { userId }: JWTPayload = await verifyJwt(jwt);
-
+  const { userId }: JWTPayload = await verifyJwt(cookies().get("jwt")?.value);
   const user = await UserService.getUserById(userId);
   if (!user) return new Set();
 
@@ -20,6 +18,7 @@ export const getUserResources = async (): Promise<Set<string>> => {
     where: { permissionId: user.permissionId as number },
     select: { Resource: true },
   });
+
   const resources = new Set((queryResources as Array<PermissionResource>).map(({ Resource }) => Resource.name));
   return resources;
 };
