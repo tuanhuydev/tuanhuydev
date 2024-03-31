@@ -3,13 +3,13 @@
 import Loader from "@app/_components/commons/Loader";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import { BASE_URL } from "@lib/configs/constants";
-import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
+import LogService from "@lib/services/LogService";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
 import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useCallback } from "react";
+import React, { Fragment } from "react";
 
 const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
   ssr: false,
@@ -49,26 +49,17 @@ export default function SignIn() {
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const getUserDetail = useCallback(async (userId: string) => {
-    const response = await fetch(`${BASE_URL}/api/users/${userId}`);
-    if (!response.ok) throw new NotFoundError("User not found");
-    const { data: userDetail } = await response.json();
-    return userDetail;
-  }, []);
-
   const submit = async (formData: any) => {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
         method: "POST",
         body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
       router.push("/dashboard/home");
     } catch (error) {
-      console.log((error as Error).message);
+      LogService.log(error as BaseError);
       api.error({ message: (error as BaseError).message });
     }
   };
