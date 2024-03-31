@@ -69,8 +69,14 @@ class UserController implements BaseController {
     const network = Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const postById = await userService.getUserById(String(id));
-      return network.successResponse(postById);
+      const currentUserKey = "me";
+      if (id === currentUserKey) {
+        const currentUser = await userService.getCurrentUser();
+        return network.successResponse(currentUser);
+      }
+
+      const userById = await userService.getUserById(String(id));
+      return network.successResponse(userById);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
