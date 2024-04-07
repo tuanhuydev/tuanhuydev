@@ -1,8 +1,11 @@
+import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useStatusQuery = (filter: ObjectType = {}) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["status"],
     queryFn: async () => {
@@ -17,6 +20,8 @@ export const useStatusQuery = (filter: ObjectType = {}) => {
 };
 
 export const useCreateStatusMutation = () => {
+  const { fetch } = useFetch();
+
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (params: any) => {
@@ -35,6 +40,8 @@ export const useCreateStatusMutation = () => {
 
 export const useUpdateStatusMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (params: any) => {
       const response = await fetch(`${BASE_URL}/api/status/${params.id}`, {
@@ -52,6 +59,8 @@ export const useUpdateStatusMutation = () => {
 
 export const useDeleteStatusMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await fetch(`${BASE_URL}/api/status/${id}`, {

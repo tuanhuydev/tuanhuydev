@@ -1,9 +1,12 @@
+import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Project } from "@prisma/client";
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useProjectsQuery = (filter: ObjectType = {}) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
@@ -19,6 +22,8 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
 };
 
 export const useProjectQuery = (projectId: string) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["projects", projectId],
     queryFn: async () => {
@@ -32,6 +37,8 @@ export const useProjectQuery = (projectId: string) => {
 
 export const useCreateProjectMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (formData: ObjectType) => {
       const response = await fetch(`${BASE_URL}/api/projects`, {
@@ -46,6 +53,8 @@ export const useCreateProjectMutation = () => {
 
 export const useUpdateProjectMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (project: Partial<Project>) => {
       const response = await fetch(`${BASE_URL}/api/projects/${project.id}`, {
@@ -59,6 +68,8 @@ export const useUpdateProjectMutation = () => {
 };
 
 export const useProjectTasks = (projectId: string) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["projects", projectId, "tasks"],
     queryFn: async () => {
