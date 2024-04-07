@@ -1,6 +1,7 @@
 "use client";
 
 import Loader from "../Loader";
+import { useFetch } from "@app/queries/useSession";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
@@ -21,7 +22,7 @@ export default function DynamicSelect({
   ...restProps
 }: DynamicSelectProps) {
   const { options: staticOptions = [], remote, defaultOption, mode = "single", ...restSelectOptions } = selectOptions;
-
+  const { fetch } = useFetch();
   const [options, setOptions] = useState<SelectOption[]>([]);
 
   const { field, fieldState, formState } = useController(restProps);
@@ -31,19 +32,14 @@ export default function DynamicSelect({
 
   const fetchOptions = useCallback(async () => {
     const { url, label, value } = remote;
-    const response = await fetch(url, {
-      cache: "no-store",
-      headers: {
-        authorization: `Bearer ${Cookies.get("jwt")}`,
-      },
-    });
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) return [];
 
     const { data: options = [] } = await response.json();
     const fetchedOptions = options.map((option: ObjectType) => ({ label: option[label], value: option[value] }));
     if (defaultOption) fetchedOptions.unshift(defaultOption);
     setOptions(fetchedOptions);
-  }, [defaultOption, remote]);
+  }, [defaultOption, fetch, remote]);
 
   const handleChange = (newOptions: unknown) => {
     if (mode === "multiple") {

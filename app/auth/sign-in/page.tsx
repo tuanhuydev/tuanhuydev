@@ -6,6 +6,7 @@ import { BASE_URL } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -45,6 +46,7 @@ const signInFormConfig: DynamicFormConfig = {
 };
 
 export default function SignIn() {
+  const queryClient = useQueryClient();
   // Hooks
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
@@ -57,6 +59,11 @@ export default function SignIn() {
         headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
+      const {
+        data: { accessToken },
+      } = await response.json();
+
+      await queryClient.setQueryData(["accessToken" as unknown as QueryKey], accessToken);
       router.push("/dashboard/home");
     } catch (error) {
       LogService.log(error as BaseError);
