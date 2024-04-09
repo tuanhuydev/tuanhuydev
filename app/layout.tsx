@@ -11,14 +11,6 @@ import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
 const App = dynamic(() => import("antd/es/app"), { ssr: false });
-
-const Wrapper = ({ children }: PropsWithChildren) => {
-  return (
-    <QueryProvider>
-      <App>{children}</App>
-    </QueryProvider>
-  );
-};
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={sourceCodeFont.className}>
@@ -28,7 +20,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       </head>
       <body>
         <ThemeProvider>
-          <Wrapper>{children}</Wrapper>
+          <QueryProvider>
+            <App>{children}</App>
+          </QueryProvider>
         </ThemeProvider>
         <SpeedInsights />
       </body>
