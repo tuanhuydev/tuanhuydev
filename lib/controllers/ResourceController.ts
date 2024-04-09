@@ -1,9 +1,8 @@
-import { verifyJwt } from "@app/_utils/network";
+import { extractBearerToken } from "@app/_utils/network";
 import Network from "@lib/shared/utils/network";
 import prismaClient from "@prismaClient/prismaClient";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
-import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export class ResourceController {
@@ -21,7 +20,7 @@ export class ResourceController {
       if (!id) throw new BadRequestError();
       const resourceById = id === "me";
       if (resourceById) {
-        const { userId } = await verifyJwt(cookies().get("jwt")?.value);
+        const { userId } = await extractBearerToken(request);
         const user = await prismaClient.user.findUnique({ where: { id: userId } });
         if (!user) throw new BaseError("User not found");
 

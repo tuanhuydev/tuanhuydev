@@ -1,9 +1,12 @@
+import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Task } from "@prisma/client";
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useTasksQuery = (filter: ObjectType = {}) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["tasks"],
     refetchOnMount: true,
@@ -20,6 +23,7 @@ export const useTasksQuery = (filter: ObjectType = {}) => {
 
 export const useCreateTaskMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
 
   return useMutation({
     mutationFn: async (data: ObjectType) => {
@@ -38,6 +42,8 @@ export const useCreateTaskMutation = () => {
 
 export const useUpdateTaskMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async ({ id, ...restTask }: Partial<Task>) => {
       const response = await fetch(`${BASE_URL}/api/tasks/${id}`, {
@@ -55,6 +61,8 @@ export const useUpdateTaskMutation = () => {
 
 export const useDeleteTaskMutation = () => {
   const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await fetch(`${BASE_URL}/api/tasks/${id}`, {

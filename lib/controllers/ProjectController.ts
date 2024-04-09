@@ -1,5 +1,6 @@
 import LogService from "../services/LogService";
 import ProjectService from "../services/ProjectService";
+import { extractBearerToken } from "@app/_utils/network";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
@@ -59,6 +60,13 @@ export class ProjectController implements BaseController {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
+      if ("userId" in params) {
+        let userId = params.userId;
+        if (userId === "me") {
+          const { userId } = await extractBearerToken(request);
+          params.userId = userId;
+        }
+      }
       const projects = await ProjectService.getProjects(params);
 
       return network.successResponse(projects);

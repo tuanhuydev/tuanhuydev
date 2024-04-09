@@ -36,6 +36,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   const signOut = useCallback(async () => {
     await signUserOut();
     localStorage.clear();
+    queryClient.removeQueries({ queryKey: ["accessToken"] });
     queryClient.invalidateQueries();
     router.replace("/auth/sign-in");
   }, [queryClient, router, signUserOut]);

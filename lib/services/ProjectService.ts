@@ -59,15 +59,9 @@ class ProjectService {
         };
       }
       if ("userId" in filter) {
-        const shouldGetCurrentUser = filter?.userId === "me";
-        let userId = filter?.userId;
-        if (shouldGetCurrentUser) {
-          const { userId: jwtUserId } = await verifyJwt(cookies().get("jwt")?.value);
-          userId = jwtUserId;
-        }
         defaultWhere = {
           ...defaultWhere,
-          users: { some: { userId } },
+          users: { some: { userId: filter?.userId } },
         };
       }
       let query: any = {

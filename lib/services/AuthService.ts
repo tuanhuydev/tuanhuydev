@@ -1,14 +1,23 @@
-import { NODE_ENV, SALT_ROUNDS } from "@lib/configs/constants";
+import { SALT_ROUNDS } from "@lib/configs/constants";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { User } from "@prisma/client";
 import prismaClient from "@prismaClient/prismaClient";
-import { ACCESS_TOKEN_LIFE, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "@shared/commons/constants/encryption";
+import {
+  ACCESS_TOKEN_LIFE,
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_LIFE,
+  REFRESH_TOKEN_SECRET,
+} from "@shared/commons/constants/encryption";
 import BaseError from "@shared/commons/errors/BaseError";
 import NotFoundError from "@shared/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";
 import * as jose from "jose";
 import { v4 as uuidv4 } from "uuid";
 
+export type TokenPayload = {
+  accessToken: string;
+  refreshToken: string;
+};
 class AuthService {
   static #instance: AuthService;
 
@@ -35,7 +44,6 @@ class AuthService {
 
   async validateSignIn(email: string, password: string) {
     const userByEmail = await prismaClient.user.findUnique({ where: { email } });
-
     if (!userByEmail) throw new NotFoundError("Invalid user");
 
     if (!bcrypt.compareSync(password, userByEmail.password)) throw new BaseError("Invalid credential");
@@ -64,24 +72,21 @@ class AuthService {
     }
   }
 
-  async signIn(email: string, password: string) {
-    try {
-      const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
-      const accessToken = await new jose.SignJWT({ userId, userEmail })
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("30m")
-        .sign(ACCESS_TOKEN_SECRET);
+  async signIn(email: string, password: string): Promise<TokenPayload | null> {
+    const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
+    console.log(ACCESS_TOKEN_LIFE, REFRESH_TOKEN_LIFE);
+    const accessToken = await new jose.SignJWT({ userId, userEmail })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime(ACCESS_TOKEN_LIFE)
+      .sign(ACCESS_TOKEN_SECRET);
 
-      const refreshToken = await new jose.SignJWT({ userId, userEmail })
-        .setProtectedHeader({ alg: "HS256" })
-        .setExpirationTime("7d")
-        .setIssuedAt()
-        .sign(REFRESH_TOKEN_SECRET);
-      return { userId, accessToken, refreshToken };
-    } catch (error) {
-      if (NODE_ENV !== "production") console.error(error);
-    }
+    const refreshToken = await new jose.SignJWT({ userId, userEmail })
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime(REFRESH_TOKEN_LIFE)
+      .setIssuedAt()
+      .sign(REFRESH_TOKEN_SECRET);
+    return { accessToken, refreshToken };
   }
 
   forgotPassword(email: string) {
