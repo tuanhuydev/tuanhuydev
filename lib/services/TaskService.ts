@@ -119,10 +119,23 @@ class TaskService {
     }
   }
 
-  async getTasksByProjectId(projectId: number) {
+  async getTasksByProjectId(projectId: number, filter: ObjectType = {}) {
     try {
+      let defaultWhere: ObjectType = { deletedAt: null, projectId };
+      if (!filter) {
+        return await prismaClient.task.findMany({
+          where: defaultWhere,
+          include: this.#defaultInclude,
+          orderBy: this.#defaultOrderBy,
+        });
+      }
+      const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
+
+      if ("search" in filter) {
+        defaultWhere = { ...defaultWhere, title: { startsWith: search.toLowerCase(), contains: search.toLowerCase() } };
+      }
       return await prismaClient.task.findMany({
-        where: { deletedAt: null, projectId },
+        where: defaultWhere,
         include: this.#defaultInclude,
         orderBy: this.#defaultOrderBy,
       });

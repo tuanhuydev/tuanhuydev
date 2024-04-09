@@ -2,7 +2,6 @@
 
 import Loader from "../Loader";
 import { useFetch } from "@app/queries/useSession";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useState } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
@@ -31,6 +30,7 @@ export default function DynamicSelect({
   const { onChange, ref, ...restField } = field;
 
   const fetchOptions = useCallback(async () => {
+    if (!remote) return;
     const { url, label, value } = remote;
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) return [];
@@ -64,7 +64,7 @@ export default function DynamicSelect({
   }, [defaultOption, staticOptions]);
 
   useEffect(() => {
-    if (remote) fetchOptions();
+    fetchOptions();
   }, [remote, fetchOptions]);
 
   return (
