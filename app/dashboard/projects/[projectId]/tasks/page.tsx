@@ -16,7 +16,7 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskForm = dynamic(async () => (await import("@app/_components/TaskModule/TaskForm")).default, {
   ssr: false,
@@ -47,6 +47,53 @@ const COMPONENT_MODE = {
   VIEW: "VIEW",
   EDIT: "EDIT",
 };
+const taskFormConfig = (projectId: any): DynamicFormConfig => ({
+  fields: [
+    {
+      name: "title",
+      type: "text",
+      options: {
+        placeholder: "Task Title",
+      },
+      validate: { required: true },
+    },
+    {
+      name: "assigneeId",
+      type: "select",
+      className: "w-1/2",
+      options: {
+        defaultOption: { label: "Unassigned", value: null },
+        placeholder: "Select Assignee",
+        remote: {
+          url: `${BASE_URL}/api/projects/${projectId}/users`,
+          label: "name",
+          value: "id",
+        },
+      },
+    },
+    {
+      name: "statusId",
+      type: "select",
+      className: "w-1/2",
+      options: {
+        placeholder: "Select Status",
+        remote: {
+          url: `${BASE_URL}/api/status?type=task`,
+          label: "name",
+          value: "id",
+        },
+      },
+      validate: { required: true },
+    },
+    {
+      name: "description",
+      type: "richeditor",
+      className: "min-h-[25rem]",
+      options: { placeholder: "Task Description" },
+      validate: { required: true },
+    },
+  ],
+});
 
 function Page({ params }: any) {
   const { projectId } = params;
@@ -55,61 +102,20 @@ function Page({ params }: any) {
   const pathname = usePathname();
   const taskId = searchParams.get("taskId");
 
+  const [filter, setFilter] = useState<FilterType>({});
+
   const { data: project, isLoading: isProjectLoading } = useProjectQuery(projectId);
-  const { data: tasks = [], isLoading: isProjectTaskLoading } = useProjectTasks(projectId);
+  const {
+    data: tasks = [],
+    refetch: refetchTasks,
+    isLoading: isProjectTaskLoading,
+  } = useProjectTasks(projectId, filter);
 
   const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
 
   const isEditMode = mode === COMPONENT_MODE.EDIT;
-  const taskFormConfig: DynamicFormConfig = {
-    fields: [
-      {
-        name: "title",
-        type: "text",
-        options: {
-          placeholder: "Task Title",
-        },
-        validate: { required: true },
-      },
-      {
-        name: "assigneeId",
-        type: "select",
-        className: "w-1/2",
-        options: {
-          defaultOption: { label: "Unassigned", value: null },
-          placeholder: "Select Assignee",
-          remote: {
-            url: `${BASE_URL}/api/projects/${projectId}/users`,
-            label: "name",
-            value: "id",
-          },
-        },
-      },
-      {
-        name: "statusId",
-        type: "select",
-        className: "w-1/2",
-        options: {
-          placeholder: "Select Status",
-          remote: {
-            url: `${BASE_URL}/api/status?type=task`,
-            label: "name",
-            value: "id",
-          },
-        },
-        validate: { required: true },
-      },
-      {
-        name: "description",
-        type: "richeditor",
-        className: "min-h-[25rem]",
-        options: { placeholder: "Task Description" },
-        validate: { required: true },
-      },
-    ],
-  };
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
@@ -130,6 +136,19 @@ function Page({ params }: any) {
     setSelectedTask(task);
     setOpenDrawer(true);
   }, []);
+
+  const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setTimeout(() => {
+      const search = event.target.value;
+      setFilter((filter) => {
+        if (search?.length) return { ...filter, search };
+
+        delete filter?.search;
+        return filter;
+      });
+      refetchTasks();
+    }, 500);
+  };
 
   const toggleMode = (value: string) => setMode(value);
 
@@ -161,7 +180,7 @@ function Page({ params }: any) {
       return (
         <div className="px-1">
           <TaskForm
-            config={taskFormConfig}
+            config={taskFormConfig(projectId)}
             projectId={projectId}
             onDone={toggleDrawer(false)}
             onError={onError}
@@ -171,12 +190,17 @@ function Page({ params }: any) {
       );
     }
     return <TaskPreview task={selectedTask} />;
-  }, [isEditMode, selectedTask, taskFormConfig, projectId, toggleDrawer, onError]);
+  }, [isEditMode, selectedTask, projectId, toggleDrawer, onError]);
 
   return (
     <PageContainer title={`${project?.name}'s tasks`} goBack>
       <div className="mb-3 flex gap-2 items-center">
-        <BaseInput placeholder="Find your task" className="grow mr-2 rounded-sm" startAdornment={<SearchOutlined />} />
+        <BaseInput
+          placeholder="Find your task"
+          onChange={searchTasks}
+          className="grow mr-2 rounded-sm"
+          startAdornment={<SearchOutlined />}
+        />
         <div className="flex gap-3">
           <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
         </div>

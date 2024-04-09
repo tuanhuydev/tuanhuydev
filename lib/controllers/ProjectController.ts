@@ -113,7 +113,8 @@ export class ProjectController implements BaseController {
   async getProjectTasks(request: NextRequest, { id }: any) {
     const network = Network(request);
     try {
-      const tasks = await ProjectService.getProjectTasks(Number.parseInt(id));
+      const params: ObjectType = network.extractSearchParams();
+      const tasks = await ProjectService.getProjectTasks(Number.parseInt(id), params);
       return network.successResponse(tasks);
     } catch (error) {
       return network.failResponse(error as BaseError);

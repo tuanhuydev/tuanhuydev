@@ -74,7 +74,6 @@ class AuthService {
 
   async signIn(email: string, password: string): Promise<TokenPayload | null> {
     const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
-    console.log(ACCESS_TOKEN_LIFE, REFRESH_TOKEN_LIFE);
     const accessToken = await new jose.SignJWT({ userId, userEmail })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()

@@ -8,7 +8,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { compress, decompress } from "lz-string";
 import * as React from "react";
 
-const DEFAULT_GC_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+const DEFAULT_STALE_TIME = 1000 * 60 * 3; // 3 minutes
+const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 24 * 7; // 7 days
 export function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
@@ -16,16 +17,17 @@ export function QueryProvider(props: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             gcTime: DEFAULT_GC_TIME,
-            staleTime: Infinity,
+            staleTime: DEFAULT_STALE_TIME,
             refetchInterval: false,
-            refetchOnWindowFocus: false,
+            refetchOnWindowFocus: true,
             refetchOnMount: true,
-            refetchOnReconnect: false,
+            refetchOnReconnect: true,
             retry: false,
           },
         },
       }),
   );
+  queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
 
   const persister = createSyncStoragePersister({
     storage: window.localStorage,

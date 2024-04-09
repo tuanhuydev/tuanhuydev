@@ -67,14 +67,18 @@ export const useUpdateProjectMutation = () => {
   });
 };
 
-export const useProjectTasks = (projectId: string) => {
+export const useProjectTasks = (projectId: string, filter: ObjectType = {}) => {
   const { fetch } = useFetch();
 
   return useQuery({
     queryKey: ["projects", projectId, "tasks"],
     queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/projects/${projectId}/tasks`);
+      let url = `${BASE_URL}/api/projects/${projectId}/tasks`;
+      if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
+
+      const response = await fetch(url);
       if (!response.ok) throw new BaseError("Unable to fetch tasks");
+
       const { data: tasks } = await response.json();
       return tasks;
     },

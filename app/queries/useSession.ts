@@ -20,12 +20,30 @@ export const useFetch = () => {
     if (!response.ok) {
       if (response.status !== 401) throw new BaseError(response.statusText);
       if (retryCount > 0) {
-        // Retry the request by calling /refresh-token
-        const tokenResponse = await fetch(`${BASE_URL}/api/auth/refresh-token`, { method: "POST" });
-        if (!tokenResponse.ok) throw new BaseError(tokenResponse.statusText); // Redirect to sign in
-        const { data: newAccessToken } = await tokenResponse.json();
-        // Update the accessToken in queryClient
-        queryClient.setQueryData(["accessToken" as unknown as QueryKey], newAccessToken);
+        // Check if there is already a refresh token request in progress
+        const isRefreshing = queryClient.getQueryData(["isRefreshing" as unknown as QueryKey]);
+
+        if (!isRefreshing) {
+          // Set a flag to indicate that a refresh token request is in progress
+          queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], true);
+
+          try {
+            // Call /refresh-token to get a new access token
+            const tokenResponse = await fetch(`${BASE_URL}/api/auth/refresh-token`, { method: "POST" });
+            if (!tokenResponse.ok) throw new BaseError(tokenResponse.statusText); // Redirect to sign in
+            const { data: newAccessToken } = await tokenResponse.json();
+
+            // Update the accessToken in queryClient
+            queryClient.setQueryData(["accessToken" as unknown as QueryKey], newAccessToken);
+          } catch (error) {
+            // Clear the flag if the refresh token request fails
+            queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], false);
+            throw error;
+          }
+
+          // Clear the flag after the refresh token request is completed
+          queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], false);
+        }
 
         // Retry the request with the new accessToken
         return fetchWithAuth(url, updatedOptions, retryCount - 1);
