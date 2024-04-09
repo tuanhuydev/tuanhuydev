@@ -1,28 +1,44 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { compress, decompress } from "lz-string";
 import * as React from "react";
 
+const DEFAULT_GC_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
 export function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000 * 60 * 5, // 5 minutes
+            gcTime: DEFAULT_GC_TIME,
+            staleTime: Infinity,
+            refetchInterval: false,
+            refetchOnWindowFocus: false,
+            refetchOnMount: true,
+            refetchOnReconnect: false,
+            retry: false,
           },
         },
       }),
   );
 
+  const persister = createSyncStoragePersister({
+    storage: window.localStorage,
+    serialize: (data) => compress(JSON.stringify(data)),
+    deserialize: (data) => JSON.parse(decompress(data)),
+  });
+
   const isDevelopmentEnv = process.env.NODE_ENV === "development";
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
       {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />}
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

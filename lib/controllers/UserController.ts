@@ -1,4 +1,5 @@
 import AuthService from "../services/AuthService";
+import { extractBearerToken } from "@app/_utils/network";
 import userService from "@lib/services/UserService";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
@@ -69,13 +70,13 @@ class UserController implements BaseController {
     const network = Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const currentUserKey = "me";
-      if (id === currentUserKey) {
-        const currentUser = await userService.getCurrentUser();
-        return network.successResponse(currentUser);
+      const CURRENT_USER_KEY: string = "me";
+      let userId: string = id;
+      if (id === CURRENT_USER_KEY) {
+        const { userId: tokenUserId } = await extractBearerToken(request);
+        userId = tokenUserId as string;
       }
-
-      const userById = await userService.getUserById(String(id));
+      const userById = await userService.getUserById(userId);
       return network.successResponse(userById);
     } catch (error) {
       return network.failResponse(error as BaseError);

@@ -96,15 +96,6 @@ class UserService {
     }
   }
 
-  async getCurrentUser() {
-    try {
-      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
-      return this.getUserById(userId);
-    } catch (error) {
-      throw new BaseError("Unable to get current user");
-    }
-  }
-
   async updateUser(id: string, data: Object) {
     try {
       if (!id || !data) throw new BaseError();

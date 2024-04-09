@@ -1,6 +1,6 @@
 import LogService from "../services/LogService";
 import TaskService from "../services/TaskService";
-import { verifyJwt } from "@app/_utils/network";
+import { extractBearerToken, verifyJwt } from "@app/_utils/network";
 import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { BaseController } from "@lib/shared/interfaces/controller";
@@ -50,7 +50,7 @@ export class TaskController implements BaseController {
       const validatedBody = await this.validate(body, schema);
 
       validatedBody.statusId = parseInt(validatedBody.statusId, 10);
-      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
+      const { userId } = await extractBearerToken(request);
       validatedBody.createdById = userId;
 
       const newTask = await TaskService.createTask(validatedBody);
@@ -65,7 +65,7 @@ export class TaskController implements BaseController {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
-      const { userId } = await verifyJwt(cookies().get("jwt")?.value);
+      const { userId } = await extractBearerToken(request);
       const tasks = await TaskService.getTasks(params, userId);
       return network.successResponse(tasks);
     } catch (error) {

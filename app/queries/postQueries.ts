@@ -1,3 +1,4 @@
+import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { Post } from "@prisma/client";
@@ -19,6 +20,8 @@ export const usePostsQuery = (filter: ObjectType = {}) => {
 };
 
 export const usePostQuery = (id: number) => {
+  const { fetch } = useFetch();
+
   return useQuery({
     queryKey: ["posts", id],
     queryFn: async () => {
@@ -31,6 +34,8 @@ export const usePostQuery = (id: number) => {
 };
 
 export const useCreatePost = () => {
+  const { fetch } = useFetch();
+
   return useMutation({
     mutationFn: async (post: Partial<Post>) => {
       const response = await fetch(`${BASE_URL}/api/posts`, { method: "POST", body: JSON.stringify(post) });

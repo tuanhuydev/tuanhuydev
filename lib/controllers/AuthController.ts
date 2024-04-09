@@ -1,8 +1,9 @@
-import AuthService from "@lib/services/AuthService";
+import AuthService, { TokenPayload } from "@lib/services/AuthService";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
@@ -30,16 +31,14 @@ class AuthController {
     try {
       const body = await request.json();
       const { email, password } = await this.validateSignIn(body);
-      const auth = await AuthService.signIn(email, password);
-
-      cookies().set("jwt", auth?.accessToken ?? "", {
-        sameSite: "strict",
-        httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 60 * 30), // 30 minutes
-      });
+      const auth: TokenPayload | null = await AuthService.signIn(email, password);
 
       if (!auth) throw new UnauthorizedError("Authenticate Failed");
-      return network.successResponse(auth);
+      const { accessToken, refreshToken = "" } = auth;
+      // Set refresh token to cookie
+      cookies().set("jwt", refreshToken, { sameSite: "strict", httpOnly: true });
+
+      return network.successResponse({ accessToken });
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
@@ -53,9 +52,9 @@ class AuthController {
   async issueAccessToken(request: NextRequest) {
     const network = Network(request);
     try {
-      const { token } = await request.json();
+      const token: string | undefined = cookies().get("jwt")?.value;
+      if (!token) throw new UnauthorizedError("Unauthorized");
       const auth = await AuthService.issueAccessToken(token);
-
       return network.successResponse(auth);
     } catch (error) {
       return network.failResponse(error as BaseError);
