@@ -7,7 +7,6 @@ export const useCurrentUserResources = () => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["currentUserResources"],
-    staleTime: 1000 * 60 * 60 * 24,
     queryFn: async () => {
       const response = await fetch(`${BASE_URL}/api/resources/me`);
       if (!response.ok) throw new BaseError(response.statusText);
