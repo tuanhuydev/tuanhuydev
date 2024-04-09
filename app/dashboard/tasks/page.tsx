@@ -14,15 +14,7 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, {
-  CSSProperties,
-  ChangeEventHandler,
-  EventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskFormTitle = dynamic(async () => (await import("@components/TaskModule/TaskFormTitle")).default, {
   ssr: false,
@@ -118,9 +110,14 @@ function Page() {
   const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
     setTimeout(() => {
       const search = event.target.value;
-      setFilter((filter) => ({ ...filter, search }));
-      refetchTasks();
+      setFilter((filter) => {
+        if (search?.length) return { ...filter, search };
+
+        delete filter?.search;
+        return filter;
+      });
     }, 500);
+    refetchTasks();
   };
 
   const mutateTaskError = useCallback((error: Error) => {

@@ -167,8 +167,8 @@ class ProjectService {
     return await prismaClient.project.update({ where: { id }, data: { deletedAt: new Date() } });
   }
 
-  async getProjectTasks(projectId: number) {
-    const projectTasks = await TaskService.getTasksByProjectId(projectId);
+  async getProjectTasks(projectId: number, params: ObjectType = {}) {
+    const projectTasks = await TaskService.getTasksByProjectId(projectId, params);
     return projectTasks;
   }
 

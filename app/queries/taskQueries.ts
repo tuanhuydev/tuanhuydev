@@ -9,7 +9,6 @@ export const useTasksQuery = (filter: ObjectType = {}) => {
 
   return useQuery({
     queryKey: ["tasks"],
-    refetchOnMount: true,
     queryFn: async () => {
       let url = `${BASE_URL}/api/tasks`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
