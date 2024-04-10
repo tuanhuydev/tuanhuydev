@@ -1,4 +1,5 @@
 import Loader from "../Loader";
+import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
@@ -29,7 +30,7 @@ export default function DynamicDatepicker({
           {...options}
           key={keyProp}
           disabled={isSubmitting}
-          value={field.value as any}
+          value={dayjs(field.value)}
           className="w-full"
           format="YYYY/MM/DD"
         />

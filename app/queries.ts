@@ -1,17 +1,14 @@
+import { useFetch } from "./queries/useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { useQuery } from "@tanstack/react-query";
-import Cookies from "js-cookie";
 
 export const useResourcesQuery = (permissionId: number) => {
+  const { fetch } = useFetch();
   return useQuery({
     queryKey: ["resources", permissionId],
     queryFn: async () => {
-      const response: any = await fetch(`${BASE_URL}/api/resources/permission/${permissionId}`, {
-        headers: { authorization: `Bearer ${Cookies.get("jwt")}` },
-      });
-      if (response?.status === 401) throw new UnauthorizedError("Resources not found");
+      const response: any = await fetch(`${BASE_URL}/api/resources/permission/${permissionId}`);
       if (!response.ok) throw new BaseError("Resources not found");
 
       const { data = [] } = await response.json();

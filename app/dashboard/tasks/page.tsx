@@ -3,6 +3,7 @@
 import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
 import BaseInput from "@app/_components/commons/Inputs/BaseInput";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import { useStatusQuery } from "@app/queries/statusQueries";
 import { useTasksQuery } from "@app/queries/taskQueries";
 import PageContainer from "@components/DashboardModule/PageContainer";
 import Loader from "@components/commons/Loader";
@@ -11,7 +12,7 @@ import LogService from "@lib/services/LogService";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import { Task } from "@prisma/client";
+import { Status, Task } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
@@ -42,39 +43,6 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-const config: DynamicFormConfig = {
-  fields: [
-    {
-      name: "title",
-      type: "text",
-      options: {
-        placeholder: "Task Title",
-      },
-      validate: { required: true },
-    },
-    {
-      name: "statusId",
-      type: "select",
-      options: {
-        placeholder: "Select Status",
-        remote: {
-          url: `${BASE_URL}/api/status?type=task`,
-          label: "name",
-          value: "id",
-        },
-      },
-      validate: { required: true },
-    },
-    {
-      name: "description",
-      type: "richeditor",
-      className: "min-h-[25rem]",
-      options: { placeholder: "Task Description" },
-      validate: { required: true },
-    },
-  ],
-};
-
 function Page() {
   // Hooks
   const searchParams = useSearchParams();
@@ -82,6 +50,8 @@ function Page() {
 
   const pathname = usePathname();
   const router = useRouter();
+
+  const { data: status = [] } = useStatusQuery({ type: "task" });
 
   const [selectedTask, setSelectedTask] = React.useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -129,12 +99,45 @@ function Page() {
     setOpenDrawer(false);
   }, [refetchTasks]);
 
+  const getConfig = useCallback(() => {
+    const statusOptions = (status as Status[]).map(({ name, id }: Status) => ({ label: name, value: id }));
+    const config: DynamicFormConfig = {
+      fields: [
+        {
+          name: "title",
+          type: "text",
+          options: {
+            placeholder: "Task Title",
+          },
+          validate: { required: true },
+        },
+        {
+          name: "statusId",
+          type: "select",
+          options: {
+            placeholder: "Select Status",
+            options: statusOptions,
+          },
+          validate: { required: true },
+        },
+        {
+          name: "description",
+          type: "richeditor",
+          className: "min-h-[25rem]",
+          options: { placeholder: "Task Description" },
+          validate: { required: true },
+        },
+      ],
+    };
+    return config;
+  }, [status]);
+
   const RenderTaskDetails = useMemo(() => {
     if (isEditMode) {
       return (
         <div className="px-1">
           <TaskForm
-            config={config}
+            config={getConfig()}
             onDone={mutateTaskSuccess}
             onError={mutateTaskError}
             task={selectedTask as Task | undefined}
@@ -143,7 +146,7 @@ function Page() {
       );
     }
     return <TaskPreview task={selectedTask} />;
-  }, [isEditMode, selectedTask, mutateTaskSuccess, mutateTaskError]);
+  }, [isEditMode, selectedTask, getConfig, mutateTaskSuccess, mutateTaskError]);
 
   const onSelectTask = useCallback((task: TaskStatusAssignee) => {
     setMode(COMPONENT_MODE.VIEW);
