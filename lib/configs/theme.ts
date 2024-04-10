@@ -11,7 +11,7 @@ const theme: ThemeConfig = {
       hoverBorderColor: "rgb(203 213 225)",
       colorBorder: "rgb(203 213 225)",
       borderRadius: 4,
-      hoverBg: "rgb(203 213 225)",
+      hoverBg: "rgb(248 250 252)",
     },
     Button: {
       defaultShadow: "transparent",

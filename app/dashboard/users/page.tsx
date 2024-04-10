@@ -6,7 +6,7 @@ import UserRow from "@app/_components/UserModule/UserRow";
 import BaseDrawer from "@app/_components/commons/BaseDrawer";
 import BaseInput from "@app/_components/commons/Inputs/BaseInput";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
-import { useGetUsers } from "@app/queries/userQueries";
+import { useUsersQuery } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
 import { ControlPointOutlined, SearchOutlined } from "@mui/icons-material";
 import { User } from "@prisma/client";
@@ -21,7 +21,7 @@ export default function Page() {
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
-  const { data: users = [], isLoading: isUserLoading } = useGetUsers(filter);
+  const { data: users = [], isLoading: isUserLoading } = useUsersQuery(filter);
 
   // The virtualizer
   const { getTotalSize, getVirtualItems } = useVirtualizer({

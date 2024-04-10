@@ -11,7 +11,7 @@ const ProjectForm = dynamic(() => import("@components/ProjectModule/ProjectForm"
 async function Page() {
   return (
     <PageContainer title="Create new project" goBack>
-      <ProjectForm />;
+      <ProjectForm />
     </PageContainer>
   );
 }

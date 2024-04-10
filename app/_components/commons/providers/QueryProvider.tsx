@@ -22,7 +22,6 @@ export function QueryProvider(props: { children: React.ReactNode }) {
             refetchOnWindowFocus: true,
             refetchOnMount: true,
             refetchOnReconnect: true,
-            retry: false,
           },
         },
       }),

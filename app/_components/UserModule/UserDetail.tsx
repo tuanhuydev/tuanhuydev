@@ -1,12 +1,14 @@
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import BaseButton from "../commons/buttons/BaseButton";
 import { USER_DETAIL_MODE } from "@app/_configs/constants";
+import { usePermissions } from "@app/queries/authQueries";
+import { useProjectsQuery } from "@app/queries/projectQueries";
 import { useCreateUser } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
 import { CloseOutlined } from "@mui/icons-material";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { User } from "@prisma/client";
+import { Project, User } from "@prisma/client";
 import { Avatar, notification } from "antd";
 import format from "date-fns/format";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,97 +18,92 @@ export interface UserDetailProps {
   user?: User;
   onClose: () => void;
 }
-const config: DynamicFormConfig = {
-  fields: [
-    {
-      name: "name",
-      type: "text",
-      options: {
-        placeholder: "John Doe",
-        className: "w-1/2",
-      },
-      validate: {
-        required: true,
-      },
-    },
-    {
-      type: "email",
-      name: "email",
-      options: {
-        placeholder: "JohnDoe@email.com",
-        className: "w-1/2",
-        autoComplete: "none",
-      },
-      validate: {
-        required: true,
-      },
-    },
-    {
-      name: "password",
-      type: "password",
-      className: "w-1/2",
-      options: {
-        placeholder: "P@ssw0rd!",
-        autoComplete: "new-password",
-      },
-      validate: {
-        required: true,
-      },
-    },
-    {
-      name: "confirmPassword",
-      type: "password",
-      className: "w-1/2",
-      options: {
-        placeholder: "matched P@ssw0rd!",
-        autoComplete: "new-password",
-      },
-      validate: {
-        required: true,
-        match: "password",
-      },
-    },
-    {
-      name: "project",
-      type: "select",
-      options: {
-        placeholder: "Project 1, project 2",
-        mode: "multiple",
-        allowClear: true,
-        remote: {
-          url: "/api/projects",
-          label: "name",
-          value: "id",
-        },
-      },
-    },
-    {
-      name: "permissionId",
-      type: "select",
-      options: {
-        placeholder: "Root, Maintainer, Guest",
-        remote: {
-          url: "/api/permissions",
-          label: "name",
-          value: "id",
-        },
-      },
-    },
-  ],
-};
 
 export default function UserDetail({ user, onClose }: UserDetailProps) {
   const [mode, setMode] = useState<USER_DETAIL_MODE>(USER_DETAIL_MODE.VIEW);
   const { mutateAsync: createUser, isSuccess } = useCreateUser();
+  const { data: projects = [] } = useProjectsQuery();
+  const { data: permissions = [] } = usePermissions();
 
   const isViewMode = mode === USER_DETAIL_MODE.VIEW;
   const isEditMode = mode === USER_DETAIL_MODE.EDIT;
   const allowEdit = isEditMode && user;
   const title = isViewMode && user ? "User Detail" : !user ? "Create new user" : "Edit User";
 
-  useEffect(() => {
-    if (!user) setMode(USER_DETAIL_MODE.EDIT);
-  }, [user]);
+  const getConfig = useCallback((): DynamicFormConfig => {
+    const userOptions = (projects as Project[]).map(({ name, id }: Project) => ({ label: name, value: id }));
+    const permissionOptions = (permissions as any[]).map(({ name, id }: any) => ({ label: name, value: id }));
+    return {
+      fields: [
+        {
+          name: "name",
+          type: "text",
+          options: {
+            placeholder: "John Doe",
+            className: "w-1/2",
+          },
+          validate: {
+            required: true,
+          },
+        },
+        {
+          type: "email",
+          name: "email",
+          options: {
+            placeholder: "JohnDoe@email.com",
+            className: "w-1/2",
+            autoComplete: "none",
+          },
+          validate: {
+            required: true,
+          },
+        },
+        {
+          name: "password",
+          type: "password",
+          className: "w-1/2",
+          options: {
+            placeholder: "P@ssw0rd!",
+            autoComplete: "new-password",
+          },
+          validate: {
+            required: true,
+          },
+        },
+        {
+          name: "confirmPassword",
+          type: "password",
+          className: "w-1/2",
+          options: {
+            placeholder: "matched P@ssw0rd!",
+            autoComplete: "new-password",
+          },
+          validate: {
+            required: true,
+            match: "password",
+          },
+        },
+        {
+          name: "project",
+          type: "select",
+          options: {
+            placeholder: "Project 1, project 2",
+            mode: "multiple",
+            allowClear: true,
+            options: userOptions,
+          },
+        },
+        {
+          name: "permissionId",
+          type: "select",
+          options: {
+            placeholder: "Root, Maintainer, Guest",
+            options: permissionOptions,
+          },
+        },
+      ],
+    };
+  }, [permissions, projects]);
 
   const DrawerHeader = useMemo(() => {
     return (
@@ -137,6 +134,10 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
     },
     [createUser, onClose],
   );
+
+  useEffect(() => {
+    if (!user) setMode(USER_DETAIL_MODE.EDIT);
+  }, [user]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -183,14 +184,14 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
 
     return (
       <DynamicForm
-        config={config}
+        config={getConfig()}
         onSubmit={submit}
         submitProps={{
           className: "ml-auto",
         }}
       />
     );
-  }, [mode, submit, user?.createdAt, user?.email, user?.name]);
+  }, [getConfig, mode, submit, user?.createdAt, user?.email, user?.name]);
 
   return (
     <div className="flex flex-col h-full gap-3">
