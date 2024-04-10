@@ -11,6 +11,7 @@ import {
   useStatusQuery,
   useUpdateStatusMutation,
 } from "@app/queries/statusQueries";
+import { useFetch } from "@app/queries/useSession";
 import ConfigSection from "@components/SettingModule/ConfigSection";
 import { BASE_URL } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
@@ -21,7 +22,6 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import { Status } from "@prisma/client";
 import notification from "antd/es/notification";
 import { ColumnsType } from "antd/es/table";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
@@ -74,6 +74,7 @@ const statusFormConfig: DynamicFormConfig = {
 };
 
 function Page() {
+  const { fetch } = useFetch();
   const { data: status = [], isLoading: isStatusLoading, isError: isStatusError } = useStatusQuery();
   const {
     mutate: createStatusMutation,
@@ -109,13 +110,7 @@ function Page() {
 
   const downloadBackup = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/backup`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${Cookies.get("jwt")}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/api/backup`, { method: "GET" });
       if (!response.ok) throw new BaseError("Unable to save backup");
       const data = await response.json();
 
