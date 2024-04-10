@@ -1,84 +1,31 @@
 "use client";
 
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
+import { useUsersQuery } from "@app/queries/userQueries";
 import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { Project } from "@prisma/client";
+import { Project, User } from "@prisma/client";
 import { App } from "antd";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProjectFormProps {
   project?: Project;
 }
 
-const config: DynamicFormConfig = {
-  fields: [
-    {
-      name: "name",
-      type: "text",
-      options: {
-        placeholder: "Project Name",
-      },
-      validate: { required: true },
-    },
-    {
-      name: "startDate",
-      type: "datepicker",
-      options: {
-        placeholder: "Start Date",
-      },
-      validate: { required: true },
-      className: "w-1/2",
-    },
-    {
-      name: "endDate",
-      type: "datepicker",
-      options: {
-        placeholder: "End Date",
-      },
-      validate: { required: true, min: "startDate" },
-      className: "w-1/2",
-    },
-    {
-      name: "clientName",
-      type: "text",
-      options: {
-        placeholder: "Client Name",
-      },
-      validate: { required: true },
-    },
-    {
-      name: "users",
-      type: "select",
-      options: {
-        placeholder: "Add users",
-        mode: "multiple",
-        allowClear: true,
-        remote: {
-          url: "/api/users",
-          label: "name",
-          value: "id",
-        },
-      },
-      validate: { required: true, multiple: true },
-    },
-    {
-      name: "description",
-      type: "textarea",
-      options: { placeholder: "Project Description" },
-      validate: { required: true },
-    },
-  ],
-};
 export default function ProjectForm({ project }: ProjectFormProps) {
   const router = useRouter();
+
+  const { data: users = [] } = useUsersQuery();
   const { notification } = App.useApp();
+
   const { mutateAsync: createProjectMutation } = useCreateProjectMutation();
   const { mutateAsync: updateProjectMutation } = useUpdateProjectMutation();
 
   const isUpdatingProject = !!project;
+
   const updateProject = async (formData: ObjectType, form?: UseFormReturn) => {
     try {
       await updateProjectMutation(formData);
@@ -90,6 +37,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       router.back();
     }
   };
+
   const createProject = async (formData: ObjectType, form?: UseFormReturn) => {
     try {
       await createProjectMutation(formData);
@@ -118,7 +66,71 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     // }
   };
 
+  const getConfig = useCallback((): DynamicFormConfig => {
+    const userOptions = (users as User[]).map((user: User) => ({ label: user.name, value: user.id }));
+    return {
+      fields: [
+        {
+          name: "name",
+          type: "text",
+          options: {
+            placeholder: "Project Name",
+          },
+          validate: { required: true },
+        },
+        {
+          name: "startDate",
+          type: "datepicker",
+          options: {
+            placeholder: "Start Date",
+          },
+          validate: { required: true },
+          className: "w-1/2",
+        },
+        {
+          name: "endDate",
+          type: "datepicker",
+          options: {
+            placeholder: "End Date",
+          },
+          validate: { required: true, min: "startDate" },
+          className: "w-1/2",
+        },
+        {
+          name: "clientName",
+          type: "text",
+          options: {
+            placeholder: "Client Name",
+          },
+          validate: { required: true },
+        },
+        {
+          name: "users",
+          type: "select",
+          options: {
+            placeholder: "Add users",
+            mode: "multiple",
+            allowClear: true,
+            options: userOptions,
+          },
+          validate: { required: true, multiple: true },
+        },
+        {
+          name: "description",
+          type: "textarea",
+          options: { placeholder: "Project Description" },
+          validate: { required: true },
+        },
+      ],
+    };
+  }, [users]);
+
   return (
-    <DynamicForm config={config} onSubmit={onSubmit} submitProps={{ className: "ml-auto mr-2" }} mapValues={project} />
+    <DynamicForm
+      config={getConfig()}
+      onSubmit={onSubmit}
+      submitProps={{ className: "ml-auto mr-2" }}
+      mapValues={project}
+    />
   );
 }

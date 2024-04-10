@@ -12,7 +12,6 @@ import BaseError from "@shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
 import { Form, Tabs, TabsProps, notification } from "antd";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
@@ -220,7 +219,7 @@ export default function PostForm({ post }: any) {
                     onChange={uploadFile}
                     fileList={fileList}
                     action="/api/upload/image"
-                    headers={{ Authorization: `Bearer ${Cookies.get("jwt")}` }}
+                    headers={{ Authorization: `Bearer ${queryClient.getQueryData(["accessToken"])}` }}
                     accept="image/png, image/jpeg"
                     multiple={false}
                     listType="picture"

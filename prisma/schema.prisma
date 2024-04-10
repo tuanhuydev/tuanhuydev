@@ -93,10 +93,18 @@ model Project {
   @@map("projects")
 }
 
+enum TaskType {
+  BUG
+  ISSUE
+  STORY
+  EPIC
+}
+
 model Task {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(255)
   description String    @db.Text
+  type        TaskType  @default(ISSUE)
   projectId   Int?
   statusId    Int?
   sprintId    Int?

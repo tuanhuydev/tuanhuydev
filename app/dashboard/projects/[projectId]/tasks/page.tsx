@@ -7,13 +7,14 @@ import { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
 import BaseInput from "@app/_components/commons/Inputs/BaseInput";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
+import { useStatusQuery } from "@app/queries/statusQueries";
+import { useProjectUsers } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
-import { BASE_URL } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
 import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import { Task } from "@prisma/client";
+import { Status, Task, User } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
@@ -47,53 +48,6 @@ const COMPONENT_MODE = {
   VIEW: "VIEW",
   EDIT: "EDIT",
 };
-const taskFormConfig = (projectId: any): DynamicFormConfig => ({
-  fields: [
-    {
-      name: "title",
-      type: "text",
-      options: {
-        placeholder: "Task Title",
-      },
-      validate: { required: true },
-    },
-    {
-      name: "assigneeId",
-      type: "select",
-      className: "w-1/2",
-      options: {
-        defaultOption: { label: "Unassigned", value: null },
-        placeholder: "Select Assignee",
-        remote: {
-          url: `${BASE_URL}/api/projects/${projectId}/users`,
-          label: "name",
-          value: "id",
-        },
-      },
-    },
-    {
-      name: "statusId",
-      type: "select",
-      className: "w-1/2",
-      options: {
-        placeholder: "Select Status",
-        remote: {
-          url: `${BASE_URL}/api/status?type=task`,
-          label: "name",
-          value: "id",
-        },
-      },
-      validate: { required: true },
-    },
-    {
-      name: "description",
-      type: "richeditor",
-      className: "min-h-[25rem]",
-      options: { placeholder: "Task Description" },
-      validate: { required: true },
-    },
-  ],
-});
 
 function Page({ params }: any) {
   const { projectId } = params;
@@ -110,6 +64,8 @@ function Page({ params }: any) {
     refetch: refetchTasks,
     isLoading: isProjectTaskLoading,
   } = useProjectTasks(projectId, filter);
+  const { data: status = [] } = useStatusQuery({ type: "task" });
+  const { data: projectUsers = [] } = useProjectUsers(projectId);
 
   const [selectedTask, setSelectedTask] = useState<TaskStatusAssignee | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -156,6 +112,49 @@ function Page({ params }: any) {
     LogService.log((error as Error).message);
   }, []);
 
+  const taskFormConfig = useMemo((): DynamicFormConfig => {
+    const statusOptions = (status as Status[]).map(({ name, id }: Status) => ({ label: name, value: id }));
+    const projectUserOptions = (projectUsers as User[]).map((user: User) => ({ label: user.name, value: user.id }));
+    return {
+      fields: [
+        {
+          name: "title",
+          type: "text",
+          options: {
+            placeholder: "Task Title",
+          },
+          validate: { required: true },
+        },
+        {
+          name: "assigneeId",
+          type: "select",
+          className: "w-1/2",
+          options: {
+            placeholder: "Select Assignee",
+            options: projectUserOptions,
+          },
+        },
+        {
+          name: "statusId",
+          type: "select",
+          className: "w-1/2",
+          options: {
+            placeholder: "Select Status",
+            options: statusOptions,
+          },
+          validate: { required: true },
+        },
+        {
+          name: "description",
+          type: "richeditor",
+          className: "min-h-[25rem]",
+          options: { placeholder: "Task Description" },
+          validate: { required: true },
+        },
+      ],
+    };
+  }, [status, projectUsers]);
+
   const RenderTaskGroup = useMemo(() => {
     if (!isProjectTaskLoading && !tasks.length) return <Empty className="my-36" />;
     if (isProjectTaskLoading) return <Loader />;
@@ -180,7 +179,7 @@ function Page({ params }: any) {
       return (
         <div className="px-1">
           <TaskForm
-            config={taskFormConfig(projectId)}
+            config={taskFormConfig}
             projectId={projectId}
             onDone={toggleDrawer(false)}
             onError={onError}
@@ -190,7 +189,7 @@ function Page({ params }: any) {
       );
     }
     return <TaskPreview task={selectedTask} />;
-  }, [isEditMode, selectedTask, projectId, toggleDrawer, onError]);
+  }, [isEditMode, selectedTask, taskFormConfig, projectId, toggleDrawer, onError]);
 
   return (
     <PageContainer title={`${project?.name}'s tasks`} goBack>

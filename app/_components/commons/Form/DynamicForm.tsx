@@ -76,6 +76,7 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
 
   return yup.object(schema);
 };
+
 const DynamicSelect = dynamic(() => import("@components/commons/Form/DynamicSelect"), { loading: () => <Loader /> });
 
 const DynamicMarkdown = dynamic(() => import("@components/commons/Form/DynamicMarkdown"), {
@@ -131,13 +132,6 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
       setRegisteredFields(registeredFields);
     }
   }, [control, fields]);
-
-  useEffect(() => {
-    registerFields();
-    return () => {
-      setRegisteredFields([]);
-    };
-  }, [registerFields]);
 
   useEffect(() => {
     registerFields();
