@@ -1,14 +1,10 @@
 import LogService from "../services/LogService";
 import TaskService from "../services/TaskService";
-import { extractBearerToken, verifyJwt } from "@app/_utils/network";
-import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import { extractBearerToken } from "@app/_utils/network";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
-import * as jose from "jose";
-import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string, number } from "yup";
 
@@ -17,7 +13,8 @@ export class TaskController implements BaseController {
   static #instance: TaskController;
 
   static makeInstance() {
-    return TaskController.#instance ?? new TaskController();
+    if (TaskController.#instance) return TaskController.#instance;
+    return new TaskController();
   }
 
   constructor() {
