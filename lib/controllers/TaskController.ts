@@ -1,15 +1,14 @@
 import LogService from "../services/LogService";
-import TaskService from "../services/TaskService";
 import { extractBearerToken } from "@app/_utils/network";
+import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
-import { ObjectSchema, object, string, number } from "yup";
+import { z } from "zod";
 
 export class TaskController implements BaseController {
-  #schema: ObjectSchema<any>;
   static #instance: TaskController;
 
   static makeInstance() {
@@ -17,40 +16,23 @@ export class TaskController implements BaseController {
     return new TaskController();
   }
 
-  constructor() {
-    this.#schema = object({
-      title: string().required(),
-      description: string().required(),
-      projectId: number().nullable(),
-    });
-  }
-
-  async validate(body: any, schema: ObjectSchema<any>) {
-    try {
-      return schema.validate(body);
-    } catch (error) {
-      throw new BadRequestError();
-    }
-  }
-
   async store(request: NextRequest) {
     const network = Network(request);
     try {
-      const schema = object({
-        title: string().required(),
-        description: string().required(),
-        statusId: string().required(),
-        projectId: number().nullable(),
+      const schema = z.object({
+        title: z.string(),
+        description: z.string(),
+        status: z.string(),
       });
 
-      const body = await request.json();
-      const validatedBody = await this.validate(body, schema);
+      const body: ObjectType = await network.getBody();
+      const validate = schema.safeParse(body);
+      if (!validate.success) throw new BadRequestError();
 
-      validatedBody.statusId = parseInt(validatedBody.statusId, 10);
       const { userId } = await extractBearerToken(request);
-      validatedBody.createdById = userId;
+      body.createdById = userId;
 
-      const newTask = await TaskService.createTask(validatedBody);
+      const newTask = await MongoTaskRepository.createTask(body as TaskBody);
       return network.successResponse(newTask);
     } catch (error) {
       LogService.log((error as Error).message);
@@ -58,39 +40,52 @@ export class TaskController implements BaseController {
     }
   }
 
-  async getAll(request: NextRequest) {
+  async getAll(request: NextRequest, userId?: string) {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
-      const { userId } = await extractBearerToken(request);
-      const tasks = await TaskService.getTasks(params, userId);
+      if (userId) params.userId = userId;
+      const tasks = await MongoTaskRepository.getTasks(params);
       return network.successResponse(tasks);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
+  async getTasksByUser(request: NextRequest, { id }: any) {
+    if (!id) throw new BadRequestError();
+
+    let userId = id;
+    if (id === "me") {
+      const { userId: currentUserId } = await extractBearerToken(request);
+      userId = currentUserId;
+    }
+
+    return this.getAll(request, userId);
+  }
+
   async getOne(request: NextRequest, { id }: any) {
     const network = Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const projectById = await TaskService.getTask(id);
-      return network.successResponse(projectById);
+
+      const taskById = await MongoTaskRepository.getTask(id);
+      return network.successResponse(taskById);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
   async update(request: NextRequest, { id }: any) {
-    const body = await request.json();
-    if (!id || !body) throw new BadRequestError();
-
     const network = Network(request);
-    if (body.statusId) body.statusId = Number.parseInt(body.statusId, 10);
     try {
-      const updated = await TaskService.updateTask(Number(id), body);
+      const body = await network.getBody();
+      if (!id || !body) throw new BadRequestError();
+
+      const updated = await MongoTaskRepository.updateTask(id, body);
       return network.successResponse(updated);
     } catch (error) {
+      LogService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -99,7 +94,7 @@ export class TaskController implements BaseController {
     if (!id) throw new BadRequestError();
     const network = Network(request);
     try {
-      const deleted = await TaskService.deleteTask(Number(id));
+      const deleted = await MongoTaskRepository.deleteTask(id);
       return network.successResponse(deleted);
     } catch (error) {
       return network.failResponse(error as BaseError);

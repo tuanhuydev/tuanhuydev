@@ -1,4 +1,4 @@
-import { NODE_ENV } from "@lib/configs/constants";
+import LogService from "@lib/services/LogService";
 import { HTTP_CODE } from "@shared/commons/constants/httpCode";
 import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,6 +18,10 @@ class Network {
       return Network.#instance;
     }
     return new Network(req);
+  }
+
+  async getBody(): Promise<any> {
+    return this.#req.json();
   }
 
   extractSearchParams(): ObjectType {
@@ -40,17 +44,27 @@ class Network {
   }
 
   successResponse(data: any) {
+    let formatedData: any = data;
+    if (Array.isArray(data)) {
+      formatedData = (formatedData as ObjectType[]).map(({ _id, ...restData }: ObjectType) => ({
+        id: _id,
+        ...restData,
+      }));
+    } else if (typeof data === "object" && "_id" in data) {
+      formatedData.id = data["_id"];
+      delete formatedData._id;
+    }
     const options: ObjectType = {
       status: 200,
     };
     if (this.cookie) {
       options["Set-Cookie"] = this.cookie;
     }
-    return new NextResponse(JSON.stringify({ success: true, data }), options);
+    return new NextResponse(JSON.stringify({ success: true, data: formatedData }), options);
   }
 
   failResponse = (error: BaseError) => {
-    if (NODE_ENV !== "production") console.error(error);
+    LogService.log(`[Server Error] ${(error as Error)?.message}`);
     const { message, status = HTTP_CODE.INTERNAL_ERROR } = error;
     const options: ObjectType = { status };
 

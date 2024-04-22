@@ -1,6 +1,6 @@
 import AuthService from "../services/AuthService";
 import { extractBearerToken } from "@app/_utils/network";
-import userService from "@lib/services/UserService";
+import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
@@ -13,10 +13,7 @@ class UserController implements BaseController {
   #schema: ObjectSchema<any>;
 
   static makeInstance() {
-    if (UserController.#instance) {
-      return UserController.#instance;
-    }
-    return new UserController();
+    return UserController.#instance ?? new UserController();
   }
 
   constructor() {
@@ -42,13 +39,13 @@ class UserController implements BaseController {
       const validatedFields = await this.validateStoreRequest(body);
       const hashPassword = await AuthService.hashPassword(validatedFields.password);
 
-      const newUser = await userService.createUser({
-        ...validatedFields,
-        id: AuthService.issueID(),
-        password: hashPassword,
-      });
+      // const newUser = await userService.createUser({
+      //   ...validatedFields,
+      //   id: AuthService.issueID(),
+      //   password: hashPassword,
+      // });
 
-      return network.successResponse(newUser);
+      // return network.successResponse(newUser);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
@@ -59,7 +56,7 @@ class UserController implements BaseController {
     try {
       const params: ObjectType = network.extractSearchParams();
 
-      const users = await userService.getUsers(params);
+      const users = await MongoUserRepository.getUsers(params);
       return network.successResponse(users);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -76,7 +73,7 @@ class UserController implements BaseController {
         const { userId: tokenUserId } = await extractBearerToken(request);
         userId = tokenUserId as string;
       }
-      const userById = await userService.getUserById(userId);
+      const userById = await MongoUserRepository.getUser(userId);
       return network.successResponse(userById);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -96,14 +93,13 @@ class UserController implements BaseController {
   }
 
   async delete(request: NextRequest, { id }: any) {
-    if (!id) throw new BadRequestError();
-    const network = Network(request);
-    try {
-      const deleted = await userService.deleteUser(id);
-      return network.successResponse(deleted);
-    } catch (error) {
-      return network.failResponse(error as BaseError);
-    }
+    // if (!id) throw new BadRequestError();
+    // const network = Network(request);
+    // try {
+    //   return network.successResponse(deleted);
+    // } catch (error) {
+    //   return network.failResponse(error as BaseError);
+    // }
   }
 }
 

@@ -20,10 +20,10 @@ const Group = dynamic(async () => (await import("./Group")).default, { ssr: fals
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface SidebarProps {
-  resources: Set<string>;
+  permissions: ObjectType;
 }
 
-const Sidebar = ({ resources = new Set<string>() }: SidebarProps) => {
+const Sidebar = ({ permissions }: SidebarProps) => {
   const toggleSidebar = useCallback(() => {}, []);
   const sidebarOpen = false;
 
@@ -32,49 +32,44 @@ const Sidebar = ({ resources = new Set<string>() }: SidebarProps) => {
       { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
       { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
     ];
-
-    resources.forEach((resource: string) => {
-      switch (resource) {
-        case UserPermissions.VIEW_POSTS:
-          routes.push({
-            label: "Manage Posts",
-            icon: <ArticleOutlined className="!text-base" />,
-            path: "/dashboard/posts",
-            id: UserPermissions.VIEW_POSTS,
-          });
-          break;
-        case UserPermissions.VIEW_PROJECTS:
-          routes.push({
-            label: "Manage Projects",
-            icon: <GridViewOutlined className="!text-base" />,
-            path: "/dashboard/projects",
-            id: UserPermissions.VIEW_PROJECTS,
-          });
-          break;
-        case UserPermissions.VIEW_USERS:
-          routes.push({
-            label: "Manage Users",
-            icon: <PersonOutlineOutlined className="!text-base" />,
-            path: "/dashboard/users",
-            id: UserPermissions.VIEW_USERS,
-          });
-          break;
-        case UserPermissions.VIEW_SETTINGS:
-          routes.push({
-            label: "Settings",
-            icon: <SettingsOutlined className="!text-base" />,
-            path: "/dashboard/settings",
-            id: UserPermissions.VIEW_SETTINGS,
-          });
-          break;
-      }
-    });
+    if (UserPermissions.VIEW_POST in permissions) {
+      routes.push({
+        label: "Manage Posts",
+        icon: <ArticleOutlined className="!text-base" />,
+        path: "/dashboard/posts",
+        id: UserPermissions.VIEW_POST,
+      });
+    }
+    if (UserPermissions.VIEW_PROJECT in permissions) {
+      routes.push({
+        label: "Manage Projects",
+        icon: <GridViewOutlined className="!text-base" />,
+        path: "/dashboard/projects",
+        id: UserPermissions.VIEW_PROJECT,
+      });
+    }
+    if (UserPermissions.VIEW_USER in permissions) {
+      routes.push({
+        label: "Manage Users",
+        icon: <PersonOutlineOutlined className="!text-base" />,
+        path: "/dashboard/users",
+        id: UserPermissions.VIEW_USER,
+      });
+    }
+    if (UserPermissions.VIEW_SETTING in permissions) {
+      routes.push({
+        label: "Settings",
+        icon: <SettingsOutlined className="!text-base" />,
+        path: "/dashboard/settings",
+        id: UserPermissions.VIEW_SETTING,
+      });
+    }
 
     return routes.map((route: any) => {
       const { children = [] } = route;
       return children?.length ? <Group {...route} key={route.id} /> : <Item {...route} key={route.id} />;
     });
-  }, [resources]);
+  }, [permissions]);
 
   const containerToggleStyles = sidebarOpen ? styles.open : EMPTY_STRING;
 

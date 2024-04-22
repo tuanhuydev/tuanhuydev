@@ -4,13 +4,10 @@ import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import BaseCard from "@app/_components/commons/Card";
 import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
-import { useTasksQuery } from "@app/queries/taskQueries";
 import Loader from "@components/commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import EditOutlined from "@mui/icons-material/EditOutlined";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
-import { Project, ProjectUser, Task } from "@prisma/client";
 import differenceInDays from "date-fns/differenceInDays";
 import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
@@ -45,7 +42,7 @@ function Page({ params }: any) {
     endDate,
     clientName = "",
     users = [],
-  }: Project & { users: ProjectUser[] } = project || {};
+  }: ObjectType & { users: ObjectType[] } = project || {};
 
   const diffStartToNow = startDate ? differenceInDays(new Date(), new Date(startDate)) : 0;
   const diffStartToEndDate = startDate && endDate ? differenceInDays(new Date(endDate), new Date(startDate)) : 0;
@@ -67,7 +64,7 @@ function Page({ params }: any) {
     return "-";
   };
 
-  const backlogTasks = tasks?.filter((task: Task) => task.statusId === 2);
+  const backlogTasks = tasks?.filter((task: ObjectType) => task.statusId === 2);
   const percent = backlogTasks?.length ? (backlogTasks?.length / tasks?.length) * 100 : 0;
 
   return (
@@ -103,7 +100,7 @@ function Page({ params }: any) {
             </BaseCard>
             <BaseCard className="flex-1" loading={isLoading}>
               <small className="text-sm capitalize text-slate-400">people</small>
-              <div className="text-bold text-4xl text-center mt-5 mb-1">{(users as ProjectUser[])?.length}</div>
+              <div className="text-bold text-4xl text-center mt-5 mb-1">{(users as ObjectType[])?.length}</div>
             </BaseCard>
           </div>
         </Col>

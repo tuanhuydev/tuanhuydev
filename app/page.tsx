@@ -69,7 +69,7 @@ export default async function Home() {
   const posts = await getPosts({
     page: 1,
     pageSize: 4,
-    active: true,
+    published: true,
   });
   return (
     <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">

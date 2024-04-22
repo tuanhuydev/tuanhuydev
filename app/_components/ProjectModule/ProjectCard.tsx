@@ -2,19 +2,20 @@
 
 import BaseCard from "../commons/Card";
 import BaseButton from "../commons/buttons/BaseButton";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { DATE_FORMAT } from "@lib/configs/constants";
+import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import { Project } from "@prisma/client";
 import format from "date-fns/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { use } from "react";
 
 const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 
 export interface ProjectCard {
-  project: Project;
+  project: ObjectType;
 }
 
 export interface ProjectCardExtraProps {
@@ -27,8 +28,12 @@ export default function ProjectCard({
   description,
   startDate,
   users,
-}: Partial<Project & { users: Array<ObjectType> }>) {
+}: Partial<ObjectType & { users: Array<ObjectType> }>) {
   const router = useRouter();
+
+  const { data: permissions } = useCurrentUserPermission();
+  const allowUpdateProject = permissions?.[UserPermissions.UPDATE_PROJECT] ?? false;
+  const allowViewTasks = permissions?.[UserPermissions.VIEW_TASK] ?? false;
 
   const navigateDetail = (event: any) => {
     event.stopPropagation();
@@ -46,16 +51,20 @@ export default function ProjectCard({
   };
   const CardExtra = (
     <div className="flex items-center gap-1">
-      <Tooltip title="Go to project's edit" placement="top">
-        <BaseButton icon={<EditOutlined fontSize="small" />} variants="text" onClick={navigateProjectEdit} />
-      </Tooltip>
-      <Tooltip title="Go to project's tasks" placement="top">
-        <BaseButton
-          icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-          variants="text"
-          onClick={navigateProjectTasks}
-        />
-      </Tooltip>
+      {allowUpdateProject && (
+        <Tooltip title="Go to project's edit" placement="top">
+          <BaseButton icon={<EditOutlined fontSize="small" />} variants="text" onClick={navigateProjectEdit} />
+        </Tooltip>
+      )}
+      {allowViewTasks && (
+        <Tooltip title="Go to project's tasks" placement="top">
+          <BaseButton
+            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+            variants="text"
+            onClick={navigateProjectTasks}
+          />
+        </Tooltip>
+      )}
     </div>
   );
 
