@@ -9,11 +9,24 @@ type Task = {
   title: string;
   description?: string;
   type: TASK_TYPE;
-  projectId: number;
+  projectId?: string;
   sprintId?: number;
   assigneeId?: string;
   createdById?: string;
   createdAt: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
+  deletedAt: Date | null;
+};
+type TaskBody = Omit<Task, "id">;
+
+type Sprint = {
+  id: string;
+  name: string;
+  description?: string;
+  fromDate?: Date;
+  toDate?: Date;
+  projectId?: number;
+  createdAt: Date;
+  updatedAt?: Date;
+  deletedAt: Date | null;
 };

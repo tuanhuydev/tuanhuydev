@@ -8,14 +8,13 @@ import LogService from "@lib/services/LogService";
 import { CloseOutlined } from "@mui/icons-material";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Project, User } from "@prisma/client";
 import { Avatar, notification } from "antd";
 import format from "date-fns/format";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface UserDetailProps {
-  user?: User;
+  user?: ObjectType;
   onClose: () => void;
 }
 
@@ -31,7 +30,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   const title = isViewMode && user ? "User Detail" : !user ? "Create new user" : "Edit User";
 
   const getConfig = useCallback((): DynamicFormConfig => {
-    const userOptions = (projects as Project[]).map(({ name, id }: Project) => ({ label: name, value: id }));
+    const userOptions = (projects as ObjectType[]).map(({ name, id }: ObjectType) => ({ label: name, value: id }));
     const permissionOptions = (permissions as any[]).map(({ name, id }: any) => ({ label: name, value: id }));
     return {
       fields: [

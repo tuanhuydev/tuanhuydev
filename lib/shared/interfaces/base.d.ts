@@ -7,10 +7,10 @@ type SelectOption = {
   value: any;
 };
 
-type FilterType = {
+interface FilterType {
   page?: number;
   pageSize?: number;
   active?: boolean;
   search?: string;
   orderBy?: ObjectType[];
-};
+}

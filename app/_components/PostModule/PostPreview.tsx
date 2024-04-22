@@ -2,7 +2,6 @@
 
 import BaseImage from "../commons/BaseImage";
 import { EMPTY_STRING } from "@lib/configs/constants";
-import { Post } from "@prisma/client";
 import React from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -10,7 +9,7 @@ import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 
 export interface PostPreviewProps {
-  post: Post;
+  post: ObjectType;
 }
 
 export default function PostPreview({ post }: PostPreviewProps) {

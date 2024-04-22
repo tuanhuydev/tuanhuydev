@@ -1,11 +1,10 @@
 import Loader from "@components/commons/Loader";
-import { Post } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React from "react";
 
 const HighlightPost = dynamic(() => import("./HighlightPost"), { loading: () => <Loader /> });
 
-export default async function BlogSection({ posts }: { posts: Post[] }) {
+export default async function BlogSection({ posts }: { posts: ObjectType[] }) {
   const makeColumn = (index: number) => {
     const firstItemIndex = 0;
     return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";
@@ -24,7 +23,7 @@ export default async function BlogSection({ posts }: { posts: Post[] }) {
         </span>
       </h4>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-y-6 gap-x-4 p-3 grid-flow-row">
-        {posts.map((post: Post, index: number) => (
+        {posts.map((post: ObjectType, index: number) => (
           <HighlightPost key={post.title} post={post} className={makeColumn(index)} />
         ))}
       </div>

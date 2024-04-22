@@ -1,11 +1,10 @@
-import { Post } from "@prisma/client";
 import formatDistance from "date-fns/formatDistance";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 export interface HighlightPostProps {
-  post: Post;
+  post: ObjectType;
   className?: string;
 }
 

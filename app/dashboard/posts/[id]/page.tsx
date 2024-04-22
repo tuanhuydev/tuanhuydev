@@ -13,13 +13,12 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  const { data: post } = usePostQuery(Number.parseInt(params.id as unknown as string, 10));
+  const { id } = params;
+  const { data: post, isPending } = usePostQuery(id as string);
 
   return (
     <PageContainer title="Edit Post" goBack>
-      <div className="grow h-full">
-        <PostForm post={post} />
-      </div>
+      <div className="grow h-full">{isPending ? <Loader /> : <PostForm post={post} />}</div>
     </PageContainer>
   );
 }

@@ -9,7 +9,7 @@ import { compress, decompress } from "lz-string";
 import * as React from "react";
 
 const DEFAULT_STALE_TIME = 1000 * 60 * 3; // 3 minutes
-const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 24 * 7; // 7 days
+const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 10 * 2; // 60 minutes
 export function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
@@ -19,9 +19,9 @@ export function QueryProvider(props: { children: React.ReactNode }) {
             gcTime: DEFAULT_GC_TIME,
             staleTime: DEFAULT_STALE_TIME,
             refetchInterval: false,
-            refetchOnWindowFocus: true,
+            refetchOnWindowFocus: false,
             refetchOnMount: true,
-            refetchOnReconnect: true,
+            refetchOnReconnect: false,
           },
         },
       }),

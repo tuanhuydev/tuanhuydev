@@ -1,6 +1,6 @@
-import PermissionService from "@lib/services/PermissionService";
-import postService from "@lib/services/PostService";
-import { BaseController } from "@lib/shared/interfaces/controller";
+import { extractBearerToken } from "@app/_utils/network";
+import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
+import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
@@ -15,8 +15,8 @@ export class PermissionController {
   async getAll(request: NextRequest) {
     const network = Network(request);
     try {
-      const permissions = await PermissionService.getPermissions();
-      return network.successResponse(permissions);
+      // const permissions = await PermissionService.getPermissions();
+      // return network.successResponse(permissions);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
@@ -26,8 +26,19 @@ export class PermissionController {
     const network = Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const postById = await postService.getPost(id);
-      return network.successResponse(postById);
+      let userId = id;
+      if (id === "me") {
+        const { userId: currentUserId } = await extractBearerToken(request);
+        userId = currentUserId;
+      }
+      const user = await MongoUserRepository.getUser(userId);
+      if (!user) throw new BaseError("User not found");
+
+      const { permissionId } = user;
+      if (!permissionId) throw new BaseError("Permission not found");
+
+      const permission = await MongoPermissionRepository.getPermission(permissionId);
+      return network.successResponse(permission);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }

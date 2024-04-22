@@ -6,7 +6,6 @@ import Loader from "@app/_components/commons/Loader";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import { usePostsQuery } from "@app/queries/postQueries";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import { Post } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
@@ -62,7 +61,7 @@ function Page() {
           <Loader />
         ) : posts.length ? (
           <div className="flex flex-wrap gap-2">
-            {posts.map((post: Post) => (
+            {posts.map((post: ObjectType) => (
               <PostCard post={post} key={post.id} />
             ))}
           </div>
