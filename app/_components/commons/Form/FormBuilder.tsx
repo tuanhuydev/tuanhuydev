@@ -22,7 +22,6 @@ const builderConfig: DynamicFormConfig = {
         ],
       },
     },
-    // dynamic here
   ],
 };
 

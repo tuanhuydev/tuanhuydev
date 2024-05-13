@@ -7,11 +7,10 @@ import Loader from "@components/commons/Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
 import { MDXEditorMethods } from "@mdxeditor/editor";
-import { Post, PostAsset } from "@prisma/client";
 import BaseError from "@shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
-import { Form, Tabs, TabsProps, notification } from "antd";
+import { Form, Tabs, TabsProps, App } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
@@ -55,6 +54,7 @@ export default function PostForm({ post }: any) {
   const [form] = Form.useForm();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { notification } = App.useApp();
 
   // State
   const [content, setContent] = useState<string>(EMPTY_STRING);
@@ -62,6 +62,7 @@ export default function PostForm({ post }: any) {
   const [fileList, setFileList] = useState([]);
   const [assets, setAssets] = useState([]);
   const [previewValue, setPreviewValue] = useState<ObjectType>({});
+  const [isSaveDraft, setIsSaveDraft] = useState(false);
 
   const editorRef = useRef<MDXEditorMethods | null>(null);
   const submitting = isCreating || isUpdating;
@@ -84,7 +85,7 @@ export default function PostForm({ post }: any) {
   const updatePost = useCallback(
     async (formData: any) => {
       try {
-        const postToUpdate = { id: post.id as number, ...formData };
+        const postToUpdate = { id: post.id, ...formData };
         mutateUpdatePost(postToUpdate);
         queryClient.removeQueries(["posts", post.id] as InvalidateQueryFilters);
       } catch (error) {
@@ -100,11 +101,10 @@ export default function PostForm({ post }: any) {
     async (formData: ObjectType) => {
       formData.assets = assets;
       if (isUpdatingPost) return updatePost(formData);
-
-      formData.publishedAt = new Date();
+      formData.publishedAt = isSaveDraft ? null : new Date();
       return createPost(formData);
     },
-    [assets, createPost, isUpdatingPost, updatePost],
+    [assets, createPost, isSaveDraft, isUpdatingPost, updatePost],
   );
 
   const handleFieldChange = useCallback(
@@ -170,7 +170,7 @@ export default function PostForm({ post }: any) {
           setContent(value as string);
           editorRef.current?.setMarkdown(value as string);
         } else if (key === "PostAsset") {
-          const assets = (value as Array<Partial<PostAsset>>).map(({ assetId }) => assetId);
+          const assets = (value as Array<Partial<ObjectType>>).map(({ assetId }) => assetId);
           setAssets(assets as never);
         }
       }
@@ -185,7 +185,7 @@ export default function PostForm({ post }: any) {
     if (createError || updateError) {
       notification?.error({ message: "Save post failed" });
     }
-  }, [createError, createSuccess, router, updateError, updateSuccess]);
+  }, [createError, createSuccess, notification, router, updateError, updateSuccess]);
 
   const items: TabsProps["items"] = [
     {
@@ -249,7 +249,15 @@ export default function PostForm({ post }: any) {
               className="bg-primary text-slate-100 capitalize mb-2"
             />
             {!post?.publishedAt && (
-              <BaseButton variants="outline" onClick={triggerSubmit} label="Save Draft" disabled={submitting} />
+              <BaseButton
+                variants="outline"
+                onClick={() => {
+                  setIsSaveDraft(true);
+                  triggerSubmit();
+                }}
+                label="Save Draft"
+                disabled={submitting}
+              />
             )}
           </div>
         </div>
@@ -258,7 +266,7 @@ export default function PostForm({ post }: any) {
     {
       key: "2",
       label: "Preview",
-      children: <PostPreview post={previewValue as unknown as Post} />,
+      children: <PostPreview post={previewValue as unknown as ObjectType} />,
     },
   ];
 

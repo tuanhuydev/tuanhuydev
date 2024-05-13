@@ -1,7 +1,6 @@
 import { SALT_ROUNDS } from "@lib/configs/constants";
+import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
-import { User } from "@prisma/client";
-import prismaClient from "@prismaClient/prismaClient";
 import {
   ACCESS_TOKEN_LIFE,
   ACCESS_TOKEN_SECRET,
@@ -43,7 +42,7 @@ class AuthService {
   }
 
   async validateSignIn(email: string, password: string) {
-    const userByEmail = await prismaClient.user.findUnique({ where: { email } });
+    const userByEmail = await MongoUserRepository.getUserByEmail(email);
     if (!userByEmail) throw new NotFoundError("Invalid user");
 
     if (!bcrypt.compareSync(password, userByEmail.password)) throw new BaseError("Invalid credential");
@@ -57,7 +56,7 @@ class AuthService {
       if (!payload) throw new UnauthorizedError("Invalid JWT");
 
       const { userId, userEmail } = payload as { userId: string; userEmail: string };
-      const validUser = await prismaClient.user.findFirst({ where: { id: userId, email: userEmail } });
+      const validUser = await MongoUserRepository.getUser(userId);
 
       if (!validUser) throw new UnauthorizedError("Invalid JWT");
 
@@ -73,7 +72,7 @@ class AuthService {
   }
 
   async signIn(email: string, password: string): Promise<TokenPayload | null> {
-    const { id: userId, email: userEmail }: User = await this.validateSignIn(email, password);
+    const { _id: userId, email: userEmail } = await this.validateSignIn(email, password);
     const accessToken = await new jose.SignJWT({ userId, userEmail })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()

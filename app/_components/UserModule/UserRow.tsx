@@ -1,6 +1,5 @@
 import Loader from "../commons/Loader";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { User } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -10,7 +9,7 @@ const Avatar = dynamic(() => import("antd/es/avatar"), {
 });
 
 export interface UserRowProps {
-  user: User;
+  user: ObjectType;
   active?: boolean;
 }
 

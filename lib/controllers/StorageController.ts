@@ -1,11 +1,7 @@
-import assetService from "../services/AssetService";
 import { CompleteMultipartUploadOutput } from "@aws-sdk/client-s3";
-import PostService from "@lib/services/PostService";
 import S3Service from "@lib/services/S3Service";
-import UserService from "@lib/services/UserService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import Network from "@lib/shared/utils/network";
-import { Post } from "@prisma/client";
 import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
 
@@ -39,8 +35,7 @@ class StorageController {
     const data: CompleteMultipartUploadOutput = await S3Service.save(image as File, "image");
     if (!data) throw new BaseError("Unable to upload file");
 
-    const asset = await assetService.saveAsset(data.Location as string, "image");
-    return asset;
+    return data;
   }
 
   async uploadBackup(formData: FormData) {
@@ -52,18 +47,18 @@ class StorageController {
     const backup = JSON.parse(fileContent);
 
     if ("posts" in backup) {
-      Promise.all(
-        backup.posts.forEach(({ id, ...postBody }: Post) => {
-          return PostService.createPost(postBody);
-        }),
-      );
+      // Promise.all(
+      //   backup.posts.forEach(({ id, ...postBody }: Post) => {
+      //     return PostPrismaRepository.createPost(postBody);
+      //   }),
+      // );
     }
     if ("users" in backup) {
-      Promise.all(
-        backup.users.forEach(({ id, ...userBody }: Post) => {
-          return UserService.createUser(userBody);
-        }),
-      );
+      // Promise.all(
+      //   backup.users.forEach(({ id, ...userBody }: Post) => {
+      //     return UserService.createUser(userBody);
+      //   }),
+      // );
     }
   }
 

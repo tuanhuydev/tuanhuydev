@@ -7,7 +7,6 @@ import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import { Project } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useCallback, useState } from "react";
@@ -63,7 +62,7 @@ function Page() {
           <Loader />
         ) : projects.length ? (
           <div className="flex flex-wrap gap-2">
-            {projects.map((project: Project) => (
+            {projects.map((project: ObjectType) => (
               <ProjectCard {...project} key={project.id} />
             ))}
           </div>

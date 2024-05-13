@@ -9,7 +9,6 @@ import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import { useUsersQuery } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
 import { ControlPointOutlined, SearchOutlined } from "@mui/icons-material";
-import { User } from "@prisma/client";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Empty } from "antd";
 import { useCallback, useRef, useState } from "react";
@@ -18,7 +17,7 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [filter, setFilter] = useState<ObjectType>({});
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+  const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>(undefined);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const { data: users = [], isLoading: isUserLoading } = useUsersQuery(filter);
@@ -47,7 +46,7 @@ export default function Page() {
     setOpenDrawer(false);
   };
 
-  const viewUser = (user: User) => () => {
+  const viewUser = (user: ObjectType) => () => {
     setSelectedUser(user);
     setOpenDrawer(true);
   };
@@ -58,7 +57,7 @@ export default function Page() {
     return (
       <div className="w-full mt-3 relative" style={{ height: `${getTotalSize()}px` }}>
         {getVirtualItems().map((virtualItem) => {
-          const currentUser: User = users[virtualItem.index];
+          const currentUser: ObjectType = users[virtualItem.index];
           const activeUser = selectedUser?.id === currentUser.id;
           return (
             <div

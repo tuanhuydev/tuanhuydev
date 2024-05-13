@@ -5,14 +5,13 @@ import { useUsersQuery } from "@app/queries/userQueries";
 import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { Project, User } from "@prisma/client";
 import { App } from "antd";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProjectFormProps {
-  project?: Project;
+  project?: ObjectType;
 }
 
 export default function ProjectForm({ project }: ProjectFormProps) {
@@ -67,7 +66,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   };
 
   const getConfig = useCallback((): DynamicFormConfig => {
-    const userOptions = (users as User[]).map((user: User) => ({ label: user.name, value: user.id }));
+    const userOptions = (users as ObjectType[]).map((user: ObjectType) => ({ label: user.name, value: user.id }));
     return {
       fields: [
         {

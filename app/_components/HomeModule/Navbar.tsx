@@ -10,7 +10,7 @@ export interface NavbarProps {
 
 export default memo(function Navbar({ posts = [], withContact = true }: NavbarProps) {
   return (
-    <header className=" sticky top-0 z-10 flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900">
+    <header className="px-2 lg:px-0 sticky top-0 z-10 flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900">
       <div className="text-primary dark:text-slate-50 font-bold flex items-center">
         <a href="/" className="line-height-1 hover:underline flex items-center cursor-pointer">
           <svg

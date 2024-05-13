@@ -18,6 +18,24 @@ export const useUsersQuery = (filter: ObjectType = {}) => {
   });
 };
 
+export const useCurrentUserTasks = (filter = {}) => {
+  const { fetch } = useFetch();
+  return useQuery({
+    queryKey: ["currentUser", "tasks", filter],
+    queryFn: async () => {
+      let url: string = `${BASE_URL}/api/users/me/tasks`;
+      if (filter) {
+        url = `${url}?${new URLSearchParams(filter).toString()}`;
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) throw new BaseError(response.statusText);
+      const { data: tasks = [] } = await response.json();
+      return tasks;
+    },
+  });
+};
+
 export const useProjectUsers = (projectId: string) => {
   const { fetch } = useFetch();
   return useQuery({
