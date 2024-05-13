@@ -1,7 +1,6 @@
 import BaseCard from "../commons/Card";
 import Loader from "../commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { Post } from "@prisma/client";
 import format from "date-fns/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -10,7 +9,7 @@ import React, { useCallback, useMemo } from "react";
 const Tag = dynamic(async () => (await import("antd/es/tag")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface PostCardProps {
-  post: Post;
+  post: ObjectType;
   actions?: React.ReactNode;
 }
 
@@ -21,7 +20,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
   const isPostLoading = !post;
 
   const navigateProjectEdit = useCallback(() => {
-    router.push(`/dashboard/posts/${(post as Post).id}`);
+    router.push(`/dashboard/posts/${(post as ObjectType).id}`);
   }, [post, router]);
 
   const Status: JSX.Element = useMemo(() => {
@@ -45,7 +44,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
       onClick={navigateProjectEdit}
       loading={isPostLoading}>
       <div className="flex flex-nowrap items-center justify-between">
-        <div className="text-sm font-medium">{format(new Date(createdAt), DATE_FORMAT)}</div>
+        <div className="text-sm font-medium">{createdAt ? format(new Date(createdAt), DATE_FORMAT) : "-"}</div>
         {Status}
       </div>
       {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}

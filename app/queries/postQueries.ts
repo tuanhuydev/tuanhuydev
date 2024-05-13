@@ -1,7 +1,6 @@
 import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { Post } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const usePostsQuery = (filter: ObjectType = {}) => {
@@ -19,7 +18,7 @@ export const usePostsQuery = (filter: ObjectType = {}) => {
   });
 };
 
-export const usePostQuery = (id: number) => {
+export const usePostQuery = (id: string) => {
   const { fetch } = useFetch();
 
   return useQuery({
@@ -37,7 +36,7 @@ export const useCreatePost = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (post: Partial<Post>) => {
+    mutationFn: async (post: ObjectType) => {
       const response = await fetch(`${BASE_URL}/api/posts`, { method: "POST", body: JSON.stringify(post) });
       if (!response.ok) throw new Error(response.statusText);
       const { data } = await response.json();
@@ -48,7 +47,7 @@ export const useCreatePost = () => {
 
 export const useUpdatePost = () => {
   return useMutation({
-    mutationFn: async (post: Partial<Post>) => {
+    mutationFn: async (post: ObjectType) => {
       const response = await fetch(`${BASE_URL}/api/posts/${post.id}`, { method: "PATCH", body: JSON.stringify(post) });
       if (!response.ok) throw new Error(response.statusText);
       const { data } = await response.json();

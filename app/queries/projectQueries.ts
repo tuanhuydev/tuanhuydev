@@ -1,7 +1,6 @@
 import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { Project } from "@prisma/client";
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useProjectsQuery = (filter: ObjectType = {}) => {
@@ -46,7 +45,9 @@ export const useCreateProjectMutation = () => {
         body: JSON.stringify(formData),
       });
       if (!response.ok) throw new BaseError("Unable to save");
-      queryClient.invalidateQueries("projects" as InvalidateQueryFilters);
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
     },
   });
 };
@@ -56,10 +57,10 @@ export const useUpdateProjectMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (project: Partial<Project>) => {
-      const response = await fetch(`${BASE_URL}/api/projects/${project.id}`, {
+    mutationFn: async ({ id, ...restBody }: Partial<ObjectType>) => {
+      const response = await fetch(`${BASE_URL}/api/projects/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(project),
+        body: JSON.stringify(restBody),
       });
       if (!response.ok) throw new BaseError("Unable to update");
       queryClient.invalidateQueries("projects" as InvalidateQueryFilters);

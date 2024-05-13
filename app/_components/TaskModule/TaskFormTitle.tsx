@@ -3,10 +3,9 @@
 import Badge from "../commons/Badge";
 import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
+import { TaskStatus, TaskStatusEnum } from "@app/_configs/constants";
 import { useDeleteTaskMutation } from "@app/queries/taskQueries";
-import { EMPTY_STRING } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
-import { TaskStatusAssignee } from "@lib/shared/interfaces/prisma";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
@@ -18,7 +17,7 @@ import React, { Fragment, useCallback, useMemo, useState } from "react";
 const WithTooltip = dynamic(async () => (await import("@components/commons/hocs/WithTooltip")).default, { ssr: false });
 
 export interface TaskFormTitleProps {
-  task: TaskStatusAssignee | null;
+  task: ObjectType | null;
   mode: "VIEW" | "EDIT";
   allowEditTask?: boolean;
   allowDeleteTask?: boolean;
@@ -52,7 +51,7 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
   );
   const handleDelete = useCallback(async () => {
     try {
-      await deleteTaskMutation((task as TaskStatusAssignee).id.toString());
+      await deleteTaskMutation((task as ObjectType).id.toString());
       notification.success({ message: "Task deleted successfully" });
     } catch (error) {
       LogService.log(error);
@@ -97,12 +96,14 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
     if (!task) return <h1 className={TitleStyles}>Create new task</h1>;
     const { id, status } = task;
+    const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
+
     return (
       <div className="flex items-baseline">
         <WithTooltip content={`${window.location.href}?taskId=${id}`} title="Copy task link">
           <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
         </WithTooltip>
-        {status && isViewMode && <Badge color={status?.color ?? "transparent"} value={status?.name ?? EMPTY_STRING} />}
+        {status && isViewMode && <Badge value={taskStatus.label} color={taskStatus.color} />}
       </div>
     );
   }, [isViewMode, task]);

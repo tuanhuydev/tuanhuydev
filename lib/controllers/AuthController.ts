@@ -3,7 +3,6 @@ import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
@@ -29,7 +28,7 @@ class AuthController {
   async signIn(request: NextRequest) {
     const network = Network(request);
     try {
-      const body = await request.json();
+      const body = await network.getBody();
       const { email, password } = await this.validateSignIn(body);
       const auth: TokenPayload | null = await AuthService.signIn(email, password);
 

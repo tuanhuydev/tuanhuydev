@@ -1,4 +1,4 @@
-import postService from "@lib/services/PostService";
+import MongoPostRepository from "@lib/repositories/MongoPostRepository";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
 import BadRequestError from "@shared/commons/errors/BadRequestError";
@@ -6,9 +6,15 @@ import BaseError from "@shared/commons/errors/BaseError";
 import { makeSlug, transformTextToDashed } from "@shared/utils/helper";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
+import { z } from "zod";
 
 export class PostController implements BaseController {
+  public static instance: PostController;
   #schema: ObjectSchema<any>;
+
+  static makeInstance() {
+    return PostController.instance ?? new PostController();
+  }
 
   constructor() {
     this.#schema = object({
@@ -28,15 +34,21 @@ export class PostController implements BaseController {
   async store(request: NextRequest, params: ObjectType) {
     const network = Network(request);
     try {
-      const { assets = [], ...body } = await request.json();
-      const validatedFields = await this.validateStoreRequest(body);
-      if (params?.userId) {
-        validatedFields.author = { connect: { id: params.userId } };
-      }
-      validatedFields.slug = makeSlug(validatedFields.slug);
+      const { assets = [], ...restBody } = await network.getBody();
+      const schema = z.object({
+        title: z.string(),
+        content: z.string(),
+        slug: z.string().nullable().optional(),
+        thumbnail: z.string().nullable().optional(),
+        publishedAt: z.string().nullable().optional(),
+      });
+      if (!schema.safeParse(restBody).success) throw new BadRequestError();
+      restBody.slug = makeSlug(restBody.slug);
 
-      const newPost = await postService.createPost(validatedFields);
-      await postService.saveAssets(newPost.id, assets);
+      const newPost = await MongoPostRepository.createPost(restBody);
+
+      // Double asset handling
+      // await PostPrismaRepository.saveAssets(newPost.id, assets);
 
       return network.successResponse(newPost);
     } catch (error) {
@@ -49,7 +61,7 @@ export class PostController implements BaseController {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
-      const posts = await postService.getPosts(params);
+      const posts = await MongoPostRepository.getPosts();
       return network.successResponse(posts);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -60,7 +72,7 @@ export class PostController implements BaseController {
     const network = Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const postById = await postService.getPost(id);
+      const postById = await MongoPostRepository.getPost(id);
       return network.successResponse(postById);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -76,7 +88,7 @@ export class PostController implements BaseController {
 
     const network = Network(request);
     try {
-      const updated = await postService.updatePost(Number(id), body);
+      const updated = await MongoPostRepository.updatePost(id, body);
       return network.successResponse(updated);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -87,7 +99,7 @@ export class PostController implements BaseController {
     if (!id) throw new BadRequestError();
     const network = Network(request);
     try {
-      const deleted = await postService.deletePost(Number(id));
+      const deleted = await MongoPostRepository.deletePost(id);
       return network.successResponse(deleted);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -95,5 +107,4 @@ export class PostController implements BaseController {
   }
 }
 
-const postController = new PostController();
-export default postController;
+export default PostController.makeInstance();

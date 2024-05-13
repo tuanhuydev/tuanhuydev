@@ -3,7 +3,6 @@
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
-import { Task } from "@prisma/client";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -35,10 +34,8 @@ export default function TaskForm({ task, projectId, onDone, onError, config }: T
   };
 
   const updateTask = async (formData: ObjectType, form?: UseFormReturn) => {
-    const { id, description, projectId, statusId, title, assigneeId, ...restFormData } = formData;
-
     try {
-      await mutateUpdateTask({ id, description, projectId, statusId, title, assigneeId });
+      await mutateUpdateTask(formData);
     } catch (error) {
       LogService.log(error);
     } finally {
