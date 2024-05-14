@@ -61,7 +61,7 @@ export class PostController implements BaseController {
     const network = Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
-      const posts = await MongoPostRepository.getPosts();
+      const posts = await MongoPostRepository.getPosts(params);
       return network.successResponse(posts);
     } catch (error) {
       return network.failResponse(error as BaseError);
