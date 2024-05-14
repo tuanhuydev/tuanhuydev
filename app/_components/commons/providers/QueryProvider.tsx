@@ -10,6 +10,7 @@ import * as React from "react";
 
 const DEFAULT_STALE_TIME = 1000 * 60 * 3; // 3 minutes
 const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 10 * 2; // 60 minutes
+
 export function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
@@ -27,6 +28,7 @@ export function QueryProvider(props: { children: React.ReactNode }) {
       }),
   );
   queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
+  queryClient.setQueryDefaults(["showMobileHamburger"], { staleTime: Infinity });
 
   const persister = createSyncStoragePersister({
     storage: window.localStorage,

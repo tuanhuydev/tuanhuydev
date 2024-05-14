@@ -1,4 +1,4 @@
-import SprintService from "@lib/repositories/MongoSprintRepository";
+import MongoSprintRepository from "@lib/repositories/MongoSprintRepository";
 import LogService from "@lib/services/LogService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
@@ -15,8 +15,9 @@ export class SprintController {
 
   async getAll(request: NextRequest) {
     const network = Network(request);
+    const filter = network.extractSearchParams();
     try {
-      const sprints = await SprintService.getSprints();
+      const sprints = await MongoSprintRepository.getSprints(filter);
       return network.successResponse(sprints);
     } catch (error) {
       LogService.log(error);
@@ -27,7 +28,7 @@ export class SprintController {
   async getOne(request: NextRequest, { id }: any) {
     const network = Network(request);
     try {
-      const sprint = await SprintService.getSprint(id);
+      const sprint = await MongoSprintRepository.getSprint(id);
       return network.successResponse(sprint);
     } catch (error) {
       LogService.log(error);
@@ -43,12 +44,14 @@ export class SprintController {
         name: z.string(),
         startDate: z.string(),
         endDate: z.string(),
+        projectId: z.string().optional(),
+        active: z.boolean().optional(),
       });
 
       const validationResult = schema.safeParse(body);
       if (!validationResult.success) throw new BadRequestError();
 
-      const sprint = await SprintService.createSprint(body);
+      const sprint = await MongoSprintRepository.createSprint(body);
       return network.successResponse(sprint);
     } catch (error) {
       LogService.log(error);
@@ -60,7 +63,7 @@ export class SprintController {
     const network = Network(request);
     try {
       const body = await network.getBody();
-      const updatedSprint = await SprintService.updateSprint(id, body);
+      const updatedSprint = await MongoSprintRepository.updateSprint(id, body);
       return network.successResponse(updatedSprint);
     } catch (error) {
       LogService.log(error);
@@ -71,7 +74,7 @@ export class SprintController {
   async destroy(request: NextRequest, { id }: any) {
     const network = Network(request);
     try {
-      await SprintService.deleteSprint(id);
+      await MongoSprintRepository.deleteSprint(id);
       return network.successResponse({ message: "Sprint deleted" });
     } catch (error) {
       LogService.log(error);

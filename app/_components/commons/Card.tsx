@@ -1,6 +1,7 @@
+"use client";
+
 import BaseImage from "./BaseImage";
 import { Skeleton } from "antd";
-import Image from "next/image";
 import React, { Fragment, PropsWithChildren } from "react";
 
 export interface CardProps extends PropsWithChildren {
@@ -29,7 +30,7 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`p-5 bg-white dark:bg-slate-700 rounded-md border border-solid border-slate-200 hover:border-primary dark:border-transparent dark:hover:border-slate-400 cursor-pointer transition-all duration-150 ${className}`}
+      className={`p-5 bg-white dark:bg-slate-700 rounded-md border border-solid border-slate-200 hover:border-slate-500 dark:border-transparent dark:hover:border-slate-400 cursor-pointer transition-all duration-150 ${className}`}
       onClick={onClick}>
       {hasImage && (
         <div className="relative aspect-[3/2] rounded-sm mb-3">
@@ -43,11 +44,11 @@ export default function Card({
       ) : (
         <Fragment>
           {title && (
-            <div className="flex justify-between font-base text-slate-600 font-medium dark:text-slate-100 text-xl mb-3">
-              {title} {icon} {titleExtra}
+            <div className="flex justify-between text-slate-600 font-medium dark:text-slate-100 text-xl mb-3">
+              <span className="truncate">{title}</span> {icon} {titleExtra}
             </div>
           )}
-          <div className="card-content text-3xl text-primary dark:text-white">{value ?? children}</div>
+          <div className="flex-1 flex flex-col">{value ?? children}</div>
         </Fragment>
       )}
     </div>

@@ -1,7 +1,5 @@
 import Item, { ItemProps } from "./Item";
-import styles from "./styles.module.scss";
 import { EMPTY_STRING } from "@lib/configs/constants";
-import { RootState } from "@lib/configs/types";
 import { isPathActive } from "@lib/shared/utils/helper";
 import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
 import dynamic from "next/dynamic";
@@ -23,7 +21,7 @@ export default function Group({ label, icon, children }: GroupProps) {
   const toggleGroup = () => setOpen((prevOpen: boolean) => !prevOpen);
 
   const isGroupActive = children.some(({ path }: ItemProps) => isPathActive(pathName, path));
-  const activeClass = isGroupActive ? styles.active : EMPTY_STRING;
+  const activeClass = isGroupActive ? "!bg-grey-950 !text-white" : EMPTY_STRING;
   const childClass = sidebarOpen ? "ml-2 mt-2" : EMPTY_STRING;
 
   useEffect(() => {

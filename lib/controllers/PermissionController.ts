@@ -15,8 +15,8 @@ export class PermissionController {
   async getAll(request: NextRequest) {
     const network = Network(request);
     try {
-      // const permissions = await PermissionService.getPermissions();
-      // return network.successResponse(permissions);
+      const permissions = await MongoPermissionRepository.getPermissions();
+      return network.successResponse(permissions);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }

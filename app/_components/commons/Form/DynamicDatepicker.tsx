@@ -22,6 +22,7 @@ export default function DynamicDatepicker({
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
   const { ref, ...restField } = field;
+
   return (
     <div className={`p-2 self-stretch ${className}`}>
       <div className="w-full mb-1">
@@ -29,8 +30,9 @@ export default function DynamicDatepicker({
           {...restField}
           {...options}
           key={keyProp}
+          allowClear={false}
           disabled={isSubmitting}
-          value={dayjs(field.value)}
+          value={field.value ? dayjs(field.value) : null}
           className="w-full"
           format="YYYY/MM/DD"
         />

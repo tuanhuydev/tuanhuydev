@@ -7,6 +7,7 @@ import BadRequestError from "@shared/commons/errors/BadRequestError";
 import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
+import { z } from "zod";
 
 class UserController implements BaseController {
   static #instance: UserController;
@@ -35,17 +36,27 @@ class UserController implements BaseController {
   async store(request: NextRequest, params: any) {
     const network = Network(request);
     try {
-      const body = await request.json();
-      const validatedFields = await this.validateStoreRequest(body);
-      const hashPassword = await AuthService.hashPassword(validatedFields.password);
+      const schema = z
+        .object({
+          name: z.string().max(50),
+          email: z.string().max(50),
+          password: z.string(),
+          confirmPassword: z.string(),
+          permissionId: z.string(),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+          message: "Passwords don't match",
+          path: ["confirm"],
+        });
+      const body = await network.getBody();
+      const { confirmPassword, password, ...restBody }: ObjectType = await schema.parseAsync(body);
 
-      // const newUser = await userService.createUser({
-      //   ...validatedFields,
-      //   id: AuthService.issueID(),
-      //   password: hashPassword,
-      // });
-
-      // return network.successResponse(newUser);
+      const hashPassword = await AuthService.hashPassword(password);
+      const newUser = await MongoUserRepository.createUser({
+        ...restBody,
+        password: hashPassword,
+      });
+      return network.successResponse(newUser);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }

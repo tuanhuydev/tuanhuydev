@@ -1,14 +1,12 @@
 "use client";
 
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import BaseInput from "@app/_components/commons/Inputs/BaseInput";
 import Loader from "@app/_components/commons/Loader";
-import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import PageFilter from "@app/_components/commons/PageFilter";
 import { usePostsQuery } from "@app/queries/postQueries";
-import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
 const PostCard = dynamic(() => import("@components/PostModule/PostCard"), {
   ssr: false,
@@ -25,37 +23,29 @@ function Page() {
 
   const navigateCreate = useCallback(() => router.push("/dashboard/posts/create"), [router]);
 
-  const searchTask: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    const search = e.currentTarget.value || "";
-    setTimeout(() => {
-      setFilter((prevFilter) => {
-        if (search?.length) return { ...prevFilter, search };
-        delete prevFilter?.search;
-        return prevFilter;
-      });
-    }, 300);
-  }, []);
-
-  useEffect(() => {
-    const searchTimeout = setTimeout(() => {
-      refetch();
-    }, 300);
-    return () => clearTimeout(searchTimeout);
-  }, [filter?.search, refetch]);
+  const onSearchPost = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTimeout(() => {
+        const search = event.target.value;
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 500);
+    },
+    [refetch],
+  );
 
   return (
     <PageContainer title="Posts">
-      <div className="mb-3 flex gap-2 items-center">
-        <BaseInput
-          placeholder="Find your post"
-          onChange={searchTask}
-          className="grow mr-2 rounded-sm"
-          startAdornment={<SearchOutlined />}
-        />
-        <div className="flex gap-3">
-          <BaseButton onClick={navigateCreate} label="New Post" />
-        </div>
-      </div>
+      <PageFilter
+        onSearch={onSearchPost}
+        onNew={navigateCreate}
+        searchPlaceholder="Find your post"
+        createLabel="New post"
+      />
       <div className="grow overflow-auto pb-3">
         {isLoading ? (
           <Loader />

@@ -25,6 +25,7 @@ class MongoPostRepository {
     let query = this.table.find(defaultWhere);
     return query.toArray();
   }
+
   async getPost(id: string) {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }

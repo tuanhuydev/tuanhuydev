@@ -4,14 +4,12 @@ import PageContainer from "@app/_components/DashboardModule/PageContainer";
 import UserDetail from "@app/_components/UserModule/UserDetail";
 import UserRow from "@app/_components/UserModule/UserRow";
 import BaseDrawer from "@app/_components/commons/BaseDrawer";
-import BaseInput from "@app/_components/commons/Inputs/BaseInput";
-import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import PageFilter from "@app/_components/commons/PageFilter";
 import { useUsersQuery } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
-import { ControlPointOutlined, SearchOutlined } from "@mui/icons-material";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Empty } from "antd";
-import { useCallback, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 
 export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -20,7 +18,7 @@ export default function Page() {
   const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>(undefined);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
-  const { data: users = [], isLoading: isUserLoading } = useUsersQuery(filter);
+  const { data: users = [], isLoading: isUserLoading, refetch } = useUsersQuery(filter);
 
   // The virtualizer
   const { getTotalSize, getVirtualItems } = useVirtualizer({
@@ -29,12 +27,20 @@ export default function Page() {
     estimateSize: () => 48,
   });
 
-  const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      const search = e.target.value;
-      setFilter((currentFilter) => ({ ...currentFilter, search }));
-    }, 500);
-  };
+  const onSearchUsers = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTimeout(() => {
+        const search = event.target.value;
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 500);
+    },
+    [refetch],
+  );
 
   const createUser = () => {
     setSelectedUser(undefined);
@@ -79,17 +85,12 @@ export default function Page() {
 
   return (
     <PageContainer title="Users">
-      <div data-testid="dashboard-posts-page-testid" className="mb-3 gap-2 flex items-center">
-        <BaseInput
-          startAdornment={<SearchOutlined className="!text-lg" />}
-          placeholder="Find your user"
-          onChange={searchUser}
-          className="grow mr-2 rounded-sm"
-        />
-        <div>
-          <BaseButton label="New User" icon={<ControlPointOutlined fontSize="small" />} onClick={createUser} />
-        </div>
-      </div>
+      <PageFilter
+        onSearch={onSearchUsers}
+        onNew={createUser}
+        searchPlaceholder="Find your project"
+        createLabel="New project"
+      />
       <div className="grow overflow-auto" ref={containerRef}>
         {RenderUsers()}
         <BaseDrawer open={openDrawer} onClose={closeDrawer}>

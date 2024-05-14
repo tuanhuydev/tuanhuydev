@@ -1,11 +1,17 @@
 "use client";
 
 import PageContainer from "@app/_components/DashboardModule/PageContainer";
+import BaseLabel from "@app/_components/commons/BaseLabel";
+import BaseModal from "@app/_components/commons/BaseModal";
 import BaseCard from "@app/_components/commons/Card";
+import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
+import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
+import { useActiveSprintQuery } from "@app/queries/sprintQueries";
+import { useFetch } from "@app/queries/useSession";
 import Loader from "@components/commons/Loader";
-import { DATE_FORMAT } from "@lib/configs/constants";
+import { BASE_URL, DATE_FORMAT } from "@lib/configs/constants";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import differenceInDays from "date-fns/differenceInDays";
@@ -13,27 +19,65 @@ import format from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React from "react";
-
-const Row = dynamic(async () => (await import("antd/es/row")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const Col = dynamic(async () => (await import("antd/es/col")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+import React, { Fragment } from "react";
+import { FieldValues, UseFormReturn } from "react-hook-form";
 
 const Progress = dynamic(async () => (await import("antd/es/progress")).default, {
   ssr: false,
   loading: () => <Loader />,
 });
 
+const config: DynamicFormConfig = {
+  fields: [
+    {
+      type: "text",
+      name: "name",
+      options: {
+        placeholder: "Sprint name",
+      },
+      validate: {
+        required: true,
+      },
+    },
+    {
+      type: "textarea",
+      name: "description",
+      options: {
+        placeholder: "Sprint goal",
+      },
+      validate: {
+        required: true,
+      },
+    },
+    {
+      type: "datepicker",
+      name: "startDate",
+      className: "w-1/2",
+      options: {
+        placeholder: "start date",
+      },
+    },
+    {
+      type: "datepicker",
+      name: "endDate",
+      className: "w-1/2",
+      validate: {
+        min: "startDate",
+      },
+    },
+  ],
+};
+
 function Page({ params }: any) {
+  const { projectId } = params;
+  const { fetch } = useFetch();
+
   const router = useRouter();
-  const { data: project, isLoading } = useProjectQuery(params.projectId);
-  const { data: tasks } = useProjectTasks(params.projectId);
+  const { data: project, isLoading } = useProjectQuery(projectId);
+  const { data: tasks, isLoading: isTasksLoading } = useProjectTasks(projectId);
+  const { data: sprint, isLoading: isSprintsLoading } = useActiveSprintQuery(projectId);
+
+  const [openSprintModal, setOpenSprintModal] = React.useState<boolean>(false);
 
   const {
     name = "",
@@ -64,16 +108,38 @@ function Page({ params }: any) {
     return "-";
   };
 
+  const manageSprint = () => {
+    setOpenSprintModal(true);
+  };
+
+  const handleNewSprint = async (formData: FieldValues, formInstance?: UseFormReturn) => {
+    formData.projectId = projectId;
+    try {
+      const response = await fetch(`${BASE_URL}/api/sprints`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) throw new Error("Unable to create sprint");
+
+      const createdSprint = await response.json();
+      if (createdSprint) setOpenSprintModal(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      if (formInstance) formInstance.reset();
+    }
+  };
+
   const backlogTasks = tasks?.filter((task: ObjectType) => task.statusId === 2);
   const percent = backlogTasks?.length ? (backlogTasks?.length / tasks?.length) * 100 : 0;
 
   return (
     <PageContainer title="View Project" goBack>
-      <Row gutter={[16, 16]} className="mb-3">
-        <Col span={24} lg={{ span: 16 }}>
-          <BaseCard loading={isLoading} className="w-5rem h-full">
+      <div className="grid grid-cols-12 grid-rows-2 gap-4">
+        <div className="col-span-full lg:col-span-6">
+          <BaseCard loading={isLoading} className="h-full">
             <div className="flex items-center justify-between min-w-0 overflow-hidden">
-              <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 truncate ">{name}</h1>
+              <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 truncate">{name}</h1>
               <div className="flex gap-3">
                 <WithTooltip content={window.location.href} title="Share">
                   <ShareOutlined />
@@ -91,24 +157,22 @@ function Page({ params }: any) {
               <p className="text-sm m-0 p-0 inline">{description}</p>
             </div>
           </BaseCard>
-        </Col>
-        <Col span={24} lg={{ span: 8 }} className="w-full">
-          <div className="flex lg:flex-col gap-3">
-            <BaseCard className="flex-1" loading={isLoading}>
-              <small className="text-sm capitalize text-slate-400">status</small>
-              <div className="text-bold text-4xl text-center mt-5 mb-3 text-green-600">Active</div>
-            </BaseCard>
-            <BaseCard className="flex-1" loading={isLoading}>
-              <small className="text-sm capitalize text-slate-400">people</small>
-              <div className="text-bold text-4xl text-center mt-5 mb-1">{(users as ObjectType[])?.length}</div>
-            </BaseCard>
-          </div>
-        </Col>
-      </Row>
-      <Row gutter={[12, 12]}>
-        <Col span={24} lg={{ span: 8 }}>
+        </div>
+        <div className="col-span-full lg:col-span-3">
           <BaseCard className="h-full" loading={isLoading}>
-            <small className="text-sm capitalize text-slate-400">status</small>
+            <BaseLabel>status</BaseLabel>
+            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-green-600">Active</h4>
+          </BaseCard>
+        </div>
+        <div className="col-span-full lg:col-span-3">
+          <BaseCard className="h-full" loading={isLoading}>
+            <BaseLabel>type</BaseLabel>
+            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-cyan-500">Billable</h4>
+          </BaseCard>
+        </div>
+        <div className="col-span-full lg:col-span-4">
+          <BaseCard className="h-full" loading={isLoading}>
+            <BaseLabel>Timeline</BaseLabel>
             <div className="mt-4 flex flex-col items-center gap-4">
               <Progress
                 steps={5}
@@ -120,24 +184,24 @@ function Page({ params }: any) {
               <p className="text-xl font-medium capitalize">{titleByPercent()}</p>
               <div className="flex justify-between w-full">
                 <span className="text-xs">
-                  <b>Start Date:&nbsp;</b>
+                  <BaseLabel>Start Date:&nbsp;</BaseLabel>
                   {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
                 </span>
                 <span className="text-xs">
-                  <b>End Date:&nbsp;</b>
+                  <BaseLabel>End Date:&nbsp;</BaseLabel>
                   {endDate ? format(new Date(endDate), DATE_FORMAT) : "-"}
                 </span>
               </div>
             </div>
           </BaseCard>
-        </Col>
-        <Col span={24} lg={{ span: 8 }}>
-          <BaseCard onClick={navigateProjectTasks} loading={isLoading}>
-            <div className="flex justify-between text-slate-400">
-              <small className="text-sm capitalize">task</small>
+        </div>
+        <div className="col-span-full lg:col-span-4">
+          <BaseCard className="h-full" onClick={navigateProjectTasks} loading={isTasksLoading}>
+            <div className="flex justify-between text-sm capitalize text-slate-400">
+              <BaseLabel>task</BaseLabel>
               <InsertLinkOutlined />
             </div>
-            <div className="mt-4 flex flex-wrap gap-24">
+            <div className="mt-4 flex flex-wrap gap-5 md:gap-8 lg:gap-12 xl:gap-24">
               <Progress type="circle" success={{ percent: percent }} percent={percent} size={150} />
               <span>
                 <b className="text-lg font-normal">Tasks:&nbsp;</b>
@@ -145,16 +209,45 @@ function Page({ params }: any) {
               </span>
             </div>
           </BaseCard>
-        </Col>
-        <Col span={24} lg={{ span: 8 }}>
-          <BaseCard className="h-full" loading={isLoading}>
-            <small className="text-sm capitalize text-slate-400">type</small>
-            <div className="mt-4 flex items-center justify-center">
-              <h4 className="text-4xl text-cyan-500">Billable</h4>
+        </div>
+        <div className="col-span-full lg:col-span-4">
+          <BaseCard className="h-full flex gap-3" loading={isSprintsLoading}>
+            <BaseLabel>sprint</BaseLabel>
+            <div className="flex-1 flex flex-col">
+              {sprint?.name ? (
+                <Fragment>
+                  <h4 className="capitalize mx-0 mt-0 mb-3">{sprint?.name}</h4>
+                  <p className="m-0 flex-1">{sprint?.description}</p>
+                  <div className="flex flex-wrap justify-between">
+                    <div className="text-xs">
+                      <BaseLabel>Start Date: </BaseLabel>
+                      {sprint.startDate ? format(new Date(sprint.startDate), DATE_FORMAT) : "-"}
+                    </div>
+                    <div className="text-xs">
+                      <BaseLabel>End Date: </BaseLabel>
+                      {sprint.endDate ? format(new Date(sprint.endDate), DATE_FORMAT) : "-"}
+                    </div>
+                  </div>
+                </Fragment>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span className="font-medium w-full text-center my-3 capitalize text-2xl text-slate-600 dark:text-slate-400">
+                    not started
+                  </span>
+                  <BaseButton className="text-sm" onClick={manageSprint} variants="text" label="Create New Sprint" />
+                  <BaseModal
+                    open={openSprintModal}
+                    title="Create new sprint"
+                    closable
+                    onClose={() => setOpenSprintModal(false)}>
+                    <DynamicForm config={config} onSubmit={handleNewSprint} />
+                  </BaseModal>
+                </div>
+              )}
             </div>
           </BaseCard>
-        </Col>
-      </Row>
+        </div>
+      </div>
     </PageContainer>
   );
 }

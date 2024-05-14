@@ -1,18 +1,17 @@
 "use client";
 
 import { BASE_URL } from "@lib/configs/constants";
+import { HTTP_CODE } from "@lib/shared/commons/constants/httpCode";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
-import { QueryKey, useQueryClient } from "@tanstack/react-query";
-import { RedirectType, redirect } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useFetch = () => {
   const queryClient = useQueryClient();
-
   const fetchWithAuth = async (url: string, options: RequestInit = {}, retryCount = 3): Promise<any> => {
     try {
-      const accessToken = queryClient.getQueryData(["accessToken" as unknown as QueryKey]);
-      const headers = options?.headers || {};
+      const accessToken = queryClient.getQueryData<string>(["accessToken"]);
+      const headers = options.headers || {};
       const updatedOptions = {
         ...options,
         headers: {
@@ -20,42 +19,47 @@ export const useFetch = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       };
+
       const response = await fetch(url, updatedOptions);
+
       if (!response.ok) {
-        if (response.status !== 401) throw new BaseError(response.statusText);
+        if (response.status !== HTTP_CODE.UNAUTHORIZED_ERROR) {
+          throw new BaseError(response.statusText);
+        }
 
         if (retryCount <= 0) {
-          queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], false);
-          throw new BaseError("Unable to fetch data");
+          queryClient.setQueryData(["isRefreshing"], false);
+          throw new UnauthorizedError("Unable to refresh token");
         }
-        // Keep trying after 1sec while is refreshing token
-        const isRefreshing = queryClient.getQueryData(["isRefreshing" as unknown as QueryKey]) ?? false;
+        const isRefreshing = queryClient.getQueryData<boolean>(["isRefreshing"]);
         if (isRefreshing) {
-          return new Promise((resolve) => setTimeout(() => resolve(fetchWithAuth(url, options, retryCount)), 1000));
+          // Wait for 2 seconds and waiting BE to update access token before retrying
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(fetchWithAuth(url, options, retryCount - 1));
+            }, 2000);
+          });
         }
+        // Set isRefreshing to true to prevent multiple refresh token requests
+        queryClient.setQueryData(["isRefreshing"], true);
 
-        // Set a flag to indicate that a refresh token request is in progress
-        queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], true);
-        try {
-          const tokenResponse = await fetch(`${BASE_URL}/api/auth/refresh-token`, { method: "POST" });
-          if (!tokenResponse.ok) throw new UnauthorizedError(); // Redirect to sign in
-          // Update the accessToken in queryClient
-          const { data: newAccessToken } = await tokenResponse.json();
+        // Get new access token
+        const tokenResponse = await fetch(`${BASE_URL}/api/auth/refresh-token`, { method: "POST" });
+        if (!tokenResponse.ok) throw new UnauthorizedError("Unable to refresh token");
 
-          queryClient.setQueryData(["accessToken" as unknown as QueryKey], newAccessToken);
-          queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], false);
-          // Retry the request with the new accessToken
-          return fetchWithAuth(url, updatedOptions, retryCount - 1);
-        } catch (error) {
-          if (error instanceof UnauthorizedError) {
-            window.location.href = "/auth/sign-in";
-          }
-          queryClient.setQueryData(["isRefreshing" as unknown as QueryKey], false);
-        }
+        const { data: newAccessToken } = await tokenResponse.json();
+        queryClient.setQueryData(["accessToken"], newAccessToken);
+        queryClient.setQueryData(["isRefreshing"], false);
+        // Retry request with new access token
+        return fetchWithAuth(url, options, retryCount);
       }
       return response;
     } catch (error) {
-      console.log(error);
+      if (error instanceof UnauthorizedError) {
+        queryClient.clear();
+        window.location.href = "/auth/sign-in";
+      }
+      throw error;
     }
   };
 

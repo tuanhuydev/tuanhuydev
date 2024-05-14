@@ -150,6 +150,7 @@ function TaskPage({
       return (
         <div className="px-1">
           <TaskForm
+            projectId={project?.id}
             config={TaskFormConfig}
             onDone={mutateTaskSuccess}
             onError={mutateTaskError}
@@ -161,7 +162,7 @@ function TaskPage({
 
     const projectUser = projectUsers.find(({ value: userId }: SelectOption) => userId === selectedTask?.assigneeId);
     return <TaskPreview task={selectedTask} assignee={projectUser} />;
-  }, [isEditMode, projectUsers, selectedTask, TaskFormConfig, mutateTaskSuccess, mutateTaskError]);
+  }, [isEditMode, projectUsers, selectedTask, project?.id, TaskFormConfig, mutateTaskSuccess, mutateTaskError]);
 
   const onSelectTask = useCallback((task: ObjectType) => {
     setMode(COMPONENT_MODE.VIEW);
@@ -184,7 +185,7 @@ function TaskPage({
   }, [filter]);
 
   return (
-    <PageContainer title={project.name}>
+    <PageContainer title={project.name} goBack={!!project.name}>
       <div className="mb-3 flex gap-2 items-center">
         <BaseInput
           placeholder="Find your task"
