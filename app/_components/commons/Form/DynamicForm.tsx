@@ -51,17 +51,26 @@ const mapValidation = (type: any, validate: ObjectType) => {
   }
 
   // Apply rules
+
   if ("min" in validate) {
     const isNumberMin = Number.isInteger(validate.min);
-    rule = rule.min(isNumberMin ? validate.min : yup.ref(validate.min));
+    rule = rule.min(
+      isNumberMin ? validate.min : yup.ref(validate.min),
+      `Field must greater than equal field '${validate.min}'`,
+    );
   }
   if ("max" in validate) {
     const isNumberMax = Number.isInteger(validate.max);
-    rule = rule.max(isNumberMax ? validate.max : yup.ref(validate.max));
+    rule = rule.max(
+      isNumberMax ? validate.max : yup.ref(validate.max),
+      `Field must less than equal field '${validate.min}'`,
+    );
   }
+
   if ("required" in validate && validate.required) {
-    rule = rule.required();
+    rule = rule.required("Required Field");
   }
+
   if ("match" in validate) {
     rule = (rule as yup.StringSchema).oneOf([yup.ref(validate.match)], "Passwords must match");
   }
@@ -161,7 +170,7 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
   return (
     <form className="w-full">
       <div className="flex flex-wrap relative overflow-auto">{registeredFields}</div>
-      <div className="h-px bg-gray-100 mt-1 mb-3  mx-2"></div>
+      <div className="h-px bg-gray-100 dark:bg-slate-700 mt-1 mb-3  mx-2"></div>
 
       <div className="flex p-2">
         <BaseButton

@@ -1,12 +1,8 @@
-import createMDX from "@next/mdx";
-import remarkGfm from "remark-gfm";
-
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   poweredByHeader: false,
-  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  pageExtensions: ["js", "jsx", "ts", "tsx"],
   transpilePackages: ["@mdxeditor/editor", "date-fns"],
   experimental: {
     optimizePackageImports: ["antd"],
@@ -48,16 +44,5 @@ const nextConfig = {
   },
   eslint: { ignoreDuringBuilds: true },
 };
-const withMDX = createMDX({
-  // Add markdown plugins here, as desired
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [],
-  },
-});
-export default withMDX(nextConfig);
 
-// const withBundleAnalyzer = require("@next/bundle-analyzer")({
-//   enabled: true,
-// });
-// export default withBundleAnalyzer(nextConfig);
+export default nextConfig;

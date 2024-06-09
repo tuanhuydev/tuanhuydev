@@ -1,6 +1,7 @@
 import LogService from "../services/LogService";
 import { extractBearerToken } from "@app/_utils/network";
 import MongoProjectRepository from "@lib/repositories/MongoProjectRepository";
+import MongoSprintRepository from "@lib/repositories/MongoSprintRepository";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import { BaseController } from "@lib/shared/interfaces/controller";
@@ -130,6 +131,17 @@ export class ProjectController implements BaseController {
         userId = currentUserId;
       }
       return this.getAll(request, userId);
+    } catch (error) {
+      return network.failResponse(error as BaseError);
+    }
+  }
+
+  async getActiveSprint(request: NextRequest, { id }: any) {
+    const network = Network(request);
+    try {
+      const sprint = await MongoSprintRepository.getSprints({ projectId: id, active: true });
+      if (!sprint) throw new NotFoundError("sprint not found");
+      return network.successResponse(sprint[0]);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }

@@ -1,5 +1,3 @@
-"use client";
-
 import BaseImage from "../commons/BaseImage";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import React from "react";
@@ -12,16 +10,16 @@ export interface PostPreviewProps {
   post: ObjectType;
 }
 
-export default function PostPreview({ post }: PostPreviewProps) {
+export default async function PostPreview({ post }: PostPreviewProps) {
   return (
     <div className="grid grid-rows-post">
       <div className="background row-start-1 col-span-full relative opacity-75">
         <BaseImage src={post.thumbnail ?? EMPTY_STRING} alt={post.title} fill sizes="100vw" className="object-cover" />
       </div>
-      <div className="grid lg:grid-cols-12 -mt-20 relative z-20">
-        <div className="col-start-3 col-span-9 p-4 shadow-md bg-white text-slate-primary dark:bg-primary dark:text-slate-50 rounded-md">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold rounded-md mb-3 p-3">{post.title}</h1>
-          <div className="!text-sm lg:!text-base bg-white dark:bg-transparent p-3">
+      <div className="grid grid-cols-12 -mt-20 relative z-20">
+        <div className="col-start-2 col-span-10 lg:col-start-3 lg:col-span-8 lg:p-4 shadow-md bg-white text-slate-primary dark:bg-primary dark:text-slate-50 rounded-md">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold rounded-md m-0 p-2 md:p-3 lg:mb-3">{post.title}</h1>
+          <div className="!text-sm lg:!text-base bg-white dark:bg-transparent p-2 md:p-3">
             <Markdown
               remarkPlugins={[remarkGfm]}
               components={{

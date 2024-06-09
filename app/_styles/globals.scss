@@ -65,3 +65,18 @@ button[type="reset"],
 button[type="submit"] {
   box-shadow: none;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-internal-autofill-selected {
+  // // -webkit-box-shadow: 0 0 0 0 white inset !important;
+  // -webkit-box-shadow: 0 0 0px 1000px white inset;
+  color: #030712 !important;
+}
+input:-webkit-autofill {
+  -webkit-text-fill-color: theme("colors.slate.500") !important;
+  -webkit-box-shadow: 0 0 0 1rem theme("colors.white") inset !important;
+  background-clip: content-box !important;
+}
