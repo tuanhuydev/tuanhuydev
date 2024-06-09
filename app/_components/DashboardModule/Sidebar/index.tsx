@@ -1,10 +1,8 @@
 "use client";
 
 import { ItemProps } from "./Item";
-import styles from "./styles.module.scss";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import Loader from "@components/commons/Loader";
-import { EMPTY_STRING } from "@lib/configs/constants";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
@@ -13,19 +11,21 @@ import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
+import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
-import React, { useCallback, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface SidebarProps {
   permissions: ObjectType;
+  openMobile: boolean;
 }
 
-const Sidebar = ({ permissions }: SidebarProps) => {
-  const toggleSidebar = useCallback(() => {}, []);
-  const sidebarOpen = false;
+const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
+  const queryClient = useQueryClient();
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const renderRoutes = useMemo(() => {
     const routes: Array<ItemProps> = [
@@ -71,10 +71,28 @@ const Sidebar = ({ permissions }: SidebarProps) => {
     });
   }, [permissions]);
 
-  const containerToggleStyles = sidebarOpen ? styles.open : EMPTY_STRING;
+  useEffect(() => {
+    const isMobile = window.innerWidth < 924;
+    if (isMobile) {
+      queryClient.setQueryData(["showMobileHamburger"], isMobile);
+      setSidebarOpen(isMobile);
+    }
+  }, [queryClient]);
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 924) {
+      queryClient.setQueryData(["showMobileHamburger"], !openMobile);
+      setSidebarOpen(true);
+    } else {
+      setSidebarOpen(!sidebarOpen);
+    }
+  };
 
   return (
-    <div className="relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-lg bg-slate-50 dark:bg-primary dark:border-slate-800">
+    <div
+      className={`${
+        !openMobile ? "translate-x-0" : "-translate-x-[14rem]"
+      } lg:translate-x-0 fixed h-full lg:relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-lg bg-slate-50 dark:bg-primary dark:border-slate-800 transition-transform ease-in duration-300`}>
       <div className="h-14 truncate flex items-center justify-center">
         <svg
           width="32"
@@ -88,14 +106,15 @@ const Sidebar = ({ permissions }: SidebarProps) => {
         </svg>
       </div>
       <BaseButton
-        className="!bg-slate-50 !rounded-full dark:!bg-primary text-slate-400 text-center absolute -right-3 top-1/2 z-[10]"
+        className="!bg-slate-50 !rounded-full dark:!bg-primary text-slate-400 text-center absolute -right-3 top-1/2 z-[10] transition-transform duration-300"
         variants="text"
-        onClick={toggleSidebar}
+        onClick={handleToggleSidebar}
         icon={<ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />}
       />
-
       <ul
-        className={`${styles.container} ${containerToggleStyles} ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
+        className={`${
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.375rem]"
+        } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {renderRoutes}
       </ul>
     </div>

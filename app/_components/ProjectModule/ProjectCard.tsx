@@ -10,7 +10,7 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import format from "date-fns/format";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { use } from "react";
+import React from "react";
 
 const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 

@@ -13,12 +13,15 @@ class MongoTaskRepository {
     return MongoTaskRepository.#instance ?? new MongoTaskRepository();
   }
 
-  async createTask(body: TaskBody) {
-    body.createdAt = new Date();
-    body.updatedAt = new Date();
-    body.deletedAt = null;
+  async createTask({ projectId, ...restBody }: ObjectType) {
+    restBody.createdAt = new Date();
+    restBody.updatedAt = new Date();
+    restBody.deletedAt = null;
+    if (projectId) {
+      restBody.projectId = new ObjectId(projectId as string);
+    }
 
-    const result = await this.table.insertOne(body);
+    const result = await this.table.insertOne(restBody);
     return result;
   }
 
@@ -35,7 +38,7 @@ class MongoTaskRepository {
     }
 
     if ("projectId" in filter) {
-      defaultWhere = { ...defaultWhere, projectId: new ObjectId(filter.projectId) };
+      defaultWhere = { ...defaultWhere, projectId: new ObjectId(filter.projectId as string) };
     }
 
     if ("userId" in filter) {

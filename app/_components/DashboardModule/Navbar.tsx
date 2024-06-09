@@ -6,8 +6,9 @@ import { useSignOut } from "@app/queries/authQueries";
 import { useCurrentUser } from "@app/queries/userQueries";
 import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
+import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
@@ -53,11 +54,22 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     [open, signOut],
   );
 
+  const toggleMobileHamburger = useCallback(() => {
+    queryClient.setQueryData(["showMobileHamburger" as unknown as QueryKey], (prev: any) => !prev);
+  }, [queryClient]);
+
   const renderStart = useMemo(() => {
     if (startComponent) return startComponent;
     if (title)
       return (
         <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl text-primary dark:text-slate-50">
+          <BaseButton
+            variants="text"
+            className="block lg:hidden"
+            icon={<MenuOutlined />}
+            onClick={toggleMobileHamburger}
+          />
+
           {goBack && (
             <BaseButton
               variants="text"
@@ -69,7 +81,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
         </div>
       );
     return <Fragment />;
-  }, [goBack, router, startComponent, title]);
+  }, [goBack, router, startComponent, title, toggleMobileHamburger]);
 
   const renderEnd = useMemo(() => {
     if (endComponent) return endComponent;
