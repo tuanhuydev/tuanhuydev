@@ -7,7 +7,6 @@
       {
         "endOfLine": "auto"
       }
-    ],
-    "no-unsafe-optional-chaining": 0
+    ]
   }
 }

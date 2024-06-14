@@ -1,6 +1,7 @@
 "use client";
 
 import BaseButton from "../commons/buttons/BaseButton";
+import PostView from "./PostView";
 import { makeFieldMap } from "@app/_utils/helper";
 import { useCreatePost, useUpdatePost } from "@app/queries/postQueries";
 import Loader from "@components/commons/Loader";
@@ -19,8 +20,6 @@ const BaseMarkdown = dynamic(() => import("@components/commons/BaseMarkdown"), {
   ssr: false,
   loading: () => <Loader />,
 });
-
-const PostPreview = dynamic(() => import("./PostPreview"), { ssr: false });
 
 const Upload = dynamic(() => import("antd/es/upload"), { ssr: false });
 
@@ -266,7 +265,7 @@ export default function PostForm({ post }: any) {
     {
       key: "2",
       label: "Preview",
-      children: <PostPreview post={previewValue as unknown as ObjectType} />,
+      children: <PostView post={previewValue as unknown as ObjectType} />,
     },
   ];
 
