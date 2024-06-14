@@ -4,7 +4,7 @@ import GithubIcon from "@public/assets/images/socials/github.svg";
 import LinkedInIcon from "@public/assets/images/socials/linkedin.svg";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo } from "react";
+import React from "react";
 
 const contactPoints = [
   { img: EmailIcon, alt: "tuanhuydev - send email", href: "mailto: tuanhuydev@gmail.com" },
@@ -12,18 +12,7 @@ const contactPoints = [
   { img: LinkedInIcon, alt: "tuanhuydev - linkedin profile", href: "https://www.linkedin.com/in/tuanhuydev" },
 ];
 
-export default function Contact() {
-  const Contacts = useMemo(() => {
-    return contactPoints.map(({ img, alt, href }) => (
-      <Link href={href} legacyBehavior key={href} prefetch={false}>
-        <a
-          target="_blank"
-          className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-          <Image src={img} width={24} height={24} alt={alt} />
-        </a>
-      </Link>
-    ));
-  }, []);
+export default async function Contact() {
   return (
     <section
       id="contact"
@@ -45,7 +34,17 @@ export default function Contact() {
           <h5 className="font-semibold my-5 text-xl text-center lg:text-left lg:text-3xl lg:mr-3">
             Let connect and discuss
           </h5>
-          <div className="flex gap-3 self-center">{Contacts}</div>
+          <div className="flex gap-3 self-center">
+            {contactPoints.map(({ img, alt, href }) => (
+              <Link href={href} legacyBehavior key={href} prefetch={false}>
+                <a
+                  target="_blank"
+                  className="p-3 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
+                  <Image src={img} width={24} height={24} alt={alt} />
+                </a>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>

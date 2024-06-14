@@ -1,6 +1,5 @@
 import MongoService from "../services/MongoService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import { th } from "date-fns/locale";
 import * as Mongo from "mongodb";
 
 class MongoUserRepository {
