@@ -1,11 +1,8 @@
-import Loader from "@app/_components/commons/Loader";
 import { getPostBySlug } from "@app/server/actions/blog";
+import PostView from "@components/PostModule/PostView";
 import { BASE_URL } from "@lib/configs/constants";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
 import React from "react";
-
-const PostPreview = dynamic(() => import("@app/_components/PostModule/PostPreview"), { loading: () => <Loader /> });
 
 type Props = {
   params: { slug: string };
@@ -36,5 +33,5 @@ export default async function Page({ params }: any) {
   const post = await getPostBySlug(slug);
   if (!post) return <h1>Not Found</h1>;
 
-  return <PostPreview post={post} />;
+  return <PostView post={post} />;
 }

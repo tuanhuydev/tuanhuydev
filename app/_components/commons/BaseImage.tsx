@@ -5,7 +5,7 @@ import { EMPTY_STRING } from "@lib/configs/constants";
 import { isURLValid } from "@shared/utils/helper";
 import dynamic from "next/dynamic";
 import { ImageProps } from "next/image";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 const Image = dynamic(() => import("next/image"), { ssr: false, loading: () => <Loader /> });
 
@@ -17,6 +17,7 @@ const WarningOutlined = dynamic(() => import("@mui/icons-material/WarningAmberOu
 interface BaseImageProps extends Partial<ImageProps> {
   src?: string;
 }
+
 const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImageProps) => {
   const [hasError, setHasError] = useState(false);
 

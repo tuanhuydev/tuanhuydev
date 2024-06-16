@@ -2,6 +2,7 @@ import { useFetch } from "./queries/useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { useQuery } from "@tanstack/react-query";
+import qs from "qs";
 
 export const useResourcesQuery = (permissionId: number) => {
   const { fetch } = useFetch();
@@ -23,11 +24,17 @@ export const useResourcesQuery = (permissionId: number) => {
   });
 };
 
-export const usePostsQuery = () => {
+export const usePostsQuery = (filter: ObjectType = {}) => {
   return useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", filter],
     queryFn: async () => {
-      const response: any = await fetch(`${BASE_URL}/api/posts`);
+      let url = `${BASE_URL}/api/posts`;
+      if (url) {
+        const queryString = qs.stringify(filter);
+        url += `?${queryString}`;
+      }
+
+      const response: Response = await fetch(url);
       if (!response.ok) throw new BaseError("Unable to fetch posts");
       const { data: posts = [] } = await response.json();
       return posts;

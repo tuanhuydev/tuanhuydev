@@ -1,25 +1,28 @@
 "use client";
 
 import Loader from "./Loader";
+import { useFetch } from "@app/queries/useSession";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import {
-  CodeBlockEditorDescriptor,
+  ConditionalContents,
+  DiffSourceToggleWrapper,
+  MDXEditor,
   MDXEditorMethods,
+  UndoRedo,
   codeBlockPlugin,
   codeMirrorPlugin,
+  diffSourcePlugin,
   headingsPlugin,
+  imagePlugin,
   linkDialogPlugin,
   linkPlugin,
   listsPlugin,
+  markdownShortcutPlugin,
   toolbarPlugin,
-  useCodeBlockEditorContext,
-  MDXEditor,
-  diffSourcePlugin,
-  ConditionalContents,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
-import React, { RefObject, useRef, useEffect } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
   ssr: false,
@@ -46,6 +49,10 @@ const ChangeCodeMirrorLanguage = dynamic(async () => (await import("@mdxeditor/e
   ssr: false,
   loading: () => <Loader />,
 });
+const InsertImage = dynamic(async () => (await import("@mdxeditor/editor")).InsertImage, {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 export interface EditorProps {
   value: string;
@@ -56,19 +63,6 @@ export interface EditorProps {
   placeholder?: string;
 }
 
-const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
-  match: (language, meta) => true,
-  priority: 0,
-  Editor: (props) => {
-    const cb = useCodeBlockEditorContext();
-    return (
-      <div className="h-[4rem]" onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}>
-        <textarea rows={10} cols={20} value={props.code} onChange={(e) => cb.setCode(e.target.value)} />
-      </div>
-    );
-  },
-};
-
 export default function BaseMarkdown({
   value = EMPTY_STRING,
   onChange,
@@ -77,6 +71,7 @@ export default function BaseMarkdown({
   placeholder = "Placeholder",
 }: EditorProps) {
   const localRef = useRef<MDXEditorMethods | null>(null);
+  const { fetch } = useFetch();
 
   useEffect(() => {
     if (localRef.current && !localRef.current?.getMarkdown()) {
@@ -100,6 +95,9 @@ export default function BaseMarkdown({
           toolbarPlugin({
             toolbarContents: () => (
               <div className="flex gap-3 relative z-50">
+                <DiffSourceToggleWrapper>
+                  <UndoRedo />
+                </DiffSourceToggleWrapper>
                 <BlockTypeSelect />
                 <BoldItalicUnderlineToggles />
                 <CreateLink />
@@ -115,19 +113,33 @@ export default function BaseMarkdown({
                     },
                   ]}
                 />
+                <InsertImage />
               </div>
             ),
           }),
-          diffSourcePlugin({ viewMode: "rich-text" }),
+          diffSourcePlugin({ viewMode: "rich-text", diffMarkdown: value }),
           linkDialogPlugin(),
           headingsPlugin(),
           listsPlugin(),
           linkPlugin(),
-          codeBlockPlugin({
-            defaultCodeBlockLanguage: "txt",
-            codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor],
+          imagePlugin({
+            imageUploadHandler: async (image: File) => {
+              const formData = new FormData();
+              formData.append("file", image);
+              const response: Response = await fetch("/api/upload/image", {
+                method: "POST",
+                body: formData,
+              });
+              if (!response.ok) throw new Error("Unable to upload image");
+              const { data: uploadedImage } = await response.json();
+              return uploadedImage?.Location;
+            },
           }),
-          codeMirrorPlugin({ codeBlockLanguages: { js: "JavaScript", css: "CSS", txt: "text", tsx: "TypeScript" } }),
+          markdownShortcutPlugin(),
+          codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+          codeMirrorPlugin({
+            codeBlockLanguages: { js: "JavaScript", css: "CSS", txt: "text", tsx: "TypeScript" },
+          }),
         ]}
       />
     </div>
