@@ -16,7 +16,6 @@ export default function Badge({ className, color, value }: BadgeProps) {
     if (className) {
       const classList: Array<string> = ref.current.className.split(" ");
       ref.current.className = [...classList, className].join(" ");
-      return;
     }
     if (color) {
       ref.current.style.backgroundColor = color;

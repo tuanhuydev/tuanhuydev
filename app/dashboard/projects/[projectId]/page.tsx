@@ -1,16 +1,16 @@
 "use client";
 
-import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import BaseLabel from "@app/_components/commons/BaseLabel";
-import BaseModal from "@app/_components/commons/BaseModal";
-import BaseCard from "@app/_components/commons/Card";
-import DynamicForm, { DynamicFormConfig } from "@app/_components/commons/Form/DynamicForm";
-import BaseButton from "@app/_components/commons/buttons/BaseButton";
-import WithTooltip from "@app/_components/commons/hocs/WithTooltip";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
-import { useActiveSprintQuery } from "@app/queries/sprintQueries";
+import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useFetch } from "@app/queries/useSession";
+import PageContainer from "@components/DashboardModule/PageContainer";
+import BaseLabel from "@components/commons/BaseLabel";
+import BaseCard from "@components/commons/Card";
+import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import Loader from "@components/commons/Loader";
+import BaseButton from "@components/commons/buttons/BaseButton";
+import WithTooltip from "@components/commons/hocs/WithTooltip";
+import BaseModal from "@components/commons/modals/BaseModal";
 import { BASE_URL, DATE_FORMAT } from "@lib/configs/constants";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
@@ -21,6 +21,11 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
+
+const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 const Progress = dynamic(async () => (await import("antd/es/progress")).default, {
   ssr: false,
@@ -75,7 +80,8 @@ function Page({ params }: any) {
   const router = useRouter();
   const { data: project, isLoading } = useProjectQuery(projectId);
   const { data: tasks, isLoading: isTasksLoading } = useProjectTasks(projectId);
-  const { data: sprint, isLoading: isSprintsLoading } = useActiveSprintQuery(projectId);
+  const { data: sprints, isLoading: isSprintsLoading } = useSprintQuery(projectId, { status: "ACTIVE" });
+  const activeSprint = sprints?.length ? sprints[0] : {};
 
   const [openSprintModal, setOpenSprintModal] = React.useState<boolean>(false);
 
@@ -148,12 +154,12 @@ function Page({ params }: any) {
             </div>
             {clientName && (
               <div className="mb-3">
-                <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">client name: </h5>
+                <BaseLabel>Client:&nbsp;</BaseLabel>
                 <p className="text-sm m-0 p-0 inline">{clientName}</p>
               </div>
             )}
             <div className="line-clamp-6">
-              <h5 className="text-sm font-normal text-slate-400 inline capitalize mr-2">description</h5>
+              <BaseLabel>Description:&nbsp;</BaseLabel>
               <p className="text-sm m-0 p-0 inline">{description}</p>
             </div>
           </BaseCard>
@@ -214,18 +220,18 @@ function Page({ params }: any) {
           <BaseCard className="h-full flex gap-3" loading={isSprintsLoading}>
             <BaseLabel>sprint</BaseLabel>
             <div className="flex-1 flex flex-col">
-              {sprint?.name ? (
+              {activeSprint?.name ? (
                 <Fragment>
-                  <h4 className="capitalize mx-0 mt-0 mb-3">{sprint?.name}</h4>
-                  <p className="m-0 flex-1">{sprint?.description}</p>
+                  <h4 className="capitalize mx-0 mt-0 mb-3">{activeSprint?.name}</h4>
+                  <p className="m-0 flex-1">{activeSprint?.description}</p>
                   <div className="flex flex-wrap justify-between">
                     <div className="text-xs">
                       <BaseLabel>Start Date: </BaseLabel>
-                      {sprint.startDate ? format(new Date(sprint.startDate), DATE_FORMAT) : "-"}
+                      {activeSprint.startDate ? format(new Date(activeSprint.startDate), DATE_FORMAT) : "-"}
                     </div>
                     <div className="text-xs">
                       <BaseLabel>End Date: </BaseLabel>
-                      {sprint.endDate ? format(new Date(sprint.endDate), DATE_FORMAT) : "-"}
+                      {activeSprint.endDate ? format(new Date(activeSprint.endDate), DATE_FORMAT) : "-"}
                     </div>
                   </div>
                 </Fragment>

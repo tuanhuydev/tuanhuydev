@@ -1,16 +1,20 @@
 "use client";
 
 import { useCurrentUserTasks } from "@app/queries/userQueries";
+import Loader from "@components/commons/Loader";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { ChangeEventHandler, useEffect, useState } from "react";
 
-const TaskPage = dynamic(() => import("@app/_components/TaskModule/TaskPage"));
+const TaskPage = dynamic(() => import("@app/_components/TaskModule/TaskPage"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 export default function Page() {
   const searchParams = useSearchParams();
-
   const taskId = searchParams.get("taskId") ?? null;
+
   const [filter, setFilter] = useState<FilterType>({});
 
   const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useCurrentUserTasks(filter);

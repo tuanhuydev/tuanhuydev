@@ -1,20 +1,14 @@
 import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useTasksQuery = (filter: ObjectType = {}) => {
-  const { fetch } = useFetch();
-
-  return useQuery({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      let url = `${BASE_URL}/api/tasks`;
-      if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new BaseError(response.statusText);
-      const { data: tasks = [] } = await response.json();
-      return tasks;
+export const useUpdateTodayTasks = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (updatedTasks: ObjectType[]) => {
+      localStorage.setItem("todayTasks", JSON.stringify(updatedTasks));
+      queryClient.invalidateQueries(["todayTasks"] as InvalidateQueryFilters);
     },
   });
 };

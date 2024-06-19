@@ -4,6 +4,7 @@ import Loader from "./Loader";
 import { useFetch } from "@app/queries/useSession";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import {
+  BlockTypeSelect,
   ConditionalContents,
   DiffSourceToggleWrapper,
   MDXEditor,
@@ -24,10 +25,10 @@ import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
 import { RefObject, useEffect, useRef } from "react";
 
-const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
+//   ssr: false,
+//   loading: () => <Loader />,
+// });
 
 const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
   ssr: false,
@@ -81,7 +82,7 @@ export default function BaseMarkdown({
 
   return (
     <div
-      className={`block gap-4 flex-1 !border !border-solid ${
+      className={`block z-0 gap-4 flex-1 relative !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
       } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
       <MDXEditor
@@ -94,7 +95,7 @@ export default function BaseMarkdown({
         plugins={[
           toolbarPlugin({
             toolbarContents: () => (
-              <div className="flex gap-3 relative z-50">
+              <div className="flex gap-3 relative z-300">
                 <DiffSourceToggleWrapper>
                   <UndoRedo />
                 </DiffSourceToggleWrapper>

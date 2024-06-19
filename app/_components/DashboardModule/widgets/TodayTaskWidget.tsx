@@ -1,27 +1,27 @@
 "use client";
 
 import Card from "@app/_components/commons/Card";
-import { getLocalStorage, setLocalStorage } from "@lib/shared/utils/dom";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
+import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import React, { SyntheticEvent, useEffect } from "react";
+import { SyntheticEvent } from "react";
 
 const Empty = dynamic(() => import("antd/es/empty"), { ssr: false });
 
 export default function TodayTaskWidget() {
-  const [todayTasks, setTodayTasks] = React.useState(getLocalStorage("todayTasks") || []);
+  const queryClient = useQueryClient();
+
+  const todayTasks: Array<ObjectType> = queryClient.getQueryData(["todayTasks"]) || [];
 
   const completeTask = (task: ObjectType) => (event: SyntheticEvent<any, Event>) => {
     event.stopPropagation();
-    setTodayTasks((prevTasks: ObjectType[]) => prevTasks.filter((prevTask: ObjectType) => prevTask.id !== task.id));
+    queryClient.setQueryData(
+      ["todayTasks"] as QueryKey,
+      todayTasks.filter((todayTask: ObjectType) => todayTask.id !== task.id),
+    );
+    queryClient.invalidateQueries(["todayTasks"] as InvalidateQueryFilters);
   };
-  useEffect(() => {
-    return () => {
-      setLocalStorage("todayTasks", JSON.stringify(todayTasks));
-    };
-  }, [todayTasks]);
-
   return (
     <Card title="Today Tasks" className="w-[20rem] min-h-[8rem] overflow-hidden" icon={<TaskAltOutlined />}>
       {todayTasks?.length ? (

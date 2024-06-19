@@ -1,25 +1,23 @@
 "use client";
 
-import { DynamicFormConfig, ElementType } from "@app/_components/commons/Form/DynamicForm";
-import BaseInput from "@app/_components/commons/Inputs/BaseInput";
-import BaseButton from "@app/_components/commons/buttons/BaseButton";
+import PageFilter from "../commons/PageFilter";
 import { TaskStatusOptions, TaskTypeOptions } from "@app/_configs/constants";
+import { useSprintQuery } from "@app/queries/sprintQueries";
 import PageContainer from "@components/DashboardModule/PageContainer";
+import { DynamicFormConfig, ElementType } from "@components/commons/Form/DynamicForm";
 import Loader from "@components/commons/Loader";
 import LogService from "@lib/services/LogService";
-import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
-import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 
-const TaskFormTitle = dynamic(async () => (await import("@components/TaskModule/TaskFormTitle")).default, {
+const TaskFormTitle = dynamic(() => import("@components/TaskModule/TaskFormTitle"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const TaskList = dynamic(async () => (await import("@components/TaskModule/TaskList")).default, {
+const TaskList = dynamic(() => import("@components/TaskModule/TaskList"), {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -28,7 +26,7 @@ const TaskPreview = dynamic(() => import("@components/TaskModule/TaskPreview"), 
 
 const Drawer = dynamic(() => import("antd/es/drawer"), { loading: () => <Loader />, ssr: false });
 
-const TaskForm = dynamic(() => import("@app/_components/TaskModule/TaskForm"), { loading: () => <Loader /> });
+const TaskForm = dynamic(() => import("@components/TaskModule/TaskForm"), { loading: () => <Loader /> });
 
 const drawerStyle: { [key: string]: CSSProperties } = {
   header: { display: "none" },
@@ -61,13 +59,14 @@ function TaskPage({
 
   const pathname = usePathname();
   const router = useRouter();
-
+  const { data: sprints } = useSprintQuery(project?.id);
   const [selectedTask, setSelectedTask] = React.useState<ObjectType | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
   const [filter, setFilter] = useState<FilterType>({});
 
   const { users: projectUsers = [] } = project;
+
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
   const createNewTask = () => {
@@ -161,8 +160,18 @@ function TaskPage({
     }
 
     const projectUser = projectUsers.find(({ value: userId }: SelectOption) => userId === selectedTask?.assigneeId);
-    return <TaskPreview task={selectedTask} assignee={projectUser} />;
-  }, [isEditMode, projectUsers, selectedTask, project?.id, TaskFormConfig, mutateTaskSuccess, mutateTaskError]);
+    const taskSprint = sprints?.find(({ id }: ObjectType) => id === selectedTask?.sprintId);
+    return <TaskPreview task={selectedTask} assignee={projectUser} sprint={taskSprint} />;
+  }, [
+    isEditMode,
+    projectUsers,
+    sprints,
+    selectedTask,
+    project?.id,
+    TaskFormConfig,
+    mutateTaskSuccess,
+    mutateTaskError,
+  ]);
 
   const onSelectTask = useCallback((task: ObjectType) => {
     setMode(COMPONENT_MODE.VIEW);
@@ -186,18 +195,14 @@ function TaskPage({
 
   return (
     <PageContainer title={project.name} goBack={!!project.name}>
-      <div className="mb-3 flex gap-2 items-center">
-        <BaseInput
-          placeholder="Find your task"
-          onChange={onSearch}
-          className="grow mr-2 rounded-sm"
-          startAdornment={<SearchOutlined />}
-        />
-        <div className="flex gap-3">
-          <BaseButton onClick={createNewTask} label="New Task" icon={<ControlPointOutlined fontSize="small" />} />
-        </div>
-      </div>
-      <TaskList tasks={tasks} selectedTask={selectedTask} onSelectTask={onSelectTask} isLoading={loading} />
+      <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" />
+      <TaskList
+        projectId={project.id}
+        tasks={tasks}
+        selectedTask={selectedTask}
+        onSelectTask={onSelectTask}
+        isLoading={loading}
+      />
       <Drawer size="large" placement="right" getContainer={false} destroyOnClose styles={drawerStyle} open={openDrawer}>
         <TaskFormTitle
           task={selectedTask}
