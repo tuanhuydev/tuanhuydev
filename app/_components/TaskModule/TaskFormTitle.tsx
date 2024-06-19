@@ -1,20 +1,25 @@
 "use client";
 
-import Badge from "../commons/Badge";
-import BaseButton from "../commons/buttons/BaseButton";
-import ConfirmBox from "../commons/modals/ConfirmBox";
-import { TaskStatus, TaskStatusEnum } from "@app/_configs/constants";
-import { useDeleteTaskMutation } from "@app/queries/taskQueries";
+import { useSprintQuery } from "@app/queries/sprintQueries";
+import { useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
+import BaseButton from "@components/commons/buttons/BaseButton";
 import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import { notification } from "antd";
+import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
+import { Select, notification } from "antd";
 import dynamic from "next/dynamic";
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import { Fragment, useCallback, useMemo, useState } from "react";
+
+const BaseMenu = dynamic(() => import("@components/commons/BaseMenu"), { ssr: false });
+
+const BaseModal = dynamic(() => import("@components/commons/modals/BaseModal"), { ssr: false });
 
 const WithTooltip = dynamic(async () => (await import("@components/commons/hocs/WithTooltip")).default, { ssr: false });
+
+const ConfirmBox = dynamic(() => import("@components/commons/modals/ConfirmBox"), { ssr: false });
 
 export interface TaskFormTitleProps {
   task: ObjectType | null;
@@ -31,17 +36,21 @@ const COMPONENT_MODE = {
 };
 
 export default function TaskFormTitle({ task, mode, allowEditTask = false, onClose, onToggle }: TaskFormTitleProps) {
+  // Hooks
   const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
+  const { mutateAsync: moveSprintMutation } = useUpdateTaskMutation();
+  const { data: projectSprints = [] } = useSprintQuery(task?.projectId || "", { status: "ACTIVE" });
 
+  // States
+  const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
+  const [openMoveToSprint, setOpenMoveToSprint] = useState<boolean>(false);
+  const [sprintIdToUpdate, setSprintIdToUpdate] = useState<string>("");
+
+  // Constants
   const isViewMode = mode === "VIEW";
   const isEditMode = mode === "EDIT";
-  const hasTask = !!task;
 
-  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-
-  const toggleConfirm = useCallback((open: boolean) => () => setOpenConfirm(open), [setOpenConfirm]);
-
-  const handleClose = useCallback(() => onClose(false), [onClose]);
+  const toggleConfirmDelete = useCallback((open: boolean) => () => setOpenConfirmDelete(open), [setOpenConfirmDelete]);
 
   const toggleMode = useCallback(
     (mode: string) => () => {
@@ -49,6 +58,11 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     },
     [onToggle],
   );
+
+  const toggleMoveToSprint = useCallback((open: boolean) => () => setOpenMoveToSprint(open), [setOpenMoveToSprint]);
+
+  const handleClose = useCallback(() => onClose(false), [onClose]);
+
   const handleDelete = useCallback(async () => {
     try {
       await deleteTaskMutation((task as ObjectType).id.toString());
@@ -57,11 +71,24 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
       LogService.log(error);
     } finally {
       onClose(false);
-      setOpenConfirm(false);
+      setOpenConfirmDelete(false);
     }
   }, [deleteTaskMutation, onClose, task]);
 
+  const handleMoveToSprint = useCallback(async () => {
+    if (!sprintIdToUpdate) return;
+    try {
+      await moveSprintMutation({ ...task, sprintId: sprintIdToUpdate });
+      notification.success({ message: "Task moved to sprint successfully" });
+    } catch (error) {
+      notification.error({ message: "Failed to move task to sprint" });
+    } finally {
+      setOpenMoveToSprint(false);
+    }
+  }, [moveSprintMutation, sprintIdToUpdate, task]);
+
   const RenderHeaderExtra = useMemo(() => {
+    const existingTask = !!task;
     return (
       <div className="px-2 flex gap-2 items-center relative">
         {allowEditTask && (
@@ -69,56 +96,82 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
             {isViewMode && (
               <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.EDIT)}
-                icon={<EditOutlined className="!text-lg text-slate-50" />}
+                icon={<EditOutlined className="text-slate-50" fontSize="small" />}
               />
             )}
             {isEditMode && (
               <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-slate-50" />}
+                icon={<EditOffOutlined className=" text-slate-50" fontSize="small" />}
               />
             )}
           </Fragment>
         )}
-        {hasTask && (
-          <BaseButton
-            className="border-r-2 border-red-400"
-            onClick={toggleConfirm(true)}
-            icon={<DeleteOutlined className="text-slate-50 !text-lg" />}
-          />
+        {existingTask && (
+          <Fragment>
+            <BaseMenu
+              items={[
+                {
+                  label: "Move to sprint",
+                  icon: <LowPriorityOutlined fontSize="small" />,
+                  onClick: toggleMoveToSprint(true),
+                },
+                {
+                  label: "Delete task",
+                  icon: <DeleteOutlined fontSize="small" />,
+                  onClick: toggleConfirmDelete(true),
+                },
+              ]}
+            />
+          </Fragment>
         )}
         <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
       </div>
     );
-  }, [allowEditTask, handleClose, hasTask, isEditMode, isViewMode, toggleConfirm, toggleMode]);
+  }, [allowEditTask, handleClose, isEditMode, isViewMode, task, toggleConfirmDelete, toggleMode, toggleMoveToSprint]);
 
   const RenderTitle = useMemo(() => {
     const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
     if (!task) return <h1 className={TitleStyles}>Create new task</h1>;
-    const { id, status } = task;
-    const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
+    const { id } = task;
 
     return (
-      <div className="flex items-baseline">
-        <WithTooltip content={`${window.location.href}?taskId=${id}`} title="Copy task link">
-          <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
-        </WithTooltip>
-        {status && isViewMode && <Badge value={taskStatus.label} color={taskStatus.color} />}
-      </div>
+      <WithTooltip content={`${window.location.href}?taskId=${id}`} title="Copy task link">
+        <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
+      </WithTooltip>
     );
-  }, [isViewMode, task]);
+  }, [task]);
 
   return (
-    <div className="bg-slate-700 mb-3 flex justify-between">
+    <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
       {RenderTitle}
       {RenderHeaderExtra}
       <ConfirmBox
-        open={openConfirm}
+        open={openConfirmDelete}
         title="Delete Task"
         description="Are you sure to delete this task ?"
-        onClose={toggleConfirm(false)}
+        onClose={toggleConfirmDelete(false)}
         onConfirm={handleDelete}
       />
+      <BaseModal
+        className="w-[24rem]"
+        title="Move to sprint"
+        closable
+        open={openMoveToSprint}
+        onClose={toggleMoveToSprint(false)}>
+        <Select
+          placeholder="Select sprint"
+          defaultActiveFirstOption
+          onSelect={(sprintId: string) => setSprintIdToUpdate(sprintId)}
+          className="w-full"
+          value={task?.sprintId || ""}
+          options={projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id }))}
+        />
+        <div className="flex gap-3 justify-end mt-5">
+          <BaseButton onClick={toggleMoveToSprint(false)} variants="text" label="Cancel" />
+          <BaseButton onClick={handleMoveToSprint} label="Move"></BaseButton>
+        </div>
+      </BaseModal>
     </div>
   );
 }

@@ -29,6 +29,7 @@ export function QueryProvider(props: { children: React.ReactNode }) {
   );
   queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
   queryClient.setQueryDefaults(["showMobileHamburger"], { staleTime: Infinity });
+  queryClient.setQueryDefaults(["todayTasks"], { staleTime: Infinity });
 
   const persister = createSyncStoragePersister({
     storage: window.localStorage,

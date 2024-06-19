@@ -64,7 +64,6 @@ class StorageController {
 
   async uploadFile(request: NextRequest, { type }: any) {
     const formData = await request.formData();
-    console.log(formData);
     const network = Network(request);
     try {
       switch (type) {
