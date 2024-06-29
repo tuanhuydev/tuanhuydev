@@ -6,7 +6,7 @@ import PageFilter from "@app/_components/commons/PageFilter";
 import { usePostsQuery } from "@app/queries/postQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 
 const PostCard = dynamic(() => import("@components/PostModule/PostCard"), {
   ssr: false,
@@ -18,8 +18,7 @@ const Empty = dynamic(() => import("antd/es/empty"), { ssr: false });
 function Page() {
   const router = useRouter();
   const [filter, setFilter] = useState<ObjectType>({});
-
-  const { data: posts = [], isLoading, refetch } = usePostsQuery(filter);
+  const { data: posts = [], isFetching, refetch } = usePostsQuery(filter);
 
   const navigateCreate = useCallback(() => router.push("/dashboard/posts/create"), [router]);
 
@@ -47,7 +46,7 @@ function Page() {
         createLabel="New post"
       />
       <div className="grow overflow-auto pb-3">
-        {isLoading ? (
+        {isFetching ? (
           <Loader />
         ) : posts.length ? (
           <div className="flex flex-wrap gap-2">

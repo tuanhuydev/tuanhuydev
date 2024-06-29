@@ -6,6 +6,9 @@ const theme: ThemeConfig = {
     borderRadius: 4,
   },
   components: {
+    Drawer: {
+      zIndexPopup: 0,
+    },
     Input: {
       activeBorderColor: "rgb(203 213 225)",
       hoverBorderColor: "rgb(203 213 225)",

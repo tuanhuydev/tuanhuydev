@@ -88,8 +88,8 @@ export default function Page() {
       <PageFilter
         onSearch={onSearchUsers}
         onNew={createUser}
-        searchPlaceholder="Find your project"
-        createLabel="New project"
+        searchPlaceholder="Find your user"
+        createLabel="New User"
       />
       <div className="grow overflow-auto" ref={containerRef}>
         {RenderUsers()}

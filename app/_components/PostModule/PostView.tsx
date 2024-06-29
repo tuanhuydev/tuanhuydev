@@ -34,7 +34,7 @@ export interface PostViewProps {
 }
 
 export default function PostView({ post }: PostViewProps) {
-  const { data: posts = [], isFetching } = usePostsQuery({ active: true, exclude: [post._id] });
+  const { data: posts = [], isFetching } = usePostsQuery({ published: true, exclude: [post._id] });
   if (!post) return <h1>Not Found</h1>;
   if (isFetching) return <Loader />;
   return (

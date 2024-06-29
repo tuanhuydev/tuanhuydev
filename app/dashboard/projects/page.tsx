@@ -6,7 +6,7 @@ import PageFilter from "@app/_components/commons/PageFilter";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
 
@@ -59,7 +59,7 @@ function Page() {
         onSearch={onSearchProjects}
         onNew={createNewProject}
         searchPlaceholder="Find your project"
-        createLabel="New project"
+        createLabel="New Project"
       />
       <div className="grow overflow-auto pb-3">{RenderProjects}</div>
     </PageContainer>

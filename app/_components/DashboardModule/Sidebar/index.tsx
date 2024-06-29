@@ -92,7 +92,7 @@ const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
     <div
       className={`${
         !openMobile ? "translate-x-0" : "-translate-x-[14rem]"
-      } lg:translate-x-0 fixed h-full lg:relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-lg bg-slate-50 dark:bg-primary dark:border-slate-800 transition-transform ease-in duration-300`}>
+      } lg:translate-x-0 fixed h-full lg:relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-md bg-slate-50 dark:bg-primary dark:border-slate-800 transition-transform ease-in duration-300`}>
       <div className="h-14 truncate flex items-center justify-center">
         <svg
           width="32"
