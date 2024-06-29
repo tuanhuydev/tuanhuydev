@@ -22,10 +22,8 @@ class MongoPostRepository {
     if ("published" in filter) {
       defaultWhere = { ...defaultWhere, publishedAt: { $ne: null } };
     }
-    if ("exclude" in filter) {
-      if ("exclude" in filter && Array.isArray(filter.exclude)) {
-        defaultWhere = { ...defaultWhere, _id: { $nin: filter.exclude.map((id) => new Mongo.ObjectId(id as string)) } };
-      }
+    if ("exclude" in filter && Array.isArray(filter.exclude)) {
+      defaultWhere = { ...defaultWhere, _id: { $nin: filter.exclude.map((id) => new Mongo.ObjectId(id as string)) } };
     }
     let query = this.table.find(defaultWhere);
     return query.toArray();
