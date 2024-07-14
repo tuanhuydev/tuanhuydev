@@ -3,6 +3,7 @@
 import Loader from "../commons/Loader";
 import { formatDate } from "@app/_utils/helper";
 import { useSprintQuery } from "@app/queries/sprintQueries";
+import { useTodayTasks } from "@app/queries/taskQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -29,13 +30,15 @@ export interface TaskListProps {
 
 export default function TaskList({ tasks, projectId, onSelectTask, selectedTask, isLoading = false }: TaskListProps) {
   const queryClient = useQueryClient();
+
   const [taskGroups, setTaskGroups] = useState<TaskGroupType>({
     backlog: [],
   });
 
   const { data: projectSprints } = useSprintQuery(projectId as string);
 
-  const todayTasks: Array<ObjectType> = queryClient.getQueryData(["todayTasks"]) || [];
+  // const todayTasks: Array<ObjectType> = queryClient.getQueryData(["todayTasks"]) || [];
+  const { data: todayTasks = [] } = useTodayTasks();
 
   useEffect(() => {
     if (projectId) {

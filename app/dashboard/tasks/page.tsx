@@ -11,16 +11,22 @@ const TaskPage = dynamic(() => import("@app/_components/TaskModule/TaskPage"), {
   loading: () => <Loader />,
 });
 
+interface FilterMyTasksType extends FilterType {
+  projectId: string | null;
+}
+
 export default function Page() {
   const searchParams = useSearchParams();
   const taskId = searchParams.get("taskId") ?? null;
 
-  const [filter, setFilter] = useState<FilterType>({});
+  const [filter, setFilter] = useState<FilterMyTasksType>({
+    projectId: null,
+  });
 
   const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useCurrentUserTasks(filter);
 
   const handleFilterChange = (filter: FilterType) => {
-    setFilter(filter);
+    setFilter((prevFilter) => ({ ...prevFilter, ...filter }));
   };
 
   const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
