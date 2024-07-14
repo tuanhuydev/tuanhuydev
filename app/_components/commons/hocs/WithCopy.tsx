@@ -1,21 +1,21 @@
 import { TooltipProps } from "antd";
 import dynamic from "next/dynamic";
-import React, { PropsWithChildren, memo, useEffect, useState } from "react";
+import { PropsWithChildren, memo, useEffect, useState } from "react";
 
 const Tooltip = dynamic(() => import("antd/es/tooltip"), { ssr: false });
 
-export interface WithTooltipProps extends PropsWithChildren {
+export interface WithCopyProps extends PropsWithChildren {
   title?: string;
   content: string;
   TooltipProps?: Partial<TooltipProps>;
 }
 
-export default memo(function WithTooltip({
+export default memo(function WithCopy({
   title = "Copy",
   content,
   children,
   TooltipProps = { placement: "left" },
-}: WithTooltipProps) {
+}: WithCopyProps) {
   const [tooltipContent, setTooltipContent] = useState(title);
 
   const copy = async (e: any) => {

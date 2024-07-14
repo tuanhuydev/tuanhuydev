@@ -47,3 +47,10 @@ export const isPathActive = (pathName: string, path: string) => {
   if (!pathName || !path) return false;
   return (pathName as string).startsWith(path);
 };
+
+export const hasPermission = (permissions: Array<any>, criteria: ObjectType) =>
+  permissions.some((permission) =>
+    Object.keys(criteria).every((key) => {
+      return permission[key] === criteria[key];
+    }),
+  );

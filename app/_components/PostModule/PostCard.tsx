@@ -44,7 +44,9 @@ export default function PostCard({ post, actions }: PostCardProps) {
       onClick={navigateProjectEdit}
       loading={isPostLoading}>
       <div className="flex flex-nowrap items-center justify-between">
-        <div className="text-sm font-medium">{createdAt ? format(new Date(createdAt), DATE_FORMAT) : "-"}</div>
+        <div className="text-sm font-medium text-primary dark:text-slate-50">
+          {createdAt ? format(new Date(createdAt), DATE_FORMAT) : "-"}
+        </div>
         {Status}
       </div>
       {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}

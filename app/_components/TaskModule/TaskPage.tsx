@@ -1,16 +1,16 @@
 "use client";
 
-import PageFilter from "../commons/PageFilter";
 import { TaskStatusOptions, TaskTypeOptions } from "@app/_configs/constants";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import PageContainer from "@components/DashboardModule/PageContainer";
-import { DynamicFormConfig, ElementType } from "@components/commons/Form/DynamicForm";
+import { DynamicFormConfig, Field } from "@components/commons/Form/DynamicForm";
 import Loader from "@components/commons/Loader";
+import PageFilter from "@components/commons/PageFilter";
 import LogService from "@lib/services/LogService";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
-import React, { CSSProperties, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskFormTitle = dynamic(() => import("@components/TaskModule/TaskFormTitle"), {
   ssr: false,
@@ -30,7 +30,7 @@ const TaskForm = dynamic(() => import("@components/TaskModule/TaskForm"), { load
 
 const drawerStyle: { [key: string]: CSSProperties } = {
   header: { display: "none" },
-  body: { padding: 0 },
+  body: { padding: 0, backgroundColor: "rgb(248, 250, 252)" },
 };
 
 const COMPONENT_MODE = {
@@ -40,11 +40,11 @@ const COMPONENT_MODE = {
 
 interface TaskPageProps {
   project?: ObjectType;
-  tasks: ObjectType[];
-  selectedTaskId: string | null;
-  onSearch: ChangeEventHandler<HTMLInputElement>;
-  onFilterChange?: (filter: FilterType) => void;
-  loading: boolean;
+  tasks?: ObjectType[];
+  selectedTaskId?: string | null;
+  onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFilterChange: (filter: FilterType) => void;
+  loading?: boolean;
 }
 
 function TaskPage({
@@ -53,54 +53,62 @@ function TaskPage({
   selectedTaskId = null,
   onSearch,
   loading = false,
+  onFilterChange,
 }: TaskPageProps) {
-  // Hooks
   const queryClient = useQueryClient();
-
   const pathname = usePathname();
   const router = useRouter();
   const { data: sprints } = useSprintQuery(project?.id);
-  const [selectedTask, setSelectedTask] = React.useState<ObjectType | null>(null);
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [mode, setMode] = useState<string>(COMPONENT_MODE.VIEW);
-  const [filter, setFilter] = useState<FilterType>({});
+  const [state, setState] = useState({
+    selectedTask: null as ObjectType | null,
+    openDrawer: false,
+    mode: COMPONENT_MODE.VIEW,
+    filter: {} as FilterType,
+  });
 
-  const { users: projectUsers = [] } = project;
-
+  const { selectedTask, openDrawer, mode, filter } = state;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
+  const projectUsers = project?.users || [];
 
   const createNewTask = useCallback(() => {
-    setSelectedTask(null);
-    setMode(COMPONENT_MODE.EDIT);
-    setOpenDrawer(true);
+    setState((prevState) => ({
+      ...prevState,
+      selectedTask: null,
+      mode: COMPONENT_MODE.EDIT,
+      openDrawer: true,
+    }));
   }, []);
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
-      if (!value) setSelectedTask(null);
-      setOpenDrawer(value);
+      setState((prevState) => ({
+        ...prevState,
+        selectedTask: value ? prevState.selectedTask : null,
+        openDrawer: value,
+      }));
     },
     [],
   );
-  const toggleMode = useCallback((value: string) => setMode(value), []);
+
+  const toggleMode = useCallback((value: string) => {
+    setState((prevState) => ({ ...prevState, mode: value }));
+  }, []);
 
   const mutateTaskError = useCallback((error: Error) => {
-    LogService.log((error as Error).message);
+    LogService.log(error.message);
   }, []);
 
   const mutateTaskSuccess = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    setOpenDrawer(false);
+    setState((prevState) => ({ ...prevState, openDrawer: false }));
   }, [queryClient]);
 
   const TaskFormConfig = useMemo((): DynamicFormConfig => {
-    const fields: ElementType[] = [
+    const fields: Field[] = [
       {
         name: "title",
         type: "text",
-        options: {
-          placeholder: "Task Title",
-        },
+        options: { placeholder: "Task Title" },
         validate: { required: true },
       },
       {
@@ -128,7 +136,6 @@ function TaskPage({
         validate: { required: true },
       },
     ];
-
     if (project?.id) {
       fields.splice(2, 0, {
         name: "assigneeId",
@@ -140,7 +147,6 @@ function TaskPage({
         validate: { required: true },
       });
     }
-
     return { fields };
   }, [project]);
 
@@ -158,7 +164,6 @@ function TaskPage({
         </div>
       );
     }
-
     const projectUser = projectUsers.find(({ value: userId }: SelectOption) => userId === selectedTask?.assigneeId);
     const taskSprint = sprints?.find(({ id }: ObjectType) => id === selectedTask?.sprintId);
     return <TaskPreview task={selectedTask} assignee={projectUser} sprint={taskSprint} />;
@@ -174,9 +179,12 @@ function TaskPage({
   ]);
 
   const onSelectTask = useCallback((task: ObjectType) => {
-    setMode(COMPONENT_MODE.VIEW);
-    setSelectedTask(task);
-    setOpenDrawer(true);
+    setState((prevState) => ({
+      ...prevState,
+      selectedTask: task,
+      mode: COMPONENT_MODE.VIEW,
+      openDrawer: true,
+    }));
   }, []);
 
   useEffect(() => {
@@ -190,14 +198,17 @@ function TaskPage({
   }, [onSelectTask, pathname, router, selectedTaskId, tasks]);
 
   useEffect(() => {
-    if (filter) setFilter(filter);
-  }, [filter]);
+    if (filter) {
+      setState((prevState) => ({ ...prevState, filter }));
+      if (onFilterChange) onFilterChange(filter);
+    }
+  }, [filter, onFilterChange]);
 
   return (
     <PageContainer title={project.name} goBack={!!project.name}>
       <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" />
       <TaskList
-        projectId={project.id}
+        projectId={project?.id}
         tasks={tasks}
         selectedTask={selectedTask}
         onSelectTask={onSelectTask}

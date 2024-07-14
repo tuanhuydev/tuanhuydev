@@ -1,5 +1,5 @@
-import DynamicForm, { DynamicFormConfig, ElementType } from "./DynamicForm";
-import React, { useState } from "react";
+import DynamicForm, { DynamicFormConfig, Field } from "./DynamicForm";
+import { useState } from "react";
 
 const builderConfig: DynamicFormConfig = {
   fields: [
@@ -26,7 +26,7 @@ const builderConfig: DynamicFormConfig = {
 };
 
 export default function FormBuilder() {
-  const [fields, setFields] = useState<ElementType[]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
 
   const addField = (newField: any) => {
     setFields((currentFields) => [...currentFields, newField]);

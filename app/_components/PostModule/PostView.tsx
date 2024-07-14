@@ -1,9 +1,9 @@
 "use client";
 
 import HighlightPost from "../HomeModule/BlogSection/HighlightPost";
-import Loader from "../commons/Loader";
-import WithTooltip from "../commons/hocs/WithTooltip";
 import { usePostsQuery } from "@app/queries";
+import Loader from "@components/commons/Loader";
+import WithCopy from "@components/commons/hocs/WithCopy";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
@@ -62,11 +62,11 @@ export default function PostView({ post }: PostViewProps) {
           </div>
         </div>
         <div className="absolute top-0 right-0 lg:relative flex gap-3 p-6 lg:px-6">
-          <WithTooltip content={window.location.href} title="Share">
+          <WithCopy content={window.location.href} title="Share">
             <div className="p-2 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
               <LinkOutlined fontSize="medium" className="text-primary" />
             </div>
-          </WithTooltip>
+          </WithCopy>
         </div>
       </div>
       <div

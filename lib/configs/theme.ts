@@ -1,9 +1,11 @@
+import { sourceCodeFont } from "@app/font";
 import { ThemeConfig } from "antd";
 
 const theme: ThemeConfig = {
   token: {
     colorPrimary: "#172733",
     borderRadius: 4,
+    fontFamily: sourceCodeFont.style.fontFamily,
   },
   components: {
     Drawer: {
