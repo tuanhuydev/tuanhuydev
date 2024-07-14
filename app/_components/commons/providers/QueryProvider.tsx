@@ -33,6 +33,7 @@ export function QueryProvider(props: { children: React.ReactNode }) {
 
   const persister = createSyncStoragePersister({
     storage: window.localStorage,
+    key: "tuanhuydev",
     serialize: (data) => compress(JSON.stringify(data)),
     deserialize: (data) => JSON.parse(decompress(data)),
   });

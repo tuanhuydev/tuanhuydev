@@ -36,7 +36,10 @@ class Network {
     Object.entries(parsedParams).forEach(([key, values]) => {
       if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
       else if (booleanKeys.includes(key)) params[key] = Boolean(values === "true");
-      else params[key] = values;
+      else if (values === "null") params[key] = null;
+      else {
+        params[key] = values;
+      }
     });
     return params;
   }
