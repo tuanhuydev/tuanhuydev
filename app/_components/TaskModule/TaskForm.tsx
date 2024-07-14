@@ -4,7 +4,7 @@ import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQ
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
 import dynamic from "next/dynamic";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 const DynamicForm = dynamic(async () => (await import("@components/commons/Form/DynamicForm")).default, { ssr: false });
@@ -16,7 +16,7 @@ export interface TaskFormProps {
   projectId?: number;
 }
 
-export default function TaskForm({ task, projectId, onDone, onError, config }: TaskFormProps) {
+export default function TaskForm({ task, projectId, onDone, config }: TaskFormProps) {
   const { mutateAsync: mutateCrateTask, isPending: isCreating, isSuccess: isCreateSuccess } = useCreateTaskMutation();
   const { mutateAsync: mutateUpdateTask, isPending: isUpdating, isSuccess: isUpdateSuccess } = useUpdateTaskMutation();
 

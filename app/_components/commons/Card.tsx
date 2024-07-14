@@ -30,7 +30,7 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`p-5 bg-white dark:bg-slate-700 rounded-md border border-solid border-slate-200 hover:border-slate-500 dark:border-transparent dark:hover:border-slate-400 cursor-pointer transition-all duration-150 ${className}`}
+      className={`p-5 bg-white dark:bg-slate-800 rounded-md border border-solid border-slate-200 hover:border-slate-500 dark:border-transparent dark:hover:border-slate-400 cursor-pointer transition-all duration-150 ${className}`}
       onClick={onClick}>
       {hasImage && (
         <div className="relative aspect-[3/2] rounded-sm mb-3">

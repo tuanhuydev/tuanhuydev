@@ -1,20 +1,19 @@
 "use client";
 
-import BaseButton from "../commons/buttons/BaseButton";
-import PostView from "./PostView";
 import { makeFieldMap } from "@app/_utils/helper";
 import { useCreatePost, useUpdatePost } from "@app/queries/postQueries";
 import Loader from "@components/commons/Loader";
+import BaseButton from "@components/commons/buttons/BaseButton";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import BaseError from "@shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
-import { Form, Tabs, TabsProps, App } from "antd";
+import { App, Form } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 const BaseMarkdown = dynamic(() => import("@components/commons/BaseMarkdown"), {
   ssr: false,
@@ -76,9 +75,10 @@ export default function PostForm({ post }: any) {
       } finally {
         form.resetFields();
         setContent(EMPTY_STRING);
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
       }
     },
-    [form, mutateCreatePost],
+    [form, mutateCreatePost, queryClient],
   );
 
   const updatePost = useCallback(
@@ -91,6 +91,7 @@ export default function PostForm({ post }: any) {
         LogService.log(error);
       } finally {
         setContent(EMPTY_STRING);
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
       }
     },
     [mutateUpdatePost, post?.id, queryClient],
@@ -99,8 +100,8 @@ export default function PostForm({ post }: any) {
   const submit = useCallback(
     async (formData: ObjectType) => {
       formData.assets = assets;
-      if (isUpdatingPost) return updatePost(formData);
       formData.publishedAt = isSaveDraft ? null : new Date();
+      if (isUpdatingPost) return updatePost(formData);
       return createPost(formData);
     },
     [assets, createPost, isSaveDraft, isUpdatingPost, updatePost],
@@ -157,7 +158,7 @@ export default function PostForm({ post }: any) {
     const updateContentInterval = setInterval(() => {
       form.setFieldsValue({ content: content });
       setPreviewValue((prevContent) => ({ ...prevContent, content } as never));
-    }, 1000);
+    }, 4000);
     return () => clearInterval(updateContentInterval);
   }, [content, form]);
 
@@ -186,88 +187,76 @@ export default function PostForm({ post }: any) {
     }
   }, [createError, createSuccess, notification, router, updateError, updateSuccess]);
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "Editor",
-      children: (
-        <div className="grid grid-cols-4 lg:grid-cols-12 grid-rows-1 gap-4" data-testid="post-form-testid">
-          <div className="col-span-full lg:col-span-10 p-2">
-            <Form
-              form={form}
-              layout="vertical"
-              initialValues={initialValues}
-              onFieldsChange={handleFieldChange}
-              onValuesChange={mapFormToPreview}
-              onFinish={submit}>
-              <Form.Item name="title" rules={rules}>
-                <Input placeholder="How to make a new blog ?" size="large" className="mb-2" disabled={submitting} />
-              </Form.Item>
-              <Form.Item name="slug" rules={rules}>
-                <Input placeholder="how-to-make-a-new-blog" size="large" className="mb-2" disabled={submitting} />
-              </Form.Item>
-              <div className="flex items-center transition-all">
-                <Form.Item name="thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
-                  <Input placeholder="https://image-link-url" size="large" disabled={submitting} />
-                </Form.Item>
-                <div className="mb-6 flex items-center">
-                  <div className="mx-3 text-slate-500">Or</div>
-                  <Upload
-                    name="file"
-                    className="w-full"
-                    onChange={uploadFile}
-                    fileList={fileList}
-                    action="/api/upload/image"
-                    headers={{ Authorization: `Bearer ${queryClient.getQueryData(["accessToken"])}` }}
-                    accept="image/png, image/jpeg"
-                    multiple={false}
-                    listType="picture"
-                    disabled={disabledUpload}>
-                    <BaseButton label="Upload Image" disabled={true} />
-                  </Upload>
-                </div>
-              </div>
-              <Form.Item name="content" rules={rules}>
-                <Suspense fallback={<Loader />}>
-                  <BaseMarkdown
-                    onChange={(value: string) => setContent(value)}
-                    placeholder="Post content here..."
-                    value={content}
-                    className="min-h-[20rem] grow"
-                  />
-                </Suspense>
-              </Form.Item>
-            </Form>
+  return (
+    <div className="grid grid-cols-4 lg:grid-cols-12 grid-rows-1 gap-4" data-testid="post-form-testid">
+      <div className="col-span-full lg:col-span-10 p-2">
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={initialValues}
+          onFieldsChange={handleFieldChange}
+          onValuesChange={mapFormToPreview}
+          onFinish={submit}>
+          <Form.Item name="title" rules={rules}>
+            <Input placeholder="How to make a new blog ?" size="large" className="mb-2" disabled={submitting} />
+          </Form.Item>
+          <Form.Item name="slug" rules={rules}>
+            <Input placeholder="how-to-make-a-new-blog" size="large" className="mb-2" disabled={submitting} />
+          </Form.Item>
+          <div className="flex items-center transition-all">
+            <Form.Item name="thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
+              <Input placeholder="https://image-link-url" size="large" disabled={submitting} />
+            </Form.Item>
+            <div className="mb-6 flex items-center">
+              <div className="mx-3 text-slate-500">Or</div>
+              <Upload
+                name="file"
+                className="w-full"
+                onChange={uploadFile}
+                fileList={fileList}
+                action="/api/upload/image"
+                headers={{ Authorization: `Bearer ${queryClient.getQueryData(["accessToken"])}` }}
+                accept="image/png, image/jpeg"
+                multiple={false}
+                listType="picture"
+                disabled={disabledUpload}>
+                <BaseButton label="Upload Image" disabled={true} />
+              </Upload>
+            </div>
           </div>
-          <div className="col-span-full md:col-span-1 lg:col-span-full row-start-auto col-start-1 lg:col-start-11 gap-3 flex lg:flex-col p-2">
-            <BaseButton
-              onClick={triggerSubmit}
-              disabled={submitting}
-              loading={submitting}
-              label={isUpdatingPost ? "Save" : "Publish"}
-              className="bg-primary text-slate-100 capitalize mb-2"
-            />
-            {!post?.publishedAt && (
-              <BaseButton
-                variants="outline"
-                onClick={() => {
-                  setIsSaveDraft(true);
-                  triggerSubmit();
-                }}
-                label="Save Draft"
-                disabled={submitting}
+          <Form.Item name="content" rules={rules}>
+            <Suspense fallback={<Loader />}>
+              <BaseMarkdown
+                onChange={(value: string) => setContent(value)}
+                placeholder="Post content here..."
+                value={content}
+                className="min-h-[20rem] grow"
               />
-            )}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: "Preview",
-      children: <PostView post={previewValue as unknown as ObjectType} />,
-    },
-  ];
-
-  return <Tabs defaultActiveKey="1" items={items} />;
+            </Suspense>
+          </Form.Item>
+        </Form>
+      </div>
+      <div className="col-span-full md:col-span-1 lg:col-span-full row-start-auto col-start-1 lg:col-start-11 gap-3 flex lg:flex-col p-2">
+        <BaseButton
+          onClick={triggerSubmit}
+          disabled={submitting && !isSaveDraft}
+          loading={submitting && !isSaveDraft}
+          label={isUpdatingPost && isSaveDraft ? "Save" : "Publish"}
+          className="bg-primary text-slate-100 capitalize mb-2"
+        />
+        {!post?.publishedAt && (
+          <BaseButton
+            variants="outline"
+            onClick={() => {
+              setIsSaveDraft(true);
+              triggerSubmit();
+            }}
+            disabled={submitting && isSaveDraft}
+            loading={submitting && isSaveDraft}
+            label="Save Draft"
+          />
+        )}
+      </div>
+    </div>
+  );
 }

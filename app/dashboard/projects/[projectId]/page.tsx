@@ -9,7 +9,7 @@ import BaseCard from "@components/commons/Card";
 import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import Loader from "@components/commons/Loader";
 import BaseButton from "@components/commons/buttons/BaseButton";
-import WithTooltip from "@components/commons/hocs/WithTooltip";
+import WithCopy from "@components/commons/hocs/WithCopy";
 import BaseModal from "@components/commons/modals/BaseModal";
 import { BASE_URL, DATE_FORMAT } from "@lib/configs/constants";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
@@ -147,9 +147,9 @@ function Page({ params }: any) {
             <div className="flex items-center justify-between min-w-0 overflow-hidden">
               <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 truncate">{name}</h1>
               <div className="flex gap-3">
-                <WithTooltip content={window.location.href} title="Share">
+                <WithCopy content={window.location.href} title="Share">
                   <ShareOutlined />
-                </WithTooltip>
+                </WithCopy>
               </div>
             </div>
             {clientName && (

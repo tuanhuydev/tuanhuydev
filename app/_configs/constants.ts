@@ -3,11 +3,6 @@ import epicImageSrc from "@app/_assets/images/icons/epic.svg";
 import issueImageSrc from "@app/_assets/images/icons/issue.svg";
 import storyImageSrc from "@app/_assets/images/icons/story.svg";
 
-export enum USER_DETAIL_MODE {
-  VIEW = "VIEW",
-  EDIT = "EDIT",
-}
-
 export enum TaskStatusEnum {
   TODO = "TODO",
   IN_PROGRESS = "IN_PROGRESS",

@@ -1,13 +1,24 @@
 "use client";
 
+import { useSignOut } from "./authQueries";
 import { BASE_URL } from "@lib/configs/constants";
 import { HTTP_CODE } from "@lib/shared/commons/constants/httpCode";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export const useFetch = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { mutateAsync: signUserOut } = useSignOut();
+
+  const signOut = async () => {
+    await signUserOut();
+    queryClient.removeQueries();
+    router.replace("/auth/sign-in");
+  };
+
   const fetchWithAuth = async (url: string, options: RequestInit = {}, retryCount = 3): Promise<any> => {
     try {
       const accessToken = queryClient.getQueryData<string>(["accessToken"]);
@@ -55,13 +66,10 @@ export const useFetch = () => {
       }
       return response;
     } catch (error) {
-      if (error instanceof UnauthorizedError) {
-        queryClient.clear();
-        window.location.href = "/auth/sign-in";
-      }
+      if (error instanceof UnauthorizedError) signOut();
       throw error;
     }
   };
 
-  return { fetch: fetchWithAuth };
+  return { fetch: fetchWithAuth, signOut };
 };
