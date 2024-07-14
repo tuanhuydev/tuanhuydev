@@ -69,11 +69,11 @@ function TaskPage({
 
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
-  const createNewTask = () => {
+  const createNewTask = useCallback(() => {
     setSelectedTask(null);
     setMode(COMPONENT_MODE.EDIT);
     setOpenDrawer(true);
-  };
+  }, []);
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
@@ -82,7 +82,7 @@ function TaskPage({
     },
     [],
   );
-  const toggleMode = (value: string) => setMode(value);
+  const toggleMode = useCallback((value: string) => setMode(value), []);
 
   const mutateTaskError = useCallback((error: Error) => {
     LogService.log((error as Error).message);

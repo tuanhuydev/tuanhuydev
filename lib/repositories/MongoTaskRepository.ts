@@ -1,5 +1,5 @@
 import MongoService from "@lib/services/MongoService";
-import { ObjectId, Collection, BSON } from "mongodb";
+import { BSON, Collection, ObjectId } from "mongodb";
 
 class MongoTaskRepository {
   static #instance: MongoTaskRepository;
@@ -25,47 +25,62 @@ class MongoTaskRepository {
     return result;
   }
 
-  async getTasks(filter: ObjectType = {}) {
+  private applySearchFilter(where: ObjectType, search: string = ""): ObjectType {
+    if (search) {
+      return { ...where, title: { $regex: search, $options: "i" } };
+    }
+    return where;
+  }
+
+  private applyProjectIdFilter(where: ObjectType, projectId?: string): ObjectType {
+    return typeof projectId === "string"
+      ? { ...where, projectId: new ObjectId(projectId) }
+      : { ...where, $or: [{ projectId: null }, { projectId: { $exists: false } }] };
+  }
+
+  private applyUserIdFilter(where: ObjectType, userId?: string): ObjectType {
+    if (userId) {
+      return { ...where, createdById: userId };
+    }
+    return where;
+  }
+
+  private applySorting(
+    query: any,
+    orderBy: Array<{ field: string; direction: string }> = [{ field: "createdAt", direction: "desc" }],
+  ): any {
+    const sort: ObjectType = {};
+    orderBy.forEach((order) => {
+      sort[order.field] = order.direction === "desc" ? -1 : 1;
+    });
+    return query.sort(sort);
+  }
+
+  private applyPagination(query: any, page?: number, pageSize?: number): any {
+    if (page && pageSize) {
+      return query.skip((page - 1) * pageSize).limit(pageSize);
+    } else if (pageSize) {
+      return query.limit(pageSize);
+    }
+    return query;
+  }
+
+  private constructWhereStatement = (filter: ObjectType) => {
     let defaultWhere: ObjectType = { deletedAt: null };
-    if (!filter) {
-      return this.table.find(defaultWhere).toArray();
-    }
-
-    const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
-
-    if ("search" in filter) {
-      defaultWhere = { ...defaultWhere, title: { $regex: search, $options: "i" } };
-    }
-
-    if ("projectId" in filter) {
-      defaultWhere = { ...defaultWhere, projectId: new ObjectId(filter.projectId as string) };
-    }
-
-    if ("userId" in filter) {
-      const { userId } = filter;
-      defaultWhere = {
-        ...defaultWhere,
-        createdById: userId as unknown as string,
-      };
-    }
+    defaultWhere = this.applySearchFilter(defaultWhere, filter?.search);
+    defaultWhere = this.applyProjectIdFilter(defaultWhere, filter?.projectId);
+    defaultWhere = this.applyUserIdFilter(defaultWhere, filter?.userId);
 
     let query = this.table.find(defaultWhere);
+    query = this.applySorting(query, filter?.orderBy);
+    query = this.applyPagination(query, filter?.page, filter?.pageSize);
 
-    if (orderBy) {
-      const sort: ObjectType = {};
-      orderBy.forEach((order: any) => {
-        sort[order.field] = order.direction === "desc" ? -1 : 1;
-      });
-      query = query.sort(sort);
-    }
+    return defaultWhere;
+  };
 
-    if (page && pageSize) {
-      query = query.skip((page - 1) * pageSize).limit(pageSize);
-    } else if (pageSize) {
-      query = query.limit(pageSize);
-    }
-
-    return query.toArray();
+  async getTasks(filter: ObjectType = {}) {
+    const where = this.constructWhereStatement(filter);
+    return this.table.find(where).toArray();
   }
 
   async getTask(id: string) {

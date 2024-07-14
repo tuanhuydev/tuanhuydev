@@ -1,7 +1,14 @@
 import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+export const useTodayTasks = () => {
+  return useQuery({
+    queryKey: ["todayTasks"],
+    queryFn: () => [],
+  });
+};
 
 export const useUpdateTodayTasks = () => {
   const queryClient = useQueryClient();
