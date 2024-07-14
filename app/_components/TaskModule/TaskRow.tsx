@@ -39,6 +39,7 @@ export default function TaskRow({
 
   const activeClass = active ? "bg-slate-200 dark:bg-gray-700" : "";
   const pinnedClass = isToday ? "!fill-yellow-400 stroke-yellow-500" : "!fill-transparent stroke-primary text-sm";
+
   const TaskTypeElement = useMemo(() => {
     const { label, icon } = taskType;
     return (
