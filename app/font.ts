@@ -1,8 +1,8 @@
-import { Source_Code_Pro } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 
-export const sourceCodeFont = Source_Code_Pro({
+export const sourceCodeFont = Source_Sans_3({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["300", "400", "500", "700"],
   style: ["normal", "italic"],
   variable: "--font-source-code",
   display: "swap",

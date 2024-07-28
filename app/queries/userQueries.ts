@@ -82,3 +82,23 @@ export const useCreateUser = () => {
     },
   });
 };
+
+export const useUpdateUserDetail = () => {
+  const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
+  return useMutation({
+    mutationFn: async (user: ObjectType) => {
+      const response = await fetch(`${BASE_URL}/api/users/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      if (!response.ok) throw new BaseError(response.statusText);
+      queryClient.invalidateQueries(["users"] as InvalidateQueryFilters);
+      return response.json();
+    },
+  });
+};

@@ -1,16 +1,16 @@
+"use client";
+
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
-import BaseButton from "../commons/buttons/BaseButton";
-import { USER_DETAIL_MODE } from "@app/_configs/constants";
-import { usePermissions } from "@app/queries/authQueries";
+import { DRAWER_MODE } from "../commons/drawers";
+import BaseDrawerHeader from "../commons/drawers/BaseDrawerHeader";
+import { useUserPermissions } from "@app/queries/permissionQueries";
 import { useProjectsQuery } from "@app/queries/projectQueries";
-import { useCreateUser } from "@app/queries/userQueries";
+import { useCreateUser, useUpdateUserDetail } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
-import { CloseOutlined } from "@mui/icons-material";
-import EditOutlined from "@mui/icons-material/EditOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import { Avatar, notification } from "antd";
 import format from "date-fns/format";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface UserDetailProps {
@@ -18,51 +18,90 @@ export interface UserDetailProps {
   onClose: () => void;
 }
 
-export default function UserDetail({ user, onClose }: UserDetailProps) {
-  const [mode, setMode] = useState<USER_DETAIL_MODE>(USER_DETAIL_MODE.VIEW);
-  const { mutateAsync: createUser, isSuccess } = useCreateUser();
-  const { data: projects = [] } = useProjectsQuery();
-  const { data: permissions = [] } = usePermissions();
+const revertTableUserPermissions = (tableUserPermissions: any[]) => {
+  const revertedUserPermissions: any[] = [];
+  const permissionIds: number[] = [];
 
-  const isViewMode = mode === USER_DETAIL_MODE.VIEW;
-  const isEditMode = mode === USER_DETAIL_MODE.EDIT;
-  const allowEdit = isEditMode && user;
+  tableUserPermissions.forEach((permission: any) => {
+    const { permissionId, action, resourceId, type } = permission;
+    if (!permissionIds.includes(permissionId)) {
+      permissionIds.push(permissionId);
+      revertedUserPermissions.push({
+        id: permissionId,
+        rules: [{ action, resourceId, type }],
+      });
+    } else {
+      const existingPermission = revertedUserPermissions.find((p) => p.id === permissionId);
+      if (existingPermission) {
+        existingPermission.rules.push({ action, resourceId, type });
+      }
+    }
+  });
+
+  return revertedUserPermissions;
+};
+
+export default function UserDetail({ user, onClose }: UserDetailProps) {
+  // State
+  const [mode, setMode] = useState<DRAWER_MODE>(DRAWER_MODE.VIEW);
+
+  // Hooks
+  const { mutateAsync: createUser, isSuccess: createdUserSuccess } = useCreateUser();
+  const { mutateAsync: updateUser, isSuccess: updateUserSuccess } = useUpdateUserDetail();
+  const { data: projects = [] } = useProjectsQuery();
+  const { data: userPermissions = [], refetch: refetchUserPermission } = useUserPermissions(user?.id);
+
+  // Map user permissions to table format
+  const tableUserPermissions = userPermissions.flatMap(({ id, rules }: any) => {
+    return rules.map(({ action, resourceId, type }: any) => ({
+      permissionId: id,
+      action,
+      resourceId,
+      type,
+    }));
+  });
+
+  const userOptions = (projects as ObjectType[]).map(({ name, id }: ObjectType) => ({ label: name, value: id }));
+
+  const isViewMode = mode === DRAWER_MODE.VIEW;
+  const editable = !!user;
   const title = isViewMode && user ? "User Detail" : !user ? "Create new user" : "Edit User";
 
-  const getConfig = useCallback((): DynamicFormConfig => {
-    const userOptions = (projects as ObjectType[]).map(({ name, id }: ObjectType) => ({ label: name, value: id }));
-    const permissionOptions = (permissions as any[]).map(({ name, id }: any) => ({ label: name, value: id }));
-    return {
-      fields: [
-        {
-          name: "name",
-          type: "text",
-          options: {
-            placeholder: "John Doe",
-            className: "w-1/2",
-          },
-          validate: {
-            required: true,
-          },
+  const userFormConfig = useMemo((): DynamicFormConfig => {
+    const userDetailFields = [
+      {
+        name: "name",
+        type: "text",
+        options: {
+          placeholder: "John Doe",
+          className: "w-1/2",
+          autoComplete: "none",
         },
-        {
-          type: "email",
-          name: "email",
-          options: {
-            placeholder: "JohnDoe@email.com",
-            className: "w-1/2",
-            autoComplete: "none",
-          },
-          validate: {
-            required: true,
-          },
+        validate: {
+          required: true,
         },
+      },
+      {
+        type: "email",
+        name: "email",
+        options: {
+          placeholder: "JohnDoe@email.com",
+          className: "w-1/2",
+          autoComplete: "none",
+        },
+        validate: {
+          required: true,
+        },
+      },
+    ];
+    if (!editable) {
+      userDetailFields.push(
         {
           name: "password",
           type: "password",
-          className: "w-1/2",
           options: {
             placeholder: "P@ssw0rd!",
+            className: "w-1/2",
             autoComplete: "new-password",
           },
           validate: {
@@ -72,82 +111,138 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
         {
           name: "confirmPassword",
           type: "password",
-          className: "w-1/2",
           options: {
+            className: "w-1/2",
             placeholder: "matched P@ssw0rd!",
             autoComplete: "new-password",
           },
           validate: {
             required: true,
             match: "password",
-          },
+          } as any,
+        },
+      );
+    }
+    return {
+      fields: [
+        {
+          name: "User Detail",
+          fields: userDetailFields as any,
         },
         {
-          name: "project",
-          type: "select",
-          options: {
-            placeholder: "Project 1, project 2",
-            mode: "multiple",
-            allowClear: true,
-            options: userOptions,
-          },
+          name: "Project",
+          fields: [
+            {
+              name: "projectIds",
+              type: "select",
+              options: {
+                placeholder: "Project 1, project 2",
+                mode: "multiple",
+                allowClear: true,
+                options: userOptions,
+              },
+            },
+          ],
         },
         {
-          name: "permissionId",
-          type: "select",
-          options: {
-            placeholder: "Root, Maintainer, Guest",
-            options: permissionOptions,
-          },
+          name: "Permission",
+          fields: [
+            {
+              name: "permissions",
+              type: "table",
+              options: {
+                placeholder: "permission",
+                columns: [
+                  {
+                    config: {
+                      field: "type",
+                      headerName: "Type",
+                      editable: true,
+                      flex: 1,
+                    },
+                    options: [
+                      { label: "Project", value: "project" },
+                      { label: "Post", value: "post" },
+                      { label: "User", value: "user" },
+                      { label: "Sprint", value: "sprint" },
+                    ],
+                  },
+                  {
+                    config: {
+                      field: "action",
+                      headerName: "Action",
+                      flex: 1,
+                      editable: true,
+                    },
+                    options: [
+                      { label: "View", value: "view" },
+                      { label: "Create", value: "create" },
+                      { label: "Edit", value: "edit" },
+                      { label: "Update", value: "update" },
+                      { label: "Delete", value: "delete" },
+                      { label: "Download", value: "download" },
+                    ],
+                  },
+                  {
+                    config: {
+                      field: "resourceId",
+                      headerName: "Resource",
+                      flex: 1,
+                      editable: true,
+                    },
+                  },
+                ],
+              },
+              validate: {
+                min: 1,
+              },
+            },
+          ],
         },
       ],
     };
-  }, [permissions, projects]);
-
-  const DrawerHeader = useMemo(() => {
-    return (
-      <div className="flex items-center bg-slate-700 justify-between pr-3">
-        <h1 className="my-0 mr-3 px-3 py-2 bg-primary text-white text-base">{title}</h1>
-        <div className="flex items-center gap-2">
-          {allowEdit && (
-            <BaseButton
-              onClick={() => setMode(USER_DETAIL_MODE.EDIT)}
-              icon={<EditOutlined className="!text-lg text-slate-50" />}
-            />
-          )}
-          <BaseButton onClick={onClose} icon={<CloseOutlined className="!text-lg text-white" />} />
-        </div>
-      </div>
-    );
-  }, [allowEdit, onClose, title]);
+  }, [editable, userOptions]);
 
   const submit = useCallback(
     async (formData: ObjectType, form?: UseFormReturn) => {
       try {
-        await createUser(formData);
+        const { permissions, ...restFormData } = formData;
+        const userPermissions = revertTableUserPermissions(permissions);
+        if (editable) {
+          await updateUser({ ...user, ...restFormData, permissionIds: userPermissions });
+          return;
+        }
+        await createUser({ ...restFormData, permissionIds: userPermissions });
         form?.reset();
         onClose();
       } catch (error) {
+        form?.reset();
         LogService.log(error);
       }
     },
-    [createUser, onClose],
+    [createUser, editable, onClose, updateUser, user],
   );
 
   useEffect(() => {
-    if (!user) setMode(USER_DETAIL_MODE.EDIT);
+    if (!user) setMode(DRAWER_MODE.EDIT);
   }, [user]);
 
   useEffect(() => {
-    if (isSuccess) {
-      notification.success({
-        message: "User created successfully",
-      });
+    let message = "User created successfully";
+    if (updateUserSuccess) message = "User updated successfully";
+    if (createdUserSuccess || updateUserSuccess) {
+      notification.success({ message });
     }
-  }, [isSuccess]);
+  }, [createdUserSuccess, updateUserSuccess]);
+
+  useEffect(() => {
+    if (user?.id) {
+      refetchUserPermission();
+    }
+  }, [refetchUserPermission, user?.id]);
 
   const DrawerContent = useMemo(() => {
-    if (mode === USER_DETAIL_MODE.VIEW) {
+    if (mode === DRAWER_MODE.VIEW) {
       return (
         <div className="flex flex-col h-full gap-3">
           <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100">
@@ -182,19 +277,26 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
     }
 
     return (
-      <DynamicForm
-        config={getConfig()}
-        onSubmit={submit}
-        submitProps={{
-          className: "ml-auto",
-        }}
-      />
+      <Fragment>
+        <DynamicForm
+          config={userFormConfig}
+          onSubmit={submit}
+          mapValues={{ ...user, permissions: tableUserPermissions }}
+          submitProps={{ className: "ml-auto" }}
+        />
+      </Fragment>
     );
-  }, [getConfig, mode, submit, user?.createdAt, user?.email, user?.name]);
+  }, [mode, submit, tableUserPermissions, user, userFormConfig]);
 
   return (
     <div className="flex flex-col h-full gap-3">
-      {DrawerHeader}
+      <BaseDrawerHeader
+        mode={mode}
+        title={title}
+        onClose={onClose}
+        editable={editable}
+        onToggle={(mode) => setMode(mode as DRAWER_MODE)}
+      />
       {DrawerContent}
     </div>
   );

@@ -3,7 +3,7 @@ import BaseLabel from "../commons/BaseLabel";
 import { TaskStatus, TaskStatusEnum } from "@app/_configs/constants";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import dynamic from "next/dynamic";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
 
@@ -17,7 +17,7 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   const { title, description, status } = task;
   const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
   return (
-    <div className="p-3">
+    <div className="p-3 bg-slate-50 dark:bg-slate-800">
       <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate">{title ?? EMPTY_STRING}</h1>
       {status && (
         <div className="flex items-center gap-3 mb-2 text-base">

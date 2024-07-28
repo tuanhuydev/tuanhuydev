@@ -43,6 +43,8 @@ export class PermissionController {
       return network.failResponse(error as BaseError);
     }
   }
+
+  async store(request: NextRequest) {}
 }
 
 export default PermissionController.makeInstance();
