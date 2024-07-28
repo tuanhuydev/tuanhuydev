@@ -4,6 +4,7 @@ import { ItemProps } from "./Item";
 import BaseButton from "@app/_components/commons/buttons/BaseButton";
 import Loader from "@components/commons/Loader";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
+import { hasPermission } from "@lib/shared/utils/helper";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
@@ -13,13 +14,13 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const Group = dynamic(async () => (await import("./Group")).default, { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(async () => (await import("./Item")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface SidebarProps {
-  permissions: ObjectType;
+  permissions: Array<any>;
   openMobile: boolean;
 }
 
@@ -32,15 +33,7 @@ const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
       { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
       { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
     ];
-    if (UserPermissions.VIEW_POST in permissions) {
-      routes.push({
-        label: "Manage Posts",
-        icon: <ArticleOutlined className="!text-base" />,
-        path: "/dashboard/posts",
-        id: UserPermissions.VIEW_POST,
-      });
-    }
-    if (UserPermissions.VIEW_PROJECT in permissions) {
+    if (hasPermission(permissions, { type: "project", action: "view" })) {
       routes.push({
         label: "Manage Projects",
         icon: <GridViewOutlined className="!text-base" />,
@@ -48,7 +41,15 @@ const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
         id: UserPermissions.VIEW_PROJECT,
       });
     }
-    if (UserPermissions.VIEW_USER in permissions) {
+    if (hasPermission(permissions, { type: "post", action: "view" })) {
+      routes.push({
+        label: "Manage Posts",
+        icon: <ArticleOutlined className="!text-base" />,
+        path: "/dashboard/posts",
+        id: UserPermissions.VIEW_POST,
+      });
+    }
+    if (hasPermission(permissions, { type: "user", action: "view" })) {
       routes.push({
         label: "Manage Users",
         icon: <PersonOutlineOutlined className="!text-base" />,
@@ -56,7 +57,7 @@ const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
         id: UserPermissions.VIEW_USER,
       });
     }
-    if (UserPermissions.VIEW_SETTING in permissions) {
+    if (hasPermission(permissions, { type: "setting", action: "view" })) {
       routes.push({
         label: "Settings",
         icon: <SettingsOutlined className="!text-base" />,
@@ -92,7 +93,7 @@ const Sidebar = ({ permissions, openMobile = false }: SidebarProps) => {
     <div
       className={`${
         !openMobile ? "translate-x-0" : "-translate-x-[14rem]"
-      } lg:translate-x-0 fixed h-full lg:relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-md bg-slate-50 dark:bg-primary dark:border-slate-800 transition-transform ease-in duration-300`}>
+      } lg:translate-x-0 fixed h-full lg:relative p-2 flex flex-col z-10 border-0 dark:border-r dark:border-solid drop-shadow-md bg-slate-50 dark:bg-slate-800 dark:border-slate-800 transition-transform ease-in duration-300`}>
       <div className="h-14 truncate flex items-center justify-center">
         <svg
           width="32"

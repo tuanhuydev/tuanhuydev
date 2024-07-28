@@ -47,7 +47,13 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
   };
 
   return (
-    <Button {...restProps} ref={ref} disabled={loading || disabled} className={makeClassName()}>
+    <Button
+      {...restProps}
+      rootElementName="button"
+      ref={ref}
+      type="button"
+      disabled={loading || disabled}
+      className={makeClassName()}>
       {loading ? (
         <span className="mr-2">
           <Loader variant={variants === "primary" ? "light" : "dark"} />

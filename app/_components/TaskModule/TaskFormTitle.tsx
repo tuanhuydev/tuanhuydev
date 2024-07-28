@@ -17,7 +17,7 @@ const BaseMenu = dynamic(() => import("@components/commons/BaseMenu"), { ssr: fa
 
 const BaseModal = dynamic(() => import("@components/commons/modals/BaseModal"), { ssr: false });
 
-const WithTooltip = dynamic(async () => (await import("@components/commons/hocs/WithTooltip")).default, { ssr: false });
+const WithCopy = dynamic(async () => (await import("@components/commons/hocs/WithCopy")).default, { ssr: false });
 
 const ConfirmBox = dynamic(() => import("@components/commons/modals/ConfirmBox"), { ssr: false });
 
@@ -136,9 +136,9 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     const { id } = task;
 
     return (
-      <WithTooltip content={`${window.location.href}?taskId=${id}`} title="Copy task link">
+      <WithCopy content={`${window.location.href}?taskId=${id}`} title="Copy task link">
         <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
-      </WithTooltip>
+      </WithCopy>
     );
   }, [task]);
 

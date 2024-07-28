@@ -8,7 +8,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { compress, decompress } from "lz-string";
 import * as React from "react";
 
-const DEFAULT_STALE_TIME = 1000 * 60 * 3; // 3 minutes
+const DEFAULT_STALE_TIME = 1000 * 60 * 30; // 3 minutes
 const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 10 * 2; // 60 minutes
 
 export function QueryProvider(props: { children: React.ReactNode }) {

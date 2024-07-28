@@ -18,7 +18,7 @@ class MongoPermissionRepository {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }
 
-  async createPermission(body: ObjectType) {
+  async createPermission(body: any): Promise<Mongo.InsertOneResult<Mongo.BSON.Document>> {
     body.createdAt = new Date().toISOString();
     body.updatedAt = new Date().toISOString();
     body.deletedAt = null;

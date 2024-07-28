@@ -1,12 +1,13 @@
 "use client";
 
-import TaskPage from "@app/_components/TaskModule/TaskPage";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
+import TaskPage from "@components/TaskModule/TaskPage";
 import { useSearchParams } from "next/navigation";
 import { ChangeEventHandler, useEffect, useState } from "react";
 
 export default function Page({ params }: any) {
   const { projectId } = params;
+
   const searchParams = useSearchParams();
   const taskId = searchParams.get("taskId");
 

@@ -1,31 +1,33 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
+import { sourceCodeFont } from "@app/font";
 import theme from "@lib/configs/theme";
-import { StyledEngineProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider as MUIThemeProvider, StyledEngineProvider, THEME_ID } from "@mui/material/styles";
 import dynamic from "next/dynamic";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
 const ConfigProvider = dynamic(async () => (await import("antd/es/config-provider")).default, {
   ssr: false,
 });
 const NextThemeProvider = dynamic(() => import("next-themes").then((module) => module.ThemeProvider), { ssr: false });
 
-const MuiBaseTheme = {
-  palette: {
-    primary: "green",
-    text: "#fff",
+const MuiBaseTheme = createTheme({
+  typography(palette) {
+    return {
+      fontSize: 16,
+      fontFamily: sourceCodeFont.style.fontFamily,
+    };
   },
-};
+});
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
   return (
     <NextThemeProvider attribute="class" defaultTheme="light">
       <StyledEngineProvider injectFirst>
-        <EmotionThemeProvider theme={MuiBaseTheme}>
+        <MUIThemeProvider theme={{ [THEME_ID]: MuiBaseTheme }}>
           <AntdRegistry>
             <ConfigProvider theme={theme}>{children}</ConfigProvider>
           </AntdRegistry>
-        </EmotionThemeProvider>
+        </MUIThemeProvider>
       </StyledEngineProvider>
     </NextThemeProvider>
   );

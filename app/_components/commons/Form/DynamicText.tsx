@@ -31,6 +31,11 @@ export default forwardRef(function DynamicText(
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
 
+  // Initialize field value with an empty string or a default value
+  field.value ??= "";
+
+  // Rest of the code remains the same
+
   let element;
   switch (type) {
     case "password":

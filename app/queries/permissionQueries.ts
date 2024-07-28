@@ -6,20 +6,27 @@ import { useQuery } from "@tanstack/react-query";
 export const useCurrentUserPermission = () => {
   const { fetch } = useFetch();
   return useQuery({
-    queryKey: ["currentUserPermission"],
+    queryKey: ["permissions", "current"],
+    placeholderData: [],
     queryFn: async () => {
       const response = await fetch(`${BASE_URL}/api/users/me/permissions`);
       if (!response.ok) throw new BaseError("Unable to fetch permissions");
+      const { data: permissions = [] } = await response.json();
 
-      const { data: permission = { rules: [] } } = await response.json();
-      const { rules } = permission;
-      const permissions: ObjectType = {};
+      return permissions.flatMap((permission: any) => permission.rules);
+    },
+  });
+};
 
-      rules.forEach((rule: ObjectType) => {
-        Object.entries(rule).forEach(([key, value]) => {
-          permissions[key] = value;
-        });
-      });
+export const useUserPermissions = (userId: string) => {
+  const { fetch } = useFetch();
+  return useQuery({
+    queryKey: ["permissions", "user", userId],
+    enabled: false,
+    queryFn: async () => {
+      const response = await fetch(`${BASE_URL}/api/users/${userId}/permissions`);
+      if (!response.ok) throw new BaseError("Unable to fetch permissions");
+      const { data: permissions = [] } = await response.json();
       return permissions;
     },
   });
