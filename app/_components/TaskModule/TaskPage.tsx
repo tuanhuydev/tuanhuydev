@@ -59,19 +59,18 @@ function TaskPage({
   const pathname = usePathname();
   const router = useRouter();
   const { data: sprints } = useSprintQuery(project?.id);
-  const [state, setState] = useState({
+  const [meta, setMeta] = useState({
     selectedTask: null as ObjectType | null,
     openDrawer: false,
     mode: COMPONENT_MODE.VIEW,
-    filter: {} as FilterType,
   });
 
-  const { selectedTask, openDrawer, mode, filter } = state;
+  const { selectedTask, openDrawer, mode } = meta;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
-  const projectUsers = project?.users || [];
+  const projectUsers = useMemo(() => project?.users || [], [project]);
 
   const createNewTask = useCallback(() => {
-    setState((prevState) => ({
+    setMeta((prevState) => ({
       ...prevState,
       selectedTask: null,
       mode: COMPONENT_MODE.EDIT,
@@ -81,7 +80,7 @@ function TaskPage({
 
   const toggleDrawer = useCallback(
     (value: boolean) => () => {
-      setState((prevState) => ({
+      setMeta((prevState) => ({
         ...prevState,
         selectedTask: value ? prevState.selectedTask : null,
         openDrawer: value,
@@ -91,7 +90,7 @@ function TaskPage({
   );
 
   const toggleMode = useCallback((value: string) => {
-    setState((prevState) => ({ ...prevState, mode: value }));
+    setMeta((prevState) => ({ ...prevState, mode: value }));
   }, []);
 
   const mutateTaskError = useCallback((error: Error) => {
@@ -100,7 +99,7 @@ function TaskPage({
 
   const mutateTaskSuccess = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    setState((prevState) => ({ ...prevState, openDrawer: false }));
+    setMeta((prevState) => ({ ...prevState, openDrawer: false }));
   }, [queryClient]);
 
   const TaskFormConfig = useMemo((): DynamicFormConfig => {
@@ -179,7 +178,7 @@ function TaskPage({
   ]);
 
   const onSelectTask = useCallback((task: ObjectType) => {
-    setState((prevState) => ({
+    setMeta((prevState) => ({
       ...prevState,
       selectedTask: task,
       mode: COMPONENT_MODE.VIEW,
@@ -196,13 +195,6 @@ function TaskPage({
       }
     }
   }, [onSelectTask, pathname, router, selectedTaskId, tasks]);
-
-  useEffect(() => {
-    if (filter) {
-      setState((prevState) => ({ ...prevState, filter }));
-      if (onFilterChange) onFilterChange(filter);
-    }
-  }, [filter, onFilterChange]);
 
   return (
     <PageContainer title={project.name} goBack={!!project.name}>
