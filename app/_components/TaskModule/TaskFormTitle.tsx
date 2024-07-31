@@ -96,13 +96,13 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
             {isViewMode && (
               <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.EDIT)}
-                icon={<EditOutlined className="text-slate-50" fontSize="small" />}
+                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
               />
             )}
             {isEditMode && (
               <BaseButton
                 onClick={toggleMode(COMPONENT_MODE.VIEW)}
-                icon={<EditOffOutlined className=" text-slate-50" fontSize="small" />}
+                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
               />
             )}
           </Fragment>
