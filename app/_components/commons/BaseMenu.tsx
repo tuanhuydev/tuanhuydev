@@ -24,7 +24,7 @@ export default function BaseMenu({ items, MenuProps = {} }: BaseMenuProps) {
   return (
     <Dropdown anchor="left" contentAnchor="top" {...MenuProps}>
       <MuiMenuButton>
-        <MoreVert fontSize="small" />
+        <MoreVert fontSize="small" className="!text-lg" />
       </MuiMenuButton>
       <MuiBaseMenu>
         {items.map((item) => (
