@@ -7,10 +7,11 @@ import { DynamicFormConfig, Field } from "@components/commons/Form/DynamicForm";
 import Loader from "@components/commons/Loader";
 import PageFilter from "@components/commons/PageFilter";
 import LogService from "@lib/services/LogService";
+import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskFormTitle = dynamic(() => import("@components/TaskModule/TaskFormTitle"), {
   ssr: false,
@@ -24,14 +25,7 @@ const TaskList = dynamic(() => import("@components/TaskModule/TaskList"), {
 
 const TaskPreview = dynamic(() => import("@components/TaskModule/TaskPreview"), { loading: () => <Loader /> });
 
-const Drawer = dynamic(() => import("antd/es/drawer"), { loading: () => <Loader />, ssr: false });
-
 const TaskForm = dynamic(() => import("@components/TaskModule/TaskForm"), { loading: () => <Loader /> });
-
-const drawerStyle: { [key: string]: CSSProperties } = {
-  header: { display: "none" },
-  body: { padding: 0, backgroundColor: "rgb(248, 250, 252)" },
-};
 
 const COMPONENT_MODE = {
   VIEW: "VIEW",
@@ -42,6 +36,7 @@ interface TaskPageProps {
   project?: ObjectType;
   tasks?: ObjectType[];
   selectedTaskId?: string | null;
+  allowSubTasks?: boolean;
   onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
   onFilterChange: (filter: FilterType) => void;
   loading?: boolean;
@@ -52,8 +47,8 @@ function TaskPage({
   tasks = [],
   selectedTaskId = null,
   onSearch,
+  allowSubTasks = false,
   loading = false,
-  onFilterChange,
 }: TaskPageProps) {
   const queryClient = useQueryClient();
   const pathname = usePathname();
@@ -206,9 +201,18 @@ function TaskPage({
         onSelectTask={onSelectTask}
         isLoading={loading}
       />
-      <Drawer size="large" placement="right" getContainer={false} destroyOnClose styles={drawerStyle} open={openDrawer}>
+      <Drawer
+        open={openDrawer}
+        aria-hidden="false"
+        anchor="right"
+        PaperProps={{
+          style: { width: "35%" },
+        }}
+        onClose={toggleDrawer(false)}>
         <TaskFormTitle
           task={selectedTask}
+          allowSubTask={!!selectedTask && allowSubTasks}
+          config={TaskFormConfig}
           mode={mode as "VIEW" | "EDIT"}
           allowEditTask={!!selectedTask}
           onClose={toggleDrawer(false)}

@@ -1,11 +1,10 @@
-import Hero from "./_components/HomeModule/Hero";
-import Services from "./_components/HomeModule/ServiceSection/Services";
-import Loader from "./_components/commons/Loader";
-import Navbar from "@app/_components/HomeModule/Navbar";
+import Hero from "@components/HomeModule/Hero";
+import Navbar from "@components/HomeModule/Navbar";
+import Services from "@components/HomeModule/ServiceSection/Services";
+import Loader from "@components/commons/Loader";
 import { getPosts } from "@server/actions/blog";
 import { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
-import React from "react";
 
 const Contact = dynamic(() => import("@components/HomeModule/Contact"), { loading: () => <Loader /> });
 const BlogSection = dynamic(() => import("@components/HomeModule/BlogSection"), { loading: () => <Loader /> });

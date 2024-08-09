@@ -1,7 +1,8 @@
 "use client";
 
+import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
+import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
 import BaseButton from "@components/commons/buttons/BaseButton";
 import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
@@ -9,9 +10,10 @@ import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
+import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import { Select, notification } from "antd";
 import dynamic from "next/dynamic";
-import { Fragment, useCallback, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
 const BaseMenu = dynamic(() => import("@components/commons/BaseMenu"), { ssr: false });
 
@@ -21,11 +23,19 @@ const WithCopy = dynamic(async () => (await import("@components/commons/hocs/Wit
 
 const ConfirmBox = dynamic(() => import("@components/commons/modals/ConfirmBox"), { ssr: false });
 
+export interface TaskFormModalsVisibility {
+  createSubTask: boolean;
+  moveToSprint: boolean;
+  openConfirmDelete: boolean;
+}
+
 export interface TaskFormTitleProps {
   task: ObjectType | null;
+  config?: DynamicFormConfig;
   mode: "VIEW" | "EDIT";
   allowEditTask?: boolean;
   allowDeleteTask?: boolean;
+  allowSubTask?: boolean;
   onClose: (open: boolean) => void;
   onToggle: (mode: string) => void;
 }
@@ -35,22 +45,41 @@ const COMPONENT_MODE = {
   EDIT: "EDIT",
 };
 
-export default function TaskFormTitle({ task, mode, allowEditTask = false, onClose, onToggle }: TaskFormTitleProps) {
+export default function TaskFormTitle({
+  task,
+  mode,
+  allowEditTask = false,
+  allowSubTask = false,
+  onClose,
+  onToggle,
+  config,
+}: TaskFormTitleProps) {
   // Hooks
   const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
   const { mutateAsync: moveSprintMutation } = useUpdateTaskMutation();
+  const { mutateAsync: mutateCrateTask, isSuccess: isCreateSuccess } = useCreateTaskMutation();
+
   const { data: projectSprints = [] } = useSprintQuery(task?.projectId || "", { status: "ACTIVE" });
 
   // States
-  const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
-  const [openMoveToSprint, setOpenMoveToSprint] = useState<boolean>(false);
   const [sprintIdToUpdate, setSprintIdToUpdate] = useState<string>("");
+
+  const [modalsVisible, setModalsVisible] = useState<TaskFormModalsVisibility>({
+    createSubTask: false,
+    moveToSprint: false,
+    openConfirmDelete: false,
+  });
+
+  const toggleModalVibible = useCallback(
+    (key: keyof TaskFormModalsVisibility, value: boolean) => () => {
+      setModalsVisible((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
 
   // Constants
   const isViewMode = mode === "VIEW";
   const isEditMode = mode === "EDIT";
-
-  const toggleConfirmDelete = useCallback((open: boolean) => () => setOpenConfirmDelete(open), [setOpenConfirmDelete]);
 
   const toggleMode = useCallback(
     (mode: string) => () => {
@@ -58,8 +87,6 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     },
     [onToggle],
   );
-
-  const toggleMoveToSprint = useCallback((open: boolean) => () => setOpenMoveToSprint(open), [setOpenMoveToSprint]);
 
   const handleClose = useCallback(() => onClose(false), [onClose]);
 
@@ -71,9 +98,9 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
       LogService.log(error);
     } finally {
       onClose(false);
-      setOpenConfirmDelete(false);
+      toggleModalVibible("openConfirmDelete", false)();
     }
-  }, [deleteTaskMutation, onClose, task]);
+  }, [deleteTaskMutation, onClose, task, toggleModalVibible]);
 
   const handleMoveToSprint = useCallback(async () => {
     if (!sprintIdToUpdate) return;
@@ -83,9 +110,40 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     } catch (error) {
       notification.error({ message: "Failed to move task to sprint" });
     } finally {
-      setOpenMoveToSprint(false);
+      toggleModalVibible("moveToSprint", false);
     }
-  }, [moveSprintMutation, sprintIdToUpdate, task]);
+  }, [moveSprintMutation, sprintIdToUpdate, task, toggleModalVibible]);
+
+  const handleCreateSubTask = useCallback(
+    (formData: any) => {
+      mutateCrateTask({ ...formData, parentId: task?.id, projectId: task?.projectId });
+      notification.success({ message: "Sub-task created successfully" });
+    },
+    [mutateCrateTask, task?.id, task?.projectId],
+  );
+
+  const RenderMenu = useMemo(() => {
+    const items = [
+      {
+        label: "Move to sprint",
+        icon: <LowPriorityOutlined fontSize="small" />,
+        onClick: toggleModalVibible("moveToSprint", true),
+      },
+      {
+        label: "Delete task",
+        icon: <DeleteOutlined fontSize="small" />,
+        onClick: toggleModalVibible("openConfirmDelete", true),
+      },
+    ];
+    if (allowSubTask && config) {
+      items.unshift({
+        label: "Create sub-task",
+        icon: <PlaylistAddOutlined fontSize="small" />,
+        onClick: toggleModalVibible("createSubTask", true),
+      });
+    }
+    return <BaseMenu items={items} />;
+  }, [allowSubTask, config, toggleModalVibible]);
 
   const RenderHeaderExtra = useMemo(() => {
     const existingTask = !!task;
@@ -107,28 +165,11 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
             )}
           </Fragment>
         )}
-        {existingTask && (
-          <Fragment>
-            <BaseMenu
-              items={[
-                {
-                  label: "Move to sprint",
-                  icon: <LowPriorityOutlined fontSize="small" />,
-                  onClick: toggleMoveToSprint(true),
-                },
-                {
-                  label: "Delete task",
-                  icon: <DeleteOutlined fontSize="small" />,
-                  onClick: toggleConfirmDelete(true),
-                },
-              ]}
-            />
-          </Fragment>
-        )}
+        {existingTask && <Fragment>{RenderMenu}</Fragment>}
         <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
       </div>
     );
-  }, [allowEditTask, handleClose, isEditMode, isViewMode, task, toggleConfirmDelete, toggleMode, toggleMoveToSprint]);
+  }, [RenderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
 
   const RenderTitle = useMemo(() => {
     const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
@@ -142,23 +183,29 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
     );
   }, [task]);
 
+  useEffect(() => {
+    if (isCreateSuccess) {
+      toggleModalVibible("createSubTask", false)();
+    }
+  }, [isCreateSuccess, toggleModalVibible]);
+
   return (
     <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
       {RenderTitle}
       {RenderHeaderExtra}
       <ConfirmBox
-        open={openConfirmDelete}
+        open={modalsVisible.openConfirmDelete}
         title="Delete Task"
         description="Are you sure to delete this task ?"
-        onClose={toggleConfirmDelete(false)}
+        onClose={toggleModalVibible("openConfirmDelete", false)}
         onConfirm={handleDelete}
       />
       <BaseModal
         className="w-[24rem]"
         title="Move to sprint"
         closable
-        open={openMoveToSprint}
-        onClose={toggleMoveToSprint(false)}>
+        open={modalsVisible.moveToSprint}
+        onClose={toggleModalVibible("moveToSprint", false)}>
         <Select
           placeholder="Select sprint"
           defaultActiveFirstOption
@@ -168,10 +215,22 @@ export default function TaskFormTitle({ task, mode, allowEditTask = false, onClo
           options={projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id }))}
         />
         <div className="flex gap-3 justify-end mt-5">
-          <BaseButton onClick={toggleMoveToSprint(false)} variants="text" label="Cancel" />
+          <BaseButton onClick={toggleModalVibible("moveToSprint", false)} variants="text" label="Cancel" />
           <BaseButton onClick={handleMoveToSprint} label="Move"></BaseButton>
         </div>
       </BaseModal>
+      {config && (
+        <BaseModal
+          className="w-[24rem]"
+          title="Create sub-task"
+          closable
+          open={modalsVisible.createSubTask}
+          onClose={toggleModalVibible("createSubTask", false)}>
+          <div className="h-[24rem] overflow-auto">
+            <DynamicForm config={config} onSubmit={handleCreateSubTask} />
+          </div>
+        </BaseModal>
+      )}
     </div>
   );
 }

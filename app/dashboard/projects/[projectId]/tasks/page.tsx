@@ -16,6 +16,8 @@ export default function Page({ params }: any) {
   const { data: project } = useProjectQuery(projectId);
   const { data: tasks = [], refetch: refetchTasks, isLoading } = useProjectTasks(projectId, filter);
 
+  // const standaloneTasks = tasks.filter((task: any) => !task.parentId);
+
   const handleFilterChange = (filter: FilterType) => {
     setFilter(filter);
   };
@@ -34,7 +36,7 @@ export default function Page({ params }: any) {
     let searchTimeout: NodeJS.Timeout;
     if (filter) searchTimeout = setTimeout(refetchTasks, 1000);
     return () => clearTimeout(searchTimeout);
-  }, [filter, refetchTasks, tasks]);
+  }, [filter, refetchTasks]);
 
   return (
     <TaskPage
@@ -44,6 +46,7 @@ export default function Page({ params }: any) {
       onSearch={searchTasks}
       onFilterChange={handleFilterChange}
       loading={isLoading}
+      allowSubTasks
     />
   );
 }

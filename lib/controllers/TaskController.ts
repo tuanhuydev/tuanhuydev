@@ -100,6 +100,18 @@ export class TaskController implements BaseController {
       return network.failResponse(error as BaseError);
     }
   }
+
+  async getSubTasks(request: NextRequest, { id }: any) {
+    const network = Network(request);
+    try {
+      if (!id) throw new BadRequestError();
+
+      const subTasks = await MongoTaskRepository.getSubTasks(id);
+      return network.successResponse(subTasks);
+    } catch (error) {
+      return network.failResponse(error as BaseError);
+    }
+  }
 }
 
 export default TaskController.makeInstance();

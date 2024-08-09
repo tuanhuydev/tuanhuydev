@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export interface BadgeProps {
   className?: string;
@@ -22,7 +22,7 @@ export default function Badge({ className, color, value }: BadgeProps) {
     }
   }, [className, color]);
   return (
-    <span ref={ref} className="capitalize rounded-full px-3 py-1 text-white truncate">
+    <span ref={ref} className="capitalize rounded-full px-3 py-1 text-white text-sm truncate">
       {value}
     </span>
   );

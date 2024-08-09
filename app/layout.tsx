@@ -10,33 +10,36 @@ import "@styles/globals.scss";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { Fragment, PropsWithChildren } from "react";
+import { Fragment, PropsWithChildren, useMemo } from "react";
 
 const GoogleAdsense = dynamic(() => import("@components/GoogleAdsense"), { ssr: false });
 
-const App = dynamic(() => import("antd/es/app"), { ssr: false });
-
 export default function RootLayout({ children }: PropsWithChildren) {
   const pathName = usePathname();
-  const isHomePage = pathName === "/";
-  const isPostBySlug = pathName.includes("/post/");
+
+  const RenderGoogleTags = useMemo(() => {
+    const isHomePage = pathName === "/";
+    const isPostBySlug = pathName.includes("/post/");
+
+    if (isHomePage || isPostBySlug) {
+      return (
+        <Fragment>
+          {isProductionEnv && GOOGLE_TAG && <GoogleTagManager gtmId={GOOGLE_TAG} />}
+          {isProductionEnv && GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+          {isProductionEnv && GOOGLE_ADSENSE && <GoogleAdsense />}
+        </Fragment>
+      );
+    }
+    return <Fragment />;
+  }, [pathName]);
+
   return (
     <html lang="en" className={sourceCodeFont.className}>
-      <head>
-        {(isHomePage || isPostBySlug) && (
-          <Fragment>
-            {isProductionEnv && GOOGLE_TAG && <GoogleTagManager gtmId={GOOGLE_TAG} />}
-            {isProductionEnv && GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-            {isProductionEnv && GOOGLE_ADSENSE && <GoogleAdsense />}
-          </Fragment>
-        )}
-      </head>
+      <head>{RenderGoogleTags}</head>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider>
-            <QueryProvider>
-              <App>{children}</App>
-            </QueryProvider>
+            <QueryProvider>{children}</QueryProvider>
           </ThemeProvider>
           <SpeedInsights />
         </AppRouterCacheProvider>

@@ -22,7 +22,7 @@ const resolveSlotProps = (fn: any, args: any) => (typeof fn === "function" ? fn(
 
 export default function BaseMenu({ items, MenuProps = {} }: BaseMenuProps) {
   return (
-    <Dropdown anchor="left" contentAnchor="top" {...MenuProps}>
+    <Dropdown {...MenuProps}>
       <MuiMenuButton>
         <MoreVert fontSize="small" className="!text-lg" />
       </MuiMenuButton>
@@ -95,7 +95,7 @@ const MuiMenuButton = forwardRef<HTMLButtonElement, MuiMenuButtonProps>((props, 
     <BaseMenuButton
       ref={ref}
       className={clsx(
-        "cursor-pointer outline-none rounded-md p-1 flex justify-center items-center gap-1 transition-all duration-300 p-1 bg-primary border-none text-slate-50 dark:bg-slate-500 dark:text-slate-200 disabled:bg-slate-200 disabled:text-slate-400",
+        "cursor-pointer outline-none rounded-md flex justify-center items-center gap-1 transition-all duration-300 p-1 bg-primary border-none text-slate-50 dark:bg-slate-500 dark:text-slate-200 disabled:bg-slate-200 disabled:text-slate-400",
         className,
       )}
       {...other}
