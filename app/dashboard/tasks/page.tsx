@@ -4,9 +4,9 @@ import { useCurrentUserTasks } from "@app/queries/userQueries";
 import Loader from "@components/commons/Loader";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
-const TaskPage = dynamic(() => import("@app/_components/TaskModule/TaskPage"), {
+const TaskPage = dynamic(() => import("@components/TaskModule/TaskPage"), {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -25,11 +25,11 @@ export default function Page() {
 
   const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useCurrentUserTasks(filter);
 
-  const handleFilterChange = (filter: FilterType) => {
+  const handleFilterChange = useCallback((filter: FilterType) => {
     setFilter((prevFilter) => ({ ...prevFilter, ...filter }));
-  };
+  }, []);
 
-  const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const searchTasks: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
     const search = event.target.value;
     setFilter((filter) => {
       if (search?.length) return { ...filter, search };
@@ -37,7 +37,7 @@ export default function Page() {
       delete filter?.search;
       return filter;
     });
-  };
+  }, []);
 
   useEffect(() => {
     let searchTimeout: NodeJS.Timeout;
@@ -52,6 +52,7 @@ export default function Page() {
       onSearch={searchTasks}
       onFilterChange={handleFilterChange}
       loading={isTasksLoading}
+      allowSubTasks={false}
     />
   );
 }

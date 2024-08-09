@@ -10,6 +10,21 @@ export const useTodayTasks = () => {
   });
 };
 
+export const useSubTasks = (taskId: string | undefined) => {
+  const { fetch } = useFetch();
+  return useQuery({
+    queryKey: ["tasks", taskId, "subTasks"],
+    queryFn: async () => {
+      if (!taskId) return [];
+      const response = await fetch(`${BASE_URL}/api/tasks/${taskId}/subtasks`);
+      if (!response.ok) throw new BaseError(response.statusText);
+      const { data: subTasks = [] } = await response.json();
+      console.log(subTasks);
+      return subTasks;
+    },
+  });
+};
+
 export const useUpdateTodayTasks = () => {
   const queryClient = useQueryClient();
   return useMutation({

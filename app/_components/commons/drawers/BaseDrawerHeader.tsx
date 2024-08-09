@@ -5,7 +5,7 @@ import BaseButton from "@components/commons/buttons/BaseButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import { Fragment, useCallback, useMemo } from "react";
+import { Fragment, useCallback } from "react";
 
 export interface BaseDrawerHeaderProps {
   title?: string;
@@ -35,8 +35,10 @@ export default function BaseDrawerHeader({
   );
 
   const handleClose = useCallback(() => onClose(false), [onClose]);
-  const RenderHeaderExtra = useMemo(() => {
-    return (
+
+  return (
+    <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
+      <h1 className="my-0 mr-3 px-3 py-2 bg-primary text-white text-base">{title}</h1>
       <div className="px-2 flex gap-2 items-center relative">
         {editable && (
           <Fragment>
@@ -57,13 +59,6 @@ export default function BaseDrawerHeader({
         {ExtraHeader}
         <BaseButton onClick={handleClose} icon={<CloseOutlined className="text-slate-50" fontSize="small" />} />
       </div>
-    );
-  }, [ExtraHeader, editable, handleClose, isEditMode, isViewMode, toggleMode]);
-
-  return (
-    <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
-      <h1 className="my-0 mr-3 px-3 py-2 bg-primary text-white text-base">{title}</h1>
-      {RenderHeaderExtra}
     </div>
   );
 }

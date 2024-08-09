@@ -1,6 +1,8 @@
-import Badge from "../commons/Badge";
-import BaseLabel from "../commons/BaseLabel";
+import TaskRow from "./TaskRow";
 import { TaskStatus, TaskStatusEnum } from "@app/_configs/constants";
+import { useSubTasks } from "@app/queries/taskQueries";
+import Badge from "@components/commons/Badge";
+import BaseLabel from "@components/commons/BaseLabel";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import dynamic from "next/dynamic";
 import { Fragment } from "react";
@@ -13,11 +15,19 @@ export interface TaskPreviewProps {
   sprint?: ObjectType | null;
 }
 export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps) {
-  if (!task) return <Fragment />;
-  const { title, description, status } = task;
+  const { data: subTasks = [] } = useSubTasks(task?.id || "");
+
+  const { title = "", description = "", status = "" } = task || {};
   const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
+
+  const selectSubTask = (subTask: ObjectType) => () => {
+    window.open(` ${window.location.href}?taskId=${subTask.id}`, "_blank");
+  };
+
+  if (!task) return <Fragment />;
+
   return (
-    <div className="p-3 bg-slate-50 dark:bg-slate-800">
+    <div className="p-3 bg-transparent w-full">
       <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate">{title ?? EMPTY_STRING}</h1>
       {status && (
         <div className="flex items-center gap-3 mb-2 text-base">
@@ -26,15 +36,25 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
         </div>
       )}
       {assignee && (
-        <div className="flex items-center gap-3 mb-2 text-base">
+        <div className="flex gap-3 mb-2 text-base">
           <BaseLabel>Assignee</BaseLabel>
           {assignee.label}
         </div>
       )}
       {sprint && (
-        <div className="flex items-center gap-3 mb-2 text-base">
+        <div className="flex gap-3 mb-2 text-base">
           <BaseLabel>Sprint</BaseLabel>
           {sprint.name}
+        </div>
+      )}
+      {subTasks.length > 0 && (
+        <div className="flex gap-3 mb-2 text-base w-full">
+          <BaseLabel>Sub Tasks</BaseLabel>
+          <div className="grow h-30 overflow-auto">
+            {subTasks.map((subTask: ObjectType) => (
+              <TaskRow key={subTask.id} task={subTask} onSelect={selectSubTask(subTask)} active={false} />
+            ))}
+          </div>
         </div>
       )}
 

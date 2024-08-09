@@ -158,7 +158,7 @@ export default function PostForm({ post }: any) {
     const updateContentInterval = setInterval(() => {
       form.setFieldsValue({ content: content });
       setPreviewValue((prevContent) => ({ ...prevContent, content } as never));
-    }, 4000);
+    }, 1500);
     return () => clearInterval(updateContentInterval);
   }, [content, form]);
 
@@ -247,6 +247,7 @@ export default function PostForm({ post }: any) {
         {!post?.publishedAt && (
           <BaseButton
             variants="outline"
+            className="mb-2"
             onClick={() => {
               setIsSaveDraft(true);
               triggerSubmit();

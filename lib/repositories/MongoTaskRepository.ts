@@ -13,12 +13,15 @@ class MongoTaskRepository {
     return MongoTaskRepository.#instance ?? new MongoTaskRepository();
   }
 
-  async createTask({ projectId, ...restBody }: ObjectType) {
+  async createTask({ projectId, parentId, ...restBody }: ObjectType) {
     restBody.createdAt = new Date();
     restBody.updatedAt = new Date();
     restBody.deletedAt = null;
     if (projectId) {
       restBody.projectId = new ObjectId(projectId as string);
+    }
+    if (parentId) {
+      restBody.parentId = new ObjectId(parentId as string);
     }
 
     const result = await this.table.insertOne(restBody);
@@ -105,6 +108,9 @@ class MongoTaskRepository {
 
   async getTasksByProject(projectId: string, filter: ObjectType = {}) {
     return this.getTasks({ ...filter, projectId });
+  }
+  async getSubTasks(taskId: string) {
+    return this.table.find({ parentId: new ObjectId(taskId) }).toArray();
   }
 }
 

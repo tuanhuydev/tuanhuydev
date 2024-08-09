@@ -11,11 +11,12 @@ const ConfigProvider = dynamic(async () => (await import("antd/es/config-provide
 const NextThemeProvider = dynamic(() => import("next-themes").then((module) => module.ThemeProvider), { ssr: false });
 
 const MuiBaseTheme = createTheme({
-  typography(palette) {
-    return {
-      fontSize: 16,
-      fontFamily: sourceCodeFont.style.fontFamily,
-    };
+  typography: {
+    fontSize: 16,
+    fontFamily: sourceCodeFont.style.fontFamily,
+  },
+  zIndex: {
+    drawer: 0,
   },
 });
 
