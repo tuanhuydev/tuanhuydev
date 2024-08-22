@@ -1,8 +1,8 @@
 "use client";
 
+import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
-import DynamicForm, { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { App } from "antd";

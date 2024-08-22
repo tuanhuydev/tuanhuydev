@@ -1,8 +1,8 @@
 import { S3 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { awsAccessKeyId, awsBucketName, awsRegion, awsSecretAccessKey } from "@lib/configs/constants";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { StorageInterface } from "@lib/shared/interfaces/helper";
-import BaseError from "@shared/commons/errors/BaseError";
 
 class S3Service implements StorageInterface {
   #S3Client: S3 | undefined;

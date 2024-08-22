@@ -1,6 +1,6 @@
 "use client";
 
-import ThemeToggle from "@app/_components/commons/ThemeToggle";
+import ThemeToggle from "@app/components/commons/ThemeToggle";
 import { memo } from "react";
 
 export interface NavbarProps {

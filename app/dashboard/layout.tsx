@@ -1,9 +1,9 @@
 "use client";
 
+import Sidebar from "@app/components/DashboardModule/Sidebar";
+import WithTransition from "@app/components/commons/hocs/WithTransition";
 import { useMobileSidebar } from "@app/queries/metaQueries";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import Sidebar from "@components/DashboardModule/Sidebar";
-import WithTransition from "@components/commons/hocs/WithTransition";
 import { PropsWithChildren } from "react";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {

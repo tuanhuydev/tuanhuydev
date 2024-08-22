@@ -1,8 +1,8 @@
 import TaskRow from "./TaskRow";
-import { TaskStatus, TaskStatusEnum } from "@app/_configs/constants";
+import { TaskStatus, TaskStatusEnum } from "@app/_utils/constants";
+import Badge from "@app/components/commons/Badge";
+import BaseLabel from "@app/components/commons/BaseLabel";
 import { useSubTasks } from "@app/queries/taskQueries";
-import Badge from "@components/commons/Badge";
-import BaseLabel from "@components/commons/BaseLabel";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import dynamic from "next/dynamic";
 import { Fragment } from "react";

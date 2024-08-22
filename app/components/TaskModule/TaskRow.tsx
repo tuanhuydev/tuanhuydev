@@ -1,6 +1,6 @@
 import Badge from "../commons/Badge";
 import Button from "../commons/buttons/BaseButton";
-import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_configs/constants";
+import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_utils/constants";
 import StarOutlined from "@mui/icons-material/StarOutlined";
 import { Tooltip } from "antd";
 import Image from "next/image";

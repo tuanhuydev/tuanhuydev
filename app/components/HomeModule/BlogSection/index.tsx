@@ -1,6 +1,5 @@
-import Loader from "@components/commons/Loader";
+import Loader from "@app/components/commons/Loader";
 import dynamic from "next/dynamic";
-import React from "react";
 
 const HighlightPost = dynamic(() => import("./HighlightPost"), { loading: () => <Loader /> });
 

@@ -1,8 +1,7 @@
+import PostView from "@app/components/PostModule/PostView";
 import { getPostBySlug } from "@app/server/actions/blog";
-import PostView from "@components/PostModule/PostView";
 import { BASE_URL } from "@lib/configs/constants";
 import { Metadata, ResolvingMetadata } from "next";
-import React from "react";
 
 type Props = {
   params: { slug: string };

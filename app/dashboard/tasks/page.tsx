@@ -1,12 +1,12 @@
 "use client";
 
+import Loader from "@app/components/commons/Loader";
 import { useCurrentUserTasks } from "@app/queries/userQueries";
-import Loader from "@components/commons/Loader";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
-const TaskPage = dynamic(() => import("@components/TaskModule/TaskPage"), {
+const TaskPage = dynamic(() => import("@app/components/TaskModule/TaskPage"), {
   ssr: false,
   loading: () => <Loader />,
 });

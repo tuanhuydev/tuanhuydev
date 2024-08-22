@@ -1,7 +1,7 @@
 "use client";
 
 import { DRAWER_MODE } from ".";
-import BaseButton from "@components/commons/buttons/BaseButton";
+import BaseButton from "@app/components/commons/buttons/BaseButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";

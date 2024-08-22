@@ -1,18 +1,18 @@
 "use client";
 
-import Loader from "@app/_components/commons/Loader";
-import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
+import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import Loader from "@app/components/commons/Loader";
 import { BASE_URL } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
-import BaseError from "@shared/commons/errors/BaseError";
-import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
-const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
+const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });

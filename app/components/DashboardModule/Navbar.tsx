@@ -35,13 +35,9 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   const [open, setOpenUserMenu] = useState(false);
 
   const signOut = useCallback(async () => {
-    signUserOut()
-      .then(() => {
-        queryClient.removeQueries();
-      })
-      .then(() => {
-        router.replace("/auth/sign-in");
-      });
+    await signUserOut();
+    queryClient.removeQueries();
+    router.replace("/auth/sign-in");
   }, [queryClient, router, signUserOut]);
 
   const toggleUserMenu = useCallback(

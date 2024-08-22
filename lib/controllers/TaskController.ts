@@ -1,10 +1,10 @@
 import LogService from "../services/LogService";
 import { extractBearerToken } from "@app/_utils/network";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
+import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
-import BadRequestError from "@shared/commons/errors/BadRequestError";
-import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 

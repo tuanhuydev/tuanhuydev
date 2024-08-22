@@ -3,11 +3,11 @@ import { extractBearerToken } from "@app/_utils/network";
 import MongoProjectRepository from "@lib/repositories/MongoProjectRepository";
 import MongoSprintRepository from "@lib/repositories/MongoSprintRepository";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
+import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
-import BadRequestError from "@shared/commons/errors/BadRequestError";
-import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
