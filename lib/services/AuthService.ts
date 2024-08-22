@@ -1,14 +1,14 @@
 import { SALT_ROUNDS } from "@lib/configs/constants";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import {
   ACCESS_TOKEN_LIFE,
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_LIFE,
   REFRESH_TOKEN_SECRET,
-} from "@shared/commons/constants/encryption";
-import BaseError from "@shared/commons/errors/BaseError";
-import NotFoundError from "@shared/commons/errors/NotFoundError";
+} from "@lib/shared/commons/constants/encryption";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import bcrypt from "bcrypt";
 import * as jose from "jose";
 import { v4 as uuidv4 } from "uuid";

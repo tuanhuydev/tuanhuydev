@@ -1,21 +1,21 @@
 "use client";
 
 import { makeFieldMap } from "@app/_utils/helper";
+import Loader from "@app/components/commons/Loader";
+import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useCreatePost, useUpdatePost } from "@app/queries/postQueries";
-import Loader from "@components/commons/Loader";
-import BaseButton from "@components/commons/buttons/BaseButton";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import LogService from "@lib/services/LogService";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
 import { MDXEditorMethods } from "@mdxeditor/editor";
-import BaseError from "@shared/commons/errors/BaseError";
-import { isURLValid, transformTextToDashed } from "@shared/utils/helper";
 import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
 import { App, Form } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
-const BaseMarkdown = dynamic(() => import("@components/commons/BaseMarkdown"), {
+const BaseMarkdown = dynamic(() => import("@app/components/commons/BaseMarkdown"), {
   ssr: false,
   loading: () => <Loader />,
 });

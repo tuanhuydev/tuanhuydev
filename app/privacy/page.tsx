@@ -1,6 +1,5 @@
-import Footer from "@app/_components/HomeModule/Footer";
-import Navbar from "@app/_components/HomeModule/Navbar";
-import React from "react";
+import Footer from "@app/components/HomeModule/Footer";
+import Navbar from "@app/components/HomeModule/Navbar";
 
 export default async function Privacy() {
   return (

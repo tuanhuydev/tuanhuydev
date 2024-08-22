@@ -11,11 +11,9 @@ const customJestConfig = {
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
     "^@lib(.*)$": "<rootDir>/lib/$1",
-    "^@backend(.*)$": "<rootDir>/lib/backend/$1",
     "^@shared(.*)$": "<rootDir>/lib/shared/$1",
     "^@public(.*)$": "<rootDir>/public/$1",
     "^@app/(.*)$": "<rootDir>/app/$1",
-    "^@prismaClient/(.*)$": "<rootDir>/prisma/$1",
   },
   modulePathIgnorePatterns: ["<rootDir>/build/", "<rootDir>/.history/"],
   testEnvironment: "jest-environment-jsdom",

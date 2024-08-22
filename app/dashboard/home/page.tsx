@@ -1,12 +1,10 @@
 "use client";
 
-import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import PostWidget from "@app/_components/DashboardModule/widgets/PostWidget";
-import ProjectWidget from "@app/_components/DashboardModule/widgets/ProjectWidget";
-import TodayTaskWidget from "@app/_components/DashboardModule/widgets/TodayTaskWidget";
-import { useCurrentUserResources } from "@app/queries/resourceQueries";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import PostWidget from "@app/components/DashboardModule/widgets/PostWidget";
+import ProjectWidget from "@app/components/DashboardModule/widgets/ProjectWidget";
+import TodayTaskWidget from "@app/components/DashboardModule/widgets/TodayTaskWidget";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
-import React from "react";
 
 export default function Page() {
   // const { data: queryResources = [] } = useCurrentUserResources();

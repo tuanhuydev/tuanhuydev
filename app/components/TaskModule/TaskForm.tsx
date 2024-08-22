@@ -1,13 +1,15 @@
 "use client";
 
+import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
 import LogService from "@lib/services/LogService";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-const DynamicForm = dynamic(async () => (await import("@components/commons/Form/DynamicForm")).default, { ssr: false });
+const DynamicForm = dynamic(async () => (await import("@app/components/commons/Form/DynamicForm")).default, {
+  ssr: false,
+});
 export interface TaskFormProps {
   task?: Task;
   config: DynamicFormConfig;

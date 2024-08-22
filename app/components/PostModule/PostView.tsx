@@ -1,9 +1,9 @@
 "use client";
 
 import HighlightPost from "../HomeModule/BlogSection/HighlightPost";
-import { usePostsQuery } from "@app/queries";
-import Loader from "@components/commons/Loader";
-import WithCopy from "@components/commons/hocs/WithCopy";
+import Loader from "@app/components/commons/Loader";
+import WithCopy from "@app/components/commons/hocs/WithCopy";
+import { usePostsQuery } from "@app/queries/postQueries";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";

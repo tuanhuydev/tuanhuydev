@@ -1,13 +1,18 @@
-"use client";
-
 import Loader from "../Loader";
 import BaseButton from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
-import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
+import { Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
+
+const DynamicColorPicker = dynamic(() => import("./DynamicColorPicker"));
+const DynamicDatepicker = dynamic(() => import("./DynamicDatepicker"));
+const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"));
+const DynamicSelect = dynamic(() => import("./DynamicSelect"));
+const DynamicTable = dynamic(() => import("./DynamicTable"));
+const DynamicText = dynamic(() => import("./DynamicText"));
 
 export type ObjectType = Record<string, any>;
 
@@ -40,6 +45,7 @@ export interface Field {
   style?: ObjectType;
   className?: string;
 }
+
 export interface ElementGroup {
   name: string;
   fields: Field[];
@@ -67,7 +73,6 @@ const isElementGroupArray = (fields: any): fields is ElementGroup[] => {
 };
 
 const fieldValidationSchema = (type: any, validate: ObjectType) => {
-  // make yup base on type
   let rule;
   switch (type) {
     case "number":
@@ -87,20 +92,18 @@ const fieldValidationSchema = (type: any, validate: ObjectType) => {
       rule = yup.string();
   }
 
-  // Apply rules
-
   if ("min" in validate) {
     const isNumberMin = Number.isInteger(validate.min);
     rule = rule.min(
       isNumberMin ? validate.min : yup.ref(validate.min),
-      `Field must greater than equal field '${validate.min}'`,
+      `Field must be greater than or equal to '${validate.min}'`,
     );
   }
   if ("max" in validate) {
     const isNumberMax = Number.isInteger(validate.max);
     rule = rule.max(
       isNumberMax ? validate.max : yup.ref(validate.max),
-      `Field must less than equal field '${validate.min}'`,
+      `Field must be less than or equal to '${validate.min}'`,
     );
   }
 
@@ -124,25 +127,7 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
   return yup.object(schema);
 };
 
-const DynamicSelect = dynamic(() => import("@components/commons/Form/DynamicSelect"), { loading: () => <Loader /> });
-
-const DynamicMarkdown = dynamic(() => import("@components/commons/Form/DynamicMarkdown"), {
-  loading: () => <Loader />,
-});
-
-const DynamicDatepicker = dynamic(() => import("@components/commons/Form/DynamicDatepicker"), {
-  loading: () => <Loader />,
-});
-
-const DynamicColorPicker = dynamic(() => import("@components/commons/Form/DynamicColorPicker"), {
-  loading: () => <Loader />,
-});
-
-const DynamicText = dynamic(() => import("@components/commons/Form/DynamicText"), { loading: () => <Loader /> });
-
-const DynamicTable = dynamic(() => import("./DynamicTable"), { loading: () => <Loader /> });
-
-export default function DynamicForm({ config, onSubmit, mapValues, submitProps }: DynamicFormProps) {
+const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormProps) => {
   const form = useForm({ resolver: yupResolver(makeSchema(config)) });
   const [registeredFields, setRegisteredFields] = useState<ReactNode[]>([]);
   const {
@@ -163,22 +148,21 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
           name,
           options: options as any,
           keyProp: name,
+          ...restFieldProps,
         };
         switch (type) {
           case "select":
-            return <DynamicSelect key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicSelect key={name} {...elementProps} />;
           case "richeditor":
-            return <DynamicMarkdown key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicMarkdown key={name} {...elementProps} />;
           case "datepicker":
-            return <DynamicDatepicker key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicDatepicker key={name} {...elementProps} />;
           case "colorpicker":
-            return <DynamicColorPicker key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicColorPicker key={name} {...elementProps} />;
           case "table":
-            return <DynamicTable key={name} {...elementProps} {...restFieldProps} />;
+            return <DynamicTable key={name} {...elementProps} />;
           default:
-            return (
-              <DynamicText key={name} {...elementProps} {...restFieldProps} type={type} keyProp={`${name} - ${type}`} />
-            );
+            return <DynamicText key={`${name} - ${type}`} {...elementProps} type={type} />;
         }
       });
     },
@@ -190,14 +174,12 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
     if (isFieldArray(fields)) {
       registeredFields = registerFields(fields);
     } else if (isElementGroupArray(fields)) {
-      registeredFields = fields.map((group: ElementGroup) => {
-        return (
-          <Fragment key={group.name}>
-            <div className="m-0 px-2 text-slate-500 font-bold">{group.name}</div>
-            {registerFields(group.fields)}
-          </Fragment>
-        );
-      });
+      registeredFields = fields.flatMap((group: ElementGroup) => [
+        <div className="m-0 px-2 text-slate-500 font-bold" key={group.name}>
+          {group.name}
+        </div>,
+        ...registerFields(group.fields),
+      ]);
     }
     setRegisteredFields(registeredFields);
   }, [fields, registerFields]);
@@ -227,25 +209,33 @@ export default function DynamicForm({ config, onSubmit, mapValues, submitProps }
         if (isDateValue) {
           valueToUpdate = new Date(value);
         }
-        setValue(key, valueToUpdate, { shouldDirty: true, shouldValidate: true });
+        setValue(key, valueToUpdate, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
       }
     }
   }, [mapValues, reset, setValue]);
 
-  return (
-    <form className="w-full">
-      <div className="flex flex-wrap relative overflow-auto">{registeredFields}</div>
-      <div className="h-px bg-gray-100 dark:bg-slate-700 mt-1 mb-3 mx-2"></div>
-
-      <div className="flex p-2">
-        <BaseButton
-          {...submitProps}
-          type="submit"
-          label="Submit"
-          onClick={handleSubmit(submit)}
-          loading={isSubmitting}
-          disabled={isSubmitting}></BaseButton>
-      </div>
-    </form>
+  return useMemo(
+    () => (
+      <form className="w-full">
+        <div className="flex flex-wrap relative overflow-auto">{registeredFields}</div>
+        <div className="h-px bg-gray-100 dark:bg-slate-700 mt-1 mb-3 mx-2"></div>
+        <div className="flex p-2">
+          <BaseButton
+            {...submitProps}
+            type="submit"
+            label="Submit"
+            onClick={handleSubmit(submit)}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          />
+        </div>
+      </form>
+    ),
+    [registeredFields, submitProps, handleSubmit, submit, isSubmitting],
   );
-}
+};
+
+export default DynamicForm;

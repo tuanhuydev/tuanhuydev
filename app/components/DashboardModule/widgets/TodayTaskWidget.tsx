@@ -1,6 +1,6 @@
 "use client";
 
-import Card from "@app/_components/commons/Card";
+import Card from "@app/components/commons/Card";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";

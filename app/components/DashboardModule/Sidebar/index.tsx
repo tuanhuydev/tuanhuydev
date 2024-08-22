@@ -1,8 +1,8 @@
 "use client";
 
 import { ItemProps } from "./Item";
-import BaseButton from "@app/_components/commons/buttons/BaseButton";
-import Loader from "@components/commons/Loader";
+import Loader from "@app/components/commons/Loader";
+import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import { hasPermission } from "@lib/shared/utils/helper";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";

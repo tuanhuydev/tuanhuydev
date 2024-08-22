@@ -1,9 +1,9 @@
 "use client";
 
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
+import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import BaseButton from "@components/commons/buttons/BaseButton";
 import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
@@ -15,13 +15,13 @@ import { Select, notification } from "antd";
 import dynamic from "next/dynamic";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
-const BaseMenu = dynamic(() => import("@components/commons/BaseMenu"), { ssr: false });
+const BaseMenu = dynamic(() => import("@app/components/commons/BaseMenu"), { ssr: false });
 
-const BaseModal = dynamic(() => import("@components/commons/modals/BaseModal"), { ssr: false });
+const BaseModal = dynamic(() => import("@app/components/commons/modals/BaseModal"), { ssr: false });
 
-const WithCopy = dynamic(async () => (await import("@components/commons/hocs/WithCopy")).default, { ssr: false });
+const WithCopy = dynamic(async () => (await import("@app/components/commons/hocs/WithCopy")).default, { ssr: false });
 
-const ConfirmBox = dynamic(() => import("@components/commons/modals/ConfirmBox"), { ssr: false });
+const ConfirmBox = dynamic(() => import("@app/components/commons/modals/ConfirmBox"), { ssr: false });
 
 export interface TaskFormModalsVisibility {
   createSubTask: boolean;
@@ -221,7 +221,7 @@ export default function TaskFormTitle({
       </BaseModal>
       {config && (
         <BaseModal
-          className="w-[24rem]"
+          className="w-[50rem]"
           title="Create sub-task"
           closable
           open={modalsVisible.createSubTask}
