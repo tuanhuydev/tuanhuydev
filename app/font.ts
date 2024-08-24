@@ -1,9 +1,7 @@
-import { Source_Sans_3 } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 
-export const sourceCodeFont = Source_Sans_3({
-  subsets: ["latin"],
+export const sourceCodeFont = Be_Vietnam_Pro({
+  subsets: ["latin", "vietnamese"],
   weight: ["300", "400", "500", "700"],
   style: ["normal", "italic"],
-  variable: "--font-source-code",
-  display: "swap",
 });

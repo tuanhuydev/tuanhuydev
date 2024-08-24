@@ -1,6 +1,6 @@
 import LogService from "@lib/services/LogService";
-import { HTTP_CODE } from "@shared/commons/constants/httpCode";
-import BaseError from "@shared/commons/errors/BaseError";
+import { HTTP_CODE } from "@lib/shared/commons/constants/httpCode";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { NextRequest, NextResponse } from "next/server";
 import qs from "qs";
 

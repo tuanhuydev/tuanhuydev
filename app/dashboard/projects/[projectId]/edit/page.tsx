@@ -1,12 +1,11 @@
 "use client";
 
-import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import Loader from "@app/_components/commons/Loader";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
 import { useProjectQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
-import React from "react";
 
-const ProjectForm = dynamic(async () => (await import("@app/_components/ProjectModule/ProjectForm")).default, {
+const ProjectForm = dynamic(async () => (await import("@app/components/ProjectModule/ProjectForm")).default, {
   ssr: false,
 });
 

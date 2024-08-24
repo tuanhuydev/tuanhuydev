@@ -1,8 +1,8 @@
 import AuthService, { TokenPayload } from "@lib/services/AuthService";
+import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import Network from "@lib/shared/utils/network";
-import BadRequestError from "@shared/commons/errors/BadRequestError";
-import BaseError from "@shared/commons/errors/BaseError";
-import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";

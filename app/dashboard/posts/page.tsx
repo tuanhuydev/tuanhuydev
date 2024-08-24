@@ -1,14 +1,14 @@
 "use client";
 
-import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import Loader from "@app/_components/commons/Loader";
-import PageFilter from "@app/_components/commons/PageFilter";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
+import PageFilter from "@app/components/commons/PageFilter";
 import { usePostsQuery } from "@app/queries/postQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useState } from "react";
 
-const PostCard = dynamic(() => import("@components/PostModule/PostCard"), {
+const PostCard = dynamic(() => import("@app/components/PostModule/PostCard"), {
   ssr: false,
   loading: () => <Loader />,
 });

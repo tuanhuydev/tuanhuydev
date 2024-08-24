@@ -1,5 +1,4 @@
-import PageContainer from "@components/DashboardModule/PageContainer";
-import React from "react";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
 
 export default function Page() {
   return (
