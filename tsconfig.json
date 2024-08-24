@@ -15,24 +15,17 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "incremental": true,
     "paths": {
       "@app/*": ["app/*"],
       "@lib/*": ["lib/*"],
-      "@prismaClient/*": ["./prisma/*"],
-      "@backend/*": ["lib/backend/*"],
-      "@shared/*": ["lib/shared/*"],
-      "@public/*": ["public/*"],
-      "@components/*": ["app/_components/*"],
-      "@assets/*": ["app/_assets/*"],
-      "@styles/*": ["app/_styles/*"],
-      "@server/*": ["app/server/*"]
+      "@public/*": ["public/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

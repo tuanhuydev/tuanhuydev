@@ -1,16 +1,16 @@
 "use client";
 
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import BaseLabel from "@app/components/commons/BaseLabel";
+import BaseCard from "@app/components/commons/Card";
+import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import Loader from "@app/components/commons/Loader";
+import BaseButton from "@app/components/commons/buttons/BaseButton";
+import WithCopy from "@app/components/commons/hocs/WithCopy";
+import BaseModal from "@app/components/commons/modals/BaseModal";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useFetch } from "@app/queries/useSession";
-import PageContainer from "@components/DashboardModule/PageContainer";
-import BaseLabel from "@components/commons/BaseLabel";
-import BaseCard from "@components/commons/Card";
-import { DynamicFormConfig } from "@components/commons/Form/DynamicForm";
-import Loader from "@components/commons/Loader";
-import BaseButton from "@components/commons/buttons/BaseButton";
-import WithCopy from "@components/commons/hocs/WithCopy";
-import BaseModal from "@components/commons/modals/BaseModal";
 import { BASE_URL, DATE_FORMAT } from "@lib/configs/constants";
 import InsertLinkOutlined from "@mui/icons-material/InsertLinkOutlined";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
-const DynamicForm = dynamic(() => import("@components/commons/Form/DynamicForm"), {
+const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });

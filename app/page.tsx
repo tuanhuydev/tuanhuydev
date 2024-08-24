@@ -1,15 +1,14 @@
-import Hero from "./_components/HomeModule/Hero";
-import Services from "./_components/HomeModule/ServiceSection/Services";
-import Loader from "./_components/commons/Loader";
-import Navbar from "@app/_components/HomeModule/Navbar";
-import { getPosts } from "@server/actions/blog";
+import { getPosts } from "./server/actions/blog";
+import Hero from "@app/components/HomeModule/Hero";
+import Navbar from "@app/components/HomeModule/Navbar";
+import Services from "@app/components/HomeModule/ServiceSection/Services";
+import Loader from "@app/components/commons/Loader";
 import { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
-import React from "react";
 
-const Contact = dynamic(() => import("@components/HomeModule/Contact"), { loading: () => <Loader /> });
-const BlogSection = dynamic(() => import("@components/HomeModule/BlogSection"), { loading: () => <Loader /> });
-const Footer = dynamic(() => import("@components/HomeModule/Footer"), { loading: () => <Loader /> });
+const Contact = dynamic(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
+const BlogSection = dynamic(() => import("@app/components/HomeModule/BlogSection"), { loading: () => <Loader /> });
+const Footer = dynamic(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",

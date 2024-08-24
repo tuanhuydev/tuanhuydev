@@ -9,6 +9,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.format.enable": false,
   "eslint.run": "onSave",
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

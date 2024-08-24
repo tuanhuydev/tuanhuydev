@@ -1,21 +1,21 @@
 "use client";
 
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
+import PageFilter from "@app/components/commons/PageFilter";
 import { useUsersQuery } from "@app/queries/userQueries";
-import PageContainer from "@components/DashboardModule/PageContainer";
-import Loader from "@components/commons/Loader";
-import PageFilter from "@components/commons/PageFilter";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Empty } from "antd";
 import dynamic from "next/dynamic";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
 
-const UserDetail = dynamic(() => import("@components/UserModule/UserDetail"), {
+const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
   loading: () => <Loader />,
 });
-const BaseDrawer = dynamic(() => import("@components/commons/drawers/BaseDrawer"), {
+const BaseDrawer = dynamic(() => import("@app/components/commons/drawers/BaseDrawer"), {
   loading: () => <Loader />,
 });
-const UserRow = dynamic(() => import("@components/UserModule/UserRow"), {
+const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
   loading: () => <Loader />,
 });
 

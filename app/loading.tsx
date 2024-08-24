@@ -1,7 +1,6 @@
 "use client";
 
-import Loader from "@components/commons/Loader";
-import React from "react";
+import Loader from "@app/components/commons/Loader";
 
 export default function Page() {
   return (

@@ -1,8 +1,8 @@
 "use client";
 
-import PageContainer from "@app/_components/DashboardModule/PageContainer";
-import Loader from "@app/_components/commons/Loader";
-import PageFilter from "@app/_components/commons/PageFilter";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
+import PageFilter from "@app/components/commons/PageFilter";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
 
-const ProjectCard = dynamic(async () => (await import("@components/ProjectModule/ProjectCard")).default, {
+const ProjectCard = dynamic(async () => (await import("@app/components/ProjectModule/ProjectCard")).default, {
   loading: () => <Loader />,
 });
 

@@ -1,10 +1,10 @@
 import LogService from "../services/LogService";
 import { extractBearerToken } from "@app/_utils/network";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
+import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
-import BadRequestError from "@shared/commons/errors/BadRequestError";
-import BaseError from "@shared/commons/errors/BaseError";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
@@ -96,6 +96,18 @@ export class TaskController implements BaseController {
     try {
       const deleted = await MongoTaskRepository.deleteTask(id);
       return network.successResponse(deleted);
+    } catch (error) {
+      return network.failResponse(error as BaseError);
+    }
+  }
+
+  async getSubTasks(request: NextRequest, { id }: any) {
+    const network = Network(request);
+    try {
+      if (!id) throw new BadRequestError();
+
+      const subTasks = await MongoTaskRepository.getSubTasks(id);
+      return network.successResponse(subTasks);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
