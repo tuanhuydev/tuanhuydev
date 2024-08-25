@@ -14,3 +14,8 @@ interface FilterType {
   search?: string;
   orderBy?: ObjectType[];
 }
+
+type MetaDataParams = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};

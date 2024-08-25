@@ -29,7 +29,7 @@ export default function BaseMenu({ items, MenuProps = {} }: BaseMenuProps) {
       <MuiBaseMenu>
         {items.map((item) => (
           <BaseMenuItem key={item.label} onClick={item.onClick} {...item.MenuItemProps}>
-            {item.icon && <span className="mr-2 flex items-center text-primary">{item.icon}</span>}
+            {item.icon && <span className="mr-2 flex items-center text-primary dark:text-slate-50">{item.icon}</span>}
             {item.label}
           </BaseMenuItem>
         ))}
@@ -58,7 +58,7 @@ const MuiBaseMenu = forwardRef<HTMLDivElement, MuiMenuProps>((props, ref) => {
           const resolvedSlotProps = resolveSlotProps(props.slotProps?.listbox, ownerState);
           return {
             ...resolvedSlotProps,
-            className: clsx(resolvedSlotProps?.className, "list-none p-0 m-0 bg-slate-50 rounded-md"),
+            className: clsx(resolvedSlotProps?.className, "list-none p-0 m-0 bg-slate-50 rounded-md dark:bg-slate-800"),
           };
         },
       }}
@@ -79,7 +79,7 @@ const BaseMenuItem = forwardRef<HTMLLIElement, MuiMenuItemProps>((props, ref) =>
             ...resolvedSlotProps,
             className: clsx(
               resolvedSlotProps?.className,
-              "flex items-center pl-2 pr-3 py-2 text-sm font-normal bg-white hover:bg-gray-100 cursor-pointer rounded-md",
+              "flex items-center pl-2 pr-3 py-2 text-sm font-normal bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-600 cursor-pointer rounded-md",
             ),
           };
         },

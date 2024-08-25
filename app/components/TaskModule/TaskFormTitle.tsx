@@ -211,7 +211,7 @@ export default function TaskFormTitle({
           defaultActiveFirstOption
           onSelect={(sprintId: string) => setSprintIdToUpdate(sprintId)}
           className="w-full"
-          value={task?.sprintId || ""}
+          value={sprintIdToUpdate}
           options={projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id }))}
         />
         <div className="flex gap-3 justify-end mt-5">

@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const usePostsQuery = (filter: ObjectType = {}) => {
   return useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", filter],
     queryFn: async () => {
       let url = `${BASE_URL}/api/posts`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;

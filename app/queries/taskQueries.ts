@@ -19,7 +19,6 @@ export const useSubTasks = (taskId: string | undefined) => {
       const response = await fetch(`${BASE_URL}/api/tasks/${taskId}/subtasks`);
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: subTasks = [] } = await response.json();
-      console.log(subTasks);
       return subTasks;
     },
   });

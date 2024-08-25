@@ -90,12 +90,13 @@ class MongoTaskRepository {
     return this.table.findOne({ deletedAt: null, _id: new ObjectId(id) });
   }
 
-  async updateTask(id: string, { assigneeId, projectId, ...restData }: Partial<TaskBody>) {
+  async updateTask(id: string, { assigneeId, projectId, sprintId, ...restData }: Partial<TaskBody>) {
     const bodyToUpdate = {
       $set: {
         ...restData,
         projectId: projectId ? new ObjectId(projectId) : null,
         assigneeId: assigneeId ? new ObjectId(assigneeId) : null,
+        sprintId: sprintId ? new ObjectId(sprintId) : null,
       },
     };
     this.table.updateOne({ _id: new ObjectId(id) }, bodyToUpdate);

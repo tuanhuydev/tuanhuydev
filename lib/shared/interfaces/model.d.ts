@@ -10,7 +10,7 @@ type Task = {
   description?: string;
   type: TASK_TYPE;
   projectId?: string;
-  sprintId?: number;
+  sprintId?: string;
   assigneeId?: string;
   createdById?: string;
   createdAt: Date;
