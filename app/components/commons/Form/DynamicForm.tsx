@@ -1,9 +1,8 @@
-import Loader from "../Loader";
 import BaseButton from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
-import { Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
 

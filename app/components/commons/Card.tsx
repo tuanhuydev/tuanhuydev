@@ -1,7 +1,5 @@
-"use client";
-
 import BaseImage from "./BaseImage";
-import { Skeleton } from "antd";
+import Skeleton from "@mui/material/Skeleton";
 import React, { Fragment, PropsWithChildren } from "react";
 
 export interface CardProps extends PropsWithChildren {
@@ -39,7 +37,7 @@ export default function Card({
       )}
       {loading ? (
         <Fragment>
-          <Skeleton />
+          <Skeleton className="w-full" />
         </Fragment>
       ) : (
         <Fragment>

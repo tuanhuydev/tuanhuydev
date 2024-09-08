@@ -27,7 +27,7 @@ class MongoSprintRepository {
     }
 
     if ("projectId" in filter) {
-      defaultWhere = { ...defaultWhere, projectId: new Mongo.ObjectId(filter.projectId as string) };
+      defaultWhere = { ...defaultWhere, projectId: filter.projectId as string };
     }
     if ("active" in filter) {
       defaultWhere = { ...defaultWhere, active: filter.active as boolean };
@@ -61,9 +61,6 @@ class MongoSprintRepository {
   }
 
   async createSprint(newSprintData: any) {
-    if ("projectId" in newSprintData) {
-      newSprintData.projectId = new Mongo.ObjectId(newSprintData.projectId as string);
-    }
     return this.table.insertOne(newSprintData);
   }
 

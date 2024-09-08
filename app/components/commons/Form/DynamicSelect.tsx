@@ -1,68 +1,77 @@
 "use client";
 
-import Loader from "../Loader";
-import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react";
-import { UseControllerProps, useController } from "react-hook-form";
+import { Option as BaseOption } from "@mui/base/Option";
+import { Select as BaseSelect } from "@mui/base/Select";
+import { useEffect, useState } from "react";
+import { useController } from "react-hook-form";
 
-const Select = dynamic(() => import("antd/es/select"), { ssr: false, loading: () => <Loader /> });
+const listboxClasses = {
+  className: "bg-white p-0 border-solid border border-slate-300 p-2 m-0 mt-2 rounded-md",
+};
 
-export interface DynamicSelectProps extends UseControllerProps<any> {
-  options?: ObjectType;
-  keyProp?: string;
-  className?: string;
-}
+const popupClasses = {
+  className: "z-[100]",
+};
 
-export default function DynamicSelect({
-  options: selectOptions = {},
+const getSelectStyles = (value: any) => {
+  const selectStyles = `py-2 px-3 rounded-md flex items-center border-solid border outline-1 border-slate-300 bg-white disabled:bg-slate-200 disabled:cursor-not-allowed`;
+  const className = value ? `${selectStyles} text-slate-800` : `${selectStyles} text-slate-400`;
+  return { className };
+};
+
+const baseOptionStyles = {
+  className: "flex items-center px-3 py-2 rounded-md hover:bg-slate-100 cursor-pointer text-sm",
+};
+export default function DynamicSelect1({
+  options: fieldOptions = {},
   keyProp,
   className = "w-full",
   ...restProps
-}: DynamicSelectProps) {
-  const { options: staticOptions = [], defaultOption, mode = "single", ...restSelectOptions } = selectOptions;
-  const [options, setOptions] = useState<SelectOption[]>([]);
-
+}: any) {
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
-  const { onChange, ref, ...restField } = field;
+  const { onChange, ref } = field;
 
-  const handleChange = (newOptions: unknown) => {
-    if (mode === "multiple") {
-      const isStringArray = (newOptions as SelectOption[]).every((option) => typeof option === "string");
-      if (isStringArray) {
-        let objectOptions = [];
-        for (let option of newOptions as SelectOption[]) {
-          const foundOption = options.find(({ value }: ObjectType) => value === option);
-          if (foundOption) objectOptions.push(foundOption);
-        }
-        return onChange(objectOptions);
-      }
-      return onChange(newOptions);
-    }
-    return onChange(newOptions);
-  };
+  const [options, setOptions] = useState<SelectOption[]>([]);
+  const { options: staticOptions = [], defaultOption, mode = "single", ...restFieldOptions } = fieldOptions;
 
   useEffect(() => {
     if (staticOptions.length) {
-      setOptions(defaultOption ? [defaultOption, ...staticOptions] : staticOptions);
+      const newDropdownOptions = defaultOption ? [defaultOption, ...staticOptions] : staticOptions;
+      setOptions(newDropdownOptions);
     }
   }, [defaultOption, staticOptions]);
-
   return (
     <div className={`p-2 self-stretch ${className}`}>
       <div className=" mb-1">
-        <Select
-          key={keyProp}
-          {...restField}
-          {...restSelectOptions}
-          defaultActiveFirstOption={true}
-          onChange={handleChange}
-          mode={mode}
-          options={options}
+        <BaseSelect
+          {...restFieldOptions}
+          size="small"
+          defaultValue={field.value}
           className="w-full"
+          key={keyProp}
           disabled={isSubmitting}
-        />
+          onChange={(e: any, value: any) => {
+            onChange(value);
+          }}
+          ref={ref}
+          slotProps={{
+            root: getSelectStyles(field.value),
+            listbox: listboxClasses,
+            popup: popupClasses,
+          }}>
+          {options.map((option: any) => (
+            <BaseOption
+              key={option.value}
+              value={option.value}
+              slotProps={{
+                root: baseOptionStyles,
+              }}>
+              {option.label}
+            </BaseOption>
+          ))}
+        </BaseSelect>
       </div>
       {invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
     </div>

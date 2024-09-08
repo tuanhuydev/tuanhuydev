@@ -1,48 +1,43 @@
-"use client";
-
-import HighlightPost from "../HomeModule/BlogSection/HighlightPost";
 import Loader from "@app/components/commons/Loader";
-import WithCopy from "@app/components/commons/hocs/WithCopy";
-import { usePostsQuery } from "@app/queries/postQueries";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { sourceCodeFont } from "@app/font";
+import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment } from "react";
+import { memo } from "react";
+import Markdown from "react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+
+const WithCopy = dynamic(() => import("../commons/hocs/WithCopy"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 const BaseImage = dynamic(() => import("../commons/BaseImage"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const Markdown = dynamic(() => import("react-markdown"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const SyntaxHighlighter = dynamic(() => import("react-syntax-highlighter"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const elementClasses = "mx-0 my-1 text-primary dark:text-slate-50";
 
 export interface PostViewProps {
   post: ObjectType;
 }
 
-export default function PostView({ post }: PostViewProps) {
-  const { data: posts = [], isFetching } = usePostsQuery({ published: true, exclude: [post._id] });
+const PostView = memo(({ post }: PostViewProps) => {
   if (!post) return <h1>Not Found</h1>;
-  if (isFetching) return <Loader />;
   return (
     <div className="grid grid-cols-12 w-screen h-screen overflow-x-hidden lg:overflow-hidden auto-rows-min lg:auto-rows-fr gap-0 transition-all ease-in duration-300">
       <div className="col-span-full lg:col-span-3 px-0 py-6 flex flex-col z-10 relative">
         <div className="w-min h-min z-10 px-6">
           <Link
             href="/"
+            aria-label="Navigaye back to home page"
             className="p-2 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
             <ArrowBackIosNewOutlined fontSize="small" className="text-primary" />
           </Link>
@@ -57,20 +52,20 @@ export default function PostView({ post }: PostViewProps) {
               alt={post.title}
               fill
               sizes="100vw"
+              priority={false}
               className="object-cover opacity-40 lg:opacity-100 lg:rounded-md drop-shadow-md dark:drop-shadow-none"
             />
           </div>
         </div>
         <div className="absolute top-0 right-0 lg:relative flex gap-3 p-6 lg:px-6">
-          <WithCopy content={window.location.href} title="Share">
+          <WithCopy content={`${BASE_URL}/posts/${post?.slug}`} title="Share">
             <div className="p-2 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
               <LinkOutlined fontSize="medium" className="text-primary" />
             </div>
           </WithCopy>
         </div>
       </div>
-      <div
-        className={`col-span-full overflow-y-auto lg:col-span-6 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none`}>
+      <div className="col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none">
         <Markdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
@@ -90,6 +85,8 @@ export default function PostView({ post }: PostViewProps) {
                 tsx: "typescript",
                 css: "css",
                 js: "javascript",
+                json: "json",
+                bash: "bash",
               };
               const extension = (match[1] as string) ?? "txt";
 
@@ -101,6 +98,10 @@ export default function PostView({ post }: PostViewProps) {
                   language={language[extension] as string}
                   customStyle={{
                     borderRadius: "8px",
+                    backgroundColor: "#1e1e1e",
+                    fontSize: 16,
+                    fontFamily: sourceCodeFont.style.fontFamily,
+                    fontWeight: sourceCodeFont.style.fontWeight,
                   }}
                   ref={null}
                   style={darcula}>
@@ -120,47 +121,40 @@ export default function PostView({ post }: PostViewProps) {
               );
             },
             p({ node, ...rest }) {
-              return <p {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h1({ node, ...rest }) {
-              return <h1 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h2({ node, ...rest }) {
-              return <h2 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h3({ node, ...rest }) {
-              return <h3 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h4({ node, ...rest }) {
-              return <h2 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h5({ node, ...rest }) {
-              return <h5 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
-            },
-            h6({ node, ...rest }) {
-              return <h6 {...rest} className="text-primary dark:text-slate-50 text-lg" />;
+              return <p {...rest} className={`${elementClasses} text-sm lg:text-base`} />;
             },
             li({ node, ...rest }) {
-              return <li {...rest} className="text-primary dark:text-slate-50 text-lg" />;
+              return <li {...rest} className={`${elementClasses} text-sm lg:text-base`} />;
+            },
+            h1({ node, ...rest }) {
+              return <h1 {...rest} className={`${elementClasses} text-2xl md:text-3xl lg:text-4xl`} />;
+            },
+            h2({ node, ...rest }) {
+              return <h2 {...rest} className={`${elementClasses} text-xl md:text-2xl lg:text-3xl`} />;
+            },
+            h3({ node, ...rest }) {
+              return <h3 {...rest} className={`${elementClasses} text-lg md:text-xl lg:text-2xl`} />;
+            },
+            h4({ node, ...rest }) {
+              return <h2 {...rest} className={`${elementClasses} text-base md:text-lg lg:text-xl`} />;
+            },
+            h5({ node, ...rest }) {
+              return <h5 {...rest} className={`${elementClasses} text-base lg:text-lg`} />;
+            },
+            h6({ node, ...rest }) {
+              return <h6 {...rest} className={`${elementClasses} text-base lg:text-base`} />;
+            },
+            a({ node, ...rest }) {
+              return <a {...rest} className="mx-0 my-1 !text-blue-400 dark:!text-blue-800 hover:underline" />;
             },
           }}>
           {post.content}
         </Markdown>
       </div>
-      <div className="col-span-full overflow-x-auto overflow-y-hidden lg:overflow-y-auto lg:col-span-3 p-4">
-        {posts?.length ? (
-          <Fragment>
-            <div className="text-primary dark:text-slate-50 text-2xl font-bold mb-3">More Amazing Posts</div>
-            <div className="flex gap-4 lg:flex-col overflow-auto">
-              {posts.map((post: ObjectType) => (
-                <HighlightPost post={post} key={post.slug} className="shrink-0 w-[20rem] lg:w-full" />
-              ))}
-            </div>
-          </Fragment>
-        ) : (
-          <Fragment />
-        )}
-      </div>
     </div>
   );
-}
+});
+
+PostView.displayName = "PostView";
+
+export default PostView;

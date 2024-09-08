@@ -18,13 +18,18 @@ const TextArea = dynamic(async () => (await import("antd/es/input")).default.Tex
 
 export interface DynamicInputProps extends UseControllerProps<any> {
   type: "text" | "email" | "password" | "number" | "textarea";
-  options?: ObjectType;
+  options?: {
+    placeholder?: string;
+  };
   keyProp?: string;
   className?: string;
+  validate?: ObjectType;
 }
 
+// validate: ObjectType
+
 export default forwardRef(function DynamicText(
-  { type, options, keyProp, className = "w-full", ...restProps }: DynamicInputProps,
+  { type, options = {}, keyProp, className = "w-full", validate = {}, ...restProps }: DynamicInputProps,
   ref: Ref<any>,
 ) {
   const { field, fieldState, formState } = useController(restProps);
@@ -32,25 +37,29 @@ export default forwardRef(function DynamicText(
   const { invalid, error } = fieldState;
 
   // Initialize field value with an empty string or a default value
-  field.value ??= "";
+  const { value = "", ...restField } = field;
 
-  // Rest of the code remains the same
+  const subElementProps = {
+    ...restField,
+    ...options,
+    value,
+    ref,
+    disabled: isSubmitting,
+  };
 
   let element;
   switch (type) {
     case "password":
-      element = <BaseInput key={keyProp} {...field} {...options} type="password" ref={ref} disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...subElementProps} type="password" />;
       break;
     case "number":
-      element = (
-        <InputNumber key={keyProp} {...field} {...options} ref={ref} className="w-full" disabled={isSubmitting} />
-      );
+      element = <InputNumber key={keyProp} {...subElementProps} ref={ref} className="w-full" />;
       break;
     case "textarea":
-      element = <TextArea key={keyProp} {...field} {...options} ref={ref} rows={4} disabled={isSubmitting} />;
+      element = <TextArea key={keyProp} {...subElementProps} ref={ref} rows={4} />;
       break;
     default:
-      element = <BaseInput key={keyProp} {...field} {...options} ref={ref} type="text" disabled={isSubmitting} />;
+      element = <BaseInput key={keyProp} {...subElementProps} ref={ref} type="text" />;
       break;
   }
   return (

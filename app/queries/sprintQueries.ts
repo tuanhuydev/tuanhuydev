@@ -1,7 +1,7 @@
 import { useFetch } from "./useSession";
 import { BASE_URL } from "@lib/configs/constants";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useSprintQuery = (projectId: string, filter: ObjectType = {}) => {
   const { fetch } = useFetch();
@@ -17,6 +17,32 @@ export const useSprintQuery = (projectId: string, filter: ObjectType = {}) => {
       if (!response.ok) throw new BaseError("Unable to get sprints");
       const { data: sprints = [] } = await response.json();
       return sprints;
+    },
+  });
+};
+
+export type MutationParams = {
+  body: ObjectType;
+  method: "POST" | "PUT" | "DELETE";
+};
+export const useMutateSprint = () => {
+  const queryClient = useQueryClient();
+  const { fetch } = useFetch();
+
+  return useMutation({
+    mutationFn: async ({ body, method = "POST" }: MutationParams) => {
+      let url = `${BASE_URL}/api/sprints`;
+      if (body.id) {
+        url = `${url}/${body.id}`;
+      }
+      const response = await fetch(url, {
+        method,
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new BaseError("Unable to mutate sprint");
+      queryClient.invalidateQueries({
+        queryKey: ["sprints"],
+      });
     },
   });
 };

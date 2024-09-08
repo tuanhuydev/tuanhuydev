@@ -1,3 +1,5 @@
+"use client";
+
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { sourceCodeFont } from "@app/font";
 import theme from "@lib/configs/theme";
@@ -14,9 +16,21 @@ const MuiBaseTheme = createTheme({
   typography: {
     fontSize: 16,
     fontFamily: sourceCodeFont.style.fontFamily,
+    body2: {
+      fontSize: "0.875rem",
+    },
   },
   zIndex: {
     drawer: 0,
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: sourceCodeFont.style.fontFamily,
+        },
+      },
+    },
   },
 });
 

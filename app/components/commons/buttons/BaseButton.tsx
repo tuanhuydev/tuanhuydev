@@ -7,7 +7,7 @@ const ButtonVariantsClasses = {
   primary:
     "bg-primary border-none text-slate-50 dark:bg-slate-500 dark:text-slate-200 disabled:bg-slate-200 disabled:text-slate-400",
   outline: "bg-transparent border-2 border-solid border-primary text-primary",
-  text: "text-primary border-none bg-transparent hover:bg-slate-100 dark:hover:bg-slate-600 dark:text-slate-50",
+  text: "text-primary border-none bg-transparent hover:underline dark:text-slate-50",
 };
 
 type ButtonVariants = keyof typeof ButtonVariantsClasses;
@@ -19,7 +19,7 @@ export interface BaseButtonProps extends ButtonProps {
   variants?: ButtonVariants;
 }
 let baseClassName =
-  "cursor-pointer min-w-max rounded-md flex justify-center items-center gap-1 transition-all duration-300";
+  "cursor-pointer font-sans min-w-max rounded-md flex justify-center items-center gap-1 transition-all duration-300";
 
 const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, ref) => {
   const { className = "", variants = "primary", label, icon, loading = false, disabled, ...restProps } = props;
@@ -42,7 +42,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
 
   const makeClassName = () => {
     const isIconButton = icon && !label;
-    const spacing = isIconButton ? "p-1" : "px-3 py-2";
+    const spacing = isIconButton ? "p-1" : variants === "text" ? "p-0" : "px-3 py-2";
     return clsx(baseClassName, spacing, variantClassName, className);
   };
 
