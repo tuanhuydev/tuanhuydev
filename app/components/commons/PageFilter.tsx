@@ -25,7 +25,7 @@ export default function PageFilter({
         onChange={onSearch}
         placeholder={searchPlaceholder}
         className="grow mr-2 rounded-sm"
-        startAdornment={<SearchOutlined fontSize="small" />}
+        startAdornment={<SearchOutlined fontSize="small" className=" dark:fill-slate-50" />}
       />
       <BaseButton label={createLabel} icon={<ControlPointOutlined fontSize="small" />} onClick={onNew} />
     </div>

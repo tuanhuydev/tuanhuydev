@@ -1,6 +1,8 @@
+"use client";
+
 import WithTransition from "../commons/hocs/WithTransition";
 import Navbar from "./Navbar";
-import React, { Fragment, PropsWithChildren, ReactElement } from "react";
+import { Fragment, PropsWithChildren, ReactElement } from "react";
 
 export interface PageContainerProps extends PropsWithChildren {
   title?: string;

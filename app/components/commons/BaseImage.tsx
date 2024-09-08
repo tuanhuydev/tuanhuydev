@@ -4,10 +4,8 @@ import Loader from "./Loader";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { isURLValid } from "@lib/shared/utils/helper";
 import dynamic from "next/dynamic";
-import { ImageProps } from "next/image";
-import { memo, useEffect, useState } from "react";
-
-const Image = dynamic(() => import("next/image"), { ssr: false, loading: () => <Loader /> });
+import Image, { ImageProps } from "next/image";
+import { useEffect, useState } from "react";
 
 const WarningOutlined = dynamic(() => import("@mui/icons-material/WarningAmberOutlined"), {
   ssr: false,
@@ -36,4 +34,4 @@ const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImag
   );
 };
 
-export default memo(BaseImage);
+export default BaseImage;

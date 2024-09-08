@@ -25,11 +25,6 @@ import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
 import { RefObject, useEffect, useRef } from "react";
 
-// const BlockTypeSelect = dynamic(async () => (await import("@mdxeditor/editor")).BlockTypeSelect, {
-//   ssr: false,
-//   loading: () => <Loader />,
-// });
-
 const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
   ssr: false,
   loading: () => <Loader />,
@@ -139,7 +134,14 @@ export default function BaseMarkdown({
           markdownShortcutPlugin(),
           codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
           codeMirrorPlugin({
-            codeBlockLanguages: { js: "JavaScript", css: "CSS", txt: "text", tsx: "TypeScript" },
+            codeBlockLanguages: {
+              js: "JavaScript",
+              css: "CSS",
+              txt: "text",
+              tsx: "TypeScript",
+              bash: "Bash",
+              json: "JSON",
+            },
           }),
         ]}
       />

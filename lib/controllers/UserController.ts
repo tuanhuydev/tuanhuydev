@@ -3,6 +3,7 @@ import { extractBearerToken } from "@app/_utils/network";
 import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
 import MongoUserPermissionRepository from "@lib/repositories/MongoUserPermissionRepository";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
+import LogService from "@lib/services/LogService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
@@ -86,7 +87,7 @@ class UserController implements BaseController {
 
       return network.successResponse(newUser);
     } catch (error) {
-      console.log(error);
+      LogService.log(error);
       return network.failResponse(error as BaseError);
     }
   }

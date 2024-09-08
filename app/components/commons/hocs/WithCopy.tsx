@@ -1,3 +1,5 @@
+"use client";
+
 import { TooltipProps } from "antd";
 import dynamic from "next/dynamic";
 import { PropsWithChildren, memo, useEffect, useState } from "react";
