@@ -10,7 +10,7 @@ import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import notification from "antd/es/notification";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 
 const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,
@@ -51,7 +51,7 @@ export default function SignIn() {
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const submit = async (formData: any) => {
+  const submit = useCallback(async (formData: any) => {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
         method: "POST",
@@ -69,7 +69,7 @@ export default function SignIn() {
       LogService.log(error as BaseError);
       api.error({ message: (error as BaseError).message });
     }
-  };
+  }, []);
 
   return (
     <Fragment>

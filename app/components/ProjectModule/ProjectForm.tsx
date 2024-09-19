@@ -4,10 +4,8 @@ import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/Dyn
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import { App } from "antd";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProjectFormProps {
@@ -17,55 +15,34 @@ export interface ProjectFormProps {
 export default function ProjectForm({ project }: ProjectFormProps) {
   const router = useRouter();
 
-  const { data: users = [] } = useUsersQuery();
-  const { notification } = App.useApp();
+  const { data: users = [] } = useUsersQuery({ projectId: project?.id });
 
   const { mutateAsync: createProjectMutation } = useCreateProjectMutation();
   const { mutateAsync: updateProjectMutation } = useUpdateProjectMutation();
 
   const isUpdatingProject = !!project;
 
-  const updateProject = async (formData: ObjectType, form?: UseFormReturn) => {
+  const handleProjectMutation = async (
+    formData: ObjectType,
+    mutationFn: (data: ObjectType) => Promise<any>,
+    form?: UseFormReturn,
+  ) => {
     try {
-      await updateProjectMutation(formData);
+      await mutationFn(formData);
+      router.back();
     } catch (error) {
       LogService.log(error);
-      notification.error({ message: (error as BaseError).message });
     } finally {
       form?.reset();
-      router.back();
-    }
-  };
-
-  const createProject = async (formData: ObjectType, form?: UseFormReturn) => {
-    try {
-      await createProjectMutation(formData);
-    } catch (error) {
-      LogService.log(error);
-      notification.error({ message: (error as BaseError).message });
-    } finally {
-      form?.reset();
-      router.back();
     }
   };
 
   const onSubmit = async (formData: ObjectType, form?: UseFormReturn) => {
-    if (isUpdatingProject) {
-      return updateProject(formData);
-    }
-    return createProject(formData);
-    // try {
-    //   const { data }: any = isUpdatingProject ? await updateProject(formData) : await createProject(formData);
-    //   if (!data?.success) throw new Error("Unable to save");
-
-    //   notification.success({ message: "Save successfully" });
-    //   router.push("/dashboard/projects");
-    // } catch (error) {
-    //   notification.error({ message: (error as BaseError).message });
-    // }
+    const mutationFn = isUpdatingProject ? updateProjectMutation : createProjectMutation;
+    await handleProjectMutation(formData, mutationFn, form);
   };
 
-  const getConfig = useCallback((): DynamicFormConfig => {
+  const FormConfig = useMemo((): DynamicFormConfig => {
     const userOptions = (users as ObjectType[]).map((user: ObjectType) => ({ label: user.name, value: user.id }));
     return {
       fields: [
@@ -109,7 +86,6 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           options: {
             placeholder: "Add users",
             mode: "multiple",
-            allowClear: true,
             options: userOptions,
           },
           validate: { required: true, multiple: true },
@@ -126,7 +102,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 
   return (
     <DynamicForm
-      config={getConfig()}
+      config={FormConfig}
       onSubmit={onSubmit}
       submitProps={{ className: "ml-auto mr-2" }}
       mapValues={project}

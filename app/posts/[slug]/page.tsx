@@ -34,7 +34,6 @@ export default async function Page({ params }: any) {
   const { slug } = params;
 
   const post = await getPostBySlug(slug);
-
   if (!post) return <h1>Not Found</h1>;
 
   return (

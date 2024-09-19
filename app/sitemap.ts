@@ -9,6 +9,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: BASE_URL,
       lastModified: new Date(),
     },
+    {
+      url: `${BASE_URL}/privacy`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${BASE_URL}/ads.txt`,
+      lastModified: new Date(),
+    },
   ];
 
   (posts as ObjectType[]).forEach(({ updatedAt, slug }) => {

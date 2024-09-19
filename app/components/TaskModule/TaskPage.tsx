@@ -6,6 +6,7 @@ import { DynamicFormConfig, Field } from "@app/components/commons/Form/DynamicFo
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useSprintQuery } from "@app/queries/sprintQueries";
+import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
 import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,6 +52,7 @@ function TaskPage({
   loading = false,
 }: TaskPageProps) {
   const queryClient = useQueryClient();
+  const { data: users = [] } = useUsersQuery();
   const pathname = usePathname();
   const router = useRouter();
   const { data: sprints } = useSprintQuery(project?.id);
@@ -62,7 +64,15 @@ function TaskPage({
 
   const { selectedTask, openDrawer, mode } = meta;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
-  const projectUsers = useMemo(() => project?.users || [], [project]);
+
+  const projectUsers = useMemo(() => {
+    const { users: projectUserIds = [] } = project;
+    if (!(projectUserIds as Array<string>).length) return [];
+
+    return (users as Array<ObjectType>)
+      .filter(({ id }: ObjectType) => (projectUserIds as Array<string>).includes(id))
+      .map(({ id, name }: ObjectType) => ({ label: name, value: id }));
+  }, [project, users]);
 
   const createNewTask = useCallback(() => {
     setMeta((prevState) => ({
@@ -136,13 +146,13 @@ function TaskPage({
         type: "select",
         options: {
           placeholder: "Assignee",
-          options: project.users as Array<ObjectType>,
+          options: projectUsers,
         },
         validate: { required: true },
       });
     }
     return { fields };
-  }, [project]);
+  }, [project?.id, projectUsers]);
 
   const RenderTaskDetails = useMemo(() => {
     if (isEditMode) {

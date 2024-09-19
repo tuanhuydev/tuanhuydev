@@ -7,7 +7,7 @@ import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 const DynamicColorPicker = dynamic(() => import("./DynamicColorPicker"));
-const DynamicDatepicker = dynamic(() => import("./DynamicDatepicker"));
+const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker));
 const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"));
 const DynamicSelect = dynamic(() => import("./DynamicSelect"));
 const DynamicTable = dynamic(() => import("./DynamicTable"));
@@ -155,7 +155,7 @@ const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormPr
           case "richeditor":
             return <DynamicMarkdown key={name} {...elementProps} />;
           case "datepicker":
-            return <DynamicDatepicker key={name} {...elementProps} />;
+            return <DynamicDatePicker key={name} {...elementProps} />;
           case "colorpicker":
             return <DynamicColorPicker key={name} {...elementProps} />;
           case "table":

@@ -8,6 +8,7 @@ import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import { BaseController } from "@lib/shared/interfaces/controller";
 import Network from "@lib/shared/utils/network";
+import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
@@ -25,25 +26,39 @@ export class ProjectController implements BaseController {
         name: z.string(),
         clientName: z.string(),
         description: z.string(),
-        startDate: z.string().refine((value) => !isNaN(Date.parse(value))),
-        endDate: z.string().refine((value) => !isNaN(Date.parse(value))),
-        users: z
-          .array(
-            z.object({
-              label: z.string(),
-              value: z.string(),
-            }),
+        startDate: z
+          .string()
+          .refine(
+            (value) => {
+              const date = new Date(value);
+              return !isNaN(date.getTime());
+            },
+            {
+              message: "Invalid start date",
+            },
           )
-          .default([]),
+          .transform((value) => new Date(value).toISOString()),
+        endDate: z.string().refine(
+          (value) => {
+            const date = new Date(value);
+            return !isNaN(date.getTime());
+          },
+          {
+            message: "Invalid end date",
+          },
+        ),
+        users: z.array(z.string().transform((value) => new ObjectId(value))).default([]),
       });
 
       const body = await network.getBody();
       const validatedBody = schema.safeParse(body);
-      if (!validatedBody.success) throw new BadRequestError();
+
+      if (!validatedBody.success) throw new BadRequestError("Inavlid request body");
 
       const newProject = await MongoProjectRepository.createProject(body);
       return network.successResponse(newProject);
     } catch (error) {
+      console.log(error);
       LogService.log((error as Error).message);
       return network.failResponse(error as BaseError);
     }
