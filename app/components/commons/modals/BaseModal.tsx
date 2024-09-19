@@ -28,7 +28,7 @@ const CustomRoot = forwardRef<HTMLDivElement, PropsWithChildren>(({ children }, 
 });
 CustomRoot.displayName = "CustomRoot";
 
-export const BaseModal = React.forwardRef(
+const BaseModal = React.forwardRef(
   (
     { open, closable = false, title, children, onClose, className = "", BaseModalProps = {}, prefix }: ConfirmBoxProps,
     ref: any,

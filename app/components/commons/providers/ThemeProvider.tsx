@@ -4,6 +4,7 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { sourceCodeFont } from "@app/font";
 import theme from "@lib/configs/theme";
 import { createTheme, ThemeProvider as MUIThemeProvider, StyledEngineProvider, THEME_ID } from "@mui/material/styles";
+import type {} from "@mui/x-date-pickers/themeAugmentation";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
@@ -28,6 +29,36 @@ const MuiBaseTheme = createTheme({
       styleOverrides: {
         body: {
           fontFamily: sourceCodeFont.style.fontFamily,
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: "0.25rem",
+          fontSize: "0.875rem",
+          borderColor: "rgb(203, 213, 225)",
+          backgroundColor: "white",
+          width: "100%",
+          height: "2rem",
+          "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+            backgroundColor: "rgb(226 232 240)", //slate-200
+            color: "rgb(203, 213, 225)", // slate-400
+            borderColor: "rgb(203, 213, 225)",
+          },
+          "& input::placeholder": {
+            fontSize: "0.875rem",
+            color: "rgb(203, 213, 225)",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#172733",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgb(203, 213, 225)",
+          },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgb(203, 213, 225)",
+          },
         },
       },
     },
