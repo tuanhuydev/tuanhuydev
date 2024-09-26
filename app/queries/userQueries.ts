@@ -6,7 +6,7 @@ import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@
 export const useUsersQuery = (filter: ObjectType = {}) => {
   const { fetch } = useFetch();
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", filter],
     queryFn: async () => {
       let url = `${BASE_URL}/api/users`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;

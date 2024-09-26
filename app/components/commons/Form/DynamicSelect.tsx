@@ -14,7 +14,7 @@ const popupClasses = {
 };
 
 const getSelectStyles = (value: any) => {
-  const selectStyles = `py-2 px-3 rounded-md flex items-center border-solid border outline-1 border-slate-300 bg-white disabled:bg-slate-200 disabled:cursor-not-allowed`;
+  const selectStyles = `font-sans py-2 px-3 rounded-md flex items-center border-solid border outline-1 border-slate-300 bg-white disabled:bg-slate-200 disabled:cursor-not-allowed`;
   const className = value ? `${selectStyles} text-slate-800` : `${selectStyles} text-slate-400`;
   return { className };
 };
@@ -49,7 +49,20 @@ export default function DynamicSelect1({
           {...restFieldOptions}
           size="small"
           defaultValue={field.value}
-          className="w-full"
+          className="w-full font-sans"
+          multiple={mode === "multiple"}
+          renderValue={(value: any) => {
+            const isArrayValue = Array.isArray(value);
+            if (isArrayValue) {
+              return (value as Array<SelectOption>).length ? (
+                value.map(({ label }: SelectOption) => label).join(", ")
+              ) : (
+                <span className="text-slate-400">Select...</span>
+              );
+            }
+            if (!value) return <span className="text-slate-400">Select...</span>;
+            return value.label;
+          }}
           key={keyProp}
           disabled={isSubmitting}
           onChange={(e: any, value: any) => {

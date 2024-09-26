@@ -7,11 +7,10 @@ const ProjectForm = dynamic(() => import("@app/components/ProjectModule/ProjectF
   loading: () => <Loader />,
 });
 
-async function Page() {
+export default async function Page() {
   return (
     <PageContainer title="Create new project" goBack>
       <ProjectForm />
     </PageContainer>
   );
 }
-export default Page;

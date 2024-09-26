@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: MetaDataParams, parent: Resol
   return {
     title: post.title,
     metadataBase: currentPostURL,
-    description: post.content,
+    description: post.content.slice(0, 160),
     openGraph: {
       title: post.title,
       url: currentPostURL,
@@ -34,7 +34,6 @@ export default async function Page({ params }: any) {
   const { slug } = params;
 
   const post = await getPostBySlug(slug);
-
   if (!post) return <h1>Not Found</h1>;
 
   return (

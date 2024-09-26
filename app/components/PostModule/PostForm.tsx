@@ -14,6 +14,7 @@ import { App, Form } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { UseFormReturn } from "react-hook-form";
 
 const BaseMarkdown = dynamic(() => import("@app/components/commons/BaseMarkdown"), {
   ssr: false,
@@ -35,14 +36,14 @@ const rules = [{ required: true, message: "This field is required" }];
 
 export default function PostForm({ post }: any) {
   const {
-    mutate: mutateCreatePost,
+    mutateAsync: mutateCreatePost,
     isPending: isCreating,
     isSuccess: createSuccess,
     isError: createError,
   } = useCreatePost();
 
   const {
-    mutate: mutateUpdatePost,
+    mutateAsync: mutateUpdatePost,
     isPending: isUpdating,
     isSuccess: updateSuccess,
     isError: updateError,
@@ -59,7 +60,7 @@ export default function PostForm({ post }: any) {
   const [disabledUpload, setDisabledUpload] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [assets, setAssets] = useState([]);
-  const [previewValue, setPreviewValue] = useState<ObjectType>({});
+  // const [previewValue, setPreviewValue] = useState<ObjectType>({});
   const [isSaveDraft, setIsSaveDraft] = useState(false);
 
   const editorRef = useRef<MDXEditorMethods | null>(null);
@@ -67,9 +68,9 @@ export default function PostForm({ post }: any) {
   const isUpdatingPost = !!post;
 
   const createPost = useCallback(
-    (formData: ObjectType) => {
+    async (formData: ObjectType) => {
       try {
-        mutateCreatePost(formData);
+        await mutateCreatePost(formData);
       } catch (error) {
         LogService.log(error);
       } finally {
@@ -82,10 +83,10 @@ export default function PostForm({ post }: any) {
   );
 
   const updatePost = useCallback(
-    async (formData: any) => {
+    async (formData: ObjectType) => {
       try {
         const postToUpdate = { id: post.id, ...formData };
-        mutateUpdatePost(postToUpdate);
+        await mutateUpdatePost(postToUpdate);
         queryClient.removeQueries(["posts", post.id] as InvalidateQueryFilters);
       } catch (error) {
         LogService.log(error);
@@ -97,14 +98,29 @@ export default function PostForm({ post }: any) {
     [mutateUpdatePost, post?.id, queryClient],
   );
 
+  const handlePostMutation = useCallback(
+    async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>, form?: UseFormReturn) => {
+      try {
+        await mutationFn(formData);
+        router.back();
+      } catch (error) {
+        LogService.log(error);
+      } finally {
+        form?.reset();
+      }
+    },
+    [router],
+  );
+
   const submit = useCallback(
-    async (formData: ObjectType) => {
+    async (formData: ObjectType, returnForm?: UseFormReturn) => {
       formData.assets = assets;
       formData.publishedAt = isSaveDraft ? null : new Date();
-      if (isUpdatingPost) return updatePost(formData);
-      return createPost(formData);
+
+      const mutationFn = isUpdatingPost ? updatePost : createPost;
+      await handlePostMutation(formData, mutationFn, returnForm);
     },
-    [assets, createPost, isSaveDraft, isUpdatingPost, updatePost],
+    [assets, createPost, handlePostMutation, isSaveDraft, isUpdatingPost, updatePost],
   );
 
   const handleFieldChange = useCallback(
@@ -123,10 +139,6 @@ export default function PostForm({ post }: any) {
     },
     [form],
   );
-
-  const mapFormToPreview = (changedValue: any, value: any) => {
-    if (changedValue) setPreviewValue(value);
-  };
 
   const updatePostAssets = useCallback((asset: ObjectType) => {
     setAssets((prevAssets) => [...prevAssets, asset.id] as never);
@@ -157,7 +169,6 @@ export default function PostForm({ post }: any) {
   useEffect(() => {
     const updateContentInterval = setInterval(() => {
       form.setFieldsValue({ content: content });
-      setPreviewValue((prevContent) => ({ ...prevContent, content } as never));
     }, 1500);
     return () => clearInterval(updateContentInterval);
   }, [content, form]);
@@ -174,7 +185,6 @@ export default function PostForm({ post }: any) {
           setAssets(assets as never);
         }
       }
-      setPreviewValue(form.getFieldsValue());
     }
   }, [form, isUpdatingPost, post]);
 
@@ -195,7 +205,6 @@ export default function PostForm({ post }: any) {
           layout="vertical"
           initialValues={initialValues}
           onFieldsChange={handleFieldChange}
-          onValuesChange={mapFormToPreview}
           onFinish={submit}>
           <Form.Item name="title" rules={rules}>
             <Input placeholder="How to make a new blog ?" size="large" className="mb-2" disabled={submitting} />
