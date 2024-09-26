@@ -1,5 +1,3 @@
-"use client";
-
 import BaseInput from "./Inputs/BaseInput";
 import BaseButton from "./buttons/BaseButton";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";

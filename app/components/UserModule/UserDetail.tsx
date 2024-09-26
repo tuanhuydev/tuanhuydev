@@ -138,7 +138,6 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
               options: {
                 placeholder: "Project 1, project 2",
                 mode: "multiple",
-                allowClear: true,
                 options: userOptions,
               },
             },

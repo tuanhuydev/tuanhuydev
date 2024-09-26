@@ -36,32 +36,32 @@ jobs:
             "DATABASE_URL=${{ secrets.DATABASE_URL }}"
           
 
-  deploy:
-    name: Connect and Deploy AWS
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # deploy:
+  #   name: Connect and Deploy AWS
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Connect AWS
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ACTION_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-session-name: GithubActionSession
+  #     - name: Connect AWS
+  #       uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_ACTION_ROLE }}
+  #         aws-region: ${{ secrets.AWS_REGION }}
+  #         role-session-name: GithubActionSession
       
-      - name: Stop running containers
-        run: |
-          aws ecs update-service --cluster tuanhuydev --service tuanhuydev-service --desired-count 0
-          sleep 60
+  #     - name: Stop running containers
+  #       run: |
+  #         aws ecs update-service --cluster tuanhuydev --service tuanhuydev-service --desired-count 0
+  #         sleep 60
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: lib/backend/.aws/task-definition.json
-          service: tuanhuydev-service
-          cluster: tuanhuydev
-          wait-for-service-stability: true
+  #     - name: Deploy Amazon ECS task definition
+  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+  #       with:
+  #         task-definition: lib/backend/.aws/task-definition.json
+  #         service: tuanhuydev-service
+  #         cluster: tuanhuydev
+  #         wait-for-service-stability: true
 
       

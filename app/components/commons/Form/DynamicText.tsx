@@ -1,17 +1,13 @@
 "use client";
 
 import BaseInput from "../Inputs/BaseInput";
+import BaseTextarea from "../Inputs/BaseTextarea";
 import Loader from "../Loader";
 import dynamic from "next/dynamic";
-import React, { Ref, forwardRef } from "react";
+import { Ref, forwardRef } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
 const InputNumber = dynamic(async () => (await import("antd/es/input-number")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TextArea = dynamic(async () => (await import("antd/es/input")).default.TextArea, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -56,7 +52,7 @@ export default forwardRef(function DynamicText(
       element = <InputNumber key={keyProp} {...subElementProps} ref={ref} className="w-full" />;
       break;
     case "textarea":
-      element = <TextArea key={keyProp} {...subElementProps} ref={ref} rows={4} />;
+      element = <BaseTextarea key={keyProp} {...subElementProps} ref={ref} minRows={4} />;
       break;
     default:
       element = <BaseInput key={keyProp} {...subElementProps} ref={ref} type="text" />;
