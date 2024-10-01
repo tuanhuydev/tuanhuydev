@@ -8,6 +8,7 @@ import BaseButton from "@app/components/commons/buttons/BaseButton";
 import BaseModal from "@app/components/commons/modals/BaseModal";
 import { MutationParams, useMutateSprint } from "@app/queries/sprintQueries";
 import { DATE_FORMAT } from "@lib/configs/constants";
+import AddOutlined from "@mui/icons-material/AddOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { format } from "date-fns";
@@ -238,8 +239,8 @@ export const SprintCard = ({ isLoading, sprints = [], projectId, className = "",
     if (modalState.isEditOpen || modalState.isCreateOpen) {
       return <BaseButton icon={<ArrowBackIcon fontSize="small" />} variants="text" onClick={goBackManageSprints} />;
     }
-    return <Fragment />;
-  }, [goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);
+    return <BaseButton icon={<AddOutlined />} onClick={createNewSprint} />;
+  }, [createNewSprint, goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);
 
   return (
     <Card className={`h-full flex gap-3 ${className}`} loading={isLoading} onClick={handleCardClick}>
