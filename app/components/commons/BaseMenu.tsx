@@ -50,7 +50,7 @@ const MuiBaseMenu = forwardRef<HTMLDivElement, MuiMenuProps>((props, ref) => {
             ...resolvedSlotProps,
             className: clsx(
               resolvedSlotProps?.className,
-              "!-left-6 rounded-md drop-shadow-md ring-1 ring-slate-700 ring-opacity-5",
+              "!-left-6 rounded-md drop-shadow-md ring-1 z-[1300] ring-slate-700 ring-opacity-5",
             ),
           };
         },

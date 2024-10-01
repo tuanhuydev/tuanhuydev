@@ -4,11 +4,15 @@ import Navbar from "@app/components/HomeModule/Navbar";
 import Services from "@app/components/HomeModule/ServiceSection/Services";
 import Loader from "@app/components/commons/Loader";
 import { Metadata, Viewport } from "next";
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 
-const Contact = dynamic(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
-const BlogSection = dynamic(() => import("@app/components/HomeModule/BlogSection"), { loading: () => <Loader /> });
-const Footer = dynamic(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
+const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
+const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"), {
+  loading: () => <Loader />,
+});
+const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",

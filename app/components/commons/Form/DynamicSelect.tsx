@@ -10,7 +10,7 @@ const listboxClasses = {
 };
 
 const popupClasses = {
-  className: "z-[100]",
+  className: "z-[1300]",
 };
 
 const getSelectStyles = (value: any) => {

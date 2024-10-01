@@ -1,5 +1,3 @@
-"use client";
-
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import PostWidget from "@app/components/DashboardModule/widgets/PostWidget";
 import ProjectWidget from "@app/components/DashboardModule/widgets/ProjectWidget";
