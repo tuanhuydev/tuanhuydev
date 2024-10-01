@@ -11,7 +11,7 @@ import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
+import { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 
 const Popover = dynamic(() => import("antd/es/popover"), { ssr: false });
 
@@ -106,7 +106,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   }, [endComponent, name, email, toggleUserMenu, open]);
 
   return (
-    <div className="px-3 py-1  text-primary  dark:text-slate-50 flex item-center justify-between">
+    <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between">
       {renderStart}
       <div className="flex gap-1 items-center">
         <ThemeToggle />
