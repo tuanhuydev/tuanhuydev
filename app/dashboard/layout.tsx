@@ -1,25 +1,20 @@
-"use client";
-
 import Sidebar from "@app/components/DashboardModule/Sidebar";
-import WithTransition from "@app/components/commons/hocs/WithTransition";
-import { useMobileSidebar } from "@app/queries/metaQueries";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
 import { PropsWithChildren } from "react";
 
-export default function DashboardLayout({ children }: PropsWithChildren) {
-  const { data: showMobileHamburger } = useMobileSidebar();
-  const { data: permissions = [] } = useCurrentUserPermission();
+export const dynamic = "force-dynamic";
 
+export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationParser>
       <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">
         <div className="flex w-full relative">
-          <Sidebar permissions={permissions} openMobile={showMobileHamburger} />
-          <WithTransition className="flex grow flex-col z-2">{children}</WithTransition>
+          <Sidebar />
+          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 p-3 h-full overflow-auto flex grow flex-col">
+            {children}
+          </div>
         </div>
       </div>
-    </LocalizationProvider>
+    </LocalizationParser>
   );
 }
