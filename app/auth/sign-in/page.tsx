@@ -51,25 +51,28 @@ export default function SignIn() {
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const submit = useCallback(async (formData: any) => {
-    try {
-      const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
-      const {
-        data: { accessToken },
-      } = await response.json();
+  const submit = useCallback(
+    async (formData: any) => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
+        const {
+          data: { accessToken },
+        } = await response.json();
 
-      await queryClient.setQueryData(["accessToken" as unknown as QueryKey], accessToken);
-      router.push("/dashboard/home");
-    } catch (error) {
-      LogService.log(error as BaseError);
-      api.error({ message: (error as BaseError).message });
-    }
-  }, []);
+        await queryClient.setQueryData(["accessToken" as unknown as QueryKey], accessToken);
+        router.push("/dashboard/home");
+      } catch (error) {
+        LogService.log(error as BaseError);
+        api.error({ message: (error as BaseError).message });
+      }
+    },
+    [api, queryClient, router],
+  );
 
   return (
     <Fragment>

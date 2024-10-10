@@ -3,7 +3,7 @@ import Hero from "@app/components/HomeModule/Hero";
 import Navbar from "@app/components/HomeModule/Navbar";
 import Services from "@app/components/HomeModule/ServiceSection/Services";
 import Loader from "@app/components/commons/Loader";
-import { Metadata, Viewport } from "next";
+import { Metadata } from "next";
 import dynamicImport from "next/dynamic";
 
 const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
@@ -60,13 +60,6 @@ export const metadata: Metadata = {
   keywords: "#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS",
   manifest: "/site.webmanifest",
   category: "technology",
-};
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
 };
 
 export default async function Home() {

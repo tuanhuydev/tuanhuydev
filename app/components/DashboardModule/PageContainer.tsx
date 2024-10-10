@@ -1,18 +1,16 @@
-"use client";
-
 import Navbar from "./Navbar";
-import { Fragment, PropsWithChildren, ReactElement } from "react";
+import { Fragment, PropsWithChildren } from "react";
 
 export interface PageContainerProps extends PropsWithChildren {
   title?: string;
   goBack?: boolean;
 }
 
-export default function PageContainer({ title, goBack, children }: PageContainerProps): ReactElement<any, any> | null {
+export default function PageContainer({ title, goBack, children }: PageContainerProps) {
   return (
     <Fragment>
       <Navbar title={title} goBack={goBack} />
-      <div className="flex flex-col h-full overflow-hidden">{children}</div>
+      <div className="flex flex-col h-full">{children}</div>
     </Fragment>
   );
 }
