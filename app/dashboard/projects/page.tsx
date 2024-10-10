@@ -3,6 +3,7 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,12 @@ const ProjectCard = dynamic(async () => (await import("@app/components/ProjectMo
 
 function Page() {
   const router = useRouter();
+  const { data: permissions } = useCurrentUserPermission();
+
+  const allowCreateProject = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", resourceId = "", type = "" } = permission;
+    return action === "create" && type === "project" && resourceId === "*";
+  });
 
   const [filter, setFilter] = useState<ObjectType>({});
   const { data: projects = [], isLoading, refetch } = useProjectsQuery(filter);
@@ -60,6 +67,7 @@ function Page() {
         onNew={createNewProject}
         searchPlaceholder="Find your project"
         createLabel="New Project"
+        allowCreate={allowCreateProject}
       />
       <div className="grow overflow-auto pb-3">{RenderProjects}</div>
     </PageContainer>

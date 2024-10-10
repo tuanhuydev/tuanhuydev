@@ -3,6 +3,7 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Empty } from "antd";
@@ -22,6 +23,13 @@ const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
 export type RecordMode = "VIEW" | "EDIT";
 
 export default function Page() {
+  const { data: permissions } = useCurrentUserPermission();
+
+  const allowCreateUser = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", resourceId = "", type = "" } = permission;
+    return action === "create" && type === "user" && resourceId === "*";
+  });
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   // State
   const [filter, setFilter] = useState<ObjectType>({});
@@ -103,6 +111,7 @@ export default function Page() {
         onNew={createUser}
         searchPlaceholder="Find your user"
         createLabel="New User"
+        allowCreate={allowCreateUser}
       />
       <div className="grow overflow-auto" ref={containerRef}>
         {renderUsers()}
