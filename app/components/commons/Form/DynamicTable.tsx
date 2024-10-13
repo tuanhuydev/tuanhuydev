@@ -4,6 +4,7 @@ import BaseButton from "../buttons/BaseButton";
 import { SelectOptionType } from "@lib/configs/types";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
 import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import Tooltip from "@mui/material/Tooltip";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -12,7 +13,7 @@ import {
   GridRenderCellParams,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
-import { Input, Select, Tooltip } from "antd";
+import { Input, Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 

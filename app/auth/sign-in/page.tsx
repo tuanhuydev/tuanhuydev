@@ -79,8 +79,8 @@ export default function SignIn() {
       <div
         className="bg-white dark:bg-slate-950 flex items-center justify-center w-screen h-screen"
         data-testid="sign-in-page-testid">
-        <div className="h-fit w-96 drop-shadow-md bg-white dark:bg-slate-800 px-3 pt-3 pb-5">
-          <h1 className="font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
+        <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
+          <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
           <DynamicForm
             config={signInFormConfig}
             onSubmit={submit}

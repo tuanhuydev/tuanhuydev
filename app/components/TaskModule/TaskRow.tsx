@@ -2,7 +2,7 @@ import Badge from "../commons/Badge";
 import Button from "../commons/buttons/BaseButton";
 import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_utils/constants";
 import StarOutlined from "@mui/icons-material/StarOutlined";
-import { Tooltip } from "antd";
+import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import React, { useMemo } from "react";
 
