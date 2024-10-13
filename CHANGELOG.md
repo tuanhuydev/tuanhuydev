@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/tuanhuydev/tuanhuydev/compare/v1.1.0...v2.0.0) (2024-10-13)
+
+
+### Features
+
+* **auth:** move authentication to server ([63fac4b](https://github.com/tuanhuydev/tuanhuydev/commit/63fac4b7303b47b032775584a3d75ba32fb138fb))
+* **auth:** new authentication flow ([d983a44](https://github.com/tuanhuydev/tuanhuydev/commit/d983a44a01a9f8697ea6c86c2baa01f22d443465))
+* **backup:** export all data api and download integrated ([4d79b5d](https://github.com/tuanhuydev/tuanhuydev/commit/4d79b5d9956368abc38ecacaed888ab49d70b6c6))
+* **backup:** process posts backup ([d119e37](https://github.com/tuanhuydev/tuanhuydev/commit/d119e378102cbf679bdcc7c000bae6e697ca1425))
+* **dabase:** moving services to mongodb ([158f8bf](https://github.com/tuanhuydev/tuanhuydev/commit/158f8bf2e7fc3d3f524025c90f24294762bc7d99))
+* **editor:** add image to context ([33f6fd3](https://github.com/tuanhuydev/tuanhuydev/commit/33f6fd3b8f79a30b8d187e5330d0f3a512a2c760))
+* **page:** setting page for root user ([5109fba](https://github.com/tuanhuydev/tuanhuydev/commit/5109fba03a6e903c8bb476ef5661e31e62c4d1a3))
+* **post:** draft preview post ([cc6da56](https://github.com/tuanhuydev/tuanhuydev/commit/cc6da567594ae962438b287f5f99434986279d65))
+* **privacy:** build privacy page ([cd0d6a6](https://github.com/tuanhuydev/tuanhuydev/commit/cd0d6a620d376aaf101b94de6a3b0df25d37c41e))
+* **project:** create sprint ([c6d0984](https://github.com/tuanhuydev/tuanhuydev/commit/c6d09843b8ccd9336985123a3dca750f888194ac))
+* **project:** edit project page ([387f6f6](https://github.com/tuanhuydev/tuanhuydev/commit/387f6f60fa92761e5adc94401efee5e41c53bf7a))
+* **project:** global tasks page ([6637372](https://github.com/tuanhuydev/tuanhuydev/commit/66373727f0af8f1b96d6f025db4b193e3d2204c9))
+* **project:** project tasks shortcut ([75a6b7a](https://github.com/tuanhuydev/tuanhuydev/commit/75a6b7aa2e0e9773789cf29c21a9b49c092ee937))
+* **service:** re-write services to mongodb ([6605e91](https://github.com/tuanhuydev/tuanhuydev/commit/6605e919468c7d35de6b24266aeab5361004891a))
+* **setting:** upload backup ([b2716d2](https://github.com/tuanhuydev/tuanhuydev/commit/b2716d2213ee64052516dcf39c62f67f2104173e))
+* **sprint:** manage sprint card ([dc075c3](https://github.com/tuanhuydev/tuanhuydev/commit/dc075c35750c9f026279d5ffc91fe46b91e895bc))
+* **task:** add assignee to tasks ([34fc3df](https://github.com/tuanhuydev/tuanhuydev/commit/34fc3df4243023696282f0c02d16fdf0de046c0d))
+* **task:** add task to today ([b64b6a3](https://github.com/tuanhuydev/tuanhuydev/commit/b64b6a369e4fc97f914d02f3a99b783c3529d39a))
+* **task:** build task page ([f3af56e](https://github.com/tuanhuydev/tuanhuydev/commit/f3af56ef1dd3990fc1e89074de92aef0cf8f94be))
+* **task:** create sub-task ([7ad58b4](https://github.com/tuanhuydev/tuanhuydev/commit/7ad58b40e1fbf3b1efea4bc06e8d2f810a2a289c))
+* **task:** move task to sprint ([7a97d66](https://github.com/tuanhuydev/tuanhuydev/commit/7a97d669d632ce1ba51c9aa627d88d721c5245f0))
+* **task:** my tasks adjustments ([4c250c3](https://github.com/tuanhuydev/tuanhuydev/commit/4c250c31396242ede6439d336744b39290d63506))
+* **task:** search tasks ([5e294b1](https://github.com/tuanhuydev/tuanhuydev/commit/5e294b1164338cd9cd96646c28b73626141504d7))
+* **tasks:** global tasks ([f4b3b14](https://github.com/tuanhuydev/tuanhuydev/commit/f4b3b14dddb4ac373c00f096b611b26c5263477e))
+* **task:** share task ([f6cff29](https://github.com/tuanhuydev/tuanhuydev/commit/f6cff294a6d30f1d3aaf2a14d57c1f0e08a55141))
+* **task:** static task types ([a0c02bb](https://github.com/tuanhuydev/tuanhuydev/commit/a0c02bbdbd11c29f76d9d7e2dae5823dcefea2bd))
+* **user:** create user ([e361fff](https://github.com/tuanhuydev/tuanhuydev/commit/e361fff546f1d086e020f8c2b368aaa216570c1a))
+* **user:** display user name on menu ([1b7566d](https://github.com/tuanhuydev/tuanhuydev/commit/1b7566dd93824ab48024673694eb9ab4e5cd967c))
+* **user:** user permissions ([7a61777](https://github.com/tuanhuydev/tuanhuydev/commit/7a61777f130f323bf3f68b88c861215ead82bdcc))
+
+
+### Bug Fixes
+
+* **color:** a tag color mismatched ([41a5022](https://github.com/tuanhuydev/tuanhuydev/commit/41a5022c6c97bc54f3b4749c9eeafea9a8301610))
+* **google:** marketing tag ([69bbcb2](https://github.com/tuanhuydev/tuanhuydev/commit/69bbcb25f4853d830934f77a121b8f7ebfb5dbad))
+* **project:** project tasks search ([70a66c7](https://github.com/tuanhuydev/tuanhuydev/commit/70a66c7c8abcf2cdb0d0a9f3c3f3b4807f03afba))
+* **project:** unable to create new sprint ([8f5580d](https://github.com/tuanhuydev/tuanhuydev/commit/8f5580d4066ba20d6ae6829ce6bde8f79a9e5385))
+* **project:** unable to create project ([6103ba0](https://github.com/tuanhuydev/tuanhuydev/commit/6103ba0f295632d4f402ffb7098f6be487a8d857))
+* **task:** memory leak issue ([176d4ce](https://github.com/tuanhuydev/tuanhuydev/commit/176d4ce3d06680e4367e2f3640d642de616ee768))
+
 ## [1.1.0](https://github.com/tuanhuydev/tuanhuydev/compare/v1.0.0...v1.1.0) (2023-12-29)
 
 ### Features
