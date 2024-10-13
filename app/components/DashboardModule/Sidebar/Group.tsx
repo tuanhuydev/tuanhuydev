@@ -2,11 +2,9 @@ import Item, { ItemProps } from "./Item";
 import { EMPTY_STRING } from "@lib/configs/constants";
 import { isPathActive } from "@lib/shared/utils/helper";
 import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
-import dynamic from "next/dynamic";
+import Tooltip from "@mui/material/Tooltip";
 import { usePathname } from "next/navigation";
-import React, { Fragment, useEffect, useState } from "react";
-
-const Tooltip = dynamic(() => import("antd/es/tooltip"), { ssr: false });
+import { Fragment, useEffect, useState } from "react";
 
 export interface GroupProps extends ItemProps {
   children: ItemProps[];

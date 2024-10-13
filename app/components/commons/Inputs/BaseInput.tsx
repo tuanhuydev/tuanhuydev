@@ -1,3 +1,5 @@
+"use client";
+
 import { InputProps } from "@mui/base/Input";
 import { useInput } from "@mui/base/useInput/useInput";
 import React from "react";

@@ -1,4 +1,4 @@
-import { extractBearerToken, verifyJwt } from "@app/_utils/network";
+import { extractBearerToken } from "@app/_utils/network";
 import LogService from "@lib/services/LogService";
 import { NextRequest } from "next/server";
 

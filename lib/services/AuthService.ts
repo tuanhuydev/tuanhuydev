@@ -1,3 +1,4 @@
+import { encryptJwt } from "@app/_utils/network";
 import { SALT_ROUNDS } from "@lib/configs/constants";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import {
@@ -72,19 +73,25 @@ class AuthService {
   }
 
   async signIn(email: string, password: string): Promise<TokenPayload | null> {
+    // try {
     const { _id: userId, email: userEmail } = await this.validateSignIn(email, password);
-    const accessToken = await new jose.SignJWT({ userId, userEmail })
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime(ACCESS_TOKEN_LIFE)
-      .sign(ACCESS_TOKEN_SECRET);
+    const accessToken = await encryptJwt(
+      { userId, userEmail },
+      ACCESS_TOKEN_SECRET as unknown as string,
+      ACCESS_TOKEN_LIFE,
+    );
 
-    const refreshToken = await new jose.SignJWT({ userId, userEmail })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime(REFRESH_TOKEN_LIFE)
-      .setIssuedAt()
-      .sign(REFRESH_TOKEN_SECRET);
+    const refreshToken = await encryptJwt(
+      { userId, userEmail },
+      REFRESH_TOKEN_SECRET as unknown as string,
+      REFRESH_TOKEN_LIFE,
+    );
+
     return { accessToken, refreshToken };
+    // } catch (error) {
+    //   console.log(error);
+    //   return redirect("/sign-in?error=Invalid+Credentials", "replace" as RedirectType);
+    // }
   }
 
   forgotPassword(email: string) {
