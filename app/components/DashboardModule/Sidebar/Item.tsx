@@ -1,11 +1,10 @@
-import { Type } from "@aws-sdk/client-s3";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import { isPathActive } from "@lib/shared/utils/helper";
 import { Typography } from "@mui/material";
-import dynamic from "next/dynamic";
+import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 export interface ItemProps {
   id: string;
@@ -13,8 +12,6 @@ export interface ItemProps {
   path: string;
   icon: ReactNode;
 }
-
-const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 
 export default function Item({ label, icon, path, id }: ItemProps) {
   const pathName = usePathname();

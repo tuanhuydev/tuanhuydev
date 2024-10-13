@@ -1,7 +1,6 @@
 import Link from "next/link";
-import React, { memo } from "react";
 
-function Footer() {
+export default async function Footer() {
   const currentYear = new Date().getFullYear();
   return (
     <div className="container">
@@ -21,4 +20,3 @@ function Footer() {
     </div>
   );
 }
-export default memo(Footer);

@@ -1,10 +1,7 @@
 "use client";
 
-import { TooltipProps } from "antd";
-import dynamic from "next/dynamic";
+import Tooltip, { TooltipProps } from "@mui/material/Tooltip";
 import { PropsWithChildren, memo, useEffect, useState } from "react";
-
-const Tooltip = dynamic(() => import("antd/es/tooltip"), { ssr: false });
 
 export interface WithCopyProps extends PropsWithChildren {
   title?: string;

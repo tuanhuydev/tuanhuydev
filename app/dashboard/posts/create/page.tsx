@@ -7,12 +7,10 @@ const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
   loading: () => <Loader />,
 });
 
-async function Page() {
+export default async function Page() {
   return (
     <PageContainer title="Create New Post" goBack>
       <PostForm />
     </PageContainer>
   );
 }
-
-export default Page;

@@ -8,12 +8,10 @@ import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
+import Popover from "@mui/material/Popover";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
-
-const Popover = dynamic(() => import("antd/es/popover"), { ssr: false });
+import { Fragment, MouseEventHandler, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 
 interface NavbarProps extends PropsWithChildren {
   title?: string;
@@ -33,6 +31,15 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
 
   // State
   const [open, setOpenUserMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const signOut = useCallback(async () => {
     await signUserOut();
@@ -79,34 +86,41 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     return <Fragment />;
   }, [goBack, router, startComponent, title, toggleMobileHamburger]);
 
+  const popoverOpen = Boolean(anchorEl);
   const renderEnd = useMemo(() => {
     if (endComponent) return endComponent;
     return (
-      <Popover
-        placement="bottom"
-        title={name || email || "User"}
-        content={
+      <div className="relative">
+        <BaseButton variants="text" onClick={handleClick} icon={<PersonOutlineOutlined fontSize="small" />} />
+        <Popover
+          title={name || email || "User"}
+          open={popoverOpen}
+          anchorEl={anchorEl}
+          slotProps={{}}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          classes={{
+            paper: "bg-white dark:bg-slate-950 p-3",
+          }}
+          onClose={handleClose}>
           <ul className="block m-0 p-0 list-none">
             <li className="mb-2 text-xs text-slate-500">{email}</li>
             <li
-              className="mb-2 text-slate-500 hover:text-slate-700 cursor-pointer flex items-center"
+              className="mb-2 text-slate-500 hover:text-slate-700 text-xs cursor-pointer flex items-center"
               onClick={toggleUserMenu(true)}>
               <ExitToAppOutlined className="mr-2" fontSize="small" />
               Sign out
             </li>
           </ul>
-        }
-        overlayInnerStyle={{ width: "12rem" }}
-        trigger="click"
-        open={open}
-        onOpenChange={toggleUserMenu(false)}>
-        <BaseButton variants="text" icon={<PersonOutlineOutlined fontSize="small" />} />
-      </Popover>
+        </Popover>
+      </div>
     );
-  }, [endComponent, name, email, toggleUserMenu, open]);
+  }, [endComponent, name, email, popoverOpen, anchorEl, toggleUserMenu]);
 
   return (
-    <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between">
+    <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between relative">
       {renderStart}
       <div className="flex gap-1 items-center">
         <ThemeToggle />

@@ -1,5 +1,5 @@
-import Drawer, { DrawerProps } from "antd/es/drawer";
-import React, { CSSProperties } from "react";
+import Drawer, { DrawerProps } from "@mui/material/Drawer";
+import { CSSProperties } from "react";
 
 const drawerStyle: { [key: string]: CSSProperties } = {
   header: { display: "none" },
@@ -8,16 +8,7 @@ const drawerStyle: { [key: string]: CSSProperties } = {
 
 export default function BaseDrawer({ children, open = false, onClose, ...restProps }: DrawerProps) {
   return (
-    <Drawer
-      {...restProps}
-      size="large"
-      placement="right"
-      getContainer={false}
-      destroyOnClose
-      styles={drawerStyle}
-      footer={null}
-      open={open}
-      onClose={onClose}>
+    <Drawer {...restProps} style={drawerStyle} open={open} onClose={onClose}>
       {children}
     </Drawer>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import BaseButton from "./buttons/BaseButton";
 import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";

@@ -20,6 +20,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 
 const Group = dynamic(() => import("./Group"), { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(() => import("./Item"), { ssr: false, loading: () => <Loader /> });
+
 const LargeScreenSize: number = 924;
 
 const Sidebar: FC = () => {

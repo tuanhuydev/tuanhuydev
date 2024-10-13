@@ -7,12 +7,9 @@ import { DATE_FORMAT } from "@lib/configs/constants";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import Tooltip from "@mui/material/Tooltip";
 import format from "date-fns/format";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React from "react";
-
-const Tooltip = dynamic(async () => (await import("antd/es/tooltip")).default, { ssr: false });
 
 export interface ProjectCard {
   project: ObjectType;

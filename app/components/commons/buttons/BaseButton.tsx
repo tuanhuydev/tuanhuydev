@@ -51,7 +51,6 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
       {...restProps}
       rootElementName="button"
       ref={ref}
-      type="button"
       disabled={loading || disabled}
       className={makeClassName()}>
       {loading ? (

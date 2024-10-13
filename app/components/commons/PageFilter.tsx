@@ -9,6 +9,7 @@ export interface PageFilterProps {
   onNew: () => void;
   createLabel?: string;
   searchPlaceholder?: string;
+  allowCreate?: boolean;
 }
 
 export default function PageFilter({
@@ -16,6 +17,7 @@ export default function PageFilter({
   onNew,
   createLabel = "Create",
   searchPlaceholder = "Search",
+  allowCreate = false,
 }: PageFilterProps) {
   return (
     <div className="flex gap-2 items-center mb-6">
@@ -25,7 +27,9 @@ export default function PageFilter({
         className="grow mr-2 rounded-sm"
         startAdornment={<SearchOutlined fontSize="small" className=" dark:fill-slate-50" />}
       />
-      <BaseButton label={createLabel} icon={<ControlPointOutlined fontSize="small" />} onClick={onNew} />
+      {allowCreate && (
+        <BaseButton label={createLabel} icon={<ControlPointOutlined fontSize="small" />} onClick={onNew} />
+      )}
     </div>
   );
 }
