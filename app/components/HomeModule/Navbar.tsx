@@ -1,14 +1,11 @@
-"use client";
-
 import ThemeToggle from "@app/components/commons/ThemeToggle";
-import { memo } from "react";
 
 export interface NavbarProps {
   posts?: ObjectType[];
   withContact?: boolean;
 }
 
-export default memo(function Navbar({ posts = [], withContact = true }: NavbarProps) {
+export default async function Navbar({ posts = [], withContact = true }: NavbarProps) {
   return (
     <header className="px-2 lg:px-0 sticky top-0 z-10 flex items-center justify-between py-2 bg-slate-50 dark:bg-slate-900">
       <div className="text-primary dark:text-slate-50 font-bold flex items-center">
@@ -47,4 +44,4 @@ export default memo(function Navbar({ posts = [], withContact = true }: NavbarPr
       </div>
     </header>
   );
-});
+}

@@ -3,7 +3,7 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
-  transpilePackages: ["@mdxeditor/editor", "date-fns"],
+  transpilePackages: ["@mdxeditor/editor", "date-fns", "antd"],
   experimental: {
     optimizePackageImports: ["antd"],
   },

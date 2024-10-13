@@ -1,9 +1,8 @@
 "use client";
 
 import Loader from "../Loader";
-import { Color } from "antd/es/color-picker/color";
+import { Color } from "antd/es/color-picker";
 import dynamic from "next/dynamic";
-import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
 const ColorPicker = dynamic(() => import("antd/es/color-picker"), { ssr: false, loading: () => <Loader /> });

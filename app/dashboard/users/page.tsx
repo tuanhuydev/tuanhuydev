@@ -117,7 +117,7 @@ export default function Page() {
         {renderUsers()}
       </div>
 
-      <BaseDrawer open={openDrawer} width={600} onClose={closeDrawer}>
+      <BaseDrawer open={openDrawer} style={{ width: 600 }} onClose={closeDrawer}>
         <UserDetail user={selectedUser} onClose={closeDrawer} />
       </BaseDrawer>
     </PageContainer>
