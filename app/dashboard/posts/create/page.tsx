@@ -1,24 +1,16 @@
-"use client";
-
-import WithAuth from "@lib/components/hocs/WithAuth";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
 import dynamic from "next/dynamic";
-import React, { useEffect } from "react";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
-
-const PostForm = dynamic(() => import("@lib/PostModule/PostForm"), {
+const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-function Page({ setTitle, setPageKey }: any) {
-  useEffect(() => {
-    if (setTitle) setTitle("Create new post");
-    if (setPageKey) setPageKey(Permissions.CREATE_POST);
-  }, [setTitle, setPageKey]);
-
-  return <PostForm />;
+export default async function Page() {
+  return (
+    <PageContainer title="Create New Post" goBack>
+      <PostForm />
+    </PageContainer>
+  );
 }
-
-export default WithAuth(Page);

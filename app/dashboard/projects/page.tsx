@@ -1,112 +1,77 @@
 "use client";
 
-import WithAuth from "@lib/components/hocs/WithAuth";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
-import { useGetProjectsQuery } from "@lib/store/slices/apiSlice";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
+import PageFilter from "@app/components/commons/PageFilter";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
+import { useProjectsQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
-import React, { ChangeEvent, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
-const Loader = dynamic(async () => (await import("@lib/components/commons/Loader")).default, { ssr: false });
 const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
-});
-const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
-  ssr: false,
-});
 
-const Modal = dynamic(async () => (await import("antd/es/modal")).default, {
-  ssr: false,
+const ProjectCard = dynamic(async () => (await import("@app/components/ProjectModule/ProjectCard")).default, {
   loading: () => <Loader />,
 });
 
-const Input = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+function Page() {
+  const router = useRouter();
+  const { data: permissions } = useCurrentUserPermission();
 
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+  const allowCreateProject = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", resourceId = "", type = "" } = permission;
+    return action === "create" && type === "project" && resourceId === "*";
+  });
 
-const ProjectForm = dynamic(async () => (await import("@lib/ProjectModule/ProjectForm")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const ProjectCard = dynamic(async () => (await import("@lib/ProjectModule/ProjectCard")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const modalStyles = { header: { marginBottom: 24 } };
-
-function Page({ setTitle, setPageKey }: any) {
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [filter, setFilter] = useState<ObjectType>({});
+  const { data: projects = [], isLoading, refetch } = useProjectsQuery(filter);
 
-  const { data: projects = [], isLoading } = useGetProjectsQuery(filter);
+  const onSearchProjects = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTimeout(() => {
+        const search = event.target.value;
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 500);
+    },
+    [refetch],
+  );
 
-  const toggleModal = (openModal: boolean) => (event?: any) => setOpenModal(openModal);
+  const RenderProjects = useMemo(() => {
+    if (isLoading) return <Loader />;
 
-  const onSearchProjects = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      const search = event.target.value;
-      setFilter((filter) => ({ ...filter, search }));
-    }, 500);
-  }, []);
+    if (!projects.length) return <Empty />;
 
-  const renderProjects: JSX.Element = useMemo(
-    () => (
+    return (
       <div className="flex flex-wrap gap-2">
-        {projects.map((project: any) => (
+        {projects.map((project: ObjectType) => (
           <ProjectCard {...project} key={project.id} />
         ))}
       </div>
-    ),
-    [projects],
-  );
+    );
+  }, [isLoading, projects]);
 
-  useEffect(() => {
-    if (setTitle) setTitle("Projects");
-    if (setPageKey) setPageKey(Permissions.VIEW_PROJECTS);
-  }, [setTitle, setPageKey]);
+  const createNewProject = useCallback(() => {
+    router.push("/dashboard/projects/create");
+  }, [router]);
 
   return (
-    <Fragment>
-      <div className="flex items-center mb-6" data-testid="dashboard-posts-page-testid">
-        <Input
-          size="large"
-          onChange={onSearchProjects}
-          placeholder="Find your project"
-          className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined className="!text-lg " />}
-        />
-        <Button
-          size="large"
-          type="primary"
-          icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}
-          onClick={toggleModal(true)}>
-          New Project
-        </Button>
-      </div>
-      <div className="grow overflow-auto pb-3">
-        {isLoading ? <Loader /> : projects.length ? renderProjects : <Empty className="my-36" />}
-      </div>
-      <Modal
-        width={650}
-        title="Create Project"
-        styles={modalStyles}
-        open={openModal}
-        onCancel={toggleModal(false)}
-        footer={null}
-        keyboard={false}
-        maskClosable={false}>
-        <ProjectForm callback={toggleModal(false)} />
-      </Modal>
-    </Fragment>
+    <PageContainer title="Projects">
+      <PageFilter
+        onSearch={onSearchProjects}
+        onNew={createNewProject}
+        searchPlaceholder="Find your project"
+        createLabel="New Project"
+        allowCreate={allowCreateProject}
+      />
+      <div className="grow overflow-auto pb-3">{RenderProjects}</div>
+    </PageContainer>
   );
 }
 
-export default WithAuth(Page);
+export default Page;

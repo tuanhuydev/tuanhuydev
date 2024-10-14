@@ -1,36 +1,86 @@
-import HomeLayout from "@lib/HomeModule/HomeLayout";
-import Loader from "@lib/components/commons/Loader";
-import { BASE_URL } from "@lib/configs/constants";
-import { Post } from "@prisma/client";
-import dynamic from "next/dynamic";
-import React from "react";
+import { getPosts } from "./server/actions/blog";
+import Hero from "@app/components/HomeModule/Hero";
+import Navbar from "@app/components/HomeModule/Navbar";
+import Services from "@app/components/HomeModule/ServiceSection/Services";
+import Loader from "@app/components/commons/Loader";
+import { Metadata } from "next";
+import dynamicImport from "next/dynamic";
 
-const Hero = dynamic(async () => import("@lib/HomeModule/Hero"), { loading: () => <Loader /> });
-const Contact = dynamic(async () => import("@lib/HomeModule/Contact"), { loading: () => <Loader /> });
-const Services = dynamic(async () => import("@lib/HomeModule/Services"), { loading: () => <Loader /> });
-const BlogSection = dynamic(async () => import("@lib/HomeModule/BlogSection"), { loading: () => <Loader /> });
+const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
+const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"), {
+  loading: () => <Loader />,
+});
+const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
 
-async function getData() {
-  const response = await fetch(`${BASE_URL}/api/posts?page=1&pageSize=4&active=true`, { cache: "no-store" });
-  if (!response.ok) return [];
+export const dynamic = "force-dynamic";
 
-  const { data: posts } = await response.json();
-  return posts;
-}
+export const metadata: Metadata = {
+  title: "tuanhuydev - Fullstack Software Engineer",
+  description:
+    "🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
+  openGraph: {
+    title: "tuanhuydev - Fullstack Software Engineer",
+    description:
+      "🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
+    url: "https://tuanhuy.dev",
+    siteName: "tuanhuydev",
+    images: [
+      {
+        url: "/assets/images/preview.png",
+        width: 800,
+        height: 600,
+      },
+      {
+        url: "/assets/images/preview.png",
+        width: 1800,
+        height: 1600,
+        alt: "My custom alt",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon-16x16.png",
+  },
+  metadataBase: new URL("https://tuanhuy.dev"),
+  keywords: "#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS",
+  manifest: "/site.webmanifest",
+  category: "technology",
+};
 
 export default async function Home() {
-  const posts: Post[] = await getData();
+  const posts = await getPosts({ page: 1, pageSize: 4, published: true });
 
   return (
-    <HomeLayout>
-      <Hero />
-      <Services />
-      <BlogSection posts={posts} />
-      <Contact />
-      <audio id="audio" src="/assets/sounds/click.wav">
-        Your browser does not support the
-        <code>audio</code> element.
-      </audio>
-    </HomeLayout>
+    <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
+      <div className="container mx-auto">
+        <Navbar posts={posts} />
+        <div className="relative">
+          <Hero />
+          <Services />
+          <BlogSection posts={posts} />
+          <Contact />
+          <audio id="audio" src="/assets/sounds/click.wav">
+            Your browser does not support the
+            <code>audio</code> element.
+          </audio>
+        </div>
+        <Footer />
+      </div>
+    </main>
   );
 }

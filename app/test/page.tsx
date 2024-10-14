@@ -1,67 +1,30 @@
 "use client";
 
-import BaseMarkdown from "@lib/components/commons/BaseMarkdown";
-import { DynamicFormConfig } from "@lib/components/commons/Form/DynamicForm";
-import FormBuilder from "@lib/components/commons/Form/FormBuilder";
+import { Button, Modal, Typography } from "@mui/material";
+import React from "react";
 
 export default function Page() {
-  // dynamic form
-  // dynamic input
-  // dynamic validation
-  // generate input
-  const config: DynamicFormConfig = {
-    fields: [
-      {
-        name: "email",
-        type: "email",
-        options: { placeholder: "Email" },
-        validate: {
-          required: true,
-        },
-      },
-      {
-        name: "password",
-        type: "password",
-        options: {
-          placeholder: "Password",
-        },
-        validate: {
-          required: true,
-        },
-      },
-      {
-        name: "age",
-        type: "number",
-        options: {
-          placeholder: "Age",
-        },
-        validate: {
-          min: 0,
-          max: 100,
-        },
-      },
-      {
-        name: "description",
-        type: "textarea",
-        options: {
-          placeholder: "Description",
-        },
-        validate: {
-          required: true,
-        },
-      },
-    ],
-  };
+  const [open, setOpen] = React.useState(false);
 
-  const submit = (formData: any) => {
-    console.log(formData);
-  };
-
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
   return (
     <>
-      {/* <DynamicForm config={config} onSubmit={submit} /> */}
-      <FormBuilder />
-      {/* <BaseMarkdown value={undefined} /> */}
+      <Button onClick={handleOpen}>Open modal</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description">
+        <div className="absolute -top-1/2 -left-1/2 translate-x-1/2 translate-y-1/2 w-400 bg-white border-2 border-black rounded-md shadow-lg p-4">
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </div>
+      </Modal>
     </>
   );
 }

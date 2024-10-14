@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+.sp-read-only {
+  display: none !important;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  // font-family: "Be Vietnam Pro", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth !important;
+
+  /* Track */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.light,
+[data-theme="light"] {
+  --background: #f8fafc;
+  background-color: var(--background) !important;
+}
+
+.dark,
+[data-theme="dark"] {
+  --background: #030712;
+  background-color: var(--background) !important;
+}
+
+a {
+  text-decoration: none;
+  color: theme("colors.primary");
+
+  &:hover,
+  &:visited,
+  &:active {
+    color: theme("colors.primary");
+  }
+}
+
+button,
+button[type="button"],
+button[type="reset"],
+button[type="submit"] {
+  box-shadow: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-internal-autofill-selected {
+  // // -webkit-box-shadow: 0 0 0 0 white inset !important;
+  // -webkit-box-shadow: 0 0 0px 1000px white inset;
+  color: #030712 !important;
+}
+input:-webkit-autofill {
+  -webkit-text-fill-color: theme("colors.slate.500") !important;
+  -webkit-box-shadow: 0 0 0 1rem theme("colors.white") inset !important;
+  background-clip: content-box !important;
+}
+
+.mdxeditor-popup-container {
+  z-index: 2000 !important;
+}

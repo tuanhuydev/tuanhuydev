@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
   corePlugins: {
@@ -7,6 +6,7 @@ module.exports = {
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./lib/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      textColor: ["active"],
       height: {
         "screen-d": "100dvh",
       },
@@ -34,10 +34,19 @@ module.exports = {
       },
       gridTemplateRows: {
         post: "192px minmax(min-content, 1fr)",
-        homePosts: "repeat(6, 100px)",
+        homePosts: "repeat(6, minmax(25px, 1fr))",
       },
       gridTemplateColumns: {
-        homePosts: "repeat(6, minmax(50px, 1fr))",
+        homePosts: "repeat(6, minmax(25px, 1fr))",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0, transform: "translateY(64px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 0.25s ease-in",
       },
     },
   },

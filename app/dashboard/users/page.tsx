@@ -1,122 +1,125 @@
 "use client";
 
-import Loader from "@lib/components/commons/Loader";
-import WithAuth from "@lib/components/hocs/WithAuth";
-import { Permissions } from "@lib/shared/commons/constants/permissions";
-import { ObjectType } from "@lib/shared/interfaces/base";
-import { useGetUsersQuery } from "@lib/store/slices/apiSlice";
-import { User } from "@prisma/client";
-import { ColumnsType } from "antd/es/table";
+import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Loader from "@app/components/commons/Loader";
+import PageFilter from "@app/components/commons/PageFilter";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
+import { useUsersQuery } from "@app/queries/userQueries";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { Empty } from "antd";
 import dynamic from "next/dynamic";
-import { Fragment, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 
-const SearchOutlined = dynamic(async () => (await import("@mui/icons-material/SearchOutlined")).default, {
-  ssr: false,
+const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
+  loading: () => <Loader />,
 });
-
-const ControlPointOutlined = dynamic(async () => (await import("@mui/icons-material/ControlPointOutlined")).default, {
-  ssr: false,
+const BaseDrawer = dynamic(() => import("@app/components/commons/drawers/BaseDrawer"), {
+  loading: () => <Loader />,
 });
-
-const PersonOutlineOutlined = dynamic(async () => (await import("@mui/icons-material/PersonOutlineOutlined")).default, {
-  ssr: false,
+const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
   loading: () => <Loader />,
 });
 
-const Flex = dynamic(async () => (await import("antd/es/flex")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const Button = dynamic(async () => (await import("antd/es/button")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+export type RecordMode = "VIEW" | "EDIT";
 
-const Avatar = dynamic(async () => (await import("antd/es/avatar")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+export default function Page() {
+  const { data: permissions } = useCurrentUserPermission();
 
-const Input = dynamic(async () => (await import("antd/es/input")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+  const allowCreateUser = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", resourceId = "", type = "" } = permission;
+    return action === "create" && type === "user" && resourceId === "*";
+  });
 
-const Table = dynamic(async () => (await import("antd/es/table")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-function Page({ setTitle, setPageKey }: any) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  // State
   const [filter, setFilter] = useState<ObjectType>({});
-  const { data: users = [], isLoading: isUserLoading } = useGetUsersQuery(filter);
+  const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>();
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  // Hooks
+  const { data: users = [], isFetching, refetch } = useUsersQuery(filter);
 
-  const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      const search = e.target.value;
-      setFilter((currentFilter) => ({ ...currentFilter, search }));
-    }, 500);
-  };
-  const createUser = () => {
-    // TODO: Implement this function
-  };
+  const count = users?.length;
+  const { getTotalSize, getVirtualItems } = useVirtualizer({
+    count,
+    getScrollElement: () => containerRef.current,
+    estimateSize: useCallback(() => 48, []),
+  });
 
-  const columns: ColumnsType<Partial<User>> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => (
-        <Flex gap={8} align="center">
-          <Avatar size="small" icon={<PersonOutlineOutlined className="!h-5 !w-5" />} />
-          <h3 className="m-0 capitalize">{text}</h3>
-        </Flex>
-      ),
+  const onSearchUsers = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTimeout(() => {
+        const search = event.target.value;
+        setFilter((prevFilter) => {
+          if (search?.length) return { ...prevFilter, search };
+          delete prevFilter?.search;
+          return prevFilter;
+        });
+        refetch();
+      }, 500);
     },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      dataIndex: "id",
-      key: "id",
-      fixed: "right",
-      render: (value) => <Fragment />,
-    },
-  ];
+    [refetch],
+  );
 
-  useEffect(() => {
-    if (setTitle) setTitle("Users");
-    if (setPageKey) setPageKey(Permissions.VIEW_USERS);
-  }, [setTitle, setPageKey]);
+  const createUser = useCallback(() => {
+    setSelectedUser(undefined);
+    setOpenDrawer(true);
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    setSelectedUser(undefined);
+    setOpenDrawer(false);
+  }, []);
+
+  const viewUser = useCallback(
+    (user: ObjectType) => () => {
+      setSelectedUser(user);
+      setOpenDrawer(true);
+    },
+    [],
+  );
+
+  const renderUsers = useCallback(() => {
+    if (!users.length && !isFetching) return <Empty description="No users found" />;
+    if (isFetching) return <Loader />;
+    return (
+      <div className="w-full mt-3 relative" style={{ height: `${getTotalSize()}px` }}>
+        {getVirtualItems().map(({ index, size, start }) => {
+          const currentUser: ObjectType = users[index];
+          const activeUser = selectedUser?.id === currentUser.id;
+          const userClasses = activeUser
+            ? "bg-slate-200 hover:bg-slate-200 dark:bg-slate-800"
+            : "hover:bg-slate-100 dark:hover:bg-slate-800";
+
+          return (
+            <div
+              key={currentUser.id}
+              onClick={viewUser(currentUser)}
+              className={`absolute top-0 left-0 flex items-center w-full p-3 ${userClasses} rounded-md cursor-pointer transition-all duration-100 ease-in-out`}
+              style={{ height: `${size}px`, transform: `translateY(${start}px)` }}>
+              <UserRow user={currentUser} active={activeUser} />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }, [getTotalSize, getVirtualItems, isFetching, selectedUser, users, viewUser]);
 
   return (
-    <Fragment>
-      <Flex gap="middle" data-testid="dashboard-posts-page-testid" className="mb-3">
-        <Input
-          size="large"
-          placeholder="Find your user"
-          onChange={searchUser}
-          className="grow mr-2 rounded-sm"
-          prefix={<SearchOutlined className="!text-lg text-white" />}
-        />
-        <div>
-          <Button
-            size="large"
-            type="primary"
-            onClick={createUser}
-            className="rounded-sm"
-            icon={<ControlPointOutlined className="!h-[0.875rem] !w-[0.875rem] !leading-none" />}>
-            New User
-          </Button>
-        </div>
-      </Flex>
-      <div className="grow overflow-auto pb-3">
-        <Table columns={columns} dataSource={users} />
+    <PageContainer title="Users">
+      <PageFilter
+        onSearch={onSearchUsers}
+        onNew={createUser}
+        searchPlaceholder="Find your user"
+        createLabel="New User"
+        allowCreate={allowCreateUser}
+      />
+      <div className="grow overflow-auto" ref={containerRef}>
+        {renderUsers()}
       </div>
-    </Fragment>
+
+      <BaseDrawer open={openDrawer} style={{ width: 600 }} onClose={closeDrawer}>
+        <UserDetail user={selectedUser} onClose={closeDrawer} />
+      </BaseDrawer>
+    </PageContainer>
   );
 }
-
-export default WithAuth(Page);

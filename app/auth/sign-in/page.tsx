@@ -1,26 +1,18 @@
 "use client";
 
-import { DynamicFormConfig } from "@lib/components/commons/Form/DynamicForm";
-import { BASE_URL, STORAGE_CREDENTIAL_KEY } from "@lib/configs/constants";
-import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
-import BaseError from "@shared/commons/errors/BaseError";
-import UnauthorizedError from "@shared/commons/errors/UnauthorizedError";
-import { ObjectType } from "@shared/interfaces/base";
-import { getLocalStorage, setLocalStorage } from "@shared/utils/dom";
+import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import Loader from "@app/components/commons/Loader";
+import { BASE_URL } from "@lib/configs/constants";
+import LogService from "@lib/services/LogService";
+import BaseError from "@lib/shared/commons/errors/BaseError";
+import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import notification from "antd/es/notification";
-import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useCallback, useEffect } from "react";
+import { Fragment, useCallback } from "react";
 
-const Loader = dynamic(async () => await import("@lib/components/commons/Loader"));
-
-const DynamicForm = dynamic(() => import("@lib/components/commons/Form/DynamicForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const WithAnimation = dynamic(() => import("@lib/components/hocs/WithAnimation"), {
+const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -54,70 +46,49 @@ const signInFormConfig: DynamicFormConfig = {
 };
 
 export default function SignIn() {
+  const queryClient = useQueryClient();
   // Hooks
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
-  const syncAuth = (credential: ObjectType) => {
-    if (!credential) throw new UnauthorizedError();
-    setLocalStorage(STORAGE_CREDENTIAL_KEY, credential.refreshToken);
-    Cookies.set("jwt", credential.accessToken);
-  };
+  const submit = useCallback(
+    async (formData: any) => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
+        const {
+          data: { accessToken },
+        } = await response.json();
 
-  const getCurrentUser = async (userId: string) => {
-    const response = await fetch(`${BASE_URL}/api/users/${userId}`);
-    if (!response.ok) throw new NotFoundError("User not found");
-
-    const { data: currentUser } = await response.json();
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  };
-
-  const submit = async (formData: any) => {
-    try {
-      const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) throw new UnauthorizedError("Invalid sign in");
-      const { data: credential } = await response.json();
-      if (credential) {
-        syncAuth(credential);
-        if (credential?.userId) await getCurrentUser(credential?.userId);
-        router.push("/dashboard", {});
+        await queryClient.setQueryData(["accessToken" as unknown as QueryKey], accessToken);
+        router.push("/dashboard/home");
+      } catch (error) {
+        LogService.log(error as BaseError);
+        api.error({ message: (error as BaseError).message });
       }
-    } catch (error) {
-      api.error({ message: (error as BaseError).message });
-    }
-  };
-
-  const isAuthenticatedByStorage = useCallback(() => {
-    const credential: ObjectType | null = getLocalStorage(STORAGE_CREDENTIAL_KEY);
-    return !!credential;
-  }, []);
-
-  useEffect(() => {
-    const isAuthenticated: boolean = isAuthenticatedByStorage();
-    if (isAuthenticated) router.push("/dashboard/home");
-  }, [isAuthenticatedByStorage, router]);
+    },
+    [api, queryClient, router],
+  );
 
   return (
-    <WithAnimation>
-      <Fragment>
-        <div className="bg-white flex items-center justify-center w-screen h-screen" data-testid="sign-in-page-testid">
-          <div className="h-fit w-96 drop-shadow-md bg-white px-3 pt-3 pb-5">
-            <h1 className="font-sans text-2xl font-bold my-3">Sign In</h1>
-            <DynamicForm
-              config={signInFormConfig}
-              onSubmit={submit}
-              submitProps={{ size: "large", className: "w-full" }}
-            />
-          </div>
+    <Fragment>
+      <div
+        className="bg-white dark:bg-slate-950 flex items-center justify-center w-screen h-screen"
+        data-testid="sign-in-page-testid">
+        <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
+          <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
+          <DynamicForm
+            config={signInFormConfig}
+            onSubmit={submit}
+            submitProps={{ size: "large", className: "w-full" }}
+          />
         </div>
-        {contextHolder}
-      </Fragment>
-    </WithAnimation>
+      </div>
+      {contextHolder}
+    </Fragment>
   );
 }

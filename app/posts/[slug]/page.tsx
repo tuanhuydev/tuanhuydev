@@ -1,50 +1,45 @@
-import Loader from "@lib/components/commons/Loader";
-import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
-import "@mdxeditor/editor/style.css";
+import PostView from "@app/components/PostModule/PostView";
+import { getPostBySlug } from "@app/server/actions/blog";
+import { BASE_URL } from "@lib/configs/constants";
+import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
-import React from "react";
+import { Fragment } from "react";
 
-const ImageWithFallback = dynamic(async () => (await import("@lib/components/commons/ImageWithFallback")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const MarkdownPreview = dynamic(async () => (await import("@lib/components/commons/BaseMarkdown")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const GoogleAdsense = dynamic(() => import("@app/components/GoogleAdsense"), { ssr: false });
 
-async function getData(slug: string) {
-  const response = await fetch(`${BASE_URL}/api/posts/${slug}`, { cache: "no-store" });
-  if (!response.ok) return {};
+export async function generateMetadata({ params }: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
+  const slug = params.slug;
+  const post = await getPostBySlug(slug);
+  if (!post) return {};
 
-  const { data: post } = await response.json();
-  return post;
+  const previousImages = (await parent).openGraph?.images || [];
+  const currentPostURL = new URL(`${BASE_URL}/posts/${slug}`);
+
+  return {
+    title: post.title,
+    metadataBase: currentPostURL,
+    description: post.content.slice(0, 160),
+    openGraph: {
+      title: post.title,
+      url: currentPostURL,
+      images: [post?.thumbnail, ...previousImages],
+    },
+    alternates: {
+      canonical: currentPostURL,
+    },
+  };
 }
 
 export default async function Page({ params }: any) {
   const { slug } = params;
-  const post = await getData(slug);
+
+  const post = await getPostBySlug(slug);
   if (!post) return <h1>Not Found</h1>;
 
   return (
-    <div className="grid grid-rows-post">
-      <div className="background row-start-1 col-span-full relative opacity-40">
-        <ImageWithFallback
-          src={post.thumbnail ?? EMPTY_STRING}
-          alt={post.title}
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-      </div>
-      <div className="grid lg:grid-cols-12 -mt-10 relative z-20">
-        <div className="col-start-3 col-span-9 p-4 shadow-md rounded-md">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-white mb-3 p-3">{post.title}</h1>
-          <div className="!text-sm lg:!text-base bg-white p-3">
-            <MarkdownPreview value={post.content} readOnly />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Fragment>
+      <PostView post={post} />
+      <GoogleAdsense />
+    </Fragment>
   );
 }

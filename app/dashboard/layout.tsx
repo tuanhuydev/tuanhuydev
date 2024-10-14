@@ -1,30 +1,20 @@
-"use client";
-
-import theme from "@lib/configs/theme";
-import store from "@lib/store";
-import "@lib/styles/globals.scss";
-import dynamic from "next/dynamic";
+import Sidebar from "@app/components/DashboardModule/Sidebar";
+import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
 import { PropsWithChildren } from "react";
-import { Provider as ReduxProvider } from "react-redux";
 
-const Loader = dynamic(() => import("@lib/components/commons/Loader"), { ssr: false });
+export const dynamic = "force-dynamic";
 
-const App = dynamic(async () => (await import("antd/es/app")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const ConfigProvider = dynamic(async () => (await import("antd/es/config-provider")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
-    <ReduxProvider store={store}>
-      <ConfigProvider theme={theme}>
-        <App>{children}</App>
-      </ConfigProvider>
-    </ReduxProvider>
+    <LocalizationParser>
+      <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">
+        <div className="flex w-full relative">
+          <Sidebar />
+          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 p-3 h-full overflow-auto flex grow flex-col">
+            {children}
+          </div>
+        </div>
+      </div>
+    </LocalizationParser>
   );
 }
