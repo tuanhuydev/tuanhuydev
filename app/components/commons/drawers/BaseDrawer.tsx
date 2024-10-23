@@ -8,7 +8,16 @@ const drawerStyle: { [key: string]: CSSProperties } = {
 
 export default function BaseDrawer({ children, open = false, onClose, ...restProps }: DrawerProps) {
   return (
-    <Drawer {...restProps} style={drawerStyle} open={open} onClose={onClose}>
+    <Drawer
+      {...restProps}
+      anchor="right"
+      PaperProps={{
+        classes: {
+          root: "w-4/5 lg:w-[40rem]",
+        },
+      }}
+      open={open}
+      onClose={onClose}>
       {children}
     </Drawer>
   );
