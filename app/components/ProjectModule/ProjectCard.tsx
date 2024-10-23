@@ -4,7 +4,6 @@ import BaseCard from "../commons/Card";
 import BaseButton from "../commons/buttons/BaseButton";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { DATE_FORMAT } from "@lib/configs/constants";
-import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import Tooltip from "@mui/material/Tooltip";
@@ -27,10 +26,17 @@ export default function ProjectCard({
   users,
 }: Partial<ObjectType & { users: Array<ObjectType> }>) {
   const router = useRouter();
-
   const { data: permissions } = useCurrentUserPermission();
-  const allowUpdateProject = permissions?.[UserPermissions.UPDATE_PROJECT] ?? false;
-  const allowViewTasks = permissions?.[UserPermissions.VIEW_TASK] ?? false;
+
+  const allowUpdateProject = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", type = "" } = permission;
+    return action === "edit" && type === "project";
+  });
+
+  const allowViewTasks = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    const { action = "", type = "" } = permission;
+    return action === "view" && type === "task";
+  });
 
   const navigateDetail = (event: any) => {
     event.stopPropagation();

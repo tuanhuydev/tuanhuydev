@@ -164,6 +164,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
                       { label: "Post", value: "post" },
                       { label: "User", value: "user" },
                       { label: "Sprint", value: "sprint" },
+                      { label: "Task", value: "task" },
                     ],
                   },
                   {
@@ -244,14 +245,14 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
     if (mode === DRAWER_MODE.VIEW) {
       return (
         <div className="flex flex-col h-full gap-3">
-          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100">
-            <div className="flex gap-4 col-span-full border-b">
-              <Avatar size={128} icon={<PersonOutlineOutlined fontSize="inherit" />} />
-              <div className="my-5">
-                <h2 className="text-2xl m-0 mb-1">{user?.name}</h2>
-                <h4 className="m-0 font-normal text-slate-400">{user?.email}</h4>
-              </div>
+          <div className="flex gap-4 col-span-full border-b p-3">
+            <Avatar size={72} icon={<PersonOutlineOutlined fontSize="inherit" />} />
+            <div className="my-5">
+              <h2 className="text-2xl m-0 mb-1">{user?.name}</h2>
+              <h4 className="m-0 font-normal text-slate-400">{user?.email}</h4>
             </div>
+          </div>
+          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100">
             <div className="flex gap-4 col-span-3 border-b">
               <label className="font-normal text-slate-400">Project:</label>
               Project

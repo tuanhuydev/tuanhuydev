@@ -5,6 +5,7 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { DynamicFormConfig, Field } from "@app/components/commons/Form/DynamicForm";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
+import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
@@ -51,19 +52,30 @@ function TaskPage({
   allowSubTasks = false,
   loading = false,
 }: TaskPageProps) {
+  // Hooks
   const queryClient = useQueryClient();
   const { data: users = [] } = useUsersQuery();
+  const { data: sprints = [] } = useSprintQuery(project?.id);
+  const { data: permissions = [] } = useCurrentUserPermission();
   const pathname = usePathname();
   const router = useRouter();
-  const { data: sprints } = useSprintQuery(project?.id);
+
+  // States
   const [meta, setMeta] = useState({
     selectedTask: null as ObjectType | null,
     openDrawer: false,
     mode: COMPONENT_MODE.VIEW,
   });
 
+  // Constants
   const { selectedTask, openDrawer, mode } = meta;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
+  const allowCreateTask = project?.id
+    ? (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+        const { action = "", resourceId = "", type = "" } = permission;
+        return action === "create" && type === "task" && ["*", project?.id].includes(resourceId);
+      })
+    : true;
 
   const projectUsers = useMemo(() => {
     const { users: projectUserIds = [] } = project;
@@ -203,7 +215,7 @@ function TaskPage({
 
   return (
     <PageContainer title={project.name} goBack={!!project.name}>
-      <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" />
+      <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
       <TaskList
         projectId={project?.id}
         tasks={tasks}
