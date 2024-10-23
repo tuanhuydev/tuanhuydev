@@ -11,7 +11,7 @@ import * as React from "react";
 const DEFAULT_STALE_TIME = 1000 * 60 * 30; // 3 minutes
 const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 10 * 2; // 60 minutes
 
-export function QueryProvider(props: { children: React.ReactNode }) {
+export default function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
