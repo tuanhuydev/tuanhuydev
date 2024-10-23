@@ -1,16 +1,14 @@
-import { getPosts } from "./server/actions/blog";
+import { getPosts } from "../server/actions/blog";
 import Hero from "@app/components/HomeModule/Hero";
 import Navbar from "@app/components/HomeModule/Navbar";
 import Services from "@app/components/HomeModule/ServiceSection/Services";
-import Loader from "@app/components/commons/Loader";
+import { Post } from "@lib/types";
 import { Metadata } from "next";
 import dynamicImport from "next/dynamic";
 
-const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
-const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"), {
-  loading: () => <Loader />,
-});
-const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
+const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"));
+const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"));
+const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"));
 
 export const dynamic = "force-dynamic";
 
@@ -63,10 +61,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const posts = await getPosts({ page: 1, pageSize: 4, published: true });
+  let posts: Post[] = [];
+  try {
+    posts = await getPosts({ page: 1, pageSize: 4, published: true });
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+  }
 
   return (
-    <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
+    <main className="bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
       <div className="container mx-auto">
         <Navbar posts={posts} />
         <div className="relative">
@@ -74,10 +77,10 @@ export default async function Home() {
           <Services />
           <BlogSection posts={posts} />
           <Contact />
-          <audio id="audio" src="/assets/sounds/click.wav">
+          {/* <audio id="audio" src="/assets/sounds/click.wav" controls>
             Your browser does not support the
             <code>audio</code> element.
-          </audio>
+          </audio> */}
         </div>
         <Footer />
       </div>
