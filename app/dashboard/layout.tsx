@@ -2,8 +2,6 @@ import Sidebar from "@app/components/DashboardModule/Sidebar";
 import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
 import { PropsWithChildren } from "react";
 
-export const dynamic = "force-dynamic";
-
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <LocalizationParser>

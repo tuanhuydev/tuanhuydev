@@ -17,7 +17,7 @@
     "isolatedModules": true,
     "paths": {
       "@app/*": ["app/*"],
-      "@lib/*": ["lib/*"],
+      "@lib/*": ["server/lib/*"],
       "@public/*": ["public/*"]
     },
     "plugins": [

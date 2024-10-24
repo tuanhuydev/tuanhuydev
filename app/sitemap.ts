@@ -1,4 +1,4 @@
-import { getPosts } from "./server/actions/blog";
+import { getPosts } from "../server/actions/blog";
 import { BASE_URL } from "@lib/configs/constants";
 import { MetadataRoute } from "next";
 

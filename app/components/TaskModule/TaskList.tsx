@@ -1,5 +1,6 @@
 "use client";
 
+import Empty from "../commons/Empty";
 import Loader from "../commons/Loader";
 import { formatDate } from "@app/_utils/helper";
 import { useSprintQuery } from "@app/queries/sprintQueries";
@@ -13,7 +14,6 @@ type TaskGroupType = {
 };
 
 const TaskRow = dynamic(() => import("./TaskRow"), { ssr: false });
-const Empty = dynamic(() => import("antd/es/empty"), { ssr: false });
 
 export interface TaskListProps {
   tasks: ObjectType[];
