@@ -9,7 +9,7 @@ import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
 import { MDXEditorMethods } from "@mdxeditor/editor";
-import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { App, Form } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -87,7 +87,7 @@ export default function PostForm({ post }: any) {
       try {
         const postToUpdate = { id: post.id, ...formData };
         await mutateUpdatePost(postToUpdate);
-        queryClient.removeQueries(["posts", post.id] as InvalidateQueryFilters);
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
       } catch (error) {
         LogService.log(error);
       } finally {
@@ -102,7 +102,7 @@ export default function PostForm({ post }: any) {
     async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>, form?: UseFormReturn) => {
       try {
         await mutationFn(formData);
-        router.back();
+        router.push("/dashboard/posts");
       } catch (error) {
         LogService.log(error);
       } finally {

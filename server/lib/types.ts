@@ -1,5 +1,5 @@
 export type Post = {
-  _id: string;
+  id: string;
   title: string;
   content: string;
   slug: string;

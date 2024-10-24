@@ -9,6 +9,7 @@ import { PropsWithChildren } from "react";
 
 const QueryProvider = dynamic(() => import("@app/components/commons/providers/QueryProvider"), { ssr: false });
 const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"), { ssr: false });
+const GlobalProvider = dynamic(() => import("@app/components/commons/providers/GlobalProvider"), { ssr: false });
 
 export const viewport: Viewport = {
   themeColor: [
@@ -24,7 +25,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <ThemeProvider>
           <AppRouterCacheProvider>
             <QueryProvider>
-              <Transition>{children}</Transition>
+              <Transition>
+                <GlobalProvider>{children}</GlobalProvider>
+              </Transition>
             </QueryProvider>
             <SpeedInsights />
           </AppRouterCacheProvider>

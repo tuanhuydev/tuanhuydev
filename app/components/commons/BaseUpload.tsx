@@ -1,12 +1,15 @@
+"use client";
+
 import BaseButton from "./buttons/BaseButton";
+import { useGlobal } from "./providers/GlobalProvider";
 import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import { notification } from "antd";
 import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
 
 export interface BaseUploadProps {}
 
 export default function BaseUpload() {
+  const { notify } = useGlobal();
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -38,7 +41,7 @@ export default function BaseUpload() {
       });
       if (!response.ok) throw new Error("Failed to upload backup");
       setFiles([]);
-      notification.success({ message: "Backup uploaded" });
+      notify("Backup uploaded", "success");
     } catch (error) {
       LogService.log(error);
     } finally {

@@ -194,11 +194,7 @@ const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormPr
     [form, onSubmit],
   );
 
-  useEffect(() => {
-    checkFieldsProps();
-  }, [checkFieldsProps]);
-
-  useEffect(() => {
+  const mappingValues = useCallback(() => {
     if (!mapValues) reset();
     if (mapValues) {
       for (let [key, value] of Object.entries(mapValues)) {
@@ -215,6 +211,14 @@ const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormPr
       }
     }
   }, [mapValues, reset, setValue]);
+
+  useEffect(() => {
+    checkFieldsProps();
+  }, [checkFieldsProps]);
+
+  useEffect(() => {
+    mappingValues();
+  }, [mappingValues]);
 
   return useMemo(
     () => (

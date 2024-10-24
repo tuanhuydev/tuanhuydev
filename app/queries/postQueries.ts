@@ -19,15 +19,13 @@ export const usePostsQuery = (filter: ObjectType = {}) => {
 };
 
 export const usePostQuery = (id: string) => {
-  const { fetch } = useFetch();
-
   return useQuery({
-    queryKey: ["posts", id],
+    queryKey: ["post", id],
     queryFn: async () => {
       const response = await fetch(`${BASE_URL}/api/posts/${id}`);
-      if (!response.ok) throw new Error(response.statusText);
-      const { data: post } = await response.json();
-      return post;
+      if (!response.ok) throw new BaseError("Unable to fetch post");
+      const { data } = await response.json();
+      return data;
     },
   });
 };
