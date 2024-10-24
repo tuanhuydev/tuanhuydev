@@ -1,6 +1,7 @@
 "use client";
 
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
+import { useGlobal } from "../commons/providers/GlobalProvider";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
@@ -11,7 +12,7 @@ import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
-import { Select, notification } from "antd";
+import { Select } from "antd";
 import dynamic from "next/dynamic";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -55,6 +56,7 @@ export default function TaskFormTitle({
   config,
 }: TaskFormTitleProps) {
   // Hooks
+  const { notify } = useGlobal();
   const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
   const { mutateAsync: moveSprintMutation } = useUpdateTaskMutation();
   const { mutateAsync: mutateCrateTask, isSuccess: isCreateSuccess } = useCreateTaskMutation();
@@ -93,33 +95,33 @@ export default function TaskFormTitle({
   const handleDelete = useCallback(async () => {
     try {
       await deleteTaskMutation((task as ObjectType).id.toString());
-      notification.success({ message: "Task deleted successfully" });
+      notify("Task deleted successfully", "success");
     } catch (error) {
       LogService.log(error);
     } finally {
       onClose(false);
       toggleModalVibible("openConfirmDelete", false)();
     }
-  }, [deleteTaskMutation, onClose, task, toggleModalVibible]);
+  }, [deleteTaskMutation, notify, onClose, task, toggleModalVibible]);
 
   const handleMoveToSprint = useCallback(async () => {
     if (!sprintIdToUpdate) return;
     try {
       await moveSprintMutation({ ...task, sprintId: sprintIdToUpdate });
-      notification.success({ message: "Task moved to sprint successfully" });
+      notify("Task moved to sprint successfully", "success");
     } catch (error) {
-      notification.error({ message: "Failed to move task to sprint" });
+      notify("Failed to move task to sprint", "error");
     } finally {
       toggleModalVibible("moveToSprint", false);
     }
-  }, [moveSprintMutation, sprintIdToUpdate, task, toggleModalVibible]);
+  }, [moveSprintMutation, notify, sprintIdToUpdate, task, toggleModalVibible]);
 
   const handleCreateSubTask = useCallback(
     (formData: any) => {
       mutateCrateTask({ ...formData, parentId: task?.id, projectId: task?.projectId });
-      notification.success({ message: "Sub-task created successfully" });
+      notify("Sub-task created successfully", "success");
     },
-    [mutateCrateTask, task?.id, task?.projectId],
+    [mutateCrateTask, notify, task?.id, task?.projectId],
   );
 
   const RenderMenu = useMemo(() => {

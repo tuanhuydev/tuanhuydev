@@ -4,14 +4,14 @@ import MongoPostRepository from "@lib/repositories/MongoPostRepository";
 import { Post } from "@lib/types";
 import { redirect } from "next/navigation";
 
-const transformPost = (post: any): Post => {
+const transformPost = (post: ObjectType): Post => {
   const { _id, createdAt, updatedAt, ...restPost } = post;
   return {
     ...restPost,
-    _id: String(_id),
+    id: String(_id),
     createdAt: createdAt ? new Date(createdAt).toISOString() : new Date().toISOString(),
     updatedAt: updatedAt ? new Date(updatedAt).toISOString() : new Date().toISOString(),
-  } as Post;
+  } as unknown as Post;
 };
 
 export const getPosts = async (filter: ObjectType = {}): Promise<Post[]> => {

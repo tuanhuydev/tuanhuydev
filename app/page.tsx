@@ -64,6 +64,7 @@ export default async function Home() {
   let posts: Post[] = [];
   try {
     posts = await getPosts({ page: 1, pageSize: 4, published: true });
+    console.log(posts);
   } catch (error) {
     console.error("Failed to fetch posts:", error);
   }
