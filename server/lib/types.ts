@@ -7,4 +7,5 @@ export type Post = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  publishedAt?: Date;
 };

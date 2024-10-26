@@ -2,7 +2,7 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
 import dynamic from "next/dynamic";
 
-const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
+const PostFormV2 = dynamic(async () => (await import("@app/components/PostModule/PostFormV2")).PostFormV2, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -10,7 +10,7 @@ const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
 export default async function Page() {
   return (
     <PageContainer title="Create New Post" goBack>
-      <PostForm />
+      <PostFormV2 />
     </PageContainer>
   );
 }

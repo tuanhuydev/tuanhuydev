@@ -1,6 +1,7 @@
 "use client";
 
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
+import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useSprintQuery } from "@app/queries/sprintQueries";
@@ -12,7 +13,6 @@ import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
-import { Select } from "antd";
 import dynamic from "next/dynamic";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -79,6 +79,14 @@ export default function TaskFormTitle({
     [],
   );
 
+  const resetModalVisibility = useCallback(() => {
+    setModalsVisible({
+      createSubTask: false,
+      moveToSprint: false,
+      openConfirmDelete: false,
+    });
+  }, []);
+
   // Constants
   const isViewMode = mode === "VIEW";
   const isEditMode = mode === "EDIT";
@@ -108,13 +116,13 @@ export default function TaskFormTitle({
     if (!sprintIdToUpdate) return;
     try {
       await moveSprintMutation({ ...task, sprintId: sprintIdToUpdate });
+      resetModalVisibility();
+
       notify("Task moved to sprint successfully", "success");
     } catch (error) {
       notify("Failed to move task to sprint", "error");
-    } finally {
-      toggleModalVibible("moveToSprint", false);
     }
-  }, [moveSprintMutation, notify, sprintIdToUpdate, task, toggleModalVibible]);
+  }, [moveSprintMutation, notify, resetModalVisibility, sprintIdToUpdate, task]);
 
   const handleCreateSubTask = useCallback(
     (formData: any) => {
@@ -208,14 +216,17 @@ export default function TaskFormTitle({
         closable
         open={modalsVisible.moveToSprint}
         onClose={toggleModalVibible("moveToSprint", false)}>
-        <Select
-          placeholder="Select sprint"
-          defaultActiveFirstOption
-          onSelect={(sprintId: string) => setSprintIdToUpdate(sprintId)}
-          className="w-full"
+        <BaseSelect
           value={sprintIdToUpdate}
-          options={projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id }))}
+          options={{
+            className: "w-full",
+            placeholder: "Select sprint",
+            options: projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id })),
+          }}
+          onChange={(sprintId: string) => setSprintIdToUpdate(sprintId)}
+          keyProp={"sprint"}
         />
+
         <div className="flex gap-3 justify-end mt-5">
           <BaseButton onClick={toggleModalVibible("moveToSprint", false)} variants="text" label="Cancel" />
           <BaseButton onClick={handleMoveToSprint} label="Move"></BaseButton>

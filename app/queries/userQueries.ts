@@ -7,10 +7,10 @@ export const useUsersQuery = (filter: ObjectType = {}) => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["users", filter],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/users`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
-      const response = await fetch(url);
+      const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: users = [] } = await response.json();
       return users;
@@ -22,13 +22,13 @@ export const useCurrentUserTasks = (filter = {}) => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["currentUser", "tasks", filter],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       let url: string = `${BASE_URL}/api/users/me/tasks`;
       if (filter) {
         url = `${url}?${new URLSearchParams(filter).toString()}`;
       }
 
-      const response = await fetch(url);
+      const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: tasks = [] } = await response.json();
       return tasks;
@@ -40,8 +40,8 @@ export const useProjectUsers = (projectId: string) => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["projects", projectId, "users"],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/projects/${projectId}/users`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/projects/${projectId}/users`, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: users = [] } = await response.json();
       return users;
@@ -54,8 +54,8 @@ export const useCurrentUser = () => {
 
   return useQuery({
     queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/users/me`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/users/me`, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: currentUser = {} } = await response.json();
       return currentUser;

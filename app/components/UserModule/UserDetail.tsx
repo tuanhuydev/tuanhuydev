@@ -45,6 +45,7 @@ const revertTableUserPermissions = (tableUserPermissions: any[]) => {
 export default function UserDetail({ user, onClose }: UserDetailProps) {
   // State
   const [mode, setMode] = useState<DRAWER_MODE>(DRAWER_MODE.VIEW);
+  const [form, setForm] = useState<UseFormReturn | null>(null);
 
   // Hooks
   const { notify } = useGlobal();
@@ -202,11 +203,15 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           ],
         },
       ],
+      setForm,
+      submitProps: {
+        className: "ml-auto",
+      },
     };
   }, [editable, userOptions]);
 
   const submit = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: ObjectType) => {
       try {
         const { permissions, ...restFormData } = formData;
         const userPermissions = revertTableUserPermissions(permissions);
@@ -215,14 +220,14 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           return;
         }
         await createUser({ ...restFormData, permissionIds: userPermissions });
-        form?.reset();
         onClose();
       } catch (error) {
-        form?.reset();
         LogService.log(error);
+      } finally {
+        form?.reset();
       }
     },
-    [createUser, editable, onClose, updateUser, user],
+    [createUser, editable, form, onClose, updateUser, user],
   );
 
   useEffect(() => {
@@ -230,17 +235,13 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   }, [user]);
 
   useEffect(() => {
-    let message = "User created successfully";
-    if (updateUserSuccess) message = "User updated successfully";
     if (createdUserSuccess || updateUserSuccess) {
-      notify(message, "success");
+      notify("User saved successfully", "success");
     }
   }, [createdUserSuccess, notify, updateUserSuccess]);
 
   useEffect(() => {
-    if (user?.id) {
-      refetchUserPermission();
-    }
+    if (user?.id) refetchUserPermission();
   }, [refetchUserPermission, user?.id]);
 
   const DrawerContent = useMemo(() => {
@@ -286,7 +287,6 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           config={userFormConfig}
           onSubmit={submit}
           mapValues={{ ...user, permissions: tableUserPermissions }}
-          submitProps={{ className: "ml-auto" }}
         />
       </Fragment>
     );

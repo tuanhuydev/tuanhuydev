@@ -1,17 +1,20 @@
-import BaseButton from "../buttons/BaseButton";
+"use client";
+
+import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ButtonProps } from "antd/es/button";
 import dynamic from "next/dynamic";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import * as yup from "yup";
 
-const DynamicColorPicker = dynamic(() => import("./DynamicColorPicker"));
-const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker));
-const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"));
-const DynamicSelect = dynamic(() => import("./DynamicSelect"));
-const DynamicTable = dynamic(() => import("./DynamicTable"));
-const DynamicText = dynamic(() => import("./DynamicText"));
+const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker), {
+  ssr: false,
+});
+const DynamicColorPicker = dynamic(() => import("./DynamicColorPicker"), { ssr: false });
+const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"), { ssr: false });
+const DynamicSelect = dynamic(() => import("./DynamicSelect"), { ssr: false });
+const DynamicTable = dynamic(() => import("./DynamicTable"), { ssr: false });
+const DynamicText = dynamic(() => import("./DynamicText"), { ssr: false });
 
 export type ObjectType = Record<string, any>;
 
@@ -39,15 +42,35 @@ export interface Field {
   name: string;
   type: FieldType;
   label?: string;
-  options?: ObjectType;
+  options?: {
+    placeholder?: string;
+    mode?: "multiple" | "tags";
+    rows?: number;
+    format?: string;
+    size?: "small" | "large";
+    disabled?: boolean;
+    multiple?: boolean;
+    options?: Array<{ value: string; label: string }>;
+    className?: string;
+  };
   validate?: FieldValidation;
   style?: ObjectType;
   className?: string;
 }
 
-export interface ElementGroup {
+export interface FieldGroup {
   name: string;
   fields: Field[];
+}
+
+interface SubmitProps extends BaseButtonProps {
+  allowDefault?: boolean;
+}
+
+export interface DynamicFormConfig {
+  fields: Field[] | FieldGroup[];
+  setForm?: (form: UseFormReturn) => void;
+  submitProps?: Partial<SubmitProps>;
 }
 
 export interface DynamicFormProps {
@@ -55,19 +78,13 @@ export interface DynamicFormProps {
   disabled?: boolean;
   onSubmit: (formData: FieldValues, form?: UseFormReturn) => void | Promise<any>;
   mapValues?: ObjectType;
-  submitProps?: Partial<ButtonProps>;
-  customSubmit?: ReactNode;
 }
 
-export interface DynamicFormConfig {
-  fields: Field[] | ElementGroup[];
-}
-
-const isFieldArray = (fields: any): fields is Field[] => {
+const isFields = (fields: any): fields is Field[] => {
   return Array.isArray(fields) && fields.length > 0 && "type" in fields[0];
 };
 
-const isElementGroupArray = (fields: any): fields is ElementGroup[] => {
+const isFieldGroups = (fields: any): fields is FieldGroup[] => {
   return Array.isArray(fields) && fields.length > 0 && "fields" in fields[0];
 };
 
@@ -118,7 +135,7 @@ const fieldValidationSchema = (type: any, validate: ObjectType) => {
 
 const makeSchema = ({ fields }: DynamicFormConfig) => {
   const schema: ObjectType = {};
-  const allFields = isFieldArray(fields) ? fields : fields.flatMap((group) => group.fields);
+  const allFields = isFields(fields) ? fields : fields.flatMap((group) => group.fields);
   allFields.forEach(({ name, validate, type }: Field) => {
     if (validate) schema[name] = fieldValidationSchema(type, validate);
   });
@@ -126,9 +143,41 @@ const makeSchema = ({ fields }: DynamicFormConfig) => {
   return yup.object(schema);
 };
 
-const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormProps) => {
+const mapFields = (fields: Array<Field>, control: Control<any>) => {
+  return fields.map((field: Field) => {
+    const { name, type, options, ...restFieldProps } = field;
+    const elementProps = {
+      control,
+      name,
+      options: options as any,
+      keyProp: name,
+      ...restFieldProps,
+    };
+    switch (type) {
+      case "select":
+        return <DynamicSelect key={name} {...elementProps} />;
+      case "richeditor":
+        return <DynamicMarkdown key={name} {...elementProps} />;
+      case "datepicker":
+        return <DynamicDatePicker key={name} {...elementProps} />;
+      case "colorpicker":
+        return <DynamicColorPicker key={name} {...elementProps} />;
+      case "table":
+        return <DynamicTable key={name} {...elementProps} />;
+      default:
+        return <DynamicText key={`${name} - ${type}`} {...elementProps} type={type} />;
+    }
+  });
+};
+
+const DynamicForm = ({ config, onSubmit, mapValues }: DynamicFormProps) => {
+  // Hooks
   const form = useForm({ resolver: yupResolver(makeSchema(config)) });
-  const [registeredFields, setRegisteredFields] = useState<ReactNode[]>([]);
+
+  // State
+  const [fieldNodes, setFieldNodes] = useState<ReactNode[]>([]);
+
+  // Constants
   const {
     handleSubmit,
     control,
@@ -136,52 +185,24 @@ const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormPr
     reset,
     formState: { isSubmitting },
   } = form;
-  const { fields } = config;
-
-  const registerFields = useCallback(
-    (fields: Array<Field>) => {
-      return fields.map((field: Field) => {
-        const { name, type, options, ...restFieldProps } = field;
-        const elementProps = {
-          control,
-          name,
-          options: options as any,
-          keyProp: name,
-          ...restFieldProps,
-        };
-        switch (type) {
-          case "select":
-            return <DynamicSelect key={name} {...elementProps} />;
-          case "richeditor":
-            return <DynamicMarkdown key={name} {...elementProps} />;
-          case "datepicker":
-            return <DynamicDatePicker key={name} {...elementProps} />;
-          case "colorpicker":
-            return <DynamicColorPicker key={name} {...elementProps} />;
-          case "table":
-            return <DynamicTable key={name} {...elementProps} />;
-          default:
-            return <DynamicText key={`${name} - ${type}`} {...elementProps} type={type} />;
-        }
-      });
-    },
-    [control],
-  );
+  const { fields, submitProps = {} } = config;
+  const { allowDefault = true, ...restSubmitProps } = submitProps;
 
   const checkFieldsProps = useCallback(() => {
-    let registeredFields: ReactNode[] = [];
-    if (isFieldArray(fields)) {
-      registeredFields = registerFields(fields);
-    } else if (isElementGroupArray(fields)) {
-      registeredFields = fields.flatMap((group: ElementGroup) => [
+    let fieldNodes: ReactNode[] = [];
+
+    if (isFields(fields)) {
+      fieldNodes = mapFields(fields, control);
+    } else if (isFieldGroups(fields)) {
+      fieldNodes = fields.flatMap((group: FieldGroup) => [
         <div className="m-0 px-2 text-slate-500 font-bold" key={group.name}>
           {group.name}
         </div>,
-        ...registerFields(group.fields),
+        ...mapFields(group.fields, control),
       ]);
     }
-    setRegisteredFields(registeredFields);
-  }, [fields, registerFields]);
+    setFieldNodes(fieldNodes);
+  }, [control, fields]);
 
   const submit = useCallback(
     async (formData: FieldValues) => {
@@ -220,24 +241,29 @@ const DynamicForm = ({ config, onSubmit, mapValues, submitProps }: DynamicFormPr
     mappingValues();
   }, [mappingValues]);
 
-  return useMemo(
-    () => (
-      <form className="w-full">
-        <div className="flex flex-wrap relative overflow-auto">{registeredFields}</div>
-        <div className="h-px bg-gray-100 dark:bg-slate-700 mt-1 mb-3 mx-2"></div>
-        <div className="flex p-2">
+  useEffect(() => {
+    if (form && "setForm" in config && typeof config.setForm === "function") {
+      config.setForm(form);
+    }
+  }, [config, form]);
+
+  return (
+    <form className="w-full">
+      <div className="flex flex-wrap relative overflow-auto">{fieldNodes}</div>
+      <div className="h-px bg-gray-100 dark:bg-slate-700 mt-1 mb-3 mx-2"></div>
+      <div className="flex p-2">
+        {allowDefault && (
           <BaseButton
-            {...submitProps}
+            {...restSubmitProps}
             type="submit"
             label="Submit"
             onClick={handleSubmit(submit)}
             loading={isSubmitting}
             disabled={isSubmitting}
           />
-        </div>
-      </form>
-    ),
-    [registeredFields, submitProps, handleSubmit, submit, isSubmitting],
+        )}
+      </div>
+    </form>
   );
 };
 

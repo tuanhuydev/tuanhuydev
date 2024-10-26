@@ -16,6 +16,7 @@ export interface DynamicInputProps extends UseControllerProps<any> {
   type: "text" | "email" | "password" | "number" | "textarea";
   options?: {
     placeholder?: string;
+    disabled?: boolean;
   };
   keyProp?: string;
   className?: string;
@@ -25,7 +26,14 @@ export interface DynamicInputProps extends UseControllerProps<any> {
 // validate: ObjectType
 
 export default forwardRef(function DynamicText(
-  { type, options = {}, keyProp, className = "w-full", validate = {}, ...restProps }: DynamicInputProps,
+  {
+    type,
+    options = { disabled: false },
+    keyProp,
+    className = "w-full",
+    validate = {},
+    ...restProps
+  }: DynamicInputProps,
   ref: Ref<any>,
 ) {
   const { field, fieldState, formState } = useController(restProps);
@@ -40,7 +48,7 @@ export default forwardRef(function DynamicText(
     ...options,
     value,
     ref,
-    disabled: isSubmitting,
+    disabled: isSubmitting || options.disabled,
   };
 
   let element;

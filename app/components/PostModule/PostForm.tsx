@@ -102,7 +102,7 @@ export default function PostForm({ post }: any) {
     async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>, form?: UseFormReturn) => {
       try {
         await mutationFn(formData);
-        router.push("/dashboard/posts");
+        router.back();
       } catch (error) {
         LogService.log(error);
       } finally {

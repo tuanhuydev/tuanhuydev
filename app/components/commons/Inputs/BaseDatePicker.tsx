@@ -16,6 +16,14 @@ export const BaseDatePicker: React.FC<DatePickerProps<Date>> = forwardRef(
             InputProps: {
               sx: {
                 borderColor: "var(--slate-400)",
+                "::placeholder": {
+                  color: "var(--slate-400)",
+                },
+                "MuiInputBase-input MuiOutlinedInput-input": {
+                  "::placeholder": {
+                    color: "var(--slate-400)",
+                  },
+                },
               },
             },
             InputLabelProps: {
