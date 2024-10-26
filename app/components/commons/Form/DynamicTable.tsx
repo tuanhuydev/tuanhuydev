@@ -1,6 +1,7 @@
 "use client";
 
 import BaseInput from "../Inputs/BaseInput";
+import BaseSelect from "../Inputs/BaseSelect";
 import BaseButton from "../buttons/BaseButton";
 import { SelectOptionType } from "@lib/configs/types";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -14,7 +15,6 @@ import {
   GridRenderCellParams,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
-import { Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 
@@ -126,14 +126,17 @@ const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) =>
               );
             }
             return (
-              <Select
-                options={options}
+              <BaseSelect
+                options={{
+                  options,
+                }}
                 className="w-full h-full"
                 value={params.value}
                 placeholder="Double click to set value"
-                onChange={(newValue) => {
+                onChange={(newValue: any) => {
                   updateCell(params, newValue);
                 }}
+                keyProp={""}
               />
             );
           },

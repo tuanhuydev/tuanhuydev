@@ -29,7 +29,7 @@ export const makeSlug = (text: string) => {
   return text.concat(`-${makeRandomTextByLength(hashedLength)}`);
 };
 
-export const isURLValid = (url: string) => {
+export const isURLValid = (url: string): boolean => {
   if (!url || typeof url !== "string") return false;
   return url.startsWith("/") || url.startsWith("http://") || url.startsWith("https://");
 };

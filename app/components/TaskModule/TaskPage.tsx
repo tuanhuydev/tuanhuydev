@@ -25,9 +25,15 @@ const TaskList = dynamic(() => import("@app/components/TaskModule/TaskList"), {
   loading: () => <Loader />,
 });
 
-const TaskPreview = dynamic(() => import("@app/components/TaskModule/TaskPreview"), { loading: () => <Loader /> });
+const TaskPreview = dynamic(() => import("@app/components/TaskModule/TaskPreview"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
-const TaskForm = dynamic(() => import("@app/components/TaskModule/TaskForm"), { loading: () => <Loader /> });
+const TaskForm = dynamic(() => import("@app/components/TaskModule/TaskForm"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 const COMPONENT_MODE = {
   VIEW: "VIEW",
@@ -70,6 +76,7 @@ function TaskPage({
   // Constants
   const { selectedTask, openDrawer, mode } = meta;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
+
   const allowCreateTask = project?.id
     ? (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
         const { action = "", resourceId = "", type = "" } = permission;

@@ -8,11 +8,11 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
 
   return useQuery({
     queryKey: ["projects"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/projects`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch projects");
       const { data: projects = [] } = await response.json();
       return projects;
@@ -25,8 +25,8 @@ export const useProjectQuery = (projectId: string) => {
 
   return useQuery({
     queryKey: ["projects", projectId],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/projects/${projectId}`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/projects/${projectId}`, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch project");
       const { data: project } = await response.json();
       return project;
@@ -73,11 +73,11 @@ export const useProjectTasks = (projectId: string, filter: ObjectType = {}) => {
 
   return useQuery({
     queryKey: ["projects", projectId, "tasks"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/projects/${projectId}/tasks`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch tasks");
 
       const { data: tasks } = await response.json();

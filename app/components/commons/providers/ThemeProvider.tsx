@@ -48,7 +48,7 @@ const MuiBaseTheme = createTheme({
           },
           "& input::placeholder": {
             fontSize: "0.875rem",
-            color: "rgb(203, 213, 225)",
+            color: "rgb(148, 163, 184)",
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "#172733",
@@ -59,6 +59,25 @@ const MuiBaseTheme = createTheme({
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "rgb(203, 213, 225)",
           },
+        },
+        input: {
+          "&::placeholder": {
+            color: "rgb(148 163 184)",
+            opacity: 1,
+            fontSize: "0.75rem",
+            fontWeight: 400,
+          },
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+          fontSize: "0.875rem",
+          padding: "0.5rem 0.75rem",
+          lineHeight: "1.25rem",
+          borderRadius: "0.5rem",
         },
       },
     },

@@ -22,6 +22,24 @@ export const useFetch = () => {
   const fetchWithAuth = async (url: string, options: RequestInit = {}, retryCount = 3): Promise<any> => {
     try {
       const accessToken = queryClient.getQueryData<string>(["accessToken"]);
+      const isRefreshing = queryClient.getQueryData<boolean>(["isRefreshing"]);
+      // if there is no retry count, then force sign out
+      if (retryCount <= 0) {
+        signOut();
+      }
+
+      // if refreshing token, wait for 2 seconds before retrying
+      if (isRefreshing) {
+        queryClient.removeQueries({ queryKey: ["accessToken"] });
+        // Wait for 2 seconds and waiting BE to update access token before retrying
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(fetchWithAuth(url, options, retryCount - 1));
+          }, 4000);
+        });
+      }
+
+      if (!accessToken) throw new UnauthorizedError("Access token is missing");
       const headers = options.headers || {};
       const updatedOptions = {
         ...options,

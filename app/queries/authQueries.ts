@@ -6,8 +6,8 @@ export const usePermissions = () => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["permissions"],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/permissions`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/permissions`, { signal });
       if (!response.ok) throw new Error(response.statusText);
       const { data: permissions = [] } = await response.json();
       return permissions;

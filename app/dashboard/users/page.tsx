@@ -78,7 +78,7 @@ export default function Page() {
     [],
   );
 
-  const RenderUsers = useMemo(() => {
+  const RenderUsers = useCallback(() => {
     if (!users.length && !isFetching) return <Empty description="No users found" />;
     if (isFetching) return <Loader />;
     return (
@@ -114,7 +114,7 @@ export default function Page() {
         allowCreate={allowCreateUser}
       />
       <div className="grow overflow-auto" ref={containerRef}>
-        {RenderUsers}
+        {RenderUsers()}
       </div>
 
       <BaseDrawer open={openDrawer} onClose={closeDrawer}>

@@ -41,7 +41,7 @@ const GlobalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <GlobalContext.Provider value={{ notify }}>
       {children}
-      <Snackbar open={config.open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={config.open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={config.severity} variant="filled" sx={{ width: "100%" }}>
           {config.message}
         </Alert>

@@ -17,7 +17,6 @@ const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicFo
   loading: () => <Loader />,
 });
 
-// TODO: Move this one to API.
 const signInFormConfig: DynamicFormConfig = {
   fields: [
     {
@@ -43,6 +42,9 @@ const signInFormConfig: DynamicFormConfig = {
       },
     },
   ],
+  submitProps: {
+    className: "w-full",
+  },
 };
 
 export default function SignIn() {
@@ -60,11 +62,11 @@ export default function SignIn() {
           headers: { "Content-Type": "application/json" },
         });
         if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
-        const {
-          data: { accessToken },
-        } = await response.json();
 
-        await queryClient.setQueryData(["accessToken" as unknown as QueryKey], accessToken);
+        const { data = {} } = await response.json();
+        if (!data || !("accessToken" in data)) throw new UnauthorizedError("Invalid Credentials");
+
+        await queryClient.setQueryData(["accessToken" as unknown as QueryKey], data.accessToken);
         router.push("/dashboard/home");
       } catch (error) {
         LogService.log(error as BaseError);
@@ -80,7 +82,7 @@ export default function SignIn() {
       data-testid="sign-in-page-testid">
       <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
         <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
-        <DynamicForm config={signInFormConfig} onSubmit={submit} submitProps={{ size: "large", className: "w-full" }} />
+        <DynamicForm config={signInFormConfig} onSubmit={submit} />
       </div>
     </div>
   );

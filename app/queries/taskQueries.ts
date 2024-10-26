@@ -14,9 +14,9 @@ export const useSubTasks = (taskId: string | undefined) => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["tasks", taskId, "subTasks"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       if (!taskId) return [];
-      const response = await fetch(`${BASE_URL}/api/tasks/${taskId}/subtasks`);
+      const response = await fetch(`${BASE_URL}/api/tasks/${taskId}/subtasks`, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
       const { data: subTasks = [] } = await response.json();
       return subTasks;
