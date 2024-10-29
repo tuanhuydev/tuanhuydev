@@ -20,7 +20,6 @@
     "safari 12"
   ],
   "dependencies": {
-    "@ant-design/nextjs-registry": "^1.0.0",
     "@aws-sdk/client-s3": "^3.363.0",
     "@aws-sdk/lib-storage": "^3.391.0",
     "@commitlint/cli": "^18.4.4",
@@ -48,7 +47,6 @@
     "@tanstack/react-virtual": "^3.2.0",
     "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.10",
-    "antd": "^5.18.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.0",
     "cssnano": "^6.0.1",

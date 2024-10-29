@@ -6,9 +6,9 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <LocalizationParser>
       <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">
-        <div className="flex w-full relative">
+        <div className="flex w-full relative overflow-hidden">
           <Sidebar />
-          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 p-3 h-full overflow-auto flex grow flex-col">
+          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 p-3 h-full flex grow flex-col">
             {children}
           </div>
         </div>

@@ -9,12 +9,7 @@ const PageContainer = dynamic(() => import("@app/components/DashboardModule/Page
   loading: () => <Loader />,
 });
 
-const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const PostFormV2 = dynamic(async () => (await import("@app/components/PostModule/PostFormV2")).PostFormV2, {
+const PostForm = dynamic(async () => (await import("@app/components/PostModule/PostFormV2")).PostFormV2, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -29,7 +24,7 @@ export default function Page({ params }: PageProps) {
 
   return (
     <PageContainer title="Edit Post" goBack>
-      <div className="grow h-full">{isFetching ? <Loader /> : <PostFormV2 post={post} />}</div>
+      <div className="grow h-full">{isFetching ? <Loader /> : <PostForm post={post} />}</div>
     </PageContainer>
   );
 }
