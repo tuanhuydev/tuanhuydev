@@ -10,7 +10,6 @@ import * as yup from "yup";
 const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker), {
   ssr: false,
 });
-const DynamicColorPicker = dynamic(() => import("./DynamicColorPicker"), { ssr: false });
 const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"), { ssr: false });
 const DynamicSelect = dynamic(() => import("./DynamicSelect"), { ssr: false });
 const DynamicTable = dynamic(() => import("./DynamicTable"), { ssr: false });
@@ -27,7 +26,6 @@ type FieldType =
   | "select"
   | "richeditor"
   | "datepicker"
-  | "colorpicker"
   | "table";
 
 export interface FieldValidation {
@@ -160,8 +158,6 @@ const mapFields = (fields: Array<Field>, control: Control<any>) => {
         return <DynamicMarkdown key={name} {...elementProps} />;
       case "datepicker":
         return <DynamicDatePicker key={name} {...elementProps} />;
-      case "colorpicker":
-        return <DynamicColorPicker key={name} {...elementProps} />;
       case "table":
         return <DynamicTable key={name} {...elementProps} />;
       default:

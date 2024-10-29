@@ -98,7 +98,10 @@ export const PostFormV2: React.FC<PostFormV2Props> = ({ post }) => {
   useEffect(() => {
     if (isSuccess) {
       notify("Post saved successfully", "success");
-      queryClient.invalidateQueries({ queryKey: hasPost ? ["post", post?.id] : ["posts"] });
+      if (post?.id) {
+        queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+      }
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       router.push("/dashboard/posts");
     } else if (isError) {
       notify("Failed to save post", "error");
@@ -193,6 +196,7 @@ export const PostFormV2: React.FC<PostFormV2Props> = ({ post }) => {
     (willPublished: boolean = false) =>
     async () => {
       if (willPublished) {
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
         form?.setValue("publishedAt", new Date().toISOString());
       }
       await form?.handleSubmit(submit as any)();
