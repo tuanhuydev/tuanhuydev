@@ -8,10 +8,10 @@ export const useStatusQuery = (filter: ObjectType = {}) => {
 
   return useQuery({
     queryKey: ["status"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/status`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
-      const response = await fetch(url);
+      const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError("Unable to get status");
       const { data: status } = await response.json();
       return status;

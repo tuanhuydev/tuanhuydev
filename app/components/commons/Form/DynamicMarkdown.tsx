@@ -28,7 +28,7 @@ export default function DynamicMarkdown({
   const { invalid, error } = fieldState;
   const { ref, ...restField } = field;
   return (
-    <div className={"p-2 self-stretch w-full flex flex-col"}>
+    <div className="p-2 self-stretch w-full flex flex-col">
       <div className={className}>
         <BaseMarkdown key={keyProp} {...restField} {...options} />
       </div>

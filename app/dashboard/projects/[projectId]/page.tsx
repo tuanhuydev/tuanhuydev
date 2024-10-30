@@ -4,21 +4,15 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { SprintCard } from "@app/components/ProjectModule/ProjectDetail/SprintCard";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
-import Loader from "@app/components/commons/Loader";
 import WithCopy from "@app/components/commons/hocs/WithCopy";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { DATE_FORMAT } from "@lib/configs/constants";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { differenceInDays, format, formatDistanceToNow } from "date-fns";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
-const Progress = dynamic(() => import("antd/es/progress"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
 function Page({ params }: any) {
   const { projectId } = params;
   const router = useRouter();
@@ -89,13 +83,6 @@ function Page({ params }: any) {
         <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
           <BaseLabel>Timeline</BaseLabel>
           <div className="mt-4 flex flex-col items-center gap-4">
-            <Progress
-              steps={5}
-              percent={completedPercentage}
-              strokeColor={"#16A34A"}
-              size={[40, 40]}
-              showInfo={false}
-            />
             <p className="text-xl font-medium capitalize">{TitleByPercent}</p>
             <div className="flex justify-between w-full">
               <span className="text-xs">
@@ -114,7 +101,6 @@ function Page({ params }: any) {
             <BaseLabel>task</BaseLabel>
           </div>
           <div className="mt-4 flex flex-wrap gap-5 md:gap-x-8 lg:gap-x-12 xl:gap-x-12">
-            <Progress type="circle" success={{ percent: percent }} percent={percent} size={125} />
             <span>
               <b className="text-lg font-normal">Tasks:&nbsp;</b>
               <h3 className="text-5xl my-4">{tasks?.length ?? 0}</h3>

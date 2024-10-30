@@ -2,9 +2,9 @@
 
 import BaseInput from "@app/components/commons/Inputs/BaseInput";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { authWithEmailPassword } from "@app/server/actions/authActions";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
+import { authWithEmailPassword } from "server/actions/authActions";
 
 enum FormState {
   IDLE = "IDLE",

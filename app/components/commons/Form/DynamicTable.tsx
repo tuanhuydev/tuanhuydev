@@ -1,5 +1,7 @@
 "use client";
 
+import BaseInput from "../Inputs/BaseInput";
+import BaseSelect from "../Inputs/BaseSelect";
 import BaseButton from "../buttons/BaseButton";
 import { SelectOptionType } from "@lib/configs/types";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -13,7 +15,6 @@ import {
   GridRenderCellParams,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
-import { Input, Select } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 
@@ -115,7 +116,7 @@ const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) =>
           renderEditCell: (params: GridRenderEditCellParams) => {
             if (!options?.length) {
               return (
-                <Input
+                <BaseInput
                   onChange={(event) => {
                     event.preventDefault();
                     const value = event.target.value;
@@ -125,14 +126,17 @@ const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) =>
               );
             }
             return (
-              <Select
-                options={options}
+              <BaseSelect
+                options={{
+                  options,
+                }}
                 className="w-full h-full"
                 value={params.value}
                 placeholder="Double click to set value"
-                onChange={(newValue) => {
+                onChange={(newValue: any) => {
                   updateCell(params, newValue);
                 }}
+                keyProp={""}
               />
             );
           },
@@ -146,7 +150,9 @@ const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) =>
   useEffect(() => {
     const filteredFields = fieldData.map(({ id, isNew, ...restProps }: any) => restProps);
     onChange(filteredFields);
-  }, [fieldData, onChange]);
+    // onChange doesn't need to be in the dependency array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fieldData]);
 
   useEffect(() => {
     if (field.value && !fieldData.length) {
@@ -191,7 +197,6 @@ const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) =>
         columnHeaderHeight={42}
         rowHeight={36}
         hideFooterPagination
-        autoHeight
         hideFooter
         disableColumnMenu
         disableColumnFilter

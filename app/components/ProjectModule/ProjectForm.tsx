@@ -5,7 +5,7 @@ import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries
 import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 export interface ProjectFormProps {
@@ -13,36 +13,33 @@ export interface ProjectFormProps {
 }
 
 export default function ProjectForm({ project }: ProjectFormProps) {
+  // Hooks
   const router = useRouter();
 
   const { data: users = [] } = useUsersQuery({ projectId: project?.id });
-
   const { mutateAsync: createProjectMutation } = useCreateProjectMutation();
   const { mutateAsync: updateProjectMutation } = useUpdateProjectMutation();
 
-  const isUpdatingProject = !!project;
+  // State
+  const [form, setForm] = useState<UseFormReturn | null>(null);
 
-  const handleProjectMutation = async (
-    formData: ObjectType,
-    mutationFn: (data: ObjectType) => Promise<any>,
-    form?: UseFormReturn,
-  ) => {
+  const handleProjectMutation = async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>) => {
     try {
       await mutationFn(formData);
       router.back();
     } catch (error) {
       LogService.log(error);
     } finally {
-      form?.reset();
+      if (form) form?.reset();
     }
   };
 
-  const onSubmit = async (formData: ObjectType, form?: UseFormReturn) => {
-    const mutationFn = isUpdatingProject ? updateProjectMutation : createProjectMutation;
-    await handleProjectMutation(formData, mutationFn, form);
+  const onSubmit = async (formData: ObjectType) => {
+    const mutationFn = project ? updateProjectMutation : createProjectMutation;
+    await handleProjectMutation(formData, mutationFn);
   };
 
-  const FormConfig = useMemo((): DynamicFormConfig => {
+  const config = useMemo((): DynamicFormConfig => {
     const userOptions = (users as ObjectType[]).map((user: ObjectType) => ({ label: user.name, value: user.id }));
     return {
       fields: [
@@ -97,15 +94,12 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           validate: { required: true },
         },
       ],
+      submitProps: {
+        className: "ml-auto mr-2",
+      },
+      setForm,
     };
   }, [users]);
 
-  return (
-    <DynamicForm
-      config={FormConfig}
-      onSubmit={onSubmit}
-      submitProps={{ className: "ml-auto mr-2" }}
-      mapValues={project}
-    />
-  );
+  return <DynamicForm config={config} onSubmit={onSubmit} mapValues={project} />;
 }

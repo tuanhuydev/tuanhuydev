@@ -1,11 +1,15 @@
 "use client";
 
-import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
 import { usePostQuery } from "@app/queries/postQueries";
 import dynamic from "next/dynamic";
 
-const PostForm = dynamic(() => import("@app/components/PostModule/PostForm"), {
+const PageContainer = dynamic(() => import("@app/components/DashboardModule/PageContainer"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
+
+const PostForm = dynamic(async () => (await import("@app/components/PostModule/PostFormV2")).PostFormV2, {
   ssr: false,
   loading: () => <Loader />,
 });
@@ -16,11 +20,11 @@ interface PageProps {
 
 export default function Page({ params }: PageProps) {
   const { id } = params;
-  const { data: post, isPending } = usePostQuery(id as string);
+  const { data: post, isFetching } = usePostQuery(id as string);
 
   return (
     <PageContainer title="Edit Post" goBack>
-      <div className="grow h-full">{isPending ? <Loader /> : <PostForm post={post} />}</div>
+      <div className="grow h-full">{isFetching ? <Loader /> : <PostForm post={post} />}</div>
     </PageContainer>
   );
 }

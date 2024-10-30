@@ -10,7 +10,7 @@ export default function PageContainer({ title, goBack, children }: PageContainer
   return (
     <Fragment>
       <Navbar title={title} goBack={goBack} />
-      <div className="flex flex-col h-full">{children}</div>
+      <div className="flex flex-col overflow-auto">{children}</div>
     </Fragment>
   );
 }
