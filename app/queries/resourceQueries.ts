@@ -7,8 +7,8 @@ export const useCurrentUserResources = () => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["currentUserResources"],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/resources/me`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/resources/me`, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
 
       const { data: resources = [] } = await response.json();

@@ -8,8 +8,8 @@ export const useCurrentUserPermission = () => {
   return useQuery({
     queryKey: ["permissions", "current"],
     placeholderData: [],
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/users/me/permissions`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/users/me/permissions`, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch permissions");
       const { data: permissions = [] } = await response.json();
 
@@ -23,8 +23,8 @@ export const useUserPermissions = (userId: string) => {
   return useQuery({
     queryKey: ["permissions", "user", userId],
     enabled: false,
-    queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/api/users/${userId}/permissions`);
+    queryFn: async ({ signal }) => {
+      const response = await fetch(`${BASE_URL}/api/users/${userId}/permissions`, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch permissions");
       const { data: permissions = [] } = await response.json();
       return permissions;

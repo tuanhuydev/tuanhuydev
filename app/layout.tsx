@@ -1,17 +1,15 @@
+import Transition from "./components/commons/Transition";
 import { sourceCodeFont } from "./font";
 import "@app/styles/globals.scss";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Viewport } from "next";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
-const QueryProvider = dynamic(
-  () => import("@app/components/commons/providers/QueryProvider").then((module) => module.QueryProvider),
-  { ssr: false },
-);
-
+const QueryProvider = dynamic(() => import("@app/components/commons/providers/QueryProvider"), { ssr: false });
 const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"), { ssr: false });
+const GlobalProvider = dynamic(() => import("@app/components/commons/providers/GlobalProvider"), { ssr: false });
 
 export const viewport: Viewport = {
   themeColor: [
@@ -26,7 +24,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <body>
         <ThemeProvider>
           <AppRouterCacheProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              <Transition>
+                <GlobalProvider>{children}</GlobalProvider>
+              </Transition>
+            </QueryProvider>
             <SpeedInsights />
           </AppRouterCacheProvider>
         </ThemeProvider>

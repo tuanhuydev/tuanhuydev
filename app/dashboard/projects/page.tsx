@@ -1,6 +1,7 @@
 "use client";
 
 import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
@@ -8,8 +9,6 @@ import { useProjectsQuery } from "@app/queries/projectQueries";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-
-const Empty = dynamic(async () => (await import("antd/es/empty")).default, { ssr: false, loading: () => <Loader /> });
 
 const ProjectCard = dynamic(async () => (await import("@app/components/ProjectModule/ProjectCard")).default, {
   loading: () => <Loader />,

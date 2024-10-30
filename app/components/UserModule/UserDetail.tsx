@@ -1,14 +1,15 @@
 "use client";
 
-import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
-import { DRAWER_MODE } from "../commons/drawers";
-import BaseDrawerHeader from "../commons/drawers/BaseDrawerHeader";
+import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import { DRAWER_MODE } from "@app/components/commons/drawers";
+import BaseDrawerHeader from "@app/components/commons/drawers/BaseDrawerHeader";
+import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { useUserPermissions } from "@app/queries/permissionQueries";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import { useCreateUser, useUpdateUserDetail } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Avatar, notification } from "antd";
+import { Avatar } from "@mui/material";
 import format from "date-fns/format";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -44,8 +45,10 @@ const revertTableUserPermissions = (tableUserPermissions: any[]) => {
 export default function UserDetail({ user, onClose }: UserDetailProps) {
   // State
   const [mode, setMode] = useState<DRAWER_MODE>(DRAWER_MODE.VIEW);
+  const [form, setForm] = useState<UseFormReturn | null>(null);
 
   // Hooks
+  const { notify } = useGlobal();
   const { mutateAsync: createUser, isSuccess: createdUserSuccess } = useCreateUser();
   const { mutateAsync: updateUser, isSuccess: updateUserSuccess } = useUpdateUserDetail();
   const { data: projects = [] } = useProjectsQuery();
@@ -200,11 +203,15 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           ],
         },
       ],
+      setForm,
+      submitProps: {
+        className: "ml-auto",
+      },
     };
   }, [editable, userOptions]);
 
   const submit = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: ObjectType) => {
       try {
         const { permissions, ...restFormData } = formData;
         const userPermissions = revertTableUserPermissions(permissions);
@@ -213,14 +220,14 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           return;
         }
         await createUser({ ...restFormData, permissionIds: userPermissions });
-        form?.reset();
         onClose();
       } catch (error) {
-        form?.reset();
         LogService.log(error);
+      } finally {
+        form?.reset();
       }
     },
-    [createUser, editable, onClose, updateUser, user],
+    [createUser, editable, form, onClose, updateUser, user],
   );
 
   useEffect(() => {
@@ -228,17 +235,13 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   }, [user]);
 
   useEffect(() => {
-    let message = "User created successfully";
-    if (updateUserSuccess) message = "User updated successfully";
     if (createdUserSuccess || updateUserSuccess) {
-      notification.success({ message });
+      notify("User saved successfully", "success");
     }
-  }, [createdUserSuccess, updateUserSuccess]);
+  }, [createdUserSuccess, notify, updateUserSuccess]);
 
   useEffect(() => {
-    if (user?.id) {
-      refetchUserPermission();
-    }
+    if (user?.id) refetchUserPermission();
   }, [refetchUserPermission, user?.id]);
 
   const DrawerContent = useMemo(() => {
@@ -246,7 +249,9 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
       return (
         <div className="flex flex-col h-full gap-3">
           <div className="flex gap-4 col-span-full border-b p-3">
-            <Avatar size={72} icon={<PersonOutlineOutlined fontSize="inherit" />} />
+            <Avatar sx={{ width: 72, height: 72 }}>
+              <PersonOutlineOutlined fontSize="inherit" />
+            </Avatar>
             <div className="my-5">
               <h2 className="text-2xl m-0 mb-1">{user?.name}</h2>
               <h4 className="m-0 font-normal text-slate-400">{user?.email}</h4>
@@ -282,7 +287,6 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           config={userFormConfig}
           onSubmit={submit}
           mapValues={{ ...user, permissions: tableUserPermissions }}
-          submitProps={{ className: "ml-auto" }}
         />
       </Fragment>
     );

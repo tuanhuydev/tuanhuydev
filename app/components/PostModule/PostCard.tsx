@@ -1,12 +1,8 @@
 import BaseCard from "../commons/Card";
-import Loader from "../commons/Loader";
 import { DATE_FORMAT } from "@lib/configs/constants";
 import format from "date-fns/format";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
-
-const Tag = dynamic(async () => (await import("antd/es/tag")).default, { ssr: false, loading: () => <Loader /> });
 
 export interface PostCardProps {
   post: ObjectType;
@@ -25,13 +21,13 @@ export default function PostCard({ post, actions }: PostCardProps) {
 
   const Status: JSX.Element = useMemo(() => {
     const isPublished = !!publishedAt;
-    const color = isPublished ? "success" : "warning";
+    const color = isPublished ? "bg-green-100 text-green-400" : "bg-amber-100 text-amber-400";
     const content = isPublished ? "published" : "draft";
 
     return (
-      <Tag bordered={false} color={color} className="capitalize">
+      <div color={color} className={`text-xs py-1 px-3 rounded-md capitalize ${color}`}>
         {content}
-      </Tag>
+      </div>
     );
   }, [publishedAt]);
 

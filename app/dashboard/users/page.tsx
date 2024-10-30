@@ -1,14 +1,14 @@
 "use client";
 
 import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Empty } from "antd";
 import dynamic from "next/dynamic";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useRef, useState } from "react";
 
 const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
   loading: () => <Loader />,
@@ -21,6 +21,7 @@ const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
 });
 
 export type RecordMode = "VIEW" | "EDIT";
+const estimateSize = 48;
 
 export default function Page() {
   const { data: permissions } = useCurrentUserPermission();
@@ -38,11 +39,10 @@ export default function Page() {
   // Hooks
   const { data: users = [], isFetching, refetch } = useUsersQuery(filter);
 
-  const count = users?.length;
   const { getTotalSize, getVirtualItems } = useVirtualizer({
-    count,
+    count: (users as Array<ObjectType>).length,
     getScrollElement: () => containerRef.current,
-    estimateSize: useCallback(() => 48, []),
+    estimateSize: useCallback(() => estimateSize, []),
   });
 
   const onSearchUsers = useCallback(
@@ -78,7 +78,7 @@ export default function Page() {
     [],
   );
 
-  const renderUsers = useCallback(() => {
+  const RenderUsers = useCallback(() => {
     if (!users.length && !isFetching) return <Empty description="No users found" />;
     if (isFetching) return <Loader />;
     return (
@@ -114,10 +114,10 @@ export default function Page() {
         allowCreate={allowCreateUser}
       />
       <div className="grow overflow-auto" ref={containerRef}>
-        {renderUsers()}
+        {RenderUsers()}
       </div>
 
-      <BaseDrawer open={openDrawer} style={{ width: 600 }} onClose={closeDrawer}>
+      <BaseDrawer open={openDrawer} onClose={closeDrawer}>
         <UserDetail user={selectedUser} onClose={closeDrawer} />
       </BaseDrawer>
     </PageContainer>

@@ -2,20 +2,16 @@
 
 import BaseInput from "../Inputs/BaseInput";
 import BaseTextarea from "../Inputs/BaseTextarea";
-import Loader from "../Loader";
-import dynamic from "next/dynamic";
 import { Ref, forwardRef } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
-const InputNumber = dynamic(async () => (await import("antd/es/input-number")).default, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// TODO: Implement Input Number
 
 export interface DynamicInputProps extends UseControllerProps<any> {
   type: "text" | "email" | "password" | "number" | "textarea";
   options?: {
     placeholder?: string;
+    disabled?: boolean;
   };
   keyProp?: string;
   className?: string;
@@ -25,7 +21,14 @@ export interface DynamicInputProps extends UseControllerProps<any> {
 // validate: ObjectType
 
 export default forwardRef(function DynamicText(
-  { type, options = {}, keyProp, className = "w-full", validate = {}, ...restProps }: DynamicInputProps,
+  {
+    type,
+    options = { disabled: false },
+    keyProp,
+    className = "w-full",
+    validate = {},
+    ...restProps
+  }: DynamicInputProps,
   ref: Ref<any>,
 ) {
   const { field, fieldState, formState } = useController(restProps);
@@ -40,16 +43,13 @@ export default forwardRef(function DynamicText(
     ...options,
     value,
     ref,
-    disabled: isSubmitting,
+    disabled: isSubmitting || options.disabled,
   };
 
   let element;
   switch (type) {
     case "password":
       element = <BaseInput key={keyProp} {...subElementProps} type="password" />;
-      break;
-    case "number":
-      element = <InputNumber key={keyProp} {...subElementProps} ref={ref} className="w-full" />;
       break;
     case "textarea":
       element = <BaseTextarea key={keyProp} {...subElementProps} ref={ref} minRows={4} />;

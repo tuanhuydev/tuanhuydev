@@ -1,13 +1,11 @@
 "use client";
 
 import Card from "@app/components/commons/Card";
+import Empty from "@app/components/commons/Empty";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SyntheticEvent } from "react";
-
-const Empty = dynamic(() => import("antd/es/empty"), { ssr: false });
 
 export default function TodayTaskWidget() {
   const queryClient = useQueryClient();
@@ -36,7 +34,7 @@ export default function TodayTaskWidget() {
           ))}
         </ul>
       ) : (
-        <Empty />
+        <Empty description="Yay no tasks for today :D" />
       )}
     </Card>
   );

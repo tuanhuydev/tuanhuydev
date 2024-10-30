@@ -36,13 +36,11 @@ export default function Card({
         </div>
       )}
       {loading ? (
-        <Fragment>
-          <Skeleton className="w-full" />
-        </Fragment>
+        <Skeleton className="w-full" />
       ) : (
         <Fragment>
           {title && (
-            <div className="flex justify-between text-slate-600 font-medium dark:text-slate-100 text-xl mb-3">
+            <div className="flex justify-between text-slate-600 font-bold dark:text-slate-100 text-xl mb-3">
               <span className="truncate">{title}</span> {icon} {titleExtra}
             </div>
           )}
