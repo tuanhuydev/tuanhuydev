@@ -1,3 +1,4 @@
+import GoogleAnalytic from "./components/GoogleAnalytic";
 import Transition from "./components/commons/Transition";
 import { sourceCodeFont } from "./font";
 import "@app/styles/globals.scss";
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
             <SpeedInsights />
           </AppRouterCacheProvider>
         </ThemeProvider>
+        <GoogleAnalytic />
       </body>
     </html>
   );
