@@ -78,8 +78,9 @@ input:-internal-autofill-selected {
 }
 input:-webkit-autofill {
   -webkit-text-fill-color: theme("colors.slate.500") !important;
-  -webkit-box-shadow: 0 0 0 1rem theme("colors.white") inset !important;
-  background-clip: content-box !important;
+  -webkit-box-shadow: 0 0 0 1rem transparent inset !important;
+  // background-clip: content-box !important;
+  background: transparent !important;
 }
 
 .mdxeditor-popup-container {
