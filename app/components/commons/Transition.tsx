@@ -1,6 +1,8 @@
+"use client";
+
 import * as motion from "framer-motion/client";
 
-export default async function Transition({ children }: { children: React.ReactNode }) {
+export default function Transition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}

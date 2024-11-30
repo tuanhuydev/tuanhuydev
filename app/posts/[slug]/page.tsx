@@ -1,14 +1,25 @@
 import Transition from "@app/components/commons/Transition";
-import { BASE_URL } from "@lib/configs/constants";
+import { BASE_URL, GOOGLE_ANALYTIC } from "@lib/configs/constants";
+import { Post } from "@lib/types";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
-import { getPostBySlug } from "server/actions/blog";
+import { getPostBySlug, getPosts } from "server/actions/blog";
 
 const GoogleAdsense = dynamic(() => import("@app/components/GoogleAdsense"), { ssr: false });
 const PostView = dynamic(() => import("@app/components/PostModule/PostView"), { ssr: false });
 
+export const revalidate = 60;
+export const dynamicParams = true;
+
+interface MetaDataParams {
+  params: {
+    slug: string;
+  };
+}
+
 export async function generateMetadata({ params }: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
-  const slug = params.slug;
+  const { slug } = params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
 
@@ -22,7 +33,7 @@ export async function generateMetadata({ params }: MetaDataParams, parent: Resol
     openGraph: {
       title: post.title,
       url: currentPostURL,
-      images: [post?.thumbnail ?? "", ...previousImages],
+      images: [post.thumbnail ?? "", ...previousImages],
     },
     alternates: {
       canonical: currentPostURL,
@@ -30,16 +41,40 @@ export async function generateMetadata({ params }: MetaDataParams, parent: Resol
   };
 }
 
-export default async function Page({ params }: any) {
+export async function generateStaticParams() {
+  try {
+    const posts: Post[] = await getPosts({ published: true });
+    return posts.map((post) => ({
+      slug: String(post.slug),
+    }));
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+    return [];
+  }
+}
+
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function Page({ params }: PageProps) {
   const { slug } = params;
 
-  const post = await getPostBySlug(slug);
-  if (!post) return <h1>Not Found</h1>;
+  try {
+    const post = await getPostBySlug(slug);
+    if (!post) return <h1>Not Found</h1>;
 
-  return (
-    <Transition>
-      <PostView post={post} />
-      <GoogleAdsense />
-    </Transition>
-  );
+    return (
+      <Transition>
+        <PostView post={post} />
+        <GoogleAdsense />
+        {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+      </Transition>
+    );
+  } catch (error) {
+    console.error("Failed to fetch post:", error);
+    return <h1>Failed to load post</h1>;
+  }
 }
