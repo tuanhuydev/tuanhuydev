@@ -3,16 +3,16 @@ import dynamic from "next/dynamic";
 
 const HighlightPost = dynamic(() => import("./HighlightPost"), { loading: () => <Loader /> });
 
-export default async function BlogSection({ posts }: { posts: ObjectType[] }) {
-  const makeColumn = (index: number) => {
-    const firstItemIndex = 0;
-    return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";
-  };
+const makeColumn = (index: number) => {
+  const firstItemIndex = 0;
+  return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";
+};
 
-  if (!posts.length) return <></>;
+export default async function BlogSection({ posts }: { posts: ObjectType[] }) {
+  if (!posts.length) return <>Not found</>;
 
   return (
-    <section id="blog">
+    <section id="blog" className="flex flex-col items-center">
       <h3 className="text-center text-primary dark:text-slate-50 font-bold text-base md:text-3xl lg:text-4xl mb-3">
         &ldquo;Keep Learning is a Way to Success&rdquo;
       </h3>
@@ -21,7 +21,7 @@ export default async function BlogSection({ posts }: { posts: ObjectType[] }) {
           Explore new ideas and expand your understanding through my blog posts.
         </span>
       </h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-homePosts gap-y-6 gap-x-4 p-3 grid-flow-row">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-6 w-3/4 gap-y-6 gap-x-4 p-3 grid-flow-row">
         {posts.map((post: ObjectType, index: number) => (
           <HighlightPost key={post.title} post={post} className={makeColumn(index)} />
         ))}
