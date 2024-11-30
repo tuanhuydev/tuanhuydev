@@ -24,7 +24,7 @@ export type RecordMode = "VIEW" | "EDIT";
 const estimateSize = 48;
 
 export default function Page() {
-  const { data: permissions } = useCurrentUserPermission();
+  const { data: permissions = [] } = useCurrentUserPermission();
 
   const allowCreateUser = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
     const { action = "", resourceId = "", type = "" } = permission;

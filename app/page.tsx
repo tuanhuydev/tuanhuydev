@@ -2,7 +2,9 @@ import { getPosts } from "../server/actions/blog";
 import Hero from "@app/components/HomeModule/Hero";
 import Navbar from "@app/components/HomeModule/Navbar";
 import Services from "@app/components/HomeModule/ServiceSection/Services";
+import { GOOGLE_ANALYTIC } from "@lib/configs/constants";
 import { Post } from "@lib/types";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
 import dynamicImport from "next/dynamic";
 
@@ -84,6 +86,7 @@ export default async function Home() {
         </div>
         <Footer />
       </div>
+      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </main>
   );
 }

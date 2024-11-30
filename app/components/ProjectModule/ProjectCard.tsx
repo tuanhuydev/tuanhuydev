@@ -26,7 +26,7 @@ export default function ProjectCard({
   users,
 }: Partial<ObjectType & { users: Array<ObjectType> }>) {
   const router = useRouter();
-  const { data: permissions } = useCurrentUserPermission();
+  const { data: permissions = [] } = useCurrentUserPermission();
 
   const allowUpdateProject = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
     const { action = "", type = "" } = permission;

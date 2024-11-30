@@ -16,7 +16,7 @@ const ProjectCard = dynamic(async () => (await import("@app/components/ProjectMo
 
 function Page() {
   const router = useRouter();
-  const { data: permissions } = useCurrentUserPermission();
+  const { data: permissions = [] } = useCurrentUserPermission();
 
   const allowCreateProject = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
     const { action = "", resourceId = "", type = "" } = permission;

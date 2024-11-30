@@ -9,10 +9,10 @@ export default async function Hero() {
     <section id="about-me" className="grid grid-cols-12 gap-y-8 lg:gap-0 py-0 px-2 md:py-4 content-center">
       <div className="col-start-1 col-span-full order-2 text-center lg:text-left lg:col-span-5 lg:row-start-1 self-center">
         <div className="font-bold mb-3 dark:text-white">
-          <div className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl xl:mb-3">
+          <div className="break-keep text-3xl md:text-4xl lg:text-5xl xl:text-7xl xl:mb-3 bg-gradient-to-r bg-clip-text text-transparent from-teal-600 via-blue-900 to-primary dark:from-teal-400 dark:to-blue-600">
             &#60;Developer&#47;&#62;
           </div>
-          <div className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem</div>
+          <div className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">to solve problem.</div>
         </div>
         <div className="relative mb-6">
           <h1 className="font-medium text-lg md:text-2xl mr-2 inline dark:text-white">
@@ -27,18 +27,18 @@ export default async function Hero() {
           </h1>
         </div>
         <div className="dark:text-white text-xs md:text-base mb-10">
-          <div className="mb-1">
-            I&lsquo;m 4 years of&nbsp; #experience in&nbsp; #web development &nbsp;with&nbsp; #passion&nbsp;
+          <div className="mb-1 text-slate-700 dark:text-slate-400">
+            I&lsquo;m 5 years of&nbsp; #experience in&nbsp; #web development &nbsp;with&nbsp; #passion&nbsp;
             #professionalism&nbsp; #empathy&nbsp;
           </div>
-          <div>
+          <div className="text-slate-700 dark:text-slate-400">
             I had great <strong>opportunities</strong> to work on amazing projects, teams, cultures. Contribute values
             to businesses&lsquo;s success, including&nbsp;
             <strong>yours</strong>.😀&#128077;
           </div>
         </div>
         <a href="#service">
-          <h3 className="inline-flex items-center rounded-full bg-slate-700 hover:bg-slate-900 text-white fill-white dark:bg-white dark:text-primary dark:fill-primary px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition duration-200 ease-in group">
+          <h3 className="inline-flex items-center rounded-full bg-gradient-to-r from-teal-600 via-blue-900 to-primary dark:from-teal-400 dark:to-blue-600 text-slate-50 dark:text-primary fill-slate-50 dark:fill-primary hover:scale-105 px-4 py-2 mr-3 cursor-pointer uppercase text-[8px] md:text-sm font-semibold transition duration-200 ease-in group">
             My proudly accomplishments
             <svg
               xmlns="http://www.w3.org/2000/svg"
