@@ -9,6 +9,7 @@ const schema = z.object({
   email: z.string().email().trim().min(5),
   password: z.string().min(5),
 });
+
 export type CredentialWithEmailPassword = z.infer<typeof schema>;
 
 export const authWithEmailPassword = async (form: FormData) => {

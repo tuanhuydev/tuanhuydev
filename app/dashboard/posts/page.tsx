@@ -18,7 +18,7 @@ const PostCard = dynamic(() => import("@app/components/PostModule/PostCard"), {
 
 function Page() {
   const router = useRouter();
-  const { data: permissions } = useCurrentUserPermission();
+  const { data: permissions = [] } = useCurrentUserPermission();
   const [filter, setFilter] = useState<ObjectType>({});
   const { data: posts = [], isFetching, refetch } = usePostsQuery(filter);
 

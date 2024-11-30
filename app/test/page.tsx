@@ -7,7 +7,9 @@ export default function Page() {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = () => setOpen(false);
+
   const handleOpen = () => setOpen(true);
+
   return (
     <>
       <Button onClick={handleOpen}>Open modal</Button>
