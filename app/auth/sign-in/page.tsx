@@ -8,11 +8,11 @@ import LogService from "@lib/services/LogService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
+import importDynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-const DynamicForm = dynamic(() => import("@app/components/commons/Form/DynamicForm"), {
+const DynamicForm = importDynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
