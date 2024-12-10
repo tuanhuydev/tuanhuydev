@@ -1,12 +1,13 @@
 import Loader from "@app/components/commons/Loader";
 import { sourceCodeFont } from "@app/font";
 import { BASE_URL, EMPTY_STRING } from "@lib/configs/constants";
+import { Post } from "@lib/types";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, Suspense } from "react";
 import Markdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/cjs/styles/hljs";
@@ -25,8 +26,17 @@ const BaseImage = dynamic(() => import("../commons/BaseImage"), {
 
 const elementClasses = "mx-0 my-1 text-primary dark:text-slate-50";
 
+const language: Record<string, string> = {
+  txt: "text",
+  tsx: "typescript",
+  css: "css",
+  js: "javascript",
+  json: "json",
+  bash: "bash",
+};
+
 export interface PostViewProps {
-  post: ObjectType;
+  post: Post;
 }
 
 const PostView = memo(({ post }: PostViewProps) => {
@@ -58,11 +68,13 @@ const PostView = memo(({ post }: PostViewProps) => {
           </div>
         </div>
         <div className="absolute top-0 right-0 lg:relative flex gap-3 p-6 lg:px-6">
-          <WithCopy content={`${BASE_URL}/posts/${post?.slug}`} title="Share">
-            <div className="p-2 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
-              <LinkOutlined fontSize="medium" className="text-primary" />
-            </div>
-          </WithCopy>
+          <Suspense fallback={<Loader />}>
+            <WithCopy content={`${BASE_URL}/posts/${post?.slug}`} title="Share">
+              <div className="p-2 rounded-md flex items-center justify-center bg-white drop-shadow-md dark:drop-shadow-none hover:bg-slate-100 transition ease-in-out">
+                <LinkOutlined fontSize="medium" className="text-primary" />
+              </div>
+            </WithCopy>
+          </Suspense>
         </div>
       </div>
       <div className="col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none">
@@ -80,14 +92,7 @@ const PostView = memo(({ post }: PostViewProps) => {
                   </code>
                 );
               }
-              const language: ObjectType = {
-                txt: "text",
-                tsx: "typescript",
-                css: "css",
-                js: "javascript",
-                json: "json",
-                bash: "bash",
-              };
+
               const extension = (match[1] as string) ?? "txt";
 
               return match ? (
@@ -145,7 +150,9 @@ const PostView = memo(({ post }: PostViewProps) => {
               return <h6 {...rest} className={`${elementClasses} text-base lg:text-base`} />;
             },
             a({ node, ...rest }) {
-              return <a {...rest} className="mx-0 my-1 !text-blue-400 dark:!text-blue-800 hover:underline" />;
+              return (
+                <a {...rest} target="_blank" className="mx-0 my-1 !text-blue-400 dark:!text-blue-800 hover:underline" />
+              );
             },
           }}>
           {post.content}

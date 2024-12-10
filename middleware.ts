@@ -11,16 +11,11 @@ export async function apiMiddleware(request: NextRequest) {
   }
 }
 
+const publicPaths = ["/api/auth/sign-in", "/api/auth/sign-out", "/api/auth/refresh-token", "/api/posts", "/api/mongo"];
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (
-    pathname.startsWith("/api") &&
-    !pathname.startsWith("/api/auth/sign-in") &&
-    !pathname.startsWith("/api/auth/sign-out") &&
-    !pathname.startsWith("/api/auth/refresh-token") &&
-    !pathname.startsWith("/api/posts") &&
-    !pathname.startsWith("/api/mongo")
-  ) {
+  if (pathname.startsWith("/api") && !publicPaths.some((path) => pathname.startsWith(path))) {
     return apiMiddleware(request);
   }
 }
