@@ -1,3 +1,4 @@
+import GoogleAdsense from "@app/components/GoogleAdsense";
 import Transition from "@app/components/commons/Transition";
 import { BASE_URL, GOOGLE_ANALYTIC } from "@lib/configs/constants";
 import { Post } from "@lib/types";
@@ -6,7 +7,6 @@ import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
 import { getPostBySlug, getPosts } from "server/actions/blog";
 
-const GoogleAdsense = dynamic(() => import("@app/components/GoogleAdsense"), { ssr: false });
 const PostView = dynamic(() => import("@app/components/PostModule/PostView"), { ssr: false });
 
 export const revalidate = 60;
@@ -69,7 +69,7 @@ export default async function Page({ params }: PageProps) {
     return (
       <Transition>
         <PostView post={post} />
-        <GoogleAdsense />
+        {/* <GoogleAdsense /> */}
         {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
       </Transition>
     );

@@ -115,6 +115,9 @@ class UserController implements BaseController {
         userId = tokenUserId as string;
       }
       const userById = await MongoUserRepository.getUser(userId);
+      if (!userById) throw new NotFoundError("User not found");
+      delete userById.password;
+
       return network.successResponse(userById);
     } catch (error) {
       return network.failResponse(error as BaseError);
