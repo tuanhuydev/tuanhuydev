@@ -63,6 +63,7 @@ function TaskPage({
   const { data: users = [] } = useUsersQuery();
   const { data: sprints = [] } = useSprintQuery(project?.id);
   const { data: permissions = [] } = useCurrentUserPermission();
+  console.log(permissions);
   const pathname = usePathname();
   const router = useRouter();
 

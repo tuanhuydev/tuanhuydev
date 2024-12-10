@@ -33,10 +33,8 @@ class AuthController {
       const auth: TokenPayload | null = await AuthService.signIn(email, password);
 
       if (!auth) throw new UnauthorizedError("Authenticate Failed");
-      const { accessToken, refreshToken = "" } = auth;
-      // Set refresh token to cookie
-      cookies().set("jwt", refreshToken, { sameSite: "strict", httpOnly: true });
-
+      const { accessToken } = auth;
+      cookies().set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
       return network.successResponse({ accessToken });
     } catch (error) {
       return network.failResponse(error as BaseError);

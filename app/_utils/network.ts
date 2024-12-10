@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
+import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { JWTPayload } from "@lib/shared/interfaces/jwt";
 import * as jose from "jose";
@@ -46,5 +46,5 @@ export const extractCookieToken = () => {
 
   const jwt = userCookie.get("jwt");
   if (!jwt) throw new UnauthorizedError("No JWT Cookie");
-  return decryptJwt(jwt.value as string, REFRESH_TOKEN_SECRET as unknown as string);
+  return decryptJwt(jwt.value as string, ACCESS_TOKEN_SECRET as unknown as string);
 };
