@@ -2,6 +2,7 @@
 
 import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
+import LogService from "@lib/services/LogService";
 import dynamic from "next/dynamic";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
@@ -205,7 +206,7 @@ const DynamicForm = ({ config, onSubmit, mapValues }: DynamicFormProps) => {
       try {
         if (onSubmit) await onSubmit(formData, form);
       } catch (error) {
-        console.log(error);
+        LogService.log(error);
       }
     },
     [form, onSubmit],
