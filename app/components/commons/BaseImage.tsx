@@ -24,7 +24,7 @@ const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImag
   }, [src]);
   const shouldRenderImage = src && !hasError;
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full rounded-md">
       {shouldRenderImage ? (
         <Image {...restProps} src={src} alt={alt} blurDataURL={src} onError={() => setHasError(true)} />
       ) : (

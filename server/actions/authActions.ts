@@ -1,29 +1,28 @@
 "use server";
 
-import AuthService, { TokenPayload } from "@lib/services/AuthService";
-import { cookies } from "next/headers";
+import { extractCookieToken } from "@app/_utils/network";
+import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
+import MongoUserRepository from "@lib/repositories/MongoUserRepository";
+import BaseError from "@lib/shared/commons/errors/BaseError";
 import { redirect, RedirectType } from "next/navigation";
-import { z } from "zod";
 
-const schema = z.object({
-  email: z.string().email().trim().min(5),
-  password: z.string().min(5),
-});
+export const userPermissionAction = async () => {
+  try {
+    const { userId } = await extractCookieToken();
+    if (!userId) throw new BaseError("User not found");
 
-export type CredentialWithEmailPassword = z.infer<typeof schema>;
+    const user = await MongoUserRepository.getUser(userId);
+    if (!user) throw new BaseError("User not found");
 
-export const authWithEmailPassword = async (form: FormData) => {
-  const credentials: CredentialWithEmailPassword = {
-    email: form.get("email") as string,
-    password: form.get("password") as string,
-  };
-  const result = schema.safeParse(credentials);
-  if (!result.success) return redirect("/sign-in?error=Invalid+Credentials", "replace" as RedirectType);
+    const { permissionId } = user;
+    if (!permissionId) throw new BaseError("Permission not found");
 
-  const auth: TokenPayload | null = await AuthService.signIn(credentials.email, credentials.password);
-  if (!auth) return redirect("/sign-in?error=Invalid+Credentials", "replace" as RedirectType);
+    const permission = await MongoPermissionRepository.getPermission(permissionId);
+    if (!permission) throw new BaseError("Permission not found");
 
-  const { accessToken, refreshToken = "" } = auth;
-  cookies().set("jwt", refreshToken, { sameSite: "strict", httpOnly: true });
-  return redirect("/dashboard");
+    const { rules = [] } = permission;
+    return rules;
+  } catch (error) {
+    redirect("/auth/sign-in", "replace" as RedirectType);
+  }
 };

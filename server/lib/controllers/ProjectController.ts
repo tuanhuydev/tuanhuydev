@@ -58,7 +58,6 @@ export class ProjectController implements BaseController {
       const newProject = await MongoProjectRepository.createProject(body);
       return network.successResponse(newProject);
     } catch (error) {
-      console.log(error);
       LogService.log((error as Error).message);
       return network.failResponse(error as BaseError);
     }

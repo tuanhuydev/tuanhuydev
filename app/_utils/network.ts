@@ -2,6 +2,7 @@ import { ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { JWTPayload } from "@lib/shared/interfaces/jwt";
 import * as jose from "jose";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export const decryptJwt = async (jwtToken: string, secretKey: string) => {
@@ -37,4 +38,13 @@ export const extractBearerToken = (request: NextRequest) => {
   if (!token) throw new UnauthorizedError("No Token");
 
   return decryptJwt(token, ACCESS_TOKEN_SECRET as unknown as string);
+};
+
+export const extractCookieToken = () => {
+  const userCookie = cookies();
+  if (!userCookie) throw new UnauthorizedError("No Cookies");
+
+  const jwt = userCookie.get("jwt");
+  if (!jwt) throw new UnauthorizedError("No JWT Cookie");
+  return decryptJwt(jwt.value as string, ACCESS_TOKEN_SECRET as unknown as string);
 };

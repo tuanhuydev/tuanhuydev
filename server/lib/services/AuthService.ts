@@ -1,12 +1,7 @@
 import { encryptJwt } from "@app/_utils/network";
 import { SALT_ROUNDS } from "@lib/configs/constants";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import {
-  ACCESS_TOKEN_LIFE,
-  ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_LIFE,
-  REFRESH_TOKEN_SECRET,
-} from "@lib/shared/commons/constants/encryption";
+import { ACCESS_TOKEN_LIFE, ACCESS_TOKEN_SECRET } from "@lib/shared/commons/constants/encryption";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
@@ -16,7 +11,6 @@ import { v4 as uuidv4 } from "uuid";
 
 export type TokenPayload = {
   accessToken: string;
-  refreshToken: string;
 };
 class AuthService {
   static #instance: AuthService;
@@ -53,7 +47,7 @@ class AuthService {
 
   async issueAccessToken(token: string) {
     try {
-      const { payload } = await jose.jwtVerify(token, REFRESH_TOKEN_SECRET);
+      const { payload } = await jose.jwtVerify(token, ACCESS_TOKEN_SECRET);
       if (!payload) throw new UnauthorizedError("Invalid JWT");
 
       const { userId, userEmail } = payload as { userId: string; userEmail: string };
@@ -81,17 +75,7 @@ class AuthService {
       ACCESS_TOKEN_LIFE,
     );
 
-    const refreshToken = await encryptJwt(
-      { userId, userEmail },
-      REFRESH_TOKEN_SECRET as unknown as string,
-      REFRESH_TOKEN_LIFE,
-    );
-
-    return { accessToken, refreshToken };
-    // } catch (error) {
-    //   console.log(error);
-    //   return redirect("/sign-in?error=Invalid+Credentials", "replace" as RedirectType);
-    // }
+    return { accessToken };
   }
 
   forgotPassword(email: string) {

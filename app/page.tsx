@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   let posts: Post[] = [];
   try {
-    posts = await getPosts({ page: 1, pageSize: 4, published: true });
+    posts = await getPosts({ page: 1, pageSize: 5, published: true });
   } catch (error) {
     console.error("Failed to fetch posts:", error);
   }

@@ -26,6 +26,15 @@ class MongoPostRepository {
       defaultWhere = { ...defaultWhere, _id: { $nin: filter.exclude.map((id) => new Mongo.ObjectId(id as string)) } };
     }
     let query = this.table.find(defaultWhere);
+
+    if ("page" in filter && "pageSize" in filter) {
+      const page = Number(filter.page);
+      const pageSize = Number(filter.pageSize);
+      const skip = (page - 1) * pageSize;
+      const limit = pageSize;
+      query.sort({ createdAt: -1 }).skip(skip).limit(limit);
+    }
+
     return query.toArray();
   }
 

@@ -79,14 +79,14 @@ export default function BaseMarkdown({
     <div
       className={`block z-0 gap-4 flex-1 relative !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
-      } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
+      } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary `}>
       <MDXEditor
         placeholder={placeholder}
         ref={localRef}
         markdown={EMPTY_STRING}
         onChange={onChange}
         readOnly={readOnly}
-        contentEditableClassName="min-[16rem]"
+        contentEditableClassName="min-[16rem] text-primary dark:text-slate-50"
         plugins={[
           toolbarPlugin({
             toolbarContents: () => (
@@ -141,6 +141,7 @@ export default function BaseMarkdown({
               tsx: "TypeScript",
               bash: "Bash",
               json: "JSON",
+              python: "Python",
             },
           }),
         ]}
