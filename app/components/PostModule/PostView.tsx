@@ -33,6 +33,7 @@ const language: Record<string, string> = {
   js: "javascript",
   json: "json",
   bash: "bash",
+  python: "python",
 };
 
 export interface PostViewProps {
@@ -41,6 +42,7 @@ export interface PostViewProps {
 
 const PostView = memo(({ post }: PostViewProps) => {
   if (!post) return <h1>Not Found</h1>;
+  const responsiveContent = "";
   return (
     <div className="grid grid-cols-12 w-screen h-screen overflow-x-hidden lg:overflow-hidden auto-rows-min lg:auto-rows-fr gap-0 transition-all ease-in duration-300">
       <div className="col-span-full lg:col-span-3 px-0 py-6 flex flex-col z-10 relative">
@@ -77,7 +79,8 @@ const PostView = memo(({ post }: PostViewProps) => {
           </Suspense>
         </div>
       </div>
-      <div className="col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none">
+      <div
+        className={`col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none ${responsiveContent}`}>
         <Markdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
@@ -92,7 +95,6 @@ const PostView = memo(({ post }: PostViewProps) => {
                   </code>
                 );
               }
-
               const extension = (match[1] as string) ?? "txt";
 
               return match ? (
@@ -104,7 +106,6 @@ const PostView = memo(({ post }: PostViewProps) => {
                   customStyle={{
                     borderRadius: "8px",
                     backgroundColor: "#1e1e1e",
-                    fontSize: 16,
                     fontFamily: sourceCodeFont.style.fontFamily,
                     fontWeight: sourceCodeFont.style.fontWeight,
                   }}
@@ -153,6 +154,9 @@ const PostView = memo(({ post }: PostViewProps) => {
               return (
                 <a {...rest} target="_blank" className="mx-0 my-1 !text-blue-400 dark:!text-blue-800 hover:underline" />
               );
+            },
+            pre({ node, ...rest }) {
+              return <pre {...rest} className="rounded-md overflow-auto text-xs lg:text-base" />;
             },
           }}>
           {post.content}
