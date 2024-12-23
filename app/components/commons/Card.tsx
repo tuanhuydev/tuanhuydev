@@ -32,7 +32,7 @@ export default function Card({
       onClick={onClick}>
       {hasImage && (
         <div className="relative aspect-[3/2] rounded-sm mb-3">
-          <BaseImage src={imageSrc} alt="Image" fill />
+          <BaseImage src={imageSrc} alt="Image" fill className="rounded-md" />
         </div>
       )}
       {loading ? (
