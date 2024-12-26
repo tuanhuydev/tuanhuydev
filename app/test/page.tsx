@@ -1,32 +1,55 @@
 "use client";
 
-import { Button, Modal, Typography } from "@mui/material";
-import React from "react";
+import { useEffect, useState } from "react";
 
-export default function Page() {
-  const [open, setOpen] = React.useState(false);
+const App = () => {
+  const [scrollY, setScrollY] = useState(0);
 
-  const handleClose = () => setOpen(false);
+  const handleScroll = () => {
+    setScrollY(window.scrollY);
+  };
 
-  const handleOpen = () => setOpen(true);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Text to display
+  const text = "Angular";
 
   return (
-    <>
-      <Button onClick={handleOpen}>Open modal</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description">
-        <div className="absolute -top-1/2 -left-1/2 translate-x-1/2 translate-y-1/2 w-400 bg-white border-2 border-black rounded-md shadow-lg p-4">
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+    <div style={{ background: "#f5f5f5", height: "200dvh" }} className="relative">
+      <div className="sticky flex justify-center items-center top-0 left-0 w-full  bg-white shadow-md z-10 h-screen">
+        <div
+          style={{
+            zIndex: 1,
+          }}>
+          {text.split("").map((char, index) => {
+            // Calculate transition for gradient effect
+            const maxScrollPerChar = 200; // Adjust for the desired fade effect
+            const transitionProgress = Math.min(Math.max((scrollY - index * 20) / maxScrollPerChar, 0), 1);
+
+            return (
+              <span
+                key={index}
+                className="bg-gradient-to-r bg-clip-text text-transparent from-teal-600 via-blue-900 to-primary dark:from-teal-400 dark:to-blue-600"
+                style={{
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  display: "inline-block",
+                  transition: "background-image 0.3s ease-in-out",
+                  fontSize: "4rem",
+                  opacity: 1 - transitionProgress,
+                  willChange: "background-image",
+                }}>
+                {char}
+              </span>
+            );
+          })}
         </div>
-      </Modal>
-    </>
+      </div>
+    </div>
   );
-}
+};
+
+export default App;
