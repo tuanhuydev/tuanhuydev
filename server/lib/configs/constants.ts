@@ -19,6 +19,8 @@ export const GOOGLE_TAG: string = process.env.NEXT_PUBLIC_GOOGLE_TAG ?? EMPTY_ST
 export const GOOGLE_ANALYTIC: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTIC ?? EMPTY_STRING;
 export const BASE_URL = (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000").replace(/\/$/, ""); // Replace splash at the end
 
+export const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? EMPTY_STRING;
+
 export const POST_STATUS = {
   PUBLISHED: "PUBLISHED",
   DRAFT: "DRAFT",

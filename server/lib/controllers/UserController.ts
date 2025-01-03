@@ -1,5 +1,4 @@
 import AuthService from "../services/AuthService";
-import { extractBearerToken } from "@app/_utils/network";
 import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
 import MongoUserPermissionRepository from "@lib/repositories/MongoUserPermissionRepository";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
@@ -111,7 +110,7 @@ class UserController implements BaseController {
       const CURRENT_USER_KEY: string = "me";
       let userId: string = id;
       if (id === CURRENT_USER_KEY) {
-        const { userId: tokenUserId } = await extractBearerToken(request);
+        const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
         userId = tokenUserId as string;
       }
       const userById = await MongoUserRepository.getUser(userId);
@@ -175,7 +174,7 @@ class UserController implements BaseController {
       if (!id) throw new BadRequestError();
       let userId: string = id;
       if (id === "me") {
-        const { userId: tokenUserId } = await extractBearerToken(request);
+        const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
         userId = tokenUserId as string;
       }
 

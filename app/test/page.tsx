@@ -15,37 +15,34 @@ const App = () => {
   }, []);
 
   // Text to display
-  const text = "Angular";
+  const text = "tuanhuy.dev";
+
+  // Calculate mask position
+  const maxScrollForEffect = 300; // Adjust to control fade effect timing
+  const fadeProgress = Math.min(scrollY / maxScrollForEffect, 1); // Progress between 0 and 1
+
+  // Dynamically calculate gradient positions
+  const transparentStart = `${fadeProgress * 110}%`; // Where the fade starts
+  const blackEnd = `${Math.max(0, 1 - fadeProgress)}%`;
 
   return (
-    <div style={{ background: "#f5f5f5", height: "200dvh" }} className="relative">
-      <div className="sticky flex justify-center items-center top-0 left-0 w-full  bg-white shadow-md z-10 h-screen">
+    <div style={{ height: "200dvh" }} className="relative bg-slate-50">
+      <div className="sticky flex justify-center items-center top-0 left-0 w-full bg-slate shadow-md z-10 h-screen">
         <div
+          className="bg-gradient-to-l bg-clip-text font-bold text-transparent from-teal-600 via-blue-900 to-primary dark:from-teal-400 dark:to-blue-600"
           style={{
-            zIndex: 1,
+            WebkitMaskImage: `linear-gradient(to left, transparent ${transparentStart},  black ${blackEnd})`, // Apply gradient mask when scrolling
+            maskImage: `linear-gradient(to left, transparent ${transparentStart},  black ${blackEnd})`, // Apply gradient mask when scrolling
+            WebkitMaskClip: "text",
+            maskClip: "text",
+            WebkitTextFillColor: "transparent",
+            display: "inline-block",
+            fontSize: "4rem",
+            transform: `translateY(${-50}px)`, // Apply vertical translation when scrolling
+            transition: "mask-image ease-in-out, -webkit-mask-image ease-in-out, transform ease-in-out",
+            willChange: "mask-image, transform",
           }}>
-          {text.split("").map((char, index) => {
-            // Calculate transition for gradient effect
-            const maxScrollPerChar = 200; // Adjust for the desired fade effect
-            const transitionProgress = Math.min(Math.max((scrollY - index * 20) / maxScrollPerChar, 0), 1);
-
-            return (
-              <span
-                key={index}
-                className="bg-gradient-to-r bg-clip-text text-transparent from-teal-600 via-blue-900 to-primary dark:from-teal-400 dark:to-blue-600"
-                style={{
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  display: "inline-block",
-                  transition: "background-image 0.3s ease-in-out",
-                  fontSize: "4rem",
-                  opacity: 1 - transitionProgress,
-                  willChange: "background-image",
-                }}>
-                {char}
-              </span>
-            );
-          })}
+          {text}
         </div>
       </div>
     </div>
