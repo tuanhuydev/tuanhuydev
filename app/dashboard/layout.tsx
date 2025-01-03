@@ -16,6 +16,7 @@ export const viewport: Viewport = {
 };
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   const userPermission: Record<string, any>[] = await userPermissionAction();
+
   return (
     <LocalizationParser>
       <AppRouterCacheProvider>

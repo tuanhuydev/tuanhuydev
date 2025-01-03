@@ -1,17 +1,17 @@
 "use server";
 
-import { extractCookieToken } from "@app/_utils/network";
 import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
+import AuthService from "@lib/services/AuthService";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { redirect, RedirectType } from "next/navigation";
 
 export const userPermissionAction = async () => {
   try {
-    const { userId } = await extractCookieToken();
-    if (!userId) throw new BaseError("User not found");
+    const userProfile = await AuthService.getCurrentUserProfile();
+    if (!userProfile) throw new BaseError("User not found");
 
-    const user = await MongoUserRepository.getUser(userId);
+    const user = await MongoUserRepository.getUser(userProfile?.id);
     if (!user) throw new BaseError("User not found");
 
     const { permissionId } = user;
@@ -23,6 +23,7 @@ export const userPermissionAction = async () => {
     const { rules = [] } = permission;
     return rules;
   } catch (error) {
+    console.log(error);
     redirect("/auth/sign-in", "replace" as RedirectType);
   }
 };
