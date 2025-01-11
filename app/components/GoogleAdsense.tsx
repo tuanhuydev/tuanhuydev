@@ -1,6 +1,5 @@
 import { GOOGLE_ADSENSE } from "@lib/configs/constants";
 import Script from "next/script";
-import React from "react";
 
 export default async function GoogleAdsense() {
   return (

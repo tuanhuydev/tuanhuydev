@@ -1,6 +1,6 @@
 import LogService from "../services/LogService";
-import { extractBearerToken } from "@app/_utils/network";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
+import AuthService from "@lib/services/AuthService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { BaseController } from "@lib/shared/interfaces/controller";
@@ -29,8 +29,8 @@ export class TaskController implements BaseController {
       const validate = schema.safeParse(body);
       if (!validate.success) throw new BadRequestError();
 
-      const { userId } = await extractBearerToken(request);
-      body.createdById = userId;
+      const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
+      body.createdById = tokenUserId;
 
       const newTask = await MongoTaskRepository.createTask(body as TaskBody);
       return network.successResponse(newTask);
@@ -57,8 +57,8 @@ export class TaskController implements BaseController {
 
     let userId = id;
     if (id === "me") {
-      const { userId: currentUserId } = await extractBearerToken(request);
-      userId = currentUserId;
+      const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
+      userId = tokenUserId as string;
     }
 
     return this.getAll(request, userId);

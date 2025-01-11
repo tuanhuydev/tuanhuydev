@@ -1,4 +1,3 @@
-import GoogleAdsense from "@app/components/GoogleAdsense";
 import Transition from "@app/components/commons/Transition";
 import { BASE_URL, GOOGLE_ANALYTIC } from "@lib/configs/constants";
 import { Post } from "@lib/types";
@@ -69,7 +68,6 @@ export default async function Page({ params }: PageProps) {
     return (
       <Transition>
         <PostView post={post} />
-        {/* <GoogleAdsense /> */}
         {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
       </Transition>
     );
