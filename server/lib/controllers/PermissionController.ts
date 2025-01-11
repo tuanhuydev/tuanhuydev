@@ -1,9 +1,9 @@
-import { extractBearerToken } from "@app/_utils/network";
 import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import Network from "@lib/shared/utils/network";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export class PermissionController {
@@ -28,8 +28,9 @@ export class PermissionController {
       if (!id) throw new BadRequestError();
       let userId = id;
       if (id === "me") {
-        const { userId: currentUserId } = await extractBearerToken(request);
-        userId = currentUserId;
+        const test = cookies().get("user");
+        console.log(test);
+        // userId = currentUserId;
       }
       const user = await MongoUserRepository.getUser(userId);
       if (!user) throw new BaseError("User not found");

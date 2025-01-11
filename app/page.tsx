@@ -1,7 +1,6 @@
 import { getPosts } from "../server/actions/blog";
 import Hero from "@app/components/HomeModule/Hero";
 import Navbar from "@app/components/HomeModule/Navbar";
-import Services from "@app/components/HomeModule/ServiceSection/Services";
 import { GOOGLE_ANALYTIC } from "@lib/configs/constants";
 import { Post } from "@lib/types";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -76,7 +75,7 @@ export default async function Home() {
         <Navbar posts={posts} />
         <div className="relative">
           <Hero />
-          <Services />
+          {/* <Services /> */}
           <BlogSection posts={posts} />
           <Contact />
           {/* <audio id="audio" src="/assets/sounds/click.wav" controls>

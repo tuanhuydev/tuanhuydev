@@ -1,8 +1,8 @@
 import LogService from "../services/LogService";
-import { extractBearerToken } from "@app/_utils/network";
 import MongoProjectRepository from "@lib/repositories/MongoProjectRepository";
 import MongoSprintRepository from "@lib/repositories/MongoSprintRepository";
 import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
+import AuthService from "@lib/services/AuthService";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
@@ -141,8 +141,8 @@ export class ProjectController implements BaseController {
     try {
       if (!id) throw new BadRequestError();
       if (id === "me") {
-        const { userId: currentUserId } = await extractBearerToken(request);
-        userId = currentUserId;
+        const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
+        userId = tokenUserId as string;
       }
       return this.getAll(request, userId);
     } catch (error) {

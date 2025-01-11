@@ -1,4 +1,4 @@
-import AuthService, { TokenPayload } from "@lib/services/AuthService";
+import { AUTH_URL } from "@lib/configs/constants";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
@@ -28,15 +28,25 @@ class AuthController {
   async signIn(request: NextRequest) {
     const network = Network(request);
     try {
+      if (!AUTH_URL) throw new BaseError("Auth URL is not defined");
+
       const body = await network.getBody();
       const { email, password } = await this.validateSignIn(body);
-      const auth: TokenPayload | null = await AuthService.signIn(email, password);
 
-      if (!auth) throw new UnauthorizedError("Authenticate Failed");
-      const { accessToken } = auth;
+      const signInResponse = await fetch(`${AUTH_URL}/auth/sign-in`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!signInResponse.ok) throw new UnauthorizedError("Authenticate Failed");
+
+      const { accessToken } = await signInResponse.json();
+      if (!accessToken) throw new UnauthorizedError("Authenticate Failed");
+
       cookies().set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
       return network.successResponse({ accessToken });
     } catch (error) {
+      console.error(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -44,18 +54,6 @@ class AuthController {
   async signOut(request: NextRequest) {
     cookies().delete("jwt");
     return Network(request).successResponse({ message: "Sign out successfully" });
-  }
-
-  async issueAccessToken(request: NextRequest) {
-    const network = Network(request);
-    try {
-      const token: string | undefined = cookies().get("jwt")?.value;
-      if (!token) throw new UnauthorizedError("Unauthorized");
-      const auth = await AuthService.issueAccessToken(token);
-      return network.successResponse(auth);
-    } catch (error) {
-      return network.failResponse(error as BaseError);
-    }
   }
 }
 
