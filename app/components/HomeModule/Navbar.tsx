@@ -32,9 +32,6 @@ export default async function Navbar({ posts = [], withContact = true }: NavbarP
               </a>
             </li>
           )}
-          <li className="mr-1 lg:mr-3.5 cursor-pointer text-sm lg:text-base rounded-md dark:hover:bg-slate-900">
-            <div className="block px-4 py-1 dark:text-white capitalize">Products</div>
-          </li>
         </ul>
         <ThemeToggle />
         {withContact && (
