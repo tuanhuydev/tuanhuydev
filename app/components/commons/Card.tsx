@@ -14,7 +14,7 @@ export interface CardProps extends PropsWithChildren {
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export default function Card({
+export default async function Card({
   className = "",
   children,
   titleExtra,

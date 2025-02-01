@@ -4,6 +4,8 @@ import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/Dyn
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
+import { toCapitalize } from "lib/helpers";
+import { ProjectStatus, ProjectType } from "lib/types/models";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -11,6 +13,17 @@ import { UseFormReturn } from "react-hook-form";
 export interface ProjectFormProps {
   project?: ObjectType;
 }
+
+function createOptions<T extends string>(enumObj: Record<string, T>, formatter: (value: T) => string) {
+  return Object.values(enumObj).map((value) => ({
+    label: formatter(value),
+    value,
+  }));
+}
+
+const projectTypeOptions = createOptions(ProjectType, toCapitalize);
+
+const projectStatusOptions = createOptions(ProjectStatus, toCapitalize);
 
 export default function ProjectForm({ project }: ProjectFormProps) {
   // Hooks
@@ -26,7 +39,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   const handleProjectMutation = async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>) => {
     try {
       await mutationFn(formData);
-      router.back();
+      router.push("/dashboard/projects");
     } catch (error) {
       LogService.log(error);
     } finally {
@@ -81,11 +94,31 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           name: "users",
           type: "select",
           options: {
-            placeholder: "Add users",
+            placeholder: "Select members...",
             mode: "multiple",
             options: userOptions,
           },
           validate: { required: true, multiple: true },
+        },
+        {
+          name: "type",
+          type: "select",
+          options: {
+            placeholder: "Select type...",
+            options: projectTypeOptions,
+          },
+          className: "w-1/2",
+          validate: { required: true },
+        },
+        {
+          name: "status",
+          type: "select",
+          options: {
+            placeholder: "Select status...",
+            options: projectStatusOptions,
+          },
+          validate: { required: true },
+          className: "w-1/2",
         },
         {
           name: "description",

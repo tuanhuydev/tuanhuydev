@@ -12,11 +12,13 @@ class MongoProjectRepository {
     return MongoProjectRepository.#instance ?? new MongoProjectRepository();
   }
   async createProject(body: ObjectType) {
+    // TODO: Define model
     return this.table.insertOne(body);
   }
 
   async getProjects(filter: ObjectType = {}) {
     let defaultWhere: ObjectType = { deletedAt: null };
+    //TODO: Make get filter abstract.
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
     }
@@ -45,6 +47,7 @@ class MongoProjectRepository {
 
     return query.toArray();
   }
+
   async getProject(id: string) {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }
