@@ -9,7 +9,6 @@ const BaseTextarea = React.forwardRef<HTMLTextAreaElement, any>((props, ref) => 
 
   const textareaProps = {
     ...restProps,
-    defaultValue: "",
     ref: ref,
     className: `${defaultClasses} placeholder:font-normal placeholder:text-slate-400 focus-within:outline focus-within:border-primary dark:border-primary dark:focus-within:border-slate-600 disabled:bg-slate-200 disabled:cursor-not-allowed ${className}`,
   };

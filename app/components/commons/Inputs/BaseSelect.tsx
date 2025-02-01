@@ -55,7 +55,13 @@ export default function BaseSelect({
   ...restProps
 }: DynamicSelectProps) {
   const [options, setOptions] = useState<SelectOption[]>([]);
-  const { options: staticOptions = [], defaultOption, mode = "single", ...restFieldOptions } = fieldOptions;
+  const {
+    options: staticOptions = [],
+    defaultOption,
+    mode = "single",
+    placeholder = "Select...",
+    ...restFieldOptions
+  } = fieldOptions;
 
   useEffect(() => {
     if (staticOptions.length) {
@@ -77,10 +83,10 @@ export default function BaseSelect({
               return value.length ? (
                 value.map(({ label }: SelectOption) => label).join(", ")
               ) : (
-                <span className="text-sm text-slate-400 font-normal">Select...</span>
+                <span className="text-sm text-slate-400 font-normal">{placeholder}</span>
               );
             }
-            return value?.label || <span className="text-sm text-slate-400 font-normal">Select...</span>;
+            return value?.label || <span className="text-sm text-slate-400 font-normal">{placeholder}</span>;
           }}
           key={keyProp}
           disabled={isSubmitting}
