@@ -216,6 +216,7 @@ const DynamicForm = ({ config, onSubmit, mapValues }: DynamicFormProps) => {
     if (!mapValues) reset();
     if (mapValues) {
       for (let [key, value] of Object.entries(mapValues)) {
+        console.log(key, value);
         let valueToUpdate = value;
         const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
         const isDateValue = typeof value === "string" && regex.test(value);

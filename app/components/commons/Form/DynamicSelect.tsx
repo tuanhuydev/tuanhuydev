@@ -4,24 +4,6 @@ import BaseSelect from "../Inputs/BaseSelect";
 import { useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 
-const listboxClasses = {
-  className:
-    "bg-white dark:bg-slate-800 p-0 border-solid border border-slate-300 dark:border-slate-600 p-2 m-0 mt-2 rounded-md",
-};
-
-const popupClasses = {
-  className: "z-[1300]",
-};
-
-const getSelectStyles = (value: any) => {
-  const selectStyles = `font-sans py-2 px-3 rounded-md flex items-center border-solid border outline-1 border-slate-300 bg-white dark:bg-slate-800 text-primary dark:text-slate-50 disabled:bg-slate-200 disabled:cursor-not-allowed`;
-  const className = value ? `${selectStyles} text-slate-800` : `${selectStyles} text-slate-400`;
-  return { className };
-};
-
-const baseOptionStyles = {
-  className: "flex items-center px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-600 cursor-pointer text-sm",
-};
 export default function DynamicSelect1({
   options: fieldOptions = {},
   keyProp,
@@ -31,10 +13,10 @@ export default function DynamicSelect1({
   const { field, fieldState, formState } = useController(restProps);
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
-  const { onChange, ref } = field;
+  const { onChange } = field;
 
   const [options, setOptions] = useState<SelectOption[]>([]);
-  const { options: staticOptions = [], defaultOption, mode = "single", ...restFieldOptions } = fieldOptions;
+  const { options: staticOptions = [], defaultOption } = fieldOptions;
 
   useEffect(() => {
     if (staticOptions.length) {
