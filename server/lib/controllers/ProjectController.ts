@@ -21,6 +21,7 @@ export class ProjectController implements BaseController {
 
   async store(request: NextRequest) {
     const network = Network(request);
+    // TODO: Move this to sharable schemas
     try {
       const schema = z.object({
         name: z.string(),

@@ -52,7 +52,11 @@ export default forwardRef(function DynamicText(
       element = <BaseInput key={keyProp} {...subElementProps} type="password" />;
       break;
     case "textarea":
-      element = <BaseTextarea key={keyProp} {...subElementProps} ref={ref} minRows={4} />;
+      element = (
+        <BaseTextarea key={keyProp} {...subElementProps} ref={ref} minRows={4}>
+          {value}
+        </BaseTextarea>
+      );
       break;
     default:
       element = <BaseInput key={keyProp} {...subElementProps} ref={ref} type="text" />;
