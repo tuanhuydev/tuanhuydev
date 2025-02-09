@@ -35,3 +35,6 @@ export const awsRegion = process.env.AWS_REGION || EMPTY_STRING;
 export const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID || EMPTY_STRING;
 export const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY || EMPTY_STRING;
 export const awsBucketName = process.env.AWS_BUCKET_NAME || EMPTY_STRING;
+
+// OpenWeather
+export const openWeatherKey = process.env.WEATHER_API_KEY || EMPTY_STRING;

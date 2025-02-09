@@ -61,10 +61,10 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
   }, [tasks, projectId, projectSprints]);
 
   const addTaskToToday = async (task: ObjectType) => {
-    const taskExisted = todayTasks.some((todayTask: ObjectType) => todayTask.id === task.id);
+    const taskExisted = (todayTasks as unknown as Task[]).some((todayTask: ObjectType) => todayTask.id === task.id);
     const newTodayTasks = taskExisted
-      ? todayTasks.filter((todayTask: ObjectType) => todayTask?.id !== task.id)
-      : [...todayTasks, task];
+      ? (todayTasks as unknown as Task[]).filter((todayTask: ObjectType) => todayTask?.id !== task.id)
+      : [...(todayTasks as unknown as Task[]), task];
     await queryClient.setQueryData(["todayTasks"], newTodayTasks);
   };
 
@@ -76,7 +76,9 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         {tasks.map((task) => {
           const isTaskActive = selectedTask?.id === task.id;
-          const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask?.id === task.id);
+          const isTaskToday = (todayTasks as unknown as Task[]).some(
+            (todayTask: ObjectType) => todayTask?.id === task.id,
+          );
           return (
             <TaskRow
               key={task.id}
@@ -123,7 +125,9 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
             </div>
             {tasks.map((task) => {
               const isTaskActive = selectedTask?.id === task.id;
-              const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === task.id);
+              const isTaskToday = (todayTasks as unknown as Task[]).some(
+                (todayTask: ObjectType) => todayTask.id === task.id,
+              );
               return (
                 <div key={task.id}>
                   <TaskRow
@@ -137,7 +141,9 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                     <div className="pl-3">
                       {task.subTasks.map((subTask: ObjectType) => {
                         const isSubTaskActive = selectedTask?.id === subTask.id;
-                        const isSubTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === subTask.id);
+                        const isSubTaskToday = (todayTasks as unknown as Task[]).some(
+                          (todayTask: ObjectType) => todayTask.id === subTask.id,
+                        );
                         return (
                           <TaskRow
                             key={subTask.id}

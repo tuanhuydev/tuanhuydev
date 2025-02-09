@@ -6,7 +6,6 @@ import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@
 export const useTodayTasks = () => {
   return useQuery({
     queryKey: ["todayTasks"],
-    queryFn: () => [],
   });
 };
 
