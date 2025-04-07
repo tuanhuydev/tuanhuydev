@@ -1,7 +1,6 @@
 import formatDistance from "date-fns/formatDistance";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export interface HighlightPostProps {
   post: ObjectType;
@@ -16,7 +15,7 @@ export default async function HighlightPost({ post, className }: HighlightPostPr
       prefetch
       className={`col-span-full md:col-span-1 lg:col-span-2 rounded-md transition-all drop-shadow duration-150 hover:drop-shadow-md ease-in-out cursor-pointer ${className}`}>
       <div className="z-0 h-full flex flex-col rounded-md relative bg-white dark:bg-slate-800 dark:border dark:border-slate-700 p-5">
-        <div className="w-full min-h-[14rem] grow relative mb-2 overflow-hidden rounded-md">
+        <div className="w-full min-h-[12rem] grow relative mb-2 overflow-hidden rounded-md">
           {thumbnail && (
             <Image
               src={thumbnail}
