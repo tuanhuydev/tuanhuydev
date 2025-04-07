@@ -1,6 +1,5 @@
 "use client";
 
-import ThemeToggle from "../commons/ThemeToggle";
 import BaseButton from "../commons/buttons/BaseButton";
 import { useSignOut } from "@app/queries/authQueries";
 import { useCurrentUser } from "@app/queries/userQueries";
@@ -122,10 +121,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   return (
     <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between relative">
       {renderStart}
-      <div className="flex gap-1 items-center">
-        <ThemeToggle />
-        {renderEnd}
-      </div>
+      <div className="flex gap-1 items-center">{renderEnd}</div>
     </div>
   );
 };

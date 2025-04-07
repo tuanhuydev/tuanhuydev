@@ -27,16 +27,17 @@ export default function Contact() {
   return (
     <section id="contact" className="relative px-6 py-16 lg:py-24 text-center rounded-md overflow-hidden">
       {/* Floating Background Elements */}
-      <motion.div
+      {/* <motion.div
         className="absolute top-20 left-10 w-18 h-18 bg-blue-300 rounded-full opacity-20 blur-lg"
         animate={{ y: [0, -20, 0] }}
         transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-      />
-      <motion.div
+      /> */}
+      {/* <motion.div
         className="absolute bottom-20 right-10 w-24 h-24 bg-indigo-300 rounded-full opacity-30 blur-xl"
+        style={{ WebkitBackdropFilter: "blur(20px)", WebkitFilter: "blur(20px)" }}
         animate={{ y: [0, 30, 0] }}
         transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-      />
+      /> */}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -55,7 +56,7 @@ export default function Contact() {
               <a
                 target="_blank"
                 href={href}
-                className="p-4 w-16 h-16 rounded-md flex items-center justify-center bg-white dark:bg-gray-800 shadow-lg transition hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-4 w-12 h-12 lg:w-16 lg:h-16 rounded-md flex items-center justify-center bg-white dark:bg-gray-800 shadow-lg transition hover:bg-gray-100 dark:hover:bg-gray-700"
                 aria-label={alt}>
                 <Image src={icon} width={32} height={32} alt={alt} className="brightness-0 dark:invert" />
               </a>
@@ -67,7 +68,7 @@ export default function Contact() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 text-gray-600 dark:text-gray-400 text-sm">
+          className="mt-8 flex items-center justify-center gap-3 sm:gap-5 text-gray-600 dark:text-gray-400 text-sm">
           {[
             { emoji: "🚀", text: "Code" },
             { emoji: "💡", text: "Design" },
