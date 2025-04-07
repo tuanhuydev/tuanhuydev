@@ -8,7 +8,7 @@ export const Footer = () => {
         &copy;&nbsp;{currentYear}&nbsp;
         <span>tuanhuydev</span>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="/privacy" className="hover:underline">
+        <a href="/privacy" className="hover:underline text-slate-900 dark:text-slate-300">
           Privacy Policy
         </a>
       </div>

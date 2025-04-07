@@ -1,13 +1,16 @@
-import Footer from "@app/components/HomeModule/Footer";
-import Navbar from "@app/components/HomeModule/Navbar";
+import { Footer } from "@app/[landing]/components/Footer";
+
+export const metadata = {
+  title: "Privacy Policy - tuanhuy.dev",
+  description: "Learn how tuanhuy.dev collects and protects your personal information.",
+};
 
 export default async function Privacy() {
   return (
-    <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
+    <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative" data-testid="homepage-testid">
       <div className="container mx-auto">
-        <Navbar withContact={false} />
         <div className="relative text-base text-primary dark:text-slate-50">
-          <h1>Privacy Policy</h1>
+          <h1 className="m-0 py-4">Privacy Policy</h1>
           <p>Last updated: 2024/04/09</p>
           <p>
             Welcome to tuanhuy.dev (referred to as &quot;us&quot;, &quot;we&quot;, or &quot;our&quot;). Protecting your

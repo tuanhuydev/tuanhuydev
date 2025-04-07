@@ -29,7 +29,7 @@ export const Navbar = () => {
   // Scroll handling
   const handleScroll = () => {
     // Handle Scroll down
-    const scrollThreshold = 100;
+    const scrollThreshold = 50;
     setShowAtBottom(window.scrollY > scrollThreshold);
 
     // Handle Scroll Top
@@ -83,7 +83,7 @@ export const Navbar = () => {
         onClick={toggleTheme}
         className={`${
           showAtBottom ? "p-1" : "p-2"
-        } rounded-full shadow-lg border-none bg-transparent dark:bg-slate-800`}>
+        } rounded-full shadow-lg border-none bg-transparent flex dark:bg-slate-800`}>
         {darkMode ? (
           <motion.svg
             initial={{ rotate: 0 }}
@@ -92,10 +92,10 @@ export const Navbar = () => {
             width="24px"
             height="24px"
             viewBox="0 0 24 24"
-            className={`fill-primary dark:fill-slate-50`}
+            className={`fill-primary dark:fill-slate-50 w-5 lg:w-5 h-5 lg:h-5`}
             xmlns="http://www.w3.org/2000/svg">
             <g strokeWidth="0"></g>
-            <g strokeLinecap="round" stroke-linejoin="round"></g>
+            <g strokeLinecap="round" strokeLinejoin="round"></g>
             <g>
               <motion.path
                 initial={{ pathLength: 0 }}
@@ -133,7 +133,7 @@ export const Navbar = () => {
       {!showAtBottom && (
         <a
           href="#contact"
-          className="rounded-full bg-stone-900 drop-shadow-md dark:bg-slate-50 dark:!text-primary !text-slate-50 text-xs md:text-base uppercase font-semibold px-2 py-0.5 md:px-4 md:py-1 cursor-pointer">
+          className="rounded-full bg-stone-900 shadow-lg dark:bg-slate-50 dark:!text-primary !text-slate-50 text-xs md:text-base uppercase font-semibold px-4 py-2 md:px-4 cursor-pointer">
           Contact
         </a>
       )}
@@ -152,7 +152,7 @@ export const Navbar = () => {
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={`w-5 lg:w-6 h-5 lg:h-6`}>
+            className={`w-4 lg:w-5 h-4 lg:h-5`}>
             <g>
               <motion.path
                 d="M12 20L12 4M12 4L18 10M12 4L6 10"
@@ -174,10 +174,9 @@ export const Navbar = () => {
     <motion.header
       initial={{ y: -100, x: "-50%" }}
       animate={{ y: 0, x: "-50%" }}
-      className={`rounded-full flex justify-between fixed z-10 px-5 py-1 left-1/2 ${
+      className={`rounded-full flex justify-between fixed z-10 px-4 lg:px-5 py-2 left-1/2 ${
         showAtBottom ? "bg-slate-50 dark:bg-slate-900 shadow-md" : "bg-transparent"
-      }
-        ${showAtBottom ? "bottom-[60px] w-4/5 lg:w-1/5 ease-in" : "top-4 w-4/5 lg:w-4xl"}`}>
+      } ${showAtBottom ? "bottom-[60px] w-3/5 lg:w-1/5 ease-in" : "top-4 w-5/6 md:w-4/5 lg:w-4xl"}`}>
       <Logo />
       <Actions />
     </motion.header>
