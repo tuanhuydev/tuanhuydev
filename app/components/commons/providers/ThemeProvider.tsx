@@ -3,10 +3,7 @@
 import { sourceCodeFont } from "@app/font";
 import { createTheme, ThemeProvider as MUIThemeProvider, StyledEngineProvider, THEME_ID } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
-import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
-
-const NextThemeProvider = dynamic(() => import("next-themes").then((module) => module.ThemeProvider), { ssr: false });
 
 const MuiBaseTheme = createTheme({
   typography: {
@@ -81,10 +78,8 @@ const MuiBaseTheme = createTheme({
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
   return (
-    <NextThemeProvider attribute="class" defaultTheme="light">
-      <StyledEngineProvider injectFirst>
-        <MUIThemeProvider theme={{ [THEME_ID]: MuiBaseTheme }}>{children}</MUIThemeProvider>
-      </StyledEngineProvider>
-    </NextThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <MUIThemeProvider theme={{ [THEME_ID]: MuiBaseTheme }}>{children}</MUIThemeProvider>
+    </StyledEngineProvider>
   );
 }

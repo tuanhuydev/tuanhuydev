@@ -25,34 +25,34 @@ import "@mdxeditor/editor/style.css";
 import dynamic from "next/dynamic";
 import { RefObject, useEffect, useRef } from "react";
 
-const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
+const BoldItalicUnderlineToggles = dynamic(
+  () => import("@mdxeditor/editor").then((m) => m.BoldItalicUnderlineToggles),
+  { ssr: false, loading: () => <Loader /> },
+);
+const CreateLink = dynamic(() => import("@mdxeditor/editor").then((m) => m.CreateLink), {
   ssr: false,
   loading: () => <Loader />,
 });
-const CreateLink = dynamic(async () => (await import("@mdxeditor/editor")).CreateLink, {
+const InsertCodeBlock = dynamic(() => import("@mdxeditor/editor").then((m) => m.InsertCodeBlock), {
   ssr: false,
   loading: () => <Loader />,
 });
-const InsertCodeBlock = dynamic(async () => (await import("@mdxeditor/editor")).InsertCodeBlock, {
+const ListsToggle = dynamic(() => import("@mdxeditor/editor").then((m) => m.ListsToggle), {
   ssr: false,
   loading: () => <Loader />,
 });
-const ListsToggle = dynamic(async () => (await import("@mdxeditor/editor")).ListsToggle, {
+const ChangeCodeMirrorLanguage = dynamic(() => import("@mdxeditor/editor").then((m) => m.ChangeCodeMirrorLanguage), {
   ssr: false,
   loading: () => <Loader />,
 });
-const ChangeCodeMirrorLanguage = dynamic(async () => (await import("@mdxeditor/editor")).ChangeCodeMirrorLanguage, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const InsertImage = dynamic(async () => (await import("@mdxeditor/editor")).InsertImage, {
+const InsertImage = dynamic(() => import("@mdxeditor/editor").then((m) => m.InsertImage), {
   ssr: false,
   loading: () => <Loader />,
 });
 
 export interface EditorProps {
   value: string;
-  onChange?: any;
+  onChange?: (markdown: string) => void;
   className?: string;
   readOnly?: boolean;
   editorRef?: RefObject<MDXEditorMethods | null>;
@@ -65,13 +65,23 @@ export default function BaseMarkdown({
   readOnly = false,
   className = "",
   placeholder = "Placeholder",
+  editorRef,
 }: EditorProps) {
   const localRef = useRef<MDXEditorMethods | null>(null);
   const { fetch } = useFetch();
 
+  // Sync value externally if editorRef is passed
   useEffect(() => {
-    if (localRef.current && !localRef.current?.getMarkdown()) {
-      localRef.current?.setMarkdown(value);
+    if (editorRef) {
+      (editorRef as any).current = localRef.current;
+    }
+  }, [editorRef]);
+
+  // Only update markdown if it's different
+  useEffect(() => {
+    const current = localRef.current?.getMarkdown();
+    if (localRef.current && current !== value) {
+      localRef.current.setMarkdown(value);
     }
   }, [value]);
 
@@ -79,13 +89,13 @@ export default function BaseMarkdown({
     <div
       className={`block z-0 gap-4 flex-1 relative !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
-      } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary `}>
+      } ${className} focus-within:outline outline-1 transition-all ease-linear duration-200 rounded h-full overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
       <MDXEditor
-        placeholder={placeholder}
         ref={localRef}
-        markdown={EMPTY_STRING}
+        markdown={value}
         onChange={onChange}
         readOnly={readOnly}
+        placeholder={placeholder}
         contentEditableClassName="min-[16rem] text-primary dark:text-slate-50"
         plugins={[
           toolbarPlugin({
@@ -122,7 +132,7 @@ export default function BaseMarkdown({
             imageUploadHandler: async (image: File) => {
               const formData = new FormData();
               formData.append("file", image);
-              const response: Response = await fetch("/api/upload/image", {
+              const response = await fetch("/api/upload/image", {
                 method: "POST",
                 body: formData,
               });

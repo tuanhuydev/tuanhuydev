@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export type DelightProps = {
   title: string;
@@ -18,8 +18,6 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
   const backgroundGradient = hasTextBg
     ? `bg-clip-text text-transparent bg-gradient-to-r ${gradient.from} ${gradient.to}`
     : "";
-
-  const ref = useRef<any>();
 
   useEffect(() => {
     const interval = setInterval(() => {
