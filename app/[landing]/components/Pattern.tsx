@@ -13,7 +13,7 @@ export const Pattern = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}>
       <rect width="100%" height="100%" fill="transparent" />
-      <g stroke="rgba(200, 200, 200, 0.2)" stroke-width="1">
+      <g stroke="rgba(200, 200, 200, 0.2)" strokeWidth="1">
         {[...Array(19)].map((_, i) => (
           <motion.line
             key={`vertical-${i}`}
