@@ -37,7 +37,7 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
         &#60;{title}&nbsp;&#47;&#62;
       </h4>
       <div
-        className={`text-2xl md:text-5xl font-semibold text-slate-70 dark:text-slate-300 flex gap-2 justify-center `}>
+        className={`text-2xl md:text-5xl font-semibold text-slate-700 dark:text-slate-300 flex gap-2 justify-center `}>
         {count}+
       </div>
     </div>
