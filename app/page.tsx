@@ -1,15 +1,7 @@
 import { getPosts } from "../server/actions/blog";
-import Hero from "@app/components/HomeModule/Hero";
-import Navbar from "@app/components/HomeModule/Navbar";
-import { GOOGLE_ANALYTIC } from "@lib/configs/constants";
+import LandingPage from "./[landing]/LandingPage";
 import { Post } from "@lib/types";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
-import dynamicImport from "next/dynamic";
-
-const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"));
-const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"));
-const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"));
 
 export const dynamic = "force-dynamic";
 
@@ -70,22 +62,23 @@ export default async function Home() {
   }
 
   return (
-    <main className="bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
-      <div className="container mx-auto">
-        <Navbar posts={posts} />
-        <div className="relative">
-          <Hero />
-          {/* <Services /> */}
-          <BlogSection posts={posts} />
-          <Contact />
-          {/* <audio id="audio" src="/assets/sounds/click.wav" controls>
-            Your browser does not support the
-            <code>audio</code> element.
-          </audio> */}
-        </div>
-        <Footer />
-      </div>
-      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-    </main>
+    <LandingPage />
+    // <main className="bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
+    //   <div className="container mx-auto">
+    //     <Navbar posts={posts} />
+    //     <div className="relative">
+    //       <Hero />
+    //       {/* <Services /> */}
+    //       <BlogSection posts={posts} />
+    //       <Contact />
+    //       {/* <audio id="audio" src="/assets/sounds/click.wav" controls>
+    //         Your browser does not support the
+    //         <code>audio</code> element.
+    //       </audio> */}
+    //     </div>
+    //     <Footer />
+    //   </div>
+    //   {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+    // </main>
   );
 }
