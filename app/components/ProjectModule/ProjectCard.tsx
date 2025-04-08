@@ -3,7 +3,7 @@
 import BaseCard from "../commons/Card";
 import BaseButton from "../commons/buttons/BaseButton";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { DATE_FORMAT } from "@lib/configs/constants";
+import { DATE_FORMAT } from "@lib/shared/commons/constants/base";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import Tooltip from "@mui/material/Tooltip";

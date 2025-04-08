@@ -1,5 +1,6 @@
 "use client";
 
+import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -8,8 +9,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { compress, decompress } from "lz-string";
 import * as React from "react";
 
-const DEFAULT_STALE_TIME = 1000 * 60 * 30; // 3 minutes
-const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 10 * 2; // 60 minutes
+const DEFAULT_STALE_TIME = 1000 * 60 * 5; // 5 minutes
+const DEFAULT_GC_TIME = DEFAULT_STALE_TIME * 6; // 30 minutes
 
 export default function QueryProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -21,24 +22,27 @@ export default function QueryProvider(props: { children: React.ReactNode }) {
             staleTime: DEFAULT_STALE_TIME,
             refetchInterval: false,
             refetchOnWindowFocus: false,
-            refetchOnMount: true,
+            refetchOnMount: false,
             refetchOnReconnect: false,
           },
         },
       }),
   );
   queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
-  queryClient.setQueryDefaults(["showMobileHamburger"], { staleTime: Infinity });
-  queryClient.setQueryDefaults(["todayTasks"], { staleTime: Infinity });
 
   const persister = createSyncStoragePersister({
     storage: window.localStorage,
     key: "tuanhuydev",
     serialize: (data) => compress(JSON.stringify(data)),
-    deserialize: (data) => JSON.parse(decompress(data)),
+    deserialize: (data) => {
+      try {
+        return JSON.parse(decompress(data));
+      } catch (error) {
+        console.error("Failed to deserialize persisted data:", error);
+        return {};
+      }
+    },
   });
-
-  const isDevelopmentEnv = process.env.NODE_ENV === "development";
 
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>

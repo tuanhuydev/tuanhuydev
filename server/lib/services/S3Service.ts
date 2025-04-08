@@ -1,17 +1,15 @@
 import { S3 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { awsAccessKeyId, awsBucketName, awsRegion, awsSecretAccessKey } from "@lib/configs/constants";
+import { awsAccessKeyId, awsBucketName, awsRegion, awsSecretAccessKey } from "@lib/shared/commons/constants/base";
 import BaseError from "@lib/shared/commons/errors/BaseError";
-import { StorageInterface } from "@lib/shared/interfaces/helper";
 
-class S3Service implements StorageInterface {
+class S3Service {
   #S3Client: S3 | undefined;
   #bucket: string;
 
   static #instance: S3Service;
 
   static makeInstance() {
-    // Implement Singleton
     if (S3Service.#instance) {
       return S3Service.#instance;
     }

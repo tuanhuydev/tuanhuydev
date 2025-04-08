@@ -8,7 +8,7 @@ import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import dynamic from "next/dynamic";
-import { ChangeEvent, useCallback, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 
 const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
   loading: () => <Loader />,

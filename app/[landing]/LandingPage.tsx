@@ -4,8 +4,7 @@ import Hero from "./components/Hero";
 import { Navbar } from "./components/Navbar";
 import Experience from "./components/experience";
 import BlogSection from "@app/components/HomeModule/BlogSection";
-import { Post } from "@lib/types";
-import { getPosts } from "server/actions/blog";
+import { getPosts } from "server/actions/blogActions";
 
 export default async function LandingPage() {
   let posts: Post[] = [];

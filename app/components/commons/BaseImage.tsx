@@ -1,7 +1,7 @@
 "use client";
 
 import Loader from "./Loader";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import { isURLValid } from "@lib/shared/utils/helper";
 import dynamic from "next/dynamic";
 import Image, { ImageProps } from "next/image";
