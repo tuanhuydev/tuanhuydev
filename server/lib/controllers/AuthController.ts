@@ -1,4 +1,4 @@
-import { AUTH_URL } from "@lib/configs/constants";
+import { AUTH_URL } from "@lib/shared/commons/constants/base";
 import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";

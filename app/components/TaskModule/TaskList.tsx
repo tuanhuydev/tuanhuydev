@@ -3,6 +3,7 @@
 import Empty from "../commons/Empty";
 import Loader from "../commons/Loader";
 import { formatDate } from "@app/_utils/helper";
+import { QUERY_KEYS } from "@app/queries/queryKeys";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useTodayTasks } from "@app/queries/taskQueries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -65,7 +66,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
     const newTodayTasks = taskExisted
       ? todayTasks.filter((todayTask: ObjectType) => todayTask?.id !== task.id)
       : [...todayTasks, task];
-    await queryClient.setQueryData(["todayTasks"], newTodayTasks);
+    await queryClient.setQueryData([QUERY_KEYS.TODAY_TASKS], newTodayTasks);
   };
 
   if (!tasks.length && !isLoading) return <Empty />;

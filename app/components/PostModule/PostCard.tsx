@@ -1,5 +1,5 @@
 import BaseCard from "../commons/Card";
-import { DATE_FORMAT } from "@lib/configs/constants";
+import { DATE_FORMAT } from "@lib/shared/commons/constants/base";
 import format from "date-fns/format";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";

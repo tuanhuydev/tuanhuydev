@@ -1,5 +1,5 @@
-import { AUTH_URL, SALT_ROUNDS } from "@lib/configs/constants";
 import MongoUserRepository from "@lib/repositories/MongoUserRepository";
+import { AUTH_URL, SALT_ROUNDS } from "@lib/shared/commons/constants/base";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";

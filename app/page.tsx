@@ -1,7 +1,9 @@
-import { getPosts } from "../server/actions/blog";
 import LandingPage from "./[landing]/LandingPage";
-import { Post } from "@lib/types";
+import Transition from "./components/commons/Transition";
+import { GOOGLE_ANALYTIC } from "@lib/shared/commons/constants/base";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
+import { Fragment } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -54,31 +56,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  let posts: Post[] = [];
-  try {
-    posts = await getPosts({ page: 1, pageSize: 5, published: true });
-  } catch (error) {
-    console.error("Failed to fetch posts:", error);
-  }
-
   return (
-    <LandingPage />
-    // <main className="bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
-    //   <div className="container mx-auto">
-    //     <Navbar posts={posts} />
-    //     <div className="relative">
-    //       <Hero />
-    //       {/* <Services /> */}
-    //       <BlogSection posts={posts} />
-    //       <Contact />
-    //       {/* <audio id="audio" src="/assets/sounds/click.wav" controls>
-    //         Your browser does not support the
-    //         <code>audio</code> element.
-    //       </audio> */}
-    //     </div>
-    //     <Footer />
-    //   </div>
-    //   {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-    // </main>
+    <Transition>
+      <LandingPage />
+      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+    </Transition>
   );
 }

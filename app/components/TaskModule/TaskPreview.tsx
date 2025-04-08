@@ -3,7 +3,7 @@ import { TaskStatus, TaskStatusEnum } from "@app/_utils/constants";
 import Badge from "@app/components/commons/Badge";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import { useSubTasks } from "@app/queries/taskQueries";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import dynamic from "next/dynamic";
 import { Fragment } from "react";
 
@@ -11,7 +11,7 @@ const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
 
 export interface TaskPreviewProps {
   task: ObjectType | null;
-  assignee?: SelectOption | null;
+  assignee?: SelectOptionType | null;
   sprint?: ObjectType | null;
 }
 export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps) {

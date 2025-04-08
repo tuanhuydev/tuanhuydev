@@ -1,5 +1,5 @@
 import { useFetch } from "./useSession";
-import { BASE_URL } from "@lib/configs/constants";
+import { BASE_URL } from "@lib/shared/commons/constants/base";
 import BaseError from "@lib/shared/commons/errors/BaseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 

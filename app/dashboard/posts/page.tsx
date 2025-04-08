@@ -6,7 +6,6 @@ import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { usePostsQuery } from "@app/queries/postQueries";
-import { Post } from "@lib/types";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";

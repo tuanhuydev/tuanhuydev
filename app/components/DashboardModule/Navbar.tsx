@@ -2,13 +2,14 @@
 
 import BaseButton from "../commons/buttons/BaseButton";
 import { useSignOut } from "@app/queries/authQueries";
+import { QUERY_KEYS } from "@app/queries/queryKeys";
 import { useCurrentUser } from "@app/queries/userQueries";
 import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import Popover from "@mui/material/Popover";
-import { QueryKey, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Fragment, MouseEventHandler, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
 
@@ -57,7 +58,7 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
   );
 
   const toggleMobileHamburger = useCallback(() => {
-    queryClient.setQueryData(["showMobileHamburger" as unknown as QueryKey], (prev: any) => !prev);
+    queryClient.setQueryData<boolean>([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], (prev) => !prev);
   }, [queryClient]);
 
   const renderStart = useMemo(() => {
