@@ -1,9 +1,9 @@
-import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import { AUTH_URL, SALT_ROUNDS } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
+import { AUTH_URL, SALT_ROUNDS } from "@lib/commons/constants/base";
+import BaseError from "@lib/commons/errors/BaseError";
+import NotFoundError from "@lib/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
+import MongoUserRepository from "server/repositories/MongoUserRepository";
 import { v4 as uuidv4 } from "uuid";
 
 export type TokenPayload = {

@@ -1,11 +1,11 @@
-import LogService from "../services/LogService";
-import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
-import AuthService from "@lib/services/AuthService";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import { BaseController } from "@lib/shared/interfaces/controller";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import { BaseController } from "@lib/interfaces/controller";
+import Network from "@lib/utils/network";
+import LogService from "@server/services/LogService";
 import { NextRequest } from "next/server";
+import MongoTaskRepository from "server/repositories/MongoTaskRepository";
+import AuthService from "server/services/AuthService";
 import { z } from "zod";
 
 export class TaskController implements BaseController {

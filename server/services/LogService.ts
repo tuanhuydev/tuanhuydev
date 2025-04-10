@@ -1,4 +1,4 @@
-import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
+import { isDevelopmentEnv } from "@lib/commons/constants/base";
 
 class LogService {
   static #instance: LogService;

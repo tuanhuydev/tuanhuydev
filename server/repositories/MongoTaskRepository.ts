@@ -1,5 +1,5 @@
-import MongoService from "@lib/services/MongoService";
 import { BSON, Collection, ObjectId } from "mongodb";
+import MongoService from "server/services/MongoService";
 
 class MongoTaskRepository {
   static #instance: MongoTaskRepository;

@@ -1,8 +1,8 @@
 import { sourceCodeFont } from "./font";
 import "@app/styles/globals.scss";
-import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { isDevelopmentEnv } from "lib/commons/constants/base";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 

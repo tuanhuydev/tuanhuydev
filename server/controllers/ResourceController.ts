@@ -1,6 +1,6 @@
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import Network from "@lib/utils/network";
 import { NextRequest } from "next/server";
 
 export class ResourceController {

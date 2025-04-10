@@ -1,14 +1,14 @@
-import AuthService from "../services/AuthService";
-import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
-import MongoUserPermissionRepository from "@lib/repositories/MongoUserPermissionRepository";
-import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import LogService from "@lib/services/LogService";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
-import { BaseController } from "@lib/shared/interfaces/controller";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import NotFoundError from "@lib/commons/errors/NotFoundError";
+import { BaseController } from "@lib/interfaces/controller";
+import Network from "@lib/utils/network";
+import AuthService from "@server/services/AuthService";
 import { NextRequest } from "next/server";
+import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
+import MongoUserPermissionRepository from "server/repositories/MongoUserPermissionRepository";
+import MongoUserRepository from "server/repositories/MongoUserRepository";
+import LogService from "server/services/LogService";
 import { z } from "zod";
 
 class UserController implements BaseController {

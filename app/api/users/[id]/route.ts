@@ -1,5 +1,5 @@
-import UserController from "@lib/controllers/UserController";
 import { NextRequest } from "next/server";
+import UserController from "server/controllers/UserController";
 
 export async function GET(request: NextRequest, { params }: any) {
   return UserController.getOne(request, params);

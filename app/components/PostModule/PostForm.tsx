@@ -5,14 +5,14 @@ import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@app/queries/postQueries";
-import LogService from "@lib/services/LogService";
-import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
 import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
+import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
 const DynamicForm = dynamic(() => import("../commons/Form/DynamicForm"), { ssr: false });
 

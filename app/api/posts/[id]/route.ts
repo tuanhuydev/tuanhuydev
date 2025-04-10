@@ -1,5 +1,5 @@
-import PostController from "@lib/controllers/PostController";
 import { NextRequest } from "next/server";
+import PostController from "server/controllers/PostController";
 
 export async function GET(request: NextRequest, { params }: any) {
   return PostController.getOne(request, params);

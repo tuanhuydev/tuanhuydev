@@ -1,10 +1,10 @@
-import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
-import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import Network from "@lib/utils/network";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
+import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
+import MongoUserRepository from "server/repositories/MongoUserRepository";
 
 export class PermissionController {
   static #instance: PermissionController;

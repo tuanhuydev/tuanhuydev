@@ -2,10 +2,10 @@
 
 import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import LogService from "@lib/services/LogService";
 import dynamic from "next/dynamic";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
+import LogService from "server/services/LogService";
 import * as yup from "yup";
 
 const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker), {

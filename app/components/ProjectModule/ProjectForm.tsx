@@ -3,12 +3,12 @@
 import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
-import LogService from "@lib/services/LogService";
-import { ProjectStatus, ProjectType } from "@lib/shared/interfaces/enums";
-import { toCapitalize } from "@lib/shared/utils/helper";
+import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
+import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
 export interface ProjectFormProps {
   project?: ObjectType;

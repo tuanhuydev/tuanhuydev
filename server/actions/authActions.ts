@@ -1,10 +1,10 @@
 "use server";
 
-import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
-import MongoUserRepository from "@lib/repositories/MongoUserRepository";
-import AuthService from "@lib/services/AuthService";
-import BaseError from "@lib/shared/commons/errors/BaseError";
+import BaseError from "@lib/commons/errors/BaseError";
 import { redirect, RedirectType } from "next/navigation";
+import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
+import MongoUserRepository from "server/repositories/MongoUserRepository";
+import AuthService from "server/services/AuthService";
 
 export const userPermissionAction = async () => {
   try {

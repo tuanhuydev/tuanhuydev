@@ -1,5 +1,5 @@
-import TaskController from "@lib/controllers/TaskController";
 import { NextRequest } from "next/server";
+import TaskController from "server/controllers/TaskController";
 
 export async function GET(request: NextRequest, { params }: any) {
   return TaskController.getTasksByUser(request, params);

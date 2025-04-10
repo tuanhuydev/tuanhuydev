@@ -1,7 +1,7 @@
 import { S3 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { awsAccessKeyId, awsBucketName, awsRegion, awsSecretAccessKey } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
+import { awsAccessKeyId, awsSecretAccessKey, awsRegion, awsBucketName } from "@lib/commons/constants/base";
+import BaseError from "@lib/commons/errors/BaseError";
 
 class S3Service {
   #S3Client: S3 | undefined;

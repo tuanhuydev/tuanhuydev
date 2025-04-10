@@ -1,8 +1,8 @@
-import { AUTH_URL } from "@lib/shared/commons/constants/base";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
-import Network from "@lib/shared/utils/network";
+import { AUTH_URL } from "@lib/commons/constants/base";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
+import Network from "@lib/utils/network";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";

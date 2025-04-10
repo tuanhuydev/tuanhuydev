@@ -1,10 +1,10 @@
-import MongoPermissionRepository from "@lib/repositories/MongoPermissionRepository";
-import MongoPostRepository from "@lib/repositories/MongoPostRepository";
-import MongoProjectRepository from "@lib/repositories/MongoProjectRepository";
-import MongoTaskRepository from "@lib/repositories/MongoTaskRepository";
-import MongoUserRepository from "@lib/repositories/MongoUserRepository";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
+import MongoPostRepository from "server/repositories/MongoPostRepository";
+import MongoProjectRepository from "server/repositories/MongoProjectRepository";
+import MongoTaskRepository from "server/repositories/MongoTaskRepository";
+import MongoUserRepository from "server/repositories/MongoUserRepository";
 
 export async function GET(request: NextRequest) {
   const posts = await MongoPostRepository.getPosts();

@@ -1,4 +1,4 @@
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
+import { EMPTY_STRING } from "@lib/commons/constants/base";
 import * as mongoDB from "mongodb";
 
 const MONGO_URI = process.env.MONGODB_URI || EMPTY_STRING;

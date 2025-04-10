@@ -1,6 +1,6 @@
 import Transition from "@app/components/commons/Transition";
-import { BASE_URL, GOOGLE_ANALYTIC } from "@lib/shared/commons/constants/base";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
