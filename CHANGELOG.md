@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/tuanhuydev/tuanhuydev/compare/v2.0.0...v2.1.0) (2025-04-10)
+
+### Features
+
+- **22:** migrate hero section ([b6b11c7](https://github.com/tuanhuydev/tuanhuydev/commit/b6b11c70734589c7e03adfa8276c6eda74cbd838))
+- **form:** replace antd form with dynamic form ([487ee77](https://github.com/tuanhuydev/tuanhuydev/commit/487ee77270f7a4b195af50c2c81b2e704ed4b5bc))
+- **hero:** new hero section ([75271e6](https://github.com/tuanhuydev/tuanhuydev/commit/75271e61b4ab75843bb71515d103d1c1b92278e1))
+- **hero:** update bg ([9dcb609](https://github.com/tuanhuydev/tuanhuydev/commit/9dcb609ddd81516119e5caa0609201b48808edc9))
+- **project:** update fields and modify project detail ([c72a5ff](https://github.com/tuanhuydev/tuanhuydev/commit/c72a5ff8e131e64869fa285414f63ff929d32a46))
+
+### Bug Fixes
+
+- **google:** adjust google adsense setup ([ba90b52](https://github.com/tuanhuydev/tuanhuydev/commit/ba90b52c39a139e6e480e3a3b86a3ccb43eb7a73))
+- **google:** google analytic is not working ([28c1962](https://github.com/tuanhuydev/tuanhuydev/commit/28c1962269b2bdcf925cb1c4ef74bbc6747dae32))
+- **google:** google analytics is broken ([d2e515d](https://github.com/tuanhuydev/tuanhuydev/commit/d2e515d6eaf197938bbe0c452b614beff3f4fa6c))
+- **permission:** unable to create task after applying permission ([b8b395c](https://github.com/tuanhuydev/tuanhuydev/commit/b8b395c92ca1505917c64c5f9e628b4181c7b5b5))
+- **ui:** minor changes ([2374e10](https://github.com/tuanhuydev/tuanhuydev/commit/2374e100a8ef18c4ba4b35e21730c55ff6c25530))
+
 ## 2.0.0 (2024-10-13)
 
 ### Features
