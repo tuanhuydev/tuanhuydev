@@ -1,8 +1,10 @@
-import { QueryKey, useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "./queryKeys";
+import { useQuery } from "@tanstack/react-query";
 
 export const useMobileSidebar = () => {
   return useQuery({
-    queryKey: ["showMobileHamburger" as unknown as QueryKey],
+    queryKey: [QUERY_KEYS.SHOW_MOBILE_HAMBURGER],
+    queryFn: () => false,
     initialData: false,
   });
 };

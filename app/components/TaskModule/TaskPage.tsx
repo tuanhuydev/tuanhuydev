@@ -2,7 +2,7 @@
 
 import { TaskStatusOptions, TaskTypeOptions } from "@app/_utils/constants";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
-import { DynamicFormConfig, Field } from "@app/components/commons/Form/DynamicForm";
+import { DynamicFormConfig, Field, ObjectType } from "@app/components/commons/Form/DynamicForm";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
@@ -13,7 +13,7 @@ import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 const TaskFormTitle = dynamic(() => import("@app/components/TaskModule/TaskFormTitle"), {
   ssr: false,
@@ -221,35 +221,37 @@ function TaskPage({
   }, [onSelectTask, pathname, router, selectedTaskId, tasks]);
 
   return (
-    <PageContainer title={project.name} goBack={!!project.name}>
-      <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
-      <TaskList
-        projectId={project?.id}
-        tasks={tasks}
-        selectedTask={selectedTask}
-        onSelectTask={onSelectTask}
-        isLoading={loading}
-      />
-      <Drawer
-        open={openDrawer}
-        aria-hidden="false"
-        anchor="right"
-        PaperProps={{
-          style: { width: "35%" },
-        }}
-        onClose={toggleDrawer(false)}>
-        <TaskFormTitle
-          task={selectedTask}
-          allowSubTask={!!selectedTask && allowSubTasks}
-          config={TaskFormConfig}
-          mode={mode as "VIEW" | "EDIT"}
-          allowEditTask={!!selectedTask}
-          onClose={toggleDrawer(false)}
-          onToggle={toggleMode}
+    <Suspense fallback={<Loader />}>
+      <PageContainer title={project.name} goBack={!!project.name}>
+        <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
+        <TaskList
+          projectId={project?.id}
+          tasks={tasks}
+          selectedTask={selectedTask}
+          onSelectTask={onSelectTask}
+          isLoading={loading}
         />
-        {RenderTaskDetails}
-      </Drawer>
-    </PageContainer>
+        <Drawer
+          open={openDrawer}
+          aria-hidden="false"
+          anchor="right"
+          PaperProps={{
+            style: { width: "35%" },
+          }}
+          onClose={toggleDrawer(false)}>
+          <TaskFormTitle
+            task={selectedTask}
+            allowSubTask={!!selectedTask && allowSubTasks}
+            config={TaskFormConfig}
+            mode={mode as "VIEW" | "EDIT"}
+            allowEditTask={!!selectedTask}
+            onClose={toggleDrawer(false)}
+            onToggle={toggleMode}
+          />
+          {RenderTaskDetails}
+        </Drawer>
+      </PageContainer>
+    </Suspense>
   );
 }
 

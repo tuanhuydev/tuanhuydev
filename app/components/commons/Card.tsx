@@ -1,3 +1,5 @@
+"use client";
+
 import BaseImage from "./BaseImage";
 import Skeleton from "@mui/material/Skeleton";
 import React, { Fragment, PropsWithChildren } from "react";
@@ -14,7 +16,7 @@ export interface CardProps extends PropsWithChildren {
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export default async function Card({
+export default function Card({
   className = "",
   children,
   titleExtra,

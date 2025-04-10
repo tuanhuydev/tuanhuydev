@@ -1,6 +1,5 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
-import { Project } from "lib/types/models";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { getProjectByIdAction } from "server/actions/projectActions";

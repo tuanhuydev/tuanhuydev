@@ -1,6 +1,6 @@
 import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 
-export const transformTextToDashed = (text: string) => {
+export const transformTextToDashed = (text: string): string => {
   // clear space
   let dashedText = text.toLowerCase().trim();
 
@@ -10,6 +10,11 @@ export const transformTextToDashed = (text: string) => {
   // Replace space to dash(-)
   dashedText = dashedText.replace(/\s+/g, "-");
   return dashedText;
+};
+
+export const toCapitalize = (str: string): string => {
+  const [firstChar, ...restChar] = str;
+  return firstChar.toUpperCase().concat(restChar.join(""));
 };
 
 export const makeRandomTextByLength = (length: number) => {

@@ -7,7 +7,6 @@ import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@app/queries/postQueries";
 import LogService from "@lib/services/LogService";
 import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
-import { Post } from "@lib/types";
 import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
@@ -17,11 +16,11 @@ import { UseFormReturn } from "react-hook-form";
 
 const DynamicForm = dynamic(() => import("../commons/Form/DynamicForm"), { ssr: false });
 
-export interface PostFormV2Props {
+export interface PostFormProps {
   post?: Post;
 }
 
-export const PostFormV2: React.FC<PostFormV2Props> = ({ post }) => {
+export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   // Hooks
   const queryClient = useQueryClient();
   const router = useRouter();

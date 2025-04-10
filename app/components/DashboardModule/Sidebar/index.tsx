@@ -4,6 +4,7 @@ import { ItemProps } from "./Item";
 import Loader from "@app/components/commons/Loader";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useMobileSidebar } from "@app/queries/metaQueries";
+import { QUERY_KEYS } from "@app/queries/queryKeys";
 import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
@@ -14,7 +15,7 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useState } from "react";
 
 const Group = dynamic(() => import("./Group"), { ssr: false, loading: () => <Loader /> });
 const Item = dynamic(() => import("./Item"), { ssr: false, loading: () => <Loader /> });
@@ -28,25 +29,25 @@ export interface SidebarProps {
 const permissionMap = {
   [UserPermissions.VIEW_PROJECT]: {
     label: "Manage Projects",
-    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.caption }} />,
+    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
     path: "/dashboard/projects",
     id: UserPermissions.VIEW_PROJECT,
   },
   [UserPermissions.VIEW_POST]: {
     label: "Manage Posts",
-    icon: <ArticleOutlined className="!text-base" />,
+    icon: <ArticleOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
     path: "/dashboard/posts",
     id: UserPermissions.VIEW_POST,
   },
   [UserPermissions.VIEW_USER]: {
     label: "Manage Users",
-    icon: <PersonOutlineOutlined className="!text-base" />,
+    icon: <PersonOutlineOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
     path: "/dashboard/users",
     id: UserPermissions.VIEW_USER,
   },
   [UserPermissions.VIEW_SETTING]: {
     label: "Settings",
-    icon: <SettingsOutlined className="!text-base" />,
+    icon: <SettingsOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
     path: "/dashboard/settings",
     id: UserPermissions.VIEW_SETTING,
   },
@@ -80,19 +81,19 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
   useEffect(() => {
     const isMobile = window.innerWidth < LargeScreenSize;
     if (isMobile) {
-      queryClient.setQueryData(["showMobileHamburger"], isMobile);
+      queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], isMobile);
       setSidebarOpen(isMobile);
     }
   }, [queryClient]);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     if (window.innerWidth < LargeScreenSize) {
-      queryClient.setQueryData(["showMobileHamburger"], !openMobile);
+      queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], !openMobile);
       setSidebarOpen(true);
     } else {
       setSidebarOpen(!sidebarOpen);
     }
-  };
+  }, [openMobile, queryClient, sidebarOpen]);
 
   return (
     <div
@@ -119,7 +120,7 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
       />
       <ul
         className={`${
-          sidebarOpen ? "w-[12.25rem]" : "w-[2.375rem]"
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.4rem]"
         } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {makeRoutes(permissions)}
       </ul>

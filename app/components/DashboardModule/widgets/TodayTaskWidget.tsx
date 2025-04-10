@@ -2,6 +2,8 @@
 
 import Card from "@app/components/commons/Card";
 import Empty from "@app/components/commons/Empty";
+import { QUERY_KEYS } from "@app/queries/queryKeys";
+import { useTodayTasks } from "@app/queries/taskQueries";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
@@ -9,16 +11,15 @@ import { SyntheticEvent } from "react";
 
 export default function TodayTaskWidget() {
   const queryClient = useQueryClient();
-
-  const todayTasks: Array<ObjectType> = queryClient.getQueryData(["todayTasks"]) || [];
+  const { data: todayTasks = [] } = useTodayTasks();
 
   const completeTask = (task: ObjectType) => (event: SyntheticEvent<any, Event>) => {
     event.stopPropagation();
     queryClient.setQueryData(
-      ["todayTasks"] as QueryKey,
+      [QUERY_KEYS.TODAY_TASKS] as QueryKey,
       todayTasks.filter((todayTask: ObjectType) => todayTask.id !== task.id),
     );
-    queryClient.invalidateQueries(["todayTasks"] as InvalidateQueryFilters);
+    queryClient.invalidateQueries([QUERY_KEYS.TODAY_TASKS] as InvalidateQueryFilters);
   };
   return (
     <Card title="Today Tasks" className="w-[20rem] min-h-[8rem] overflow-hidden" icon={<TaskAltOutlined />}>

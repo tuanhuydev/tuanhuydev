@@ -1,5 +1,4 @@
 import MongoProjectRepository from "@lib/repositories/MongoProjectRepository";
-import { Project } from "lib/types/models";
 import { redirect } from "next/navigation";
 
 export const getProjectByIdAction = async (projectId: string) => {

@@ -4,8 +4,8 @@ import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/Dyn
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import LogService from "@lib/services/LogService";
-import { toCapitalize } from "lib/helpers";
-import { ProjectStatus, ProjectType } from "lib/types/models";
+import { ProjectStatus, ProjectType } from "@lib/shared/interfaces/enums";
+import { toCapitalize } from "@lib/shared/utils/helper";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -15,10 +15,12 @@ export interface ProjectFormProps {
 }
 
 function createOptions<T extends string>(enumObj: Record<string, T>, formatter: (value: T) => string) {
-  return Object.values(enumObj).map((value) => ({
-    label: formatter(value),
-    value,
-  }));
+  return Object.values(enumObj)
+    .filter((value) => typeof value === "string")
+    .map((value) => ({
+      label: formatter(value as T),
+      value,
+    }));
 }
 
 const projectTypeOptions = createOptions(ProjectType, toCapitalize);

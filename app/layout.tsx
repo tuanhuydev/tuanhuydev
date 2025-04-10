@@ -1,20 +1,12 @@
 import { sourceCodeFont } from "./font";
 import "@app/styles/globals.scss";
+import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Viewport } from "next";
 import dynamic from "next/dynamic";
 import { PropsWithChildren } from "react";
 
-const Transition = dynamic(() => import("@app/components/commons/Transition"), { ssr: false });
-const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"));
 const QueryProvider = dynamic(() => import("@app/components/commons/providers/QueryProvider"), { ssr: false });
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
-};
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -26,12 +18,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           crossOrigin="anonymous"></script>
       </head>
       <body>
-        <ThemeProvider>
-          <QueryProvider>
-            <Transition>{children}</Transition>
-          </QueryProvider>
-        </ThemeProvider>
-        <SpeedInsights />
+        <QueryProvider>{children}</QueryProvider>
+        {isDevelopmentEnv && <SpeedInsights />}
+        <Analytics />
       </body>
     </html>
   );

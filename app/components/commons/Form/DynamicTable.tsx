@@ -3,7 +3,6 @@
 import BaseInput from "../Inputs/BaseInput";
 import BaseSelect from "../Inputs/BaseSelect";
 import BaseButton from "../buttons/BaseButton";
-import { SelectOptionType } from "@lib/configs/types";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
 import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import Tooltip from "@mui/material/Tooltip";
@@ -32,7 +31,7 @@ export interface DynamicTableProps {
   };
 }
 
-const DynamicTable = ({ control, name, keyProp, options }: DynamicTableProps) => {
+const DynamicTable = ({ control, name, options }: DynamicTableProps) => {
   const { columns } = options || { columns: [] };
 
   const { field, formState, fieldState } = useController({ name, control });
