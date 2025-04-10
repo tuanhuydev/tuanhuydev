@@ -9,7 +9,7 @@ const PageContainer = dynamic(() => import("@app/components/DashboardModule/Page
   loading: () => <Loader />,
 });
 
-const PostForm = dynamic(async () => (await import("@app/components/PostModule/PostFormV2")).PostFormV2, {
+const PostForm = dynamic(async () => (await import("@app/components/PostModule/PostForm")).PostForm, {
   ssr: false,
   loading: () => <Loader />,
 });

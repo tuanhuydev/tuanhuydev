@@ -2,7 +2,7 @@
 
 import Loader from "./Loader";
 import { useFetch } from "@app/queries/useSession";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import {
   BlockTypeSelect,
   ConditionalContents,

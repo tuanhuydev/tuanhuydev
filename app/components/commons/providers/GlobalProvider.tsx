@@ -38,6 +38,7 @@ const GlobalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const notify = useCallback((message: SnackbarConfig["message"], severity: SnackbarConfig["severity"] = "info") => {
     setConfig(() => ({ open: true, message, severity }));
   }, []);
+
   return (
     <GlobalContext.Provider value={{ notify }}>
       {children}

@@ -7,10 +7,9 @@ import Card from "@app/components/commons/Card";
 import WithCopy from "@app/components/commons/hocs/WithCopy";
 import { useProjectQuery } from "@app/queries/projectQueries";
 import { useSprintQuery } from "@app/queries/sprintQueries";
-import { DATE_FORMAT } from "@lib/configs/constants";
+import { DATE_FORMAT } from "@lib/shared/commons/constants/base";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { format, formatDistanceToNow } from "date-fns";
-import { Project } from "lib/types/models";
 import { useMemo } from "react";
 
 export default function Page({ params }: any) {

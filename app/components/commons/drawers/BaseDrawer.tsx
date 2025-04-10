@@ -1,10 +1,6 @@
-import Drawer, { DrawerProps } from "@mui/material/Drawer";
-import { CSSProperties } from "react";
+"use client";
 
-const drawerStyle: { [key: string]: CSSProperties } = {
-  header: { display: "none" },
-  body: { padding: 0 },
-};
+import Drawer, { DrawerProps } from "@mui/material/Drawer";
 
 export default function BaseDrawer({ children, open = false, onClose, ...restProps }: DrawerProps) {
   return (

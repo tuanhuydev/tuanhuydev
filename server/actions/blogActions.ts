@@ -1,7 +1,6 @@
 "use server";
 
 import MongoPostRepository from "@lib/repositories/MongoPostRepository";
-import { Post } from "@lib/types";
 import { redirect } from "next/navigation";
 
 const transformPost = (post: ObjectType): Post => {

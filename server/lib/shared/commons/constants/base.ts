@@ -14,6 +14,8 @@ export const SALT_ROUNDS: number = 12;
 const DEFAULT_ENV: string = "development";
 export const NODE_ENV: string = process.env.NODE_ENV ?? DEFAULT_ENV;
 export const isProductionEnv: boolean = NODE_ENV === "production";
+export const isDevelopmentEnv: boolean = process.env.NODE_ENV === "development";
+
 export const GOOGLE_ADSENSE: string = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.NEXT_PUBLIC_GOOGLE_TAG ?? EMPTY_STRING;
 export const GOOGLE_ANALYTIC: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTIC ?? EMPTY_STRING;

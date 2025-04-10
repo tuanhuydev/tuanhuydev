@@ -1,4 +1,4 @@
-import { NODE_ENV } from "@lib/configs/constants";
+import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
 
 class LogService {
   static #instance: LogService;
@@ -7,7 +7,7 @@ class LogService {
     return LogService.#instance ?? new LogService();
   }
   log(error: string | Error | unknown) {
-    if (NODE_ENV !== "production") {
+    if (isDevelopmentEnv) {
       if (error instanceof Error) return console.error((error as Error).message);
       return console.log(error);
     }
