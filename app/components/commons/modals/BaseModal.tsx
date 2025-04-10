@@ -44,7 +44,7 @@ const BaseModal = React.forwardRef(
           backdrop: CustomBackdrop,
         }}>
         <div
-          className={`z-[30] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white border-none rounded-md ${className}`}>
+          className={`z-[1300] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-3 bg-white border-none rounded-md ${className}`}>
           <div className="flex justify-between items-center mb-3">
             {prefix && <div className="mr-2">{prefix}</div>}
             {title && <h4 className="text-lg m-0">{title}</h4>}
