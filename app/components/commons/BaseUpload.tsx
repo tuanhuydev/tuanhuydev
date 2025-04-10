@@ -2,9 +2,9 @@
 
 import BaseButton from "./buttons/BaseButton";
 import { useGlobal } from "./providers/GlobalProvider";
-import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
+import LogService from "server/services/LogService";
 
 export interface BaseUploadProps {}
 

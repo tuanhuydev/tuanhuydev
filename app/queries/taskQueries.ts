@@ -1,8 +1,8 @@
 import { QUERY_KEYS } from "./queryKeys";
 import { useFetch } from "./useSession";
-import { BASE_URL } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
 import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BASE_URL } from "lib/commons/constants/base";
+import BaseError from "lib/commons/errors/BaseError";
 
 export const useTodayTasks = () => {
   return useQuery({

@@ -1,4 +1,4 @@
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import UnauthorizedError from "lib/commons/errors/UnauthorizedError";
 import { NextRequest } from "next/server";
 
 export const extractBearerToken = (request: NextRequest) => {

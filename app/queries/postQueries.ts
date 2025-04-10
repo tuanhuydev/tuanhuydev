@@ -1,7 +1,7 @@
 import { useFetch } from "./useSession";
-import { BASE_URL } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "lib/commons/constants/base";
+import BaseError from "lib/commons/errors/BaseError";
 
 export const usePostsQuery = (filter: ObjectType = {}) => {
   return useQuery({

@@ -1,11 +1,11 @@
 "use client";
 
-import { isDevelopmentEnv } from "@lib/shared/commons/constants/base";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { isDevelopmentEnv } from "lib/commons/constants/base";
 import { compress, decompress } from "lz-string";
 import * as React from "react";
 

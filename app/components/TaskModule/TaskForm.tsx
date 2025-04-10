@@ -2,10 +2,10 @@
 
 import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import LogService from "@lib/services/LogService";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
 const DynamicForm = dynamic(async () => (await import("@app/components/commons/Form/DynamicForm")).default, {
   ssr: false,

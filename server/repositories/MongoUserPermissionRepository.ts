@@ -1,7 +1,7 @@
 import MongoPermissionRepository from "./MongoPermissionRepository";
-import MongoService from "@lib/services/MongoService";
-import NotFoundError from "@lib/shared/commons/errors/NotFoundError";
+import NotFoundError from "@lib/commons/errors/NotFoundError";
 import * as Mongo from "mongodb";
+import MongoService from "server/services/MongoService";
 
 class MongoUserPermissionRepository {
   static #instance: MongoUserPermissionRepository;

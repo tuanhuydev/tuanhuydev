@@ -1,6 +1,6 @@
 import { useFetch } from "./useSession";
-import { BASE_URL } from "@lib/shared/commons/constants/base";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "lib/commons/constants/base";
 
 export const usePermissions = () => {
   const { fetch } = useFetch();

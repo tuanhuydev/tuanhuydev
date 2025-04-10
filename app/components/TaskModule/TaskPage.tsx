@@ -8,12 +8,12 @@ import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
-import LogService from "@lib/services/LogService";
 import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import LogService from "server/services/LogService";
 
 const TaskFormTitle = dynamic(() => import("@app/components/TaskModule/TaskFormTitle"), {
   ssr: false,

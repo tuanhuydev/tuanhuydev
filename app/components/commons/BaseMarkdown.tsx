@@ -2,7 +2,6 @@
 
 import Loader from "./Loader";
 import { useFetch } from "@app/queries/useSession";
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import {
   BlockTypeSelect,
   ConditionalContents,
@@ -22,6 +21,7 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
+import { EMPTY_STRING } from "lib/commons/constants/base";
 import dynamic from "next/dynamic";
 import { RefObject, useEffect, useRef } from "react";
 

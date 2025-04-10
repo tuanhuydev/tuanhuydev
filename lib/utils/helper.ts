@@ -1,4 +1,4 @@
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
+import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 
 export const transformTextToDashed = (text: string): string => {
   // clear space

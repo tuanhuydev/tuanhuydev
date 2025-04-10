@@ -6,7 +6,6 @@ import { useGlobal } from "../commons/providers/GlobalProvider";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
@@ -15,6 +14,7 @@ import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import dynamic from "next/dynamic";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import LogService from "server/services/LogService";
 
 const BaseMenu = dynamic(() => import("@app/components/commons/BaseMenu"), { ssr: false });
 

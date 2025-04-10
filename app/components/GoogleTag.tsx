@@ -1,4 +1,4 @@
-import { GOOGLE_TAG, NODE_ENV } from "@lib/shared/commons/constants/base";
+import { GOOGLE_TAG, NODE_ENV } from "lib/commons/constants/base";
 import Script from "next/script";
 import React, { memo } from "react";
 

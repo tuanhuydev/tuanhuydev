@@ -1,9 +1,9 @@
-import MongoSprintRepository from "@lib/repositories/MongoSprintRepository";
-import LogService from "@lib/services/LogService";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import Network from "@lib/utils/network";
 import { NextRequest } from "next/server";
+import MongoSprintRepository from "server/repositories/MongoSprintRepository";
+import LogService from "server/services/LogService";
 import { z } from "zod";
 
 export class SprintController {

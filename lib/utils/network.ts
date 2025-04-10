@@ -1,8 +1,8 @@
-import LogService from "@lib/services/LogService";
-import { HTTP_CODE } from "@lib/shared/commons/constants/httpCode";
-import BaseError from "@lib/shared/commons/errors/BaseError";
+import { HTTP_CODE } from "@lib/commons/constants/httpCode";
+import BaseError from "@lib/commons/errors/BaseError";
 import { NextRequest, NextResponse } from "next/server";
 import qs from "qs";
+import LogService from "server/services/LogService";
 
 class Network {
   #req: NextRequest;

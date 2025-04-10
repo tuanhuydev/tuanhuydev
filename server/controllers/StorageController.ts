@@ -1,9 +1,9 @@
 import { CompleteMultipartUploadOutput } from "@aws-sdk/client-s3";
-import S3Service from "@lib/services/S3Service";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import Network from "@lib/utils/network";
 import { NextRequest } from "next/server";
+import S3Service from "server/services/S3Service";
 
 class StorageController {
   static #instance: StorageController;

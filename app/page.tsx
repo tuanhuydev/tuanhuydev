@@ -1,9 +1,8 @@
 import LandingPage from "./[landing]/LandingPage";
 import Transition from "./components/commons/Transition";
-import { GOOGLE_ANALYTIC } from "@lib/shared/commons/constants/base";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata } from "next";
-import { Fragment } from "react";
 
 export const dynamic = "force-dynamic";
 

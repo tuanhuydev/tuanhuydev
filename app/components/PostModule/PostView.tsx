@@ -1,8 +1,8 @@
 import Loader from "@app/components/commons/Loader";
 import { sourceCodeFont } from "@app/font";
-import { BASE_URL, EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
+import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";

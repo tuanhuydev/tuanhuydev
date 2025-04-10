@@ -1,10 +1,10 @@
-import MongoPostRepository from "@lib/repositories/MongoPostRepository";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import { BaseController } from "@lib/shared/interfaces/controller";
-import { makeSlug, transformTextToDashed } from "@lib/shared/utils/helper";
-import Network from "@lib/shared/utils/network";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
+import BaseError from "@lib/commons/errors/BaseError";
+import { BaseController } from "@lib/interfaces/controller";
+import { makeSlug, transformTextToDashed } from "@lib/utils/helper";
+import Network from "@lib/utils/network";
 import { NextRequest } from "next/server";
+import MongoPostRepository from "server/repositories/MongoPostRepository";
 import { ObjectSchema, object, string } from "yup";
 import { z } from "zod";
 

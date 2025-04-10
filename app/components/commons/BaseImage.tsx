@@ -1,8 +1,8 @@
 "use client";
 
 import Loader from "./Loader";
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
-import { isURLValid } from "@lib/shared/utils/helper";
+import { EMPTY_STRING } from "lib/commons/constants/base";
+import { isURLValid } from "lib/utils/helper";
 import dynamic from "next/dynamic";
 import Image, { ImageProps } from "next/image";
 import { useEffect, useState } from "react";

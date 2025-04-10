@@ -3,7 +3,7 @@ import { TaskStatus, TaskStatusEnum } from "@app/_utils/constants";
 import Badge from "@app/components/commons/Badge";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import { useSubTasks } from "@app/queries/taskQueries";
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
+import { EMPTY_STRING } from "lib/commons/constants/base";
 import dynamic from "next/dynamic";
 import { Fragment } from "react";
 

@@ -1,5 +1,5 @@
 import MongoService from "../services/MongoService";
-import BadRequestError from "@lib/shared/commons/errors/BadRequestError";
+import BadRequestError from "@lib/commons/errors/BadRequestError";
 import * as Mongo from "mongodb";
 
 class MongoUserRepository {

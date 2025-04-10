@@ -7,12 +7,12 @@ import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { useUserPermissions } from "@app/queries/permissionQueries";
 import { useProjectsQuery } from "@app/queries/projectQueries";
 import { useCreateUser, useUpdateUserDetail } from "@app/queries/userQueries";
-import LogService from "@lib/services/LogService";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import { Avatar } from "@mui/material";
 import format from "date-fns/format";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
 export interface UserDetailProps {
   user?: ObjectType;
