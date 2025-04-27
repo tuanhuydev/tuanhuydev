@@ -3,10 +3,10 @@ import "@app/styles/globals.scss";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { isDevelopmentEnv } from "lib/commons/constants/base";
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 import { PropsWithChildren } from "react";
 
-const QueryProvider = dynamic(() => import("@app/components/commons/providers/QueryProvider"), { ssr: false });
+const QueryProvider = lazy(() => import("@app/components/commons/providers/QueryProvider"));
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -18,7 +18,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
           crossOrigin="anonymous"></script>
       </head>
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <Suspense fallback={<div>Loading app...</div>}>
+          <QueryProvider>{children}</QueryProvider>
+        </Suspense>
         {isDevelopmentEnv && <SpeedInsights />}
         <Analytics />
       </body>

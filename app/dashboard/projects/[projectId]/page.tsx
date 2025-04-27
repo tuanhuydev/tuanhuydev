@@ -10,9 +10,10 @@ import { useSprintQuery } from "@app/queries/sprintQueries";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { format, formatDistanceToNow } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
-import { useMemo } from "react";
+import { useMemo, use } from "react";
 
-export default function Page({ params }: any) {
+export default function Page(props: any) {
+  const params = use(props.params);
   const { projectId } = params;
   const { data: project, isLoading } = useProjectQuery(projectId);
   const { data: sprints, isLoading: isSprintsLoading } = useSprintQuery(projectId, { status: "ACTIVE" });

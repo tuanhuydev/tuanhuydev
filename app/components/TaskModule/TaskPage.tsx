@@ -10,30 +10,15 @@ import { useSprintQuery } from "@app/queries/sprintQueries";
 import { useUsersQuery } from "@app/queries/userQueries";
 import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import LogService from "server/services/LogService";
 
-const TaskFormTitle = dynamic(() => import("@app/components/TaskModule/TaskFormTitle"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskList = dynamic(() => import("@app/components/TaskModule/TaskList"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskPreview = dynamic(() => import("@app/components/TaskModule/TaskPreview"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskForm = dynamic(() => import("@app/components/TaskModule/TaskForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic imports with React lazy
+const TaskFormTitle = lazy(() => import("@app/components/TaskModule/TaskFormTitle"));
+const TaskList = lazy(() => import("@app/components/TaskModule/TaskList"));
+const TaskPreview = lazy(() => import("@app/components/TaskModule/TaskPreview"));
+const TaskForm = lazy(() => import("@app/components/TaskModule/TaskForm"));
 
 const COMPONENT_MODE = {
   VIEW: "VIEW",

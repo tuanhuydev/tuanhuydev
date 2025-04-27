@@ -1,14 +1,12 @@
 "use client";
 
 import Loader from "../Loader";
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
-const BaseMarkdown = dynamic(() => import("../BaseMarkdown"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const BaseMarkdown = lazy(() => import("../BaseMarkdown"));
 
 export interface DynamicMarkdownProps extends UseControllerProps<any> {
   options?: ObjectType;
@@ -30,7 +28,9 @@ export default function DynamicMarkdown({
   return (
     <div className="p-2 self-stretch w-full flex flex-col">
       <div className={className}>
-        <BaseMarkdown key={keyProp} {...restField} {...options} />
+        <Suspense fallback={<Loader />}>
+          <BaseMarkdown key={keyProp} {...restField} {...options} />
+        </Suspense>
       </div>
       {invalid && <div className="text-xs font-light text-red-500 capitalize">{error?.message}</div>}
     </div>

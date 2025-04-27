@@ -1,7 +1,6 @@
 "use client";
 
 import { ItemProps } from "./Item";
-import Loader from "@app/components/commons/Loader";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import { useMobileSidebar } from "@app/queries/metaQueries";
 import { QUERY_KEYS } from "@app/queries/queryKeys";
@@ -14,11 +13,12 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserPermissions } from "lib/commons/constants/permissions";
-import dynamic from "next/dynamic";
+import { lazy } from "react";
 import { FC, ReactNode, useCallback, useEffect, useState } from "react";
 
-const Group = dynamic(() => import("./Group"), { ssr: false, loading: () => <Loader /> });
-const Item = dynamic(() => import("./Item"), { ssr: false, loading: () => <Loader /> });
+// Replace dynamic imports with React lazy
+const Group = lazy(() => import("./Group"));
+const Item = lazy(() => import("./Item"));
 
 const LargeScreenSize: number = 924;
 

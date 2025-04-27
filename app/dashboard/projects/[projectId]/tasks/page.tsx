@@ -3,16 +3,15 @@
 import Loader from "@app/components/commons/Loader";
 import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
+import { ChangeEventHandler, useEffect, useState, use } from "react";
 
-const TaskPage = dynamic(() => import("@app/components/TaskModule/TaskPage"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
 
-export default function Page({ params }: any) {
+export default function Page(props: any) {
+  const params = use(props.params);
   const { projectId } = params;
   const queryClient = useQueryClient();
 
@@ -46,14 +45,16 @@ export default function Page({ params }: any) {
   }, [filter, refetchTasks]);
 
   return (
-    <TaskPage
-      tasks={tasks}
-      project={project}
-      selectedTaskId={taskId}
-      onSearch={searchTasks}
-      onFilterChange={handleFilterChange}
-      loading={isLoading}
-      allowSubTasks
-    />
+    <Suspense fallback={<Loader />}>
+      <TaskPage
+        tasks={tasks}
+        project={project}
+        selectedTaskId={taskId}
+        onSearch={searchTasks}
+        onFilterChange={handleFilterChange}
+        loading={isLoading}
+        allowSubTasks
+      />
+    </Suspense>
   );
 }

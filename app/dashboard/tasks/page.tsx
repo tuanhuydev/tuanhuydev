@@ -2,14 +2,12 @@
 
 import Loader from "@app/components/commons/Loader";
 import { useCurrentUserTasks } from "@app/queries/userQueries";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
+import { Suspense, lazy } from "react";
 import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
-const TaskPage = dynamic(() => import("@app/components/TaskModule/TaskPage"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
 
 interface FilterMyTasksType extends FilterType {
   projectId: string | null;
@@ -46,13 +44,15 @@ export default function Page() {
   }, [filter, refetchTasks, tasks]);
 
   return (
-    <TaskPage
-      tasks={tasks}
-      selectedTaskId={taskId}
-      onSearch={searchTasks}
-      onFilterChange={handleFilterChange}
-      loading={isTasksLoading}
-      allowSubTasks={false}
-    />
+    <Suspense fallback={<Loader />}>
+      <TaskPage
+        tasks={tasks}
+        selectedTaskId={taskId}
+        onSearch={searchTasks}
+        onFilterChange={handleFilterChange}
+        loading={isTasksLoading}
+        allowSubTasks={false}
+      />
+    </Suspense>
   );
 }
