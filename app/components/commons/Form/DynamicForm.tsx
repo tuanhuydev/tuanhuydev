@@ -2,19 +2,21 @@
 
 import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import dynamic from "next/dynamic";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, ReactNode, useCallback, useEffect, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import LogService from "server/services/LogService";
 import * as yup from "yup";
 
-const DynamicDatePicker = dynamic(() => import("./DynamicDatePicker").then((module) => module.DynamicDatePicker), {
-  ssr: false,
-});
-const DynamicMarkdown = dynamic(() => import("./DynamicMarkdown"), { ssr: false });
-const DynamicSelect = dynamic(() => import("./DynamicSelect"), { ssr: false });
-const DynamicTable = dynamic(() => import("./DynamicTable"), { ssr: false });
-const DynamicText = dynamic(() => import("./DynamicText"), { ssr: false });
+// Replace dynamic imports with React lazy
+const DynamicDatePicker = lazy(() =>
+  import("./DynamicDatePicker").then((module) => ({
+    default: module.DynamicDatePicker,
+  })),
+);
+const DynamicMarkdown = lazy(() => import("./DynamicMarkdown"));
+const DynamicSelect = lazy(() => import("./DynamicSelect"));
+const DynamicTable = lazy(() => import("./DynamicTable"));
+const DynamicText = lazy(() => import("./DynamicText"));
 
 export type ObjectType = Record<string, any>;
 
@@ -152,18 +154,28 @@ const mapFields = (fields: Array<Field>, control: Control<any>) => {
       keyProp: name,
       ...restFieldProps,
     };
-    switch (type) {
-      case "select":
-        return <DynamicSelect key={name} {...elementProps} />;
-      case "richeditor":
-        return <DynamicMarkdown key={name} {...elementProps} />;
-      case "datepicker":
-        return <DynamicDatePicker key={name} {...elementProps} />;
-      case "table":
-        return <DynamicTable key={name} {...elementProps} />;
-      default:
-        return <DynamicText key={`${name} - ${type}`} {...elementProps} type={type} />;
-    }
+
+    // Wrap each dynamic component in a Suspense boundary
+    const renderField = () => {
+      switch (type) {
+        case "select":
+          return <DynamicSelect {...elementProps} />;
+        case "richeditor":
+          return <DynamicMarkdown {...elementProps} />;
+        case "datepicker":
+          return <DynamicDatePicker {...elementProps} />;
+        case "table":
+          return <DynamicTable {...elementProps} />;
+        default:
+          return <DynamicText {...elementProps} type={type} />;
+      }
+    };
+
+    return (
+      <Suspense key={name} fallback={<div className="p-2">Loading field...</div>}>
+        {renderField()}
+      </Suspense>
+    );
   });
 };
 

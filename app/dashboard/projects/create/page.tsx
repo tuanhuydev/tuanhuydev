@@ -1,12 +1,9 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 
-const ProjectForm = dynamic(() => import("@app/components/ProjectModule/ProjectForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const ProjectForm = lazy(() => import("@app/components/ProjectModule/ProjectForm"));
 
 export default async function Page() {
   return (

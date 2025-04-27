@@ -8,13 +8,14 @@ import { useCreatePost, useDeletePost, useUpdatePost } from "@app/queries/postQu
 import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { isURLValid, transformTextToDashed } from "lib/utils/helper";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { Suspense, lazy } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
 
-const DynamicForm = dynamic(() => import("../commons/Form/DynamicForm"), { ssr: false });
+// Replace dynamic import with React lazy
+const DynamicForm = lazy(() => import("../commons/Form/DynamicForm"));
 
 export interface PostFormProps {
   post?: Post;
@@ -204,7 +205,9 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   return (
     <div className="grid grid-cols-12 gap-4 w-full">
       <div className="lg:col-span-10 col-span-12">
-        <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+        </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
         <BaseButton

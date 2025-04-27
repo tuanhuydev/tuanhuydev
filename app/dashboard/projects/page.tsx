@@ -6,13 +6,12 @@ import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { useProjectsQuery } from "@app/queries/projectQueries";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { Suspense, lazy } from "react";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
-const ProjectCard = dynamic(async () => (await import("@app/components/ProjectModule/ProjectCard")).default, {
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const ProjectCard = lazy(() => import("@app/components/ProjectModule/ProjectCard"));
 
 function Page() {
   const router = useRouter();
@@ -49,7 +48,9 @@ function Page() {
     return (
       <div className="flex flex-wrap gap-2">
         {projects.map((project: ObjectType) => (
-          <ProjectCard {...project} key={project.id} />
+          <Suspense fallback={<Loader />} key={project.id}>
+            <ProjectCard {...project} />
+          </Suspense>
         ))}
       </div>
     );

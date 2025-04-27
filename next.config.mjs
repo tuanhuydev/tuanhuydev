@@ -1,6 +1,5 @@
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   poweredByHeader: false,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
   transpilePackages: ["@mdxeditor/editor", "date-fns"],

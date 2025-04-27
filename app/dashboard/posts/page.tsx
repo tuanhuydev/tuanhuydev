@@ -6,14 +6,12 @@ import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useCurrentUserPermission } from "@app/queries/permissionQueries";
 import { usePostsQuery } from "@app/queries/postQueries";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { Suspense, lazy } from "react";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
-const PostCard = dynamic(() => import("@app/components/PostModule/PostCard"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const PostCard = lazy(() => import("@app/components/PostModule/PostCard"));
 
 function Page() {
   const router = useRouter();
@@ -50,7 +48,9 @@ function Page() {
     return (
       <div className="flex flex-wrap gap-2">
         {posts.map((post: Post) => (
-          <PostCard post={post} key={post.id} />
+          <Suspense fallback={<Loader />} key={post.id}>
+            <PostCard post={post} />
+          </Suspense>
         ))}
       </div>
     );

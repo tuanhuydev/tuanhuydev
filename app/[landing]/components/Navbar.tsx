@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
@@ -51,7 +52,7 @@ export const Navbar = () => {
   // Components
   const Logo = () => (
     <div className="text-primary dark:text-slate-50 font-bold flex items-center">
-      <a href="/" className="line-height-1 hover:underline flex items-center cursor-pointer">
+      <Link href="/" className="line-height-1 hover:underline flex items-center cursor-pointer">
         <svg
           width="32"
           height="32"
@@ -73,7 +74,7 @@ export const Navbar = () => {
           />
         </svg>
         {!showAtBottom && <h1 className="inline text-base lg:text-2xl dark:text-slate-50">tuanhuydev</h1>}
-      </a>
+      </Link>
     </div>
   );
 

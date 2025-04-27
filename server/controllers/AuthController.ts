@@ -3,7 +3,7 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import Network from "@lib/utils/network";
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
 
@@ -43,7 +43,7 @@ class AuthController {
       const { accessToken } = await signInResponse.json();
       if (!accessToken) throw new UnauthorizedError("Authenticate Failed");
 
-      cookies().set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
+      (await cookies()).set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
       return network.successResponse({ accessToken });
     } catch (error) {
       console.error(error);
@@ -52,7 +52,7 @@ class AuthController {
   }
 
   async signOut(request: NextRequest) {
-    cookies().delete("jwt");
+    (await cookies()).delete("jwt");
     return Network(request).successResponse({ message: "Sign out successfully" });
   }
 }

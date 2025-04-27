@@ -1,7 +1,7 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 import { NextRequest } from "next/server";
 import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
@@ -28,7 +28,7 @@ export class PermissionController {
       if (!id) throw new BadRequestError();
       let userId = id;
       if (id === "me") {
-        const test = cookies().get("user");
+        const test = (await cookies()).get("user");
         console.log(test);
         // userId = currentUserId;
       }

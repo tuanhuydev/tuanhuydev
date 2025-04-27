@@ -4,10 +4,10 @@ import Badge from "@app/components/commons/Badge";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import { useSubTasks } from "@app/queries/taskQueries";
 import { EMPTY_STRING } from "lib/commons/constants/base";
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 import { Fragment } from "react";
 
-const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
+const ReactMarkdown = lazy(() => import("react-markdown"));
 
 export interface TaskPreviewProps {
   task: ObjectType | null;
@@ -60,7 +60,9 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
 
       <BaseLabel>Description</BaseLabel>
       <div className="mb-3">
-        <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
+        </Suspense>
       </div>
     </div>
   );

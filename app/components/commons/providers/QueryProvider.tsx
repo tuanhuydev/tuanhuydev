@@ -1,7 +1,7 @@
 "use client";
 
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
@@ -30,24 +30,29 @@ export default function QueryProvider(props: { children: React.ReactNode }) {
   );
   queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
 
-  const persister = createSyncStoragePersister({
-    storage: window.localStorage,
-    key: "tuanhuydev",
-    serialize: (data) => compress(JSON.stringify(data)),
-    deserialize: (data) => {
-      try {
-        return JSON.parse(decompress(data));
-      } catch (error) {
-        console.error("Failed to deserialize persisted data:", error);
-        return {};
-      }
-    },
+  const [persister] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return createSyncStoragePersister({
+        storage: window.localStorage,
+        key: "tuanhuydev",
+        serialize: (data) => compress(JSON.stringify(data)),
+        deserialize: (data) => {
+          try {
+            return JSON.parse(decompress(data));
+          } catch (error) {
+            console.error("Failed to deserialize persisted data:", error);
+            return {};
+          }
+        },
+      });
+    }
+    return undefined;
   });
 
-  return (
+  return persister ? (
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
       {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />}
     </PersistQueryClientProvider>
-  );
+  ) : null;
 }
