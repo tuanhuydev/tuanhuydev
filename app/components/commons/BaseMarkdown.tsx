@@ -1,7 +1,7 @@
 "use client";
 
 import Loader from "./Loader";
-import { useFetch } from "@app/queries/useSession";
+import { useFetch } from "@app/_queries/useSession";
 import {
   BlockTypeSelect,
   ConditionalContents,
@@ -22,7 +22,7 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { EMPTY_STRING } from "lib/commons/constants/base";
-import { Suspense, lazy, RefObject, useEffect, useRef } from "react";
+import { RefObject, Suspense, lazy, useEffect, useRef } from "react";
 
 // Replace dynamic imports with React lazy
 const BoldItalicUnderlineToggles = lazy(() =>

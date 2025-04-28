@@ -1,9 +1,9 @@
 "use client";
 
 import BaseButton from "../commons/buttons/BaseButton";
-import { useSignOut } from "@app/queries/authQueries";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
-import { useCurrentUser } from "@app/queries/userQueries";
+import { useSignOut } from "@app/_queries/authQueries";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
+import { useCurrentUser } from "@app/_queries/userQueries";
 import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";

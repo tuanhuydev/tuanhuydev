@@ -1,12 +1,12 @@
 "use client";
 
+import { MutationParams, useMutateSprint } from "@app/_queries/sprintQueries";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
 import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import Loader from "@app/components/commons/Loader";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import BaseModal from "@app/components/commons/modals/BaseModal";
-import { MutationParams, useMutateSprint } from "@app/queries/sprintQueries";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";

@@ -1,4 +1,4 @@
-import LandingPage from "./[landing]/LandingPage";
+import LandingPage from "./_landing/LandingPage";
 import Transition from "./components/commons/Transition";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
@@ -54,11 +54,15 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export default async function Home() {
+const HomePageContent = ({ children }: { children: React.ReactNode }) => {
+  return <Transition>{children}</Transition>;
+};
+
+export default function Home() {
   return (
-    <Transition>
+    <HomePageContent>
       <LandingPage />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-    </Transition>
+    </HomePageContent>
   );
 }

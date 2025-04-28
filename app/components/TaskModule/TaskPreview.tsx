@@ -1,11 +1,10 @@
 import TaskRow from "./TaskRow";
+import { useSubTasks } from "@app/_queries/taskQueries";
 import { TaskStatus, TaskStatusEnum } from "@app/_utils/constants";
 import Badge from "@app/components/commons/Badge";
 import BaseLabel from "@app/components/commons/BaseLabel";
-import { useSubTasks } from "@app/queries/taskQueries";
 import { EMPTY_STRING } from "lib/commons/constants/base";
-import { Suspense, lazy } from "react";
-import { Fragment } from "react";
+import { Fragment, Suspense, lazy } from "react";
 
 const ReactMarkdown = lazy(() => import("react-markdown"));
 
@@ -21,6 +20,7 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
 
   const selectSubTask = (subTask: ObjectType) => () => {
+    if (!subTask.id || typeof window === undefined) return;
     window.open(` ${window.location.href}?taskId=${subTask.id}`, "_blank");
   };
 

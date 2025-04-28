@@ -2,13 +2,12 @@
 
 import Empty from "../commons/Empty";
 import Loader from "../commons/Loader";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
+import { useTodayTasks } from "@app/_queries/taskQueries";
 import { formatDate } from "@app/_utils/helper";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
-import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useTodayTasks } from "@app/queries/taskQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import { Suspense, lazy } from "react";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 
 type TaskGroupType = {
   [key: string]: ObjectType[];

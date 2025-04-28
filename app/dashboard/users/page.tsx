@@ -1,14 +1,13 @@
 "use client";
 
+import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
+import { useUsersQuery } from "@app/_queries/userQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Suspense, lazy } from "react";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useRef, useState } from "react";
 
 // Replace dynamic imports with React lazy
 const UserDetail = lazy(() => import("@app/components/UserModule/UserDetail"));

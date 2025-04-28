@@ -3,9 +3,9 @@
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
+import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
@@ -184,7 +184,9 @@ export default function TaskFormTitle({
     const { id } = task;
 
     return (
-      <WithCopy content={`${window.location.href}?taskId=${id}`} title="Copy task link">
+      <WithCopy
+        content={typeof window !== undefined ? `${window.location.href}?taskId=${id}` : ""}
+        title="Copy task link">
         <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
       </WithCopy>
     );

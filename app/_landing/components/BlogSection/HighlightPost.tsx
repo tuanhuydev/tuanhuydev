@@ -1,4 +1,4 @@
-import formatDistance from "date-fns/formatDistance";
+import { formatDistance } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,7 +7,7 @@ export interface HighlightPostProps {
   className?: string;
 }
 
-export default async function HighlightPost({ post, className }: HighlightPostProps) {
+export default function HighlightPost({ post, className }: HighlightPostProps) {
   const { title, thumbnail = "", createdAt } = post;
   return (
     <Link

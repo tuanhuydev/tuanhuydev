@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [showAtBottom, setShowAtBottom] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [showAtBottom, setShowAtBottom] = useState<boolean>(false);
+  const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
 
   // Theme management
   const initializeTheme = () => {
@@ -43,7 +43,7 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    if (window !== undefined) {
+    if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleScroll);
       return () => window.removeEventListener("scroll", handleScroll);
     }

@@ -1,10 +1,7 @@
 "use client";
 
-import Loader from "@app/components/commons/Loader";
+import HighlightPost from "./HighlightPost";
 import { motion } from "framer-motion";
-import { Suspense, lazy } from "react";
-
-const HighlightPost = lazy(() => import("./HighlightPost"));
 
 const makeColumn = (index: number) => {
   const firstItemIndex = 0;
@@ -35,9 +32,7 @@ export default function BlogSection({ posts }: { posts: ObjectType[] }) {
       </motion.p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-6 w-3/4 gap-y-6 gap-x-4 p-3 grid-flow-row">
         {posts.map((post: ObjectType, index: number) => (
-          <Suspense key={post.title} fallback={<Loader />}>
-            <HighlightPost post={post} className={makeColumn(index)} />
-          </Suspense>
+          <HighlightPost post={post} key={post.slug} className={makeColumn(index)} />
         ))}
       </div>
     </section>

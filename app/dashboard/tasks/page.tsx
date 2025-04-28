@@ -1,10 +1,9 @@
 "use client";
 
+import { useCurrentUserTasks } from "@app/_queries/userQueries";
 import Loader from "@app/components/commons/Loader";
-import { useCurrentUserTasks } from "@app/queries/userQueries";
 import { useSearchParams } from "next/navigation";
-import { Suspense, lazy } from "react";
-import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
+import { ChangeEventHandler, Suspense, lazy, useCallback, useEffect, useState } from "react";
 
 // Replace dynamic import with React lazy
 const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));

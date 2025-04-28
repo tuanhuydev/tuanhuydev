@@ -1,7 +1,7 @@
-import { DatePicker, DatePickerProps } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers";
 import { forwardRef, Ref } from "react";
 
-export const BaseDatePicker: React.FC<DatePickerProps<Date>> = forwardRef(
+export const BaseDatePicker: React.FC<any> = forwardRef(
   ({ value, onChange, className = "", disabled = false, ...restProps }, ref: Ref<HTMLDivElement>) => (
     <div className={className}>
       <DatePicker

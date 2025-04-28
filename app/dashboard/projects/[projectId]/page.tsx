@@ -1,20 +1,25 @@
 "use client";
 
+import { useProjectQuery } from "@app/_queries/projectQueries";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { SprintCard } from "@app/components/ProjectModule/ProjectDetail/SprintCard";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
 import WithCopy from "@app/components/commons/hocs/WithCopy";
-import { useProjectQuery } from "@app/queries/projectQueries";
-import { useSprintQuery } from "@app/queries/sprintQueries";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { format, formatDistanceToNow } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
-import { useMemo, use } from "react";
+import { use, useMemo } from "react";
 
-export default function Page(props: any) {
-  const params = use(props.params);
-  const { projectId } = params;
+interface PageProps {
+  params: Promise<{
+    projectId: string;
+  }>;
+}
+
+export default function Page({ params }: PageProps) {
+  const { projectId } = use(params);
   const { data: project, isLoading } = useProjectQuery(projectId);
   const { data: sprints, isLoading: isSprintsLoading } = useSprintQuery(projectId, { status: "ACTIVE" });
   const {
@@ -47,7 +52,7 @@ export default function Page(props: any) {
           <div className="flex items-center justify-between min-w-0 overflow-hidden">
             <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 line-clamp-3">{name}</h1>
             <div className="flex gap-3">
-              <WithCopy content={window.location.href} title="Share">
+              <WithCopy content={typeof window !== undefined ? window.location.href : ""} title="Share">
                 <ShareOutlined fontSize="small" />
               </WithCopy>
             </div>

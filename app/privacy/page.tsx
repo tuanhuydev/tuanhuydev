@@ -1,4 +1,4 @@
-import { Footer } from "@app/[landing]/components/Footer";
+import { Footer } from "@app/_landing/components/Footer";
 
 export const metadata = {
   title: "Privacy Policy - tuanhuy.dev",
