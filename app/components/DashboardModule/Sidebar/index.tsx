@@ -1,9 +1,9 @@
 "use client";
 
 import { ItemProps } from "./Item";
+import { useMobileSidebar } from "@app/_queries/metaQueries";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useMobileSidebar } from "@app/queries/metaQueries";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
@@ -13,8 +13,7 @@ import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserPermissions } from "lib/commons/constants/permissions";
-import { lazy } from "react";
-import { FC, ReactNode, useCallback, useEffect, useState } from "react";
+import { FC, lazy, ReactNode, useCallback, useEffect, useState } from "react";
 
 // Replace dynamic imports with React lazy
 const Group = lazy(() => import("./Group"));

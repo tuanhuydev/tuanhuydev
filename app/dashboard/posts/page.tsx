@@ -1,19 +1,18 @@
 "use client";
 
+import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
+import { usePostsQuery } from "@app/_queries/postQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { usePostsQuery } from "@app/queries/postQueries";
 import { useRouter } from "next/navigation";
-import { Suspense, lazy } from "react";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useMemo, useState } from "react";
 
 // Replace dynamic import with React lazy
 const PostCard = lazy(() => import("@app/components/PostModule/PostCard"));
 
-function Page() {
+export default function Page() {
   const router = useRouter();
   const { data: permissions = [] } = useCurrentUserPermission();
   const [filter, setFilter] = useState<ObjectType>({});
@@ -69,4 +68,3 @@ function Page() {
     </PageContainer>
   );
 }
-export default Page;

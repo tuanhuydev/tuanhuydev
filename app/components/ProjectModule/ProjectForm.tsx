@@ -1,8 +1,8 @@
 "use client";
 
+import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/_queries/projectQueries";
+import { useUsersQuery } from "@app/_queries/userQueries";
 import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
-import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/queries/projectQueries";
-import { useUsersQuery } from "@app/queries/userQueries";
 import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
 import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";

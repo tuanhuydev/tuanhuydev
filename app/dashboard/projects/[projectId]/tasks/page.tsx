@@ -1,18 +1,20 @@
 "use client";
 
+import { useProjectQuery, useProjectTasks } from "@app/_queries/projectQueries";
 import Loader from "@app/components/commons/Loader";
-import { useProjectQuery, useProjectTasks } from "@app/queries/projectQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { Suspense, lazy } from "react";
-import { ChangeEventHandler, useEffect, useState, use } from "react";
+import { ChangeEventHandler, Suspense, lazy, use, useEffect, useState } from "react";
 
-// Replace dynamic import with React lazy
 const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
 
-export default function Page(props: any) {
-  const params = use(props.params);
-  const { projectId } = params;
+interface PageProps {
+  params: Promise<{
+    projectId: string;
+  }>;
+}
+export default function Page({ params }: PageProps) {
+  const { projectId } = use(params);
   const queryClient = useQueryClient();
 
   const searchParams = useSearchParams();

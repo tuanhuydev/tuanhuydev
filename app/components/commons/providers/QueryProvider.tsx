@@ -30,29 +30,42 @@ export default function QueryProvider(props: { children: React.ReactNode }) {
   );
   queryClient.setQueryDefaults(["accessToken"], { staleTime: Infinity });
 
-  const [persister] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return createSyncStoragePersister({
-        storage: window.localStorage,
-        key: "tuanhuydev",
-        serialize: (data) => compress(JSON.stringify(data)),
-        deserialize: (data) => {
-          try {
-            return JSON.parse(decompress(data));
-          } catch (error) {
-            console.error("Failed to deserialize persisted data:", error);
-            return {};
-          }
-        },
-      });
-    }
-    return undefined;
-  });
+  // Fix for hydration error - Use useEffect to ensure client-side only execution
+  const [persister, setPersister] = React.useState<any>(null);
 
-  return persister ? (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-      <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
-      {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />}
-    </PersistQueryClientProvider>
-  ) : null;
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setPersister(
+        createSyncStoragePersister({
+          storage: window.localStorage,
+          key: "tuanhuydev",
+          serialize: (data) => compress(JSON.stringify(data)),
+          deserialize: (data) => {
+            try {
+              return JSON.parse(decompress(data));
+            } catch (error) {
+              console.error("Failed to deserialize persisted data:", error);
+              return {};
+            }
+          },
+        }),
+      );
+    }
+  }, []);
+
+  // Return consistent output for both server and client initial render
+  return (
+    <QueryClientProvider client={queryClient}>
+      {persister ? (
+        <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+          <ReactQueryStreamedHydration>{props.children}</ReactQueryStreamedHydration>
+          {isDevelopmentEnv && <ReactQueryDevtools initialIsOpen={false} />}
+        </PersistQueryClientProvider>
+      ) : (
+        // While persister is loading on client, provide a simpler provider structure
+        // This ensures the same component tree shape on both server and client
+        <React.Fragment>{props.children}</React.Fragment>
+      )}
+    </QueryClientProvider>
+  );
 }

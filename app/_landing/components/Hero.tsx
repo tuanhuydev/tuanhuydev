@@ -1,17 +1,16 @@
 import bg from "@app/_assets/images/bg.jpeg";
 import Image from "next/image";
-import React from "react";
 
 export default async function Hero() {
   return (
     <section className="relative flex items-center justify-center rounded-md overflow-hidden min-h-[60dvh] lg:h-[80dvh]">
       <div className="absolute inset-0 z-0 rounded-md">
-        <Image src={bg} layout="fill" objectFit="cover" alt="Background Image" priority />
+        <Image src={bg} fill className="object-cover" alt="Background Image" priority />
         <div className="absolute inset-0 bg-black/70"></div>
       </div>
 
       <div className="relative z-10 text-center text-white px-6 max-w-3xl">
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">Hi, I’m Huy</h1>
+        <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">Hi, I&apos;m Huy</h1>
         <p className="text-lg md:text-xl text-gray-300 mb-6 flex items-center justify-center">
           A software engineer based in Viet Nam &nbsp;
           <Image

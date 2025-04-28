@@ -1,9 +1,8 @@
 "use client";
 
+import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
 import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
-import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import { Suspense, lazy } from "react";
-import { useCallback, useEffect } from "react";
+import { Suspense, lazy, useCallback, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
 

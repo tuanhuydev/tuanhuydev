@@ -1,9 +1,8 @@
 "use client";
 
+import { usePostQuery } from "@app/_queries/postQueries";
 import Loader from "@app/components/commons/Loader";
-import { usePostQuery } from "@app/queries/postQueries";
-import { use } from "react";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, use } from "react";
 
 // Replace dynamic imports with React lazy
 const PageContainer = lazy(() => import("@app/components/DashboardModule/PageContainer"));

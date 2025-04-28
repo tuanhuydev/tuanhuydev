@@ -4,13 +4,12 @@ import { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
-import { useCreatePost, useDeletePost, useUpdatePost } from "@app/queries/postQueries";
+import { useCreatePost, useDeletePost, useUpdatePost } from "@app/_queries/postQueries";
 import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
-import { Suspense, lazy } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
 

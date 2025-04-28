@@ -13,13 +13,21 @@ export type DelightProps = {
 };
 
 export const Delight = ({ title, value: target, gradient }: DelightProps) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(target);
+  const [hasMounted, setHasMounted] = useState(false);
   const hasTextBg = !!gradient;
   const backgroundGradient = hasTextBg
     ? `bg-clip-text text-transparent bg-gradient-to-r ${gradient.from} ${gradient.to}`
     : "";
 
   useEffect(() => {
+    setHasMounted(true);
+    setCount(0);
+  }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+
     const interval = setInterval(() => {
       setCount((prevCount) => {
         if (prevCount < target) return prevCount + 1;
@@ -30,7 +38,8 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
     }, 150);
 
     return () => clearInterval(interval);
-  }, [target]);
+  }, [hasMounted, target]);
+
   return (
     <div className="text-center text-primary dark:text-slate-50 p-3 self-stretch w-[16rem]">
       <h4 className={`text-sm md:text-xl my-3 font-bold capitalize ${backgroundGradient}`}>
