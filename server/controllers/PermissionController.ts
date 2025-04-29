@@ -1,7 +1,7 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
