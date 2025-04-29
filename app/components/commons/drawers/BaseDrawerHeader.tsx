@@ -45,19 +45,22 @@ export default function BaseDrawerHeader({
             {isViewMode && (
               <BaseButton
                 onClick={toggleMode(DRAWER_MODE.EDIT)}
-                icon={<EditOutlined className="text-slate-50" fontSize="small" />}
+                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
               />
             )}
             {isEditMode && (
               <BaseButton
                 onClick={toggleMode(DRAWER_MODE.VIEW)}
-                icon={<EditOffOutlined className=" text-slate-50" fontSize="small" />}
+                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
               />
             )}
           </Fragment>
         )}
         {ExtraHeader}
-        <BaseButton onClick={handleClose} icon={<CloseOutlined className="text-slate-50" fontSize="small" />} />
+        <BaseButton
+          onClick={handleClose}
+          icon={<CloseOutlined className="!text-lg text-slate-50" fontSize="small" />}
+        />
       </div>
     </div>
   );

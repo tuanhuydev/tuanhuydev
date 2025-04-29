@@ -3,7 +3,7 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import Network from "@lib/utils/network";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
 
@@ -26,6 +26,7 @@ class AuthController {
   }
 
   async signIn(request: NextRequest) {
+    console.log("AuthController");
     const network = Network(request);
     try {
       if (!AUTH_URL) throw new BaseError("Auth URL is not defined");

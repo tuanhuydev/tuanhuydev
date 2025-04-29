@@ -179,7 +179,7 @@ export default function TaskFormTitle({
   }, [RenderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
 
   const RenderTitle = useMemo(() => {
-    const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
+    const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base truncate";
     if (!task) return <h1 className={TitleStyles}>Create new task</h1>;
     const { id } = task;
 
