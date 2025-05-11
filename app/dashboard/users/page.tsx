@@ -1,24 +1,18 @@
 "use client";
 
+import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
+import { useUsersQuery } from "@app/_queries/userQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import dynamic from "next/dynamic";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useRef, useState } from "react";
 
-const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
-  loading: () => <Loader />,
-});
-const BaseDrawer = dynamic(() => import("@app/components/commons/drawers/BaseDrawer"), {
-  loading: () => <Loader />,
-});
-const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
-  loading: () => <Loader />,
-});
+// Replace dynamic imports with React lazy
+const UserDetail = lazy(() => import("@app/components/UserModule/UserDetail"));
+const BaseDrawer = lazy(() => import("@app/components/commons/drawers/BaseDrawer"));
+const UserRow = lazy(() => import("@app/components/UserModule/UserRow"));
 
 export type RecordMode = "VIEW" | "EDIT";
 const estimateSize = 48;
@@ -117,9 +111,11 @@ export default function Page() {
         {RenderUsers()}
       </div>
 
-      <BaseDrawer open={openDrawer} onClose={closeDrawer}>
-        <UserDetail user={selectedUser} onClose={closeDrawer} />
-      </BaseDrawer>
+      <Suspense fallback={<Loader />}>
+        <BaseDrawer open={openDrawer} onClose={closeDrawer}>
+          <UserDetail user={selectedUser} onClose={closeDrawer} />
+        </BaseDrawer>
+      </Suspense>
     </PageContainer>
   );
 }

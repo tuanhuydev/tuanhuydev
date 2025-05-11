@@ -1,18 +1,15 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 
-const Loader = dynamic(() => import("@app/components/commons/Loader"), {
-  ssr: false,
-});
-const PageContainer = dynamic(
-  () => import("@app/components/DashboardModule/PageContainer").then((module) => module.default),
-  {
-    ssr: false,
-    loading: () => <Loader />,
-  },
-);
+// Replace dynamic imports with React lazy
+const Loader = lazy(() => import("@app/components/commons/Loader"));
+const PageContainer = lazy(() => import("@app/components/DashboardModule/PageContainer"));
 
 export default function Page() {
-  return <PageContainer>Hello</PageContainer>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContainer>Hello</PageContainer>
+    </Suspense>
+  );
 }

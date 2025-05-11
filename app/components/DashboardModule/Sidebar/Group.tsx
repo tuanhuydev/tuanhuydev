@@ -1,8 +1,8 @@
 import Item, { ItemProps } from "./Item";
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
-import { isPathActive } from "@lib/shared/utils/helper";
 import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
 import Tooltip from "@mui/material/Tooltip";
+import { EMPTY_STRING } from "lib/commons/constants/base";
+import { isPathActive } from "lib/utils/helper";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 

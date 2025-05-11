@@ -1,27 +1,20 @@
 import Loader from "@app/components/commons/Loader";
 import { sourceCodeFont } from "@app/font";
-import { BASE_URL, EMPTY_STRING } from "@lib/shared/commons/constants/base";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
-import dynamic from "next/dynamic";
+import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import Image from "next/image";
 import Link from "next/link";
-import { memo, Suspense } from "react";
+import { memo, Suspense, lazy } from "react";
 import Markdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-const WithCopy = dynamic(() => import("../commons/hocs/WithCopy"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const BaseImage = dynamic(() => import("../commons/BaseImage"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic imports with React lazy
+const WithCopy = lazy(() => import("../commons/hocs/WithCopy"));
+const BaseImage = lazy(() => import("../commons/BaseImage"));
 
 const elementClasses = "mx-0 my-1 text-primary dark:text-slate-50";
 

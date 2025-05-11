@@ -1,4 +1,4 @@
-import { GOOGLE_ADSENSE } from "@lib/shared/commons/constants/base";
+import { GOOGLE_ADSENSE } from "lib/commons/constants/base";
 import Script from "next/script";
 
 export default async function GoogleAdsense() {

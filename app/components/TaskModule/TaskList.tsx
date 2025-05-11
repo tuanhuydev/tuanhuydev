@@ -2,19 +2,19 @@
 
 import Empty from "../commons/Empty";
 import Loader from "../commons/Loader";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
+import { useTodayTasks } from "@app/_queries/taskQueries";
 import { formatDate } from "@app/_utils/helper";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
-import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useTodayTasks } from "@app/queries/taskQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 
 type TaskGroupType = {
   [key: string]: ObjectType[];
 };
 
-const TaskRow = dynamic(() => import("./TaskRow"), { ssr: false });
+// Replace dynamic import with React lazy
+const TaskRow = lazy(() => import("./TaskRow"));
 
 export interface TaskListProps {
   tasks: ObjectType[];
@@ -79,14 +79,15 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
           const isTaskActive = selectedTask?.id === task.id;
           const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask?.id === task.id);
           return (
-            <TaskRow
-              key={task.id}
-              task={task}
-              active={isTaskActive}
-              onSelect={onSelectTask}
-              onPin={addTaskToToday}
-              isToday={isTaskToday}
-            />
+            <Suspense fallback={<Loader />} key={task.id}>
+              <TaskRow
+                task={task}
+                active={isTaskActive}
+                onSelect={onSelectTask}
+                onPin={addTaskToToday}
+                isToday={isTaskToday}
+              />
+            </Suspense>
           );
         })}
       </div>
@@ -127,27 +128,30 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
               const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === task.id);
               return (
                 <div key={task.id}>
-                  <TaskRow
-                    task={task}
-                    active={isTaskActive}
-                    onSelect={onSelectTask}
-                    onPin={addTaskToToday}
-                    isToday={isTaskToday}
-                  />
+                  <Suspense fallback={<Loader />}>
+                    <TaskRow
+                      task={task}
+                      active={isTaskActive}
+                      onSelect={onSelectTask}
+                      onPin={addTaskToToday}
+                      isToday={isTaskToday}
+                    />
+                  </Suspense>
                   {task.subTasks?.length > 0 && (
                     <div className="pl-3">
                       {task.subTasks.map((subTask: ObjectType) => {
                         const isSubTaskActive = selectedTask?.id === subTask.id;
                         const isSubTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === subTask.id);
                         return (
-                          <TaskRow
-                            key={subTask.id}
-                            task={subTask}
-                            active={isSubTaskActive}
-                            onSelect={onSelectTask}
-                            onPin={addTaskToToday}
-                            isToday={isSubTaskToday}
-                          />
+                          <Suspense fallback={<Loader />} key={subTask.id}>
+                            <TaskRow
+                              task={subTask}
+                              active={isSubTaskActive}
+                              onSelect={onSelectTask}
+                              onPin={addTaskToToday}
+                              isToday={isSubTaskToday}
+                            />
+                          </Suspense>
                         );
                       })}
                     </div>

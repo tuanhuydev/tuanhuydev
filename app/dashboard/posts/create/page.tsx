@@ -1,16 +1,20 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Loader from "@app/components/commons/Loader";
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 
-const PostForm = dynamic(async () => (await import("@app/components/PostModule/PostForm")).PostForm, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy - note we need to handle non-default export differently
+const PostForm = lazy(() =>
+  import("@app/components/PostModule/PostForm").then((module) => ({
+    default: module.PostForm,
+  })),
+);
 
 export default async function Page() {
   return (
     <PageContainer title="Create New Post" goBack>
-      <PostForm />
+      <Suspense fallback={<Loader />}>
+        <PostForm />
+      </Suspense>
     </PageContainer>
   );
 }

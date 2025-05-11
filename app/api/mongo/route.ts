@@ -1,5 +1,5 @@
-import MongoService from "@lib/services/MongoService";
 import { NextRequest, NextResponse } from "next/server";
+import MongoService from "server/services/MongoService";
 
 export async function GET(request: NextRequest) {
   if (!process.env.MONGODB_URI) {

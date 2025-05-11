@@ -1,22 +1,23 @@
 import Transition from "@app/components/commons/Transition";
-import { BASE_URL, GOOGLE_ANALYTIC } from "@lib/shared/commons/constants/base";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
+import { Suspense, lazy } from "react";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
 
-const PostView = dynamic(() => import("@app/components/PostModule/PostView"), { ssr: false });
+const PostView = lazy(() => import("@app/components/PostModule/PostView"));
 
 export const revalidate = 60;
 export const dynamicParams = true;
 
 interface MetaDataParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({ params }: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(props: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const { slug } = params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
@@ -52,12 +53,13 @@ export async function generateStaticParams() {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   const { slug } = params;
 
   try {
@@ -66,7 +68,9 @@ export default async function Page({ params }: PageProps) {
 
     return (
       <Transition>
-        <PostView post={post} />
+        <Suspense fallback={<div>Loading post...</div>}>
+          <PostView post={post} />
+        </Suspense>
         {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
       </Transition>
     );

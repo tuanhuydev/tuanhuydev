@@ -1,11 +1,11 @@
 "use client";
 
+import { useFetch } from "@app/_queries/useSession";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import ConfigSection from "@app/components/SettingModule/ConfigSection";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useFetch } from "@app/queries/useSession";
-import { BASE_URL } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
+import { BASE_URL } from "lib/commons/constants/base";
+import BaseError from "lib/commons/errors/BaseError";
 import React from "react";
 
 function Page() {
