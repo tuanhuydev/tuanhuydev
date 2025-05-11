@@ -1,8 +1,7 @@
 "use client";
 
 import Loader from "./Loader";
-import { useFetch } from "@app/queries/useSession";
-import { EMPTY_STRING } from "@lib/shared/commons/constants/base";
+import { useFetch } from "@app/_queries/useSession";
 import {
   BlockTypeSelect,
   ConditionalContents,
@@ -22,33 +21,20 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import dynamic from "next/dynamic";
-import { RefObject, useEffect, useRef } from "react";
+import { EMPTY_STRING } from "lib/commons/constants/base";
+import { RefObject, Suspense, lazy, useEffect, useRef } from "react";
 
-const BoldItalicUnderlineToggles = dynamic(
-  () => import("@mdxeditor/editor").then((m) => m.BoldItalicUnderlineToggles),
-  { ssr: false, loading: () => <Loader /> },
+// Replace dynamic imports with React lazy
+const BoldItalicUnderlineToggles = lazy(() =>
+  import("@mdxeditor/editor").then((m) => ({ default: m.BoldItalicUnderlineToggles })),
 );
-const CreateLink = dynamic(() => import("@mdxeditor/editor").then((m) => m.CreateLink), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const InsertCodeBlock = dynamic(() => import("@mdxeditor/editor").then((m) => m.InsertCodeBlock), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const ListsToggle = dynamic(() => import("@mdxeditor/editor").then((m) => m.ListsToggle), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const ChangeCodeMirrorLanguage = dynamic(() => import("@mdxeditor/editor").then((m) => m.ChangeCodeMirrorLanguage), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const InsertImage = dynamic(() => import("@mdxeditor/editor").then((m) => m.InsertImage), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+const CreateLink = lazy(() => import("@mdxeditor/editor").then((m) => ({ default: m.CreateLink })));
+const InsertCodeBlock = lazy(() => import("@mdxeditor/editor").then((m) => ({ default: m.InsertCodeBlock })));
+const ListsToggle = lazy(() => import("@mdxeditor/editor").then((m) => ({ default: m.ListsToggle })));
+const ChangeCodeMirrorLanguage = lazy(() =>
+  import("@mdxeditor/editor").then((m) => ({ default: m.ChangeCodeMirrorLanguage })),
+);
+const InsertImage = lazy(() => import("@mdxeditor/editor").then((m) => ({ default: m.InsertImage })));
 
 export interface EditorProps {
   value: string;
@@ -105,21 +91,37 @@ export default function BaseMarkdown({
                   <UndoRedo />
                 </DiffSourceToggleWrapper>
                 <BlockTypeSelect />
-                <BoldItalicUnderlineToggles />
-                <CreateLink />
-                <ListsToggle />
+                <Suspense fallback={<Loader />}>
+                  <BoldItalicUnderlineToggles />
+                </Suspense>
+                <Suspense fallback={<Loader />}>
+                  <CreateLink />
+                </Suspense>
+                <Suspense fallback={<Loader />}>
+                  <ListsToggle />
+                </Suspense>
                 <ConditionalContents
                   options={[
                     {
                       when: (editor) => editor?.editorType === "codeblock",
-                      contents: () => <ChangeCodeMirrorLanguage />,
+                      contents: () => (
+                        <Suspense fallback={<Loader />}>
+                          <ChangeCodeMirrorLanguage />
+                        </Suspense>
+                      ),
                     },
                     {
-                      fallback: () => <InsertCodeBlock />,
+                      fallback: () => (
+                        <Suspense fallback={<Loader />}>
+                          <InsertCodeBlock />
+                        </Suspense>
+                      ),
                     },
                   ]}
                 />
-                <InsertImage />
+                <Suspense fallback={<Loader />}>
+                  <InsertImage />
+                </Suspense>
               </div>
             ),
           }),

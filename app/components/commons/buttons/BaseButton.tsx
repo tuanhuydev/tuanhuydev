@@ -1,5 +1,6 @@
+"use client";
+
 import Loader from "../Loader";
-import { Button, ButtonProps } from "@mui/base/Button";
 import clsx from "clsx";
 import React from "react";
 
@@ -12,17 +13,19 @@ const ButtonVariantsClasses = {
 
 type ButtonVariants = keyof typeof ButtonVariantsClasses;
 
-export interface BaseButtonProps extends ButtonProps {
+export interface BaseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   label?: string;
   loading?: boolean;
   variants?: ButtonVariants;
 }
+
 let baseClassName =
   "cursor-pointer font-sans min-w-max rounded-md flex justify-center items-center gap-1 transition-all duration-300";
 
 const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, ref) => {
-  const { className = "", variants = "primary", label, icon, loading = false, disabled, ...restProps } = props;
+  const { className = "", variants = "primary", label, icon, loading = false, disabled, onClick, ...restProps } = props;
+
   let variantClassName = "";
 
   switch (variants) {
@@ -46,13 +49,23 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
     return clsx(baseClassName, spacing, variantClassName, className);
   };
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (loading || disabled) {
+      event.preventDefault();
+      return;
+    }
+
+    onClick?.(event);
+  };
+
   return (
-    <Button
+    <button
       {...restProps}
-      rootElementName="button"
       ref={ref}
+      type={props.type || "button"}
       disabled={loading || disabled}
-      className={makeClassName()}>
+      className={makeClassName()}
+      onClick={handleClick}>
       {loading ? (
         <span className="mr-2">
           <Loader variant={variants === "primary" ? "light" : "dark"} />
@@ -64,7 +77,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>((props, 
           {label && <span className="shrink-0 text-sm">{label}</span>}
         </>
       )}
-    </Button>
+    </button>
   );
 });
 

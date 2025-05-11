@@ -1,5 +1,5 @@
+import { useProjectsQuery } from "@app/_queries/projectQueries";
 import Card from "@app/components/commons/Card";
-import { useProjectsQuery } from "@app/queries/projectQueries";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import Link from "next/link";
 

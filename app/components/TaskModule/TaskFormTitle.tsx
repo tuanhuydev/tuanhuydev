@@ -3,26 +3,23 @@
 import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
+import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/queries/taskQueries";
-import LogService from "@lib/services/LogService";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
-import dynamic from "next/dynamic";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
+import LogService from "server/services/LogService";
 
-const BaseMenu = dynamic(() => import("@app/components/commons/BaseMenu"), { ssr: false });
-
-const BaseModal = dynamic(() => import("@app/components/commons/modals/BaseModal"), { ssr: false });
-
-const WithCopy = dynamic(async () => (await import("@app/components/commons/hocs/WithCopy")).default, { ssr: false });
-
-const ConfirmBox = dynamic(() => import("@app/components/commons/modals/ConfirmBox"), { ssr: false });
+// Replace dynamic imports with React lazy
+const BaseMenu = lazy(() => import("@app/components/commons/BaseMenu"));
+const BaseModal = lazy(() => import("@app/components/commons/modals/BaseModal"));
+const WithCopy = lazy(() => import("@app/components/commons/hocs/WithCopy"));
+const ConfirmBox = lazy(() => import("@app/components/commons/modals/ConfirmBox"));
 
 export interface TaskFormModalsVisibility {
   createSubTask: boolean;
@@ -182,12 +179,14 @@ export default function TaskFormTitle({
   }, [RenderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
 
   const RenderTitle = useMemo(() => {
-    const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base";
+    const TitleStyles = "my-0 mr-3 px-3 py-2 bg-primary text-white text-base truncate";
     if (!task) return <h1 className={TitleStyles}>Create new task</h1>;
     const { id } = task;
 
     return (
-      <WithCopy content={`${window.location.href}?taskId=${id}`} title="Copy task link">
+      <WithCopy
+        content={typeof window !== undefined ? `${window.location.href}?taskId=${id}` : ""}
+        title="Copy task link">
         <h1 className={`${TitleStyles} hover:underline`}>{`Task #${id}`}</h1>
       </WithCopy>
     );
@@ -203,47 +202,49 @@ export default function TaskFormTitle({
     <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
       {RenderTitle}
       {RenderHeaderExtra}
-      <ConfirmBox
-        open={modalsVisible.openConfirmDelete}
-        title="Delete Task"
-        description="Are you sure to delete this task ?"
-        onClose={toggleModalVibible("openConfirmDelete", false)}
-        onConfirm={handleDelete}
-      />
-      <BaseModal
-        className="w-[24rem]"
-        title="Move to sprint"
-        closable
-        open={modalsVisible.moveToSprint}
-        onClose={toggleModalVibible("moveToSprint", false)}>
-        <BaseSelect
-          value={sprintIdToUpdate}
-          options={{
-            className: "w-full",
-            placeholder: "Select sprint",
-            options: projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id })),
-          }}
-          onChange={(sprintId: string) => setSprintIdToUpdate(sprintId)}
-          keyProp={"sprint"}
+      <Suspense fallback={<div>Loading...</div>}>
+        <ConfirmBox
+          open={modalsVisible.openConfirmDelete}
+          title="Delete Task"
+          description="Are you sure to delete this task ?"
+          onClose={toggleModalVibible("openConfirmDelete", false)}
+          onConfirm={handleDelete}
         />
-
-        <div className="flex gap-3 justify-end mt-5">
-          <BaseButton onClick={toggleModalVibible("moveToSprint", false)} variants="text" label="Cancel" />
-          <BaseButton onClick={handleMoveToSprint} label="Move"></BaseButton>
-        </div>
-      </BaseModal>
-      {config && (
         <BaseModal
-          className="w-[50rem]"
-          title="Create sub-task"
+          className="w-[24rem]"
+          title="Move to sprint"
           closable
-          open={modalsVisible.createSubTask}
-          onClose={toggleModalVibible("createSubTask", false)}>
-          <div className="h-[24rem] overflow-auto">
-            <DynamicForm config={config} onSubmit={handleCreateSubTask} />
+          open={modalsVisible.moveToSprint}
+          onClose={toggleModalVibible("moveToSprint", false)}>
+          <BaseSelect
+            value={sprintIdToUpdate}
+            options={{
+              className: "w-full",
+              placeholder: "Select sprint",
+              options: projectSprints.map((sprint: ObjectType) => ({ label: sprint.name, value: sprint.id })),
+            }}
+            onChange={(sprintId: string) => setSprintIdToUpdate(sprintId)}
+            keyProp={"sprint"}
+          />
+
+          <div className="flex gap-3 justify-end mt-5">
+            <BaseButton onClick={toggleModalVibible("moveToSprint", false)} variants="text" label="Cancel" />
+            <BaseButton onClick={handleMoveToSprint} label="Move"></BaseButton>
           </div>
         </BaseModal>
-      )}
+        {config && (
+          <BaseModal
+            className="w-[50rem]"
+            title="Create sub-task"
+            closable
+            open={modalsVisible.createSubTask}
+            onClose={toggleModalVibible("createSubTask", false)}>
+            <div className="h-[24rem] overflow-auto">
+              <DynamicForm config={config} onSubmit={handleCreateSubTask} />
+            </div>
+          </BaseModal>
+        )}
+      </Suspense>
     </div>
   );
 }

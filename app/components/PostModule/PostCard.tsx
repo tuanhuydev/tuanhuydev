@@ -1,8 +1,8 @@
 import BaseCard from "../commons/Card";
-import { DATE_FORMAT } from "@lib/shared/commons/constants/base";
-import format from "date-fns/format";
+import { format } from "date-fns";
+import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, type JSX } from "react";
 
 export interface PostCardProps {
   post: ObjectType;

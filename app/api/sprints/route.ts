@@ -1,5 +1,5 @@
-import SprintController from "@lib/controllers/SprintController";
 import { NextRequest } from "next/server";
+import SprintController from "server/controllers/SprintController";
 
 export async function GET(request: NextRequest) {
   return SprintController.getAll(request);

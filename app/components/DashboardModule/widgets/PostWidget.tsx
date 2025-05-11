@@ -1,7 +1,7 @@
 "use client";
 
+import { usePostsQuery } from "@app/_queries/postQueries";
 import Card from "@app/components/commons/Card";
-import { usePostsQuery } from "@app/queries/postQueries";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import Link from "next/link";
 

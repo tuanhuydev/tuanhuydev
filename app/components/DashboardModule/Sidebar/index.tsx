@@ -1,11 +1,9 @@
 "use client";
 
 import { ItemProps } from "./Item";
-import Loader from "@app/components/commons/Loader";
+import { useMobileSidebar } from "@app/_queries/metaQueries";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useMobileSidebar } from "@app/queries/metaQueries";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
-import { UserPermissions } from "@lib/shared/commons/constants/permissions";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
@@ -14,11 +12,12 @@ import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
-import { FC, ReactNode, useCallback, useEffect, useState } from "react";
+import { UserPermissions } from "lib/commons/constants/permissions";
+import { FC, lazy, ReactNode, useCallback, useEffect, useState } from "react";
 
-const Group = dynamic(() => import("./Group"), { ssr: false, loading: () => <Loader /> });
-const Item = dynamic(() => import("./Item"), { ssr: false, loading: () => <Loader /> });
+// Replace dynamic imports with React lazy
+const Group = lazy(() => import("./Group"));
+const Item = lazy(() => import("./Item"));
 
 const LargeScreenSize: number = 924;
 
@@ -29,25 +28,25 @@ export interface SidebarProps {
 const permissionMap = {
   [UserPermissions.VIEW_PROJECT]: {
     label: "Manage Projects",
-    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
+    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
     path: "/dashboard/projects",
     id: UserPermissions.VIEW_PROJECT,
   },
   [UserPermissions.VIEW_POST]: {
     label: "Manage Posts",
-    icon: <ArticleOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
+    icon: <ArticleOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
     path: "/dashboard/posts",
     id: UserPermissions.VIEW_POST,
   },
   [UserPermissions.VIEW_USER]: {
     label: "Manage Users",
-    icon: <PersonOutlineOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
+    icon: <PersonOutlineOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
     path: "/dashboard/users",
     id: UserPermissions.VIEW_USER,
   },
   [UserPermissions.VIEW_SETTING]: {
     label: "Settings",
-    icon: <SettingsOutlined sx={{ fontSize: (theme) => theme.typography.body1 }} />,
+    icon: <SettingsOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
     path: "/dashboard/settings",
     id: UserPermissions.VIEW_SETTING,
   },
@@ -55,8 +54,18 @@ const permissionMap = {
 
 const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
   const routes: Array<ItemProps> = [
-    { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
-    { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
+    {
+      label: "Home",
+      icon: <HomeOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      path: "/dashboard/home",
+      id: "Home",
+    },
+    {
+      label: "Tasks",
+      icon: <TaskAltOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      path: "/dashboard/tasks",
+      id: "Task",
+    },
   ];
 
   permissions.forEach((permission) => {
@@ -120,7 +129,7 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
       />
       <ul
         className={`${
-          sidebarOpen ? "w-[12.25rem]" : "w-[2.4rem]"
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.5rem]"
         } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {makeRoutes(permissions)}
       </ul>

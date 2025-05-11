@@ -1,5 +1,5 @@
-import TaskController from "@lib/controllers/TaskController";
 import { NextRequest } from "next/server";
+import TaskController from "server/controllers/TaskController";
 
 export async function GET(request: NextRequest) {
   return TaskController.getAll(request);

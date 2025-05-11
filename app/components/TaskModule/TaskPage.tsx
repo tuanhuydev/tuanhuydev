@@ -1,39 +1,24 @@
 "use client";
 
+import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
+import { useSprintQuery } from "@app/_queries/sprintQueries";
+import { useUsersQuery } from "@app/_queries/userQueries";
 import { TaskStatusOptions, TaskTypeOptions } from "@app/_utils/constants";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { DynamicFormConfig, Field, ObjectType } from "@app/components/commons/Form/DynamicForm";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { useSprintQuery } from "@app/queries/sprintQueries";
-import { useUsersQuery } from "@app/queries/userQueries";
-import LogService from "@lib/services/LogService";
 import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
+import LogService from "server/services/LogService";
 
-const TaskFormTitle = dynamic(() => import("@app/components/TaskModule/TaskFormTitle"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskList = dynamic(() => import("@app/components/TaskModule/TaskList"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskPreview = dynamic(() => import("@app/components/TaskModule/TaskPreview"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const TaskForm = dynamic(() => import("@app/components/TaskModule/TaskForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic imports with React lazy
+const TaskFormTitle = lazy(() => import("@app/components/TaskModule/TaskFormTitle"));
+const TaskList = lazy(() => import("@app/components/TaskModule/TaskList"));
+const TaskPreview = lazy(() => import("@app/components/TaskModule/TaskPreview"));
+const TaskForm = lazy(() => import("@app/components/TaskModule/TaskForm"));
 
 const COMPONENT_MODE = {
   VIEW: "VIEW",

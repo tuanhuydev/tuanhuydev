@@ -3,14 +3,14 @@
 import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
 import Loader from "@app/components/commons/Loader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
-import LogService from "@lib/services/LogService";
-import { BASE_URL } from "@lib/shared/commons/constants/base";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import UnauthorizedError from "@lib/shared/commons/errors/UnauthorizedError";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
+import { BASE_URL } from "lib/commons/constants/base";
+import BaseError from "lib/commons/errors/BaseError";
+import UnauthorizedError from "lib/commons/errors/UnauthorizedError";
 import importDynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import LogService from "server/services/LogService";
 
 const DynamicForm = importDynamic(() => import("@app/components/commons/Form/DynamicForm"), {
   ssr: false,

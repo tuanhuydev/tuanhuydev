@@ -4,17 +4,17 @@ import { DynamicFormConfig } from "../commons/Form/DynamicForm";
 import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
-import { useCreatePost, useDeletePost, useUpdatePost } from "@app/queries/postQueries";
-import LogService from "@lib/services/LogService";
-import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
+import { useCreatePost, useDeletePost, useUpdatePost } from "@app/_queries/postQueries";
 import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
+import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
-const DynamicForm = dynamic(() => import("../commons/Form/DynamicForm"), { ssr: false });
+// Replace dynamic import with React lazy
+const DynamicForm = lazy(() => import("../commons/Form/DynamicForm"));
 
 export interface PostFormProps {
   post?: Post;
@@ -204,7 +204,9 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   return (
     <div className="grid grid-cols-12 gap-4 w-full">
       <div className="lg:col-span-10 col-span-12">
-        <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+        </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
         <BaseButton

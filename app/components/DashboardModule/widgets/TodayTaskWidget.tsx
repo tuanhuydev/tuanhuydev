@@ -1,9 +1,9 @@
 "use client";
 
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
+import { useTodayTasks } from "@app/_queries/taskQueries";
 import Card from "@app/components/commons/Card";
 import Empty from "@app/components/commons/Empty";
-import { QUERY_KEYS } from "@app/queries/queryKeys";
-import { useTodayTasks } from "@app/queries/taskQueries";
 import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";

@@ -1,6 +1,7 @@
-import ResourceController from "@lib/controllers/ResourceController";
 import { NextRequest } from "next/server";
+import ResourceController from "server/controllers/ResourceController";
 
-export async function GET(request: NextRequest, { params }: any) {
+export async function GET(request: NextRequest, props: any) {
+  const params = await props.params;
   return ResourceController.getResource(request, params);
 }
