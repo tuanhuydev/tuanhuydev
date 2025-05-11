@@ -4,7 +4,10 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// Use dynamic rendering only when necessary
+// https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+export const dynamic = "auto";
+export const revalidate = 3600; // Revalidate content every hour
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",

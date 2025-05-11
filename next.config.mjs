@@ -1,8 +1,17 @@
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
   transpilePackages: ["@mdxeditor/editor", "date-fns"],
+  turbopack: {
+    resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+  },
   async redirects() {
     return [
       {
@@ -37,8 +46,11 @@ const nextConfig = {
         hostname: "**",
       },
     ],
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   eslint: { ignoreDuringBuilds: true },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

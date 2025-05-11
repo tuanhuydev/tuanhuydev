@@ -13,7 +13,21 @@
             "src": "/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ],
-    "display": "standalone"
+    "start_url": "/",
+    "scope": "/",
+    "description": "Huy Nguyen Tuan's personal website - Fullstack Software Engineer",
+    "display": "standalone",
+    "orientation": "portrait",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["technology", "development", "portfolio"],
+    "prefer_related_applications": false
 }

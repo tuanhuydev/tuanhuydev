@@ -14,7 +14,14 @@ interface BaseImageProps extends Partial<ImageProps> {
   src?: string;
 }
 
-const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImageProps) => {
+const BaseImage = ({
+  src = EMPTY_STRING,
+  alt = "image",
+  quality = 75,
+  priority = false,
+  sizes = "100vw",
+  ...restProps
+}: BaseImageProps) => {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -24,7 +31,16 @@ const BaseImage = ({ src = EMPTY_STRING, alt = "image", ...restProps }: BaseImag
   return (
     <div className="relative w-full h-full rounded-md">
       {shouldRenderImage ? (
-        <Image {...restProps} src={src} alt={alt} blurDataURL={src} onError={() => setHasError(true)} />
+        <Image
+          {...restProps}
+          src={src}
+          alt={alt}
+          quality={quality}
+          priority={priority}
+          sizes={sizes}
+          blurDataURL={src}
+          onError={() => setHasError(true)}
+        />
       ) : (
         <Suspense fallback={<Loader />}>
           <WarningOutlined />

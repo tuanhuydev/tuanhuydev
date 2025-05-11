@@ -1,3 +1,5 @@
+"use client";
+
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 
 export default function Page() {

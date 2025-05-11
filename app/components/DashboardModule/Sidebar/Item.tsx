@@ -26,9 +26,9 @@ export default function Item({ label, icon, path, id }: ItemProps) {
       <Link href={path} key={path} prefetch={false} className={id === UserPermissions.VIEW_SETTING ? "mt-auto" : ""}>
         <li
           className={`ease-in duration-200 font-sans rounded-sm mb-1 dark:text-slate-300  cursor-pointer py-2 px-3 hover:bg-primary hover:text-slate-50 dark:hover:bg-slate-600 dark:hover:text-slate-50 ${activeClass}`}>
-          <div className="capitalize flex justify-center items-center lg:justify-start gap-2 relative min-w-0">
+          <div className="capitalize flex justify-center items-center lg:justify-start relative min-w-0">
             {icon}
-            <Typography variant="body2" className="truncate">
+            <Typography variant="body2" className="truncate ml-2">
               {label}
             </Typography>
           </div>
