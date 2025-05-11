@@ -1,3 +1,5 @@
+"use client";
+
 import Loader from "@app/components/commons/Loader";
 import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
 import ThemeProvider from "@app/components/commons/providers/ThemeProvider";
@@ -6,7 +8,7 @@ import { PropsWithChildren, Suspense, lazy } from "react";
 
 const GlobalProvider = lazy(() => import("@app/components/commons/providers/GlobalProvider"));
 
-export default async function DashboardLayout({ children }: PropsWithChildren) {
+export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <ThemeProvider>
       <LocalizationParser>

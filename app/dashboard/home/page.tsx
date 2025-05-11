@@ -1,3 +1,5 @@
+"use client";
+
 import PostWidget from "@app/components/DashboardModule/widgets/PostWidget";
 import ProjectWidget from "@app/components/DashboardModule/widgets/ProjectWidget";
 import TodayTaskWidget from "@app/components/DashboardModule/widgets/TodayTaskWidget";

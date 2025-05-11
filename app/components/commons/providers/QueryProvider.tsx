@@ -24,6 +24,7 @@ export default function QueryProvider(props: { children: React.ReactNode }) {
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             refetchOnReconnect: false,
+            retry: 1, // Only retry once to prevent excessive requests
           },
         },
       }),
@@ -32,13 +33,13 @@ export default function QueryProvider(props: { children: React.ReactNode }) {
 
   // Fix for hydration error - Use useEffect to ensure client-side only execution
   const [persister, setPersister] = React.useState<any>(null);
-
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       setPersister(
         createSyncStoragePersister({
           storage: window.localStorage,
           key: "tuanhuydev",
+          throttleTime: 1000, // Only persist every second at most
           serialize: (data) => compress(JSON.stringify(data)),
           deserialize: (data) => {
             try {

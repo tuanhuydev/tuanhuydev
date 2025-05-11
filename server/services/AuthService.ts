@@ -2,7 +2,7 @@ import { AUTH_URL, SALT_ROUNDS } from "@lib/commons/constants/base";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
 import bcrypt from "bcrypt";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
 import { v4 as uuidv4 } from "uuid";
 
@@ -44,8 +44,7 @@ class AuthService {
   async getCurrentUserProfile() {
     try {
       const jwt = (await cookies()).get("jwt");
-      if (!(jwt && "value" in jwt)) throw new BaseError("No JWT Cookie");
-
+      if (!jwt?.value) throw new BaseError("No JWT Cookie");
       const response = await fetch(`${AUTH_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${jwt.value}`,

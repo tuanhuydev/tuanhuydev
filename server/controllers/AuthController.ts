@@ -26,7 +26,6 @@ class AuthController {
   }
 
   async signIn(request: NextRequest) {
-    console.log("AuthController");
     const network = Network(request);
     try {
       if (!AUTH_URL) throw new BaseError("Auth URL is not defined");
