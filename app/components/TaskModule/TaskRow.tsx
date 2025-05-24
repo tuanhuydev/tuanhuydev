@@ -55,7 +55,7 @@ export default function TaskRow({
       className={`flex flex-shrink-0 w-full items-center gap-5 p-1 mb-1 cursor-pointer transition-all duration-300 rounded-md ${activeClass} text-primary dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-gray-700`}
       onClick={selectTask}>
       {TaskTypeElement}
-      <h3 className="capitalize w-2/5 text-base flex items-center font-medium m-0 flex-shrink-0 truncate">{title}</h3>
+      <h3 className="capitalize w-2/5 text-base flex items-center font-medium m-0 truncate">{title}</h3>
       <div className="flex items-center gap-3 shrink-0 w-56">
         <label className="text-sm font-normal text-slate-400">Status: </label>
         <Badge value={taskStatus.label} color={taskStatus.color} />

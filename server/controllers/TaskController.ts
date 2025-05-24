@@ -2,6 +2,7 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import { BaseController } from "@lib/interfaces/controller";
 import Network from "@lib/utils/network";
+import { CreateTaskDto } from "@server/dto/Task";
 import LogService from "@server/services/LogService";
 import { NextRequest } from "next/server";
 import MongoTaskRepository from "server/repositories/MongoTaskRepository";
@@ -25,14 +26,18 @@ export class TaskController implements BaseController {
         status: z.string(),
       });
 
-      const body: ObjectType = await network.getBody();
-      const validate = schema.safeParse(body);
+      const dto: CreateTaskDto = await network.getBody();
+
+      const validate = schema.safeParse(dto);
       if (!validate.success) throw new BadRequestError();
 
       const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
-      body.createdById = tokenUserId;
+      dto.createdById = tokenUserId;
+      dto.createdAt = new Date();
+      dto.updatedAt = new Date();
+      dto.deletedAt = null;
 
-      const newTask = await MongoTaskRepository.createTask(body as TaskBody);
+      const newTask = await MongoTaskRepository.createTask(dto as unknown as Omit<Task, "id">);
       return network.successResponse(newTask);
     } catch (error) {
       LogService.log((error as Error).message);

@@ -22,7 +22,6 @@ export const useUserPermissions = (userId: string) => {
   const { fetch } = useFetch();
   return useQuery({
     queryKey: ["permissions", "user", userId],
-    enabled: false,
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/users/${userId}/permissions`, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch permissions");

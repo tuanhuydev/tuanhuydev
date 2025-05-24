@@ -54,6 +54,7 @@ export const useCurrentUser = () => {
 
   return useQuery({
     queryKey: ["currentUser"],
+    enabled: false,
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/users/me`, { signal });
       if (!response.ok) throw new BaseError(response.statusText);
@@ -97,8 +98,13 @@ export const useUpdateUserDetail = () => {
         body: JSON.stringify(user),
       });
       if (!response.ok) throw new BaseError(response.statusText);
-      queryClient.invalidateQueries(["users"] as InvalidateQueryFilters);
+
       return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries(["users"] as InvalidateQueryFilters);
+      console.log((variables as User).id);
+      queryClient.invalidateQueries(["permissions", "user", (variables as User).id] as InvalidateQueryFilters);
     },
   });
 };
