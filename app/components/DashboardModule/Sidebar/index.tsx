@@ -10,7 +10,7 @@ import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
-import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
+import WorkspacesOutlineIcon from "@mui/icons-material/WorkspacesOutline";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserPermissions } from "lib/commons/constants/permissions";
 import { FC, lazy, ReactNode, useCallback, useEffect, useState } from "react";
@@ -61,10 +61,10 @@ const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
       id: "Home",
     },
     {
-      label: "Tasks",
-      icon: <TaskAltOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
-      path: "/dashboard/tasks",
-      id: "Task",
+      label: "Workspaces",
+      icon: <WorkspacesOutlineIcon sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      path: "/dashboard/workspace",
+      id: "Workspace",
     },
   ];
 
@@ -129,7 +129,7 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
       />
       <ul
         className={`${
-          sidebarOpen ? "w-[12.25rem]" : "w-[2.5rem]"
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.35rem]"
         } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {makeRoutes(permissions)}
       </ul>

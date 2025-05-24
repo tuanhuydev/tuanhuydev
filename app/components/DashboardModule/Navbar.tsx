@@ -8,10 +8,21 @@ import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
+import { Button } from "@mui/material";
 import Popover from "@mui/material/Popover";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Fragment, MouseEventHandler, PropsWithChildren, ReactNode, memo, useCallback, useMemo, useState } from "react";
+import {
+  Fragment,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactNode,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 interface NavbarProps extends PropsWithChildren {
   title?: string;
@@ -23,23 +34,22 @@ interface NavbarProps extends PropsWithChildren {
 const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
-  const { data: currentUser = {} } = useCurrentUser();
+  const { data: currentUser = {}, refetch } = useCurrentUser();
   const { mutateAsync: signUserOut } = useSignOut();
   const queryClient = useQueryClient();
 
   const { email, name } = currentUser;
 
   // State
-  const [open, setOpenUserMenu] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
   const signOut = useCallback(async () => {
     await signUserOut();
@@ -47,19 +57,13 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     router.replace("/auth/sign-in");
   }, [queryClient, router, signUserOut]);
 
-  const toggleUserMenu = useCallback(
-    (value: boolean) => () => {
-      if (!value) return setOpenUserMenu(!open);
-
-      setOpenUserMenu(value);
-      signOut();
-    },
-    [open, signOut],
-  );
-
   const toggleMobileHamburger = useCallback(() => {
     queryClient.setQueryData<boolean>([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], (prev) => !prev);
   }, [queryClient]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const renderStart = useMemo(() => {
     if (startComponent) return startComponent;
@@ -98,26 +102,41 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
           anchorEl={anchorEl}
           slotProps={{}}
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
+            vertical: "top",
+            horizontal: "left",
           }}
           classes={{
             paper: "bg-white dark:bg-slate-950 p-3",
           }}
           onClose={handleClose}>
           <ul className="block m-0 p-0 list-none">
-            <li className="mb-2 text-xs text-slate-500">{email}</li>
-            <li
-              className="mb-2 text-slate-500 hover:text-slate-700 text-xs cursor-pointer flex items-center"
-              onClick={toggleUserMenu(true)}>
-              <ExitToAppOutlined className="mr-2" fontSize="small" />
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                <PersonOutlineOutlined />
+              </div>
+              <div className="mb-2">
+                <p className="font-semibold text-base text-gray-900 dark:text-gray-100 m-0">{name || "User"}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs m-0">{email}</p>
+              </div>
+            </div>
+            <Button
+              variant="text"
+              color="inherit"
+              disableRipple
+              size="small"
+              startIcon={<ExitToAppOutlined fontSize="small" />}
+              classes={{ root: "w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400" }}
+              onClick={() => {
+                handleClose();
+                signOut();
+              }}>
               Sign out
-            </li>
+            </Button>
           </ul>
         </Popover>
       </div>
     );
-  }, [endComponent, name, email, popoverOpen, anchorEl, toggleUserMenu]);
+  }, [endComponent, name, email, popoverOpen, anchorEl, handleClose, signOut]);
 
   return (
     <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between relative">

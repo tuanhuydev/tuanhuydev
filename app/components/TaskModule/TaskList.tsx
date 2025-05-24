@@ -17,11 +17,11 @@ type TaskGroupType = {
 const TaskRow = lazy(() => import("./TaskRow"));
 
 export interface TaskListProps {
-  tasks: ObjectType[];
+  tasks: Task[];
   projectId?: string;
   isLoading: boolean;
   selectedTask: ObjectType | null;
-  onSelectTask: (task: ObjectType) => void;
+  onSelectTask: (task: Task) => void;
 }
 
 export default function TaskList({ tasks, projectId, onSelectTask, selectedTask, isLoading = false }: TaskListProps) {
@@ -83,7 +83,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
               <TaskRow
                 task={task}
                 active={isTaskActive}
-                onSelect={onSelectTask}
+                onSelect={onSelectTask as any}
                 onPin={addTaskToToday}
                 isToday={isTaskToday}
               />
@@ -132,7 +132,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                     <TaskRow
                       task={task}
                       active={isTaskActive}
-                      onSelect={onSelectTask}
+                      onSelect={onSelectTask as any}
                       onPin={addTaskToToday}
                       isToday={isTaskToday}
                     />
@@ -147,7 +147,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                             <TaskRow
                               task={subTask}
                               active={isSubTaskActive}
-                              onSelect={onSelectTask}
+                              onSelect={onSelectTask as any}
                               onPin={addTaskToToday}
                               isToday={isSubTaskToday}
                             />

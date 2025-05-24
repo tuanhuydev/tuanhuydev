@@ -90,7 +90,7 @@ class MongoTaskRepository {
     return this.table.findOne({ deletedAt: null, _id: new ObjectId(id) });
   }
 
-  async updateTask(id: string, { assigneeId, projectId, sprintId, ...restData }: Partial<TaskBody>) {
+  async updateTask(id: string, { assigneeId, projectId, sprintId, ...restData }: Partial<Omit<Task, "id">>) {
     const bodyToUpdate = {
       $set: {
         ...restData,

@@ -301,7 +301,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
         editable={editable}
         onToggle={(mode) => setMode(mode as DRAWER_MODE)}
       />
-      {DrawerContent}
+      <div className="px-1">{DrawerContent}</div>
     </div>
   );
 }
