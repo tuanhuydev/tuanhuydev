@@ -69,8 +69,8 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
           </div>
         )}
       </div>
-      <BaseLabel>Description:</BaseLabel>
-      <div className="mb-3">
+      <div className="grow mb-3">
+        <BaseLabel>Description:</BaseLabel>
         <Suspense fallback={<div>Loading...</div>}>
           <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
         </Suspense>
@@ -85,9 +85,9 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
           </div>
         </div>
       )}
-      <div className="grow flex flex-col justify-end">
+      <div className="flex flex-col justify-end">
         <BaseLabel className="w-[72px]">Comments:</BaseLabel>
-        <div className="grow h-56 overflow-auto">
+        <div className="grow max-h-56 min-h-6 overflow-auto">
           {(comments as Comment[]).map((comment: Comment) => (
             <CommentRow key={String(comment.id)} comment={comment} />
           ))}
