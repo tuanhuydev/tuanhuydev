@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicFormConfig } from "../commons/Form/DynamicForm";
+import { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
 import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
@@ -14,7 +14,7 @@ import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
 
 // Replace dynamic import with React lazy
-const DynamicForm = lazy(() => import("../commons/Form/DynamicForm"));
+const DynamicFormV2 = lazy(() => import("../commons/FormV2/DynamicFormV2"));
 
 export interface PostFormProps {
   post?: Post;
@@ -52,7 +52,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   const isPending = isCreating || isUpdating || isDeleting;
   const hasPost = !!post;
 
-  const config: DynamicFormConfig = {
+  const config: DynamicFormV2Config = {
     fields: [
       {
         name: "title",
@@ -205,7 +205,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
     <div className="grid grid-cols-12 gap-4 w-full">
       <div className="lg:col-span-10 col-span-12">
         <Suspense fallback={<div>Loading...</div>}>
-          <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+          <DynamicFormV2 config={config} onSubmit={submit} mapValues={post} />
         </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
+import DynamicFormV2, { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
 import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useSprintQuery } from "@app/_queries/sprintQueries";
@@ -53,8 +53,8 @@ export interface TaskFormModalsVisibility {
 }
 
 export interface TaskFormTitleProps {
-  task: Partial<Task> | null; // Changed Task to Partial<Task>
-  config?: DynamicFormConfig;
+  task: Partial<Task> | null;
+  config?: DynamicFormV2Config;
   mode: TaskFormMode;
   allowEditTask?: boolean;
   allowDeleteTask?: boolean;
@@ -127,8 +127,9 @@ const useTaskActions = (
   notify: (message: string, type: string) => void,
   onClose: () => void,
 ) => {
+  console.log("useTaskActions called with task:", task);
   const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
-  const { mutateAsync: moveSprintMutation } = useUpdateTaskMutation();
+  const { mutateAsync: updateTaskMutation } = useUpdateTaskMutation();
   const { mutateAsync: createTaskMutation, isSuccess: isCreateSuccess } = useCreateTaskMutation();
 
   const handleDelete = useCallback(async () => {
@@ -155,14 +156,14 @@ const useTaskActions = (
       }
 
       try {
-        await moveSprintMutation({ ...task, sprintId });
+        await updateTaskMutation({ ...task, sprintId });
         notify("Task moved to sprint successfully", "success");
       } catch (error) {
         LogService.log(error);
         notify("Failed to move task to sprint", "error");
       }
     },
-    [moveSprintMutation, notify, task],
+    [updateTaskMutation, notify, task],
   );
 
   const handleCreateSubTask = useCallback(
@@ -187,9 +188,15 @@ const useTaskActions = (
     [createTaskMutation, notify, task?.id, task?.projectId],
   );
 
-  const handleConvertToTask = useCallback(() => {
-    notify("Feature not implemented yet", "info");
-  }, [notify]);
+  const handleConvertToTask = useCallback(async () => {
+    try {
+      await updateTaskMutation({ ...task, parentId: null });
+      notify("Task moved to sprint successfully", "success");
+    } catch (error) {
+      LogService.log(error);
+      notify("Failed to move task to sprint", "error");
+    }
+  }, [notify, task, updateTaskMutation]);
 
   return {
     handleDelete,
@@ -387,7 +394,7 @@ export default function TaskFormTitle({
             open={modalsVisible.createSubTask}
             onClose={toggleModal("createSubTask", false)}>
             <div className={UI_CONSTANTS.MODAL_WIDTHS.SUB_TASK_FORM_HEIGHT + " overflow-auto"}>
-              <DynamicForm config={config} onSubmit={handleCreateSubTaskWithModal} />
+              <DynamicFormV2 config={config} onSubmit={handleCreateSubTaskWithModal} />
             </div>
           </BaseModal>
         )}
