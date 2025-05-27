@@ -49,7 +49,7 @@ const BaseMenuV2 = memo(function BaseMenuV2({ items, MenuProps = {}, triggerIcon
             backgroundColor: "rgba(23, 39, 51, 0.8)",
           },
           "&.Mui-disabled": {
-            backgroundColor: "rgb(248, 250, 252)",
+            backgroundcolor: "rgb(203, 213, 225)",
             color: "rgb(148 163 184)",
           },
         }}>
