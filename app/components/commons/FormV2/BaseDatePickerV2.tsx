@@ -38,7 +38,7 @@ export const BaseDatePickerV2 = forwardRef<HTMLDivElement, BaseDatePickerV2Props
                 display: "flex",
                 alignItems: "center",
                 "&.Mui-disabled": {
-                  backgroundColor: "rgb(248, 250, 252)",
+                  backgroundcolor: "rgb(203, 213, 225)",
                   cursor: "not-allowed",
                 },
                 "&:hover .MuiOutlinedInput-notchedOutline": {

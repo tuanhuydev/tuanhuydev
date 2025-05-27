@@ -30,7 +30,7 @@ export const BaseInputV2 = React.forwardRef<HTMLInputElement, BaseInputV2Props>(
           backgroundColor: "white",
           height: "2.5rem",
           "&.Mui-disabled": {
-            backgroundColor: "rgb(248, 250, 252)",
+            backgroundcolor: "rgb(203, 213, 225)",
             cursor: "not-allowed",
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -41,6 +41,7 @@ export const BaseInputV2 = React.forwardRef<HTMLInputElement, BaseInputV2Props>(
           },
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "rgb(203, 213, 225)",
+            background: "transparent",
           },
         },
         "& .MuiInputBase-input": {

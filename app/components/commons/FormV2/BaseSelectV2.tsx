@@ -141,7 +141,7 @@ const BaseSelectV2 = memo(function BaseSelectV2({
               minHeight: "auto",
             },
             "&.Mui-disabled": {
-              backgroundColor: "rgb(248, 250, 252)",
+              backgroundcolor: "rgb(203, 213, 225)",
               cursor: "not-allowed",
             },
             height: "2.5rem", // Fixed height to match text input

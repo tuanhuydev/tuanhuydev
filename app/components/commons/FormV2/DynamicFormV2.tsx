@@ -292,7 +292,7 @@ const DynamicFormV2 = memo(function DynamicFormV2({
   return (
     <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
       <fieldset disabled={disabled || isSubmitting} className="border-none p-0 m-0">
-        <div className="flex flex-wrap -mx-2">{fieldNodes}</div>
+        <div className="flex flex-wrap">{fieldNodes}</div>
       </fieldset>
 
       <div className="h-px bg-gray-100 dark:bg-slate-700 mt-4 mb-3 mx-2"></div>

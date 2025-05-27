@@ -227,7 +227,15 @@ function TaskPage({
           anchor="right"
           slotProps={{
             paper: {
-              style: { width: "35%" },
+              sx: {
+                width: {
+                  xs: "100%",
+                  sm: "100%",
+                  md: "50%",
+                  lg: "45%",
+                  xl: "30%",
+                },
+              },
             },
           }}
           onClose={toggleDrawer(false)}>
