@@ -86,10 +86,8 @@ export default function BaseMarkdown({
         plugins={[
           toolbarPlugin({
             toolbarContents: () => (
-              <div className="flex gap-3 relative z-300">
-                <DiffSourceToggleWrapper>
-                  <UndoRedo />
-                </DiffSourceToggleWrapper>
+              <div className="flex flex-wrap gap-3 relative z-300 max-w-lg">
+                <UndoRedo />
                 <BlockTypeSelect />
                 <Suspense fallback={<Loader />}>
                   <BoldItalicUnderlineToggles />

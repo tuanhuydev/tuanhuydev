@@ -26,7 +26,7 @@ export const CommentForm = ({ onSubmit }: CommentFormProps) => {
     }
   };
   return (
-    <form className="flex gap-2 text-base rounded-sm bg-slate-100 p-2 mb-2" onSubmit={handleSubmit}>
+    <form className="flex gap-2 text-base rounded-md bg-slate-100 p-2 mb-2" onSubmit={handleSubmit}>
       <input
         id="comment"
         name="comment"
@@ -35,7 +35,7 @@ export const CommentForm = ({ onSubmit }: CommentFormProps) => {
         autoComplete="off"
         autoFocus
         placeholder="Write a comment..."
-        className="py-2 px-4 border-none rounded-sm grow outline-none focus:outline-none bg-slate-50"
+        className="py-2 px-4 border-none rounded-sm grow outline-none focus:outline-none bg-white"
       />
       <IconButton type="submit" color="primary" aria-label="send" size="small" className="rounded-sm">
         <SendIcon fontSize="small" color="primary" />

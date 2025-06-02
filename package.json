@@ -55,6 +55,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.5.0",
+    "html2canvas": "^1.4.1",
     "husky": "^8.0.3",
     "i18next": "^23.2.3",
     "jose": "^5.2.2",

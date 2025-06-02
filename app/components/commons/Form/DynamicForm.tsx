@@ -45,7 +45,7 @@ export interface Field {
   label?: string;
   options?: {
     placeholder?: string;
-    mode?: "multiple" | "tags";
+    mode?: "multiple" | "single";
     rows?: number;
     format?: string;
     size?: "small" | "large";

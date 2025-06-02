@@ -1,3 +1,5 @@
+"use client";
+
 import { CommentForm } from "../commons/CommentForm";
 import { CommentRow } from "../commons/CommentRow";
 import TaskRow from "./TaskRow";
@@ -41,27 +43,41 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   return (
     <div className="p-3 bg-transparent w-full flex flex-col grow">
       <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate">{title ?? EMPTY_STRING}</h1>
-      {status && (
-        <div className="flex items-center gap-3 mb-2 text-base">
-          <BaseLabel>Status</BaseLabel>
-          <Badge value={taskStatus.label} className="text-sm" color={taskStatus.color} />
-        </div>
-      )}
-      {assignee && (
-        <div className="flex gap-3 mb-2 text-base">
-          <BaseLabel>Assignee</BaseLabel>
-          {assignee.label}
-        </div>
-      )}
-      {sprint && (
-        <div className="flex gap-3 mb-2 text-base">
-          <BaseLabel>Sprint</BaseLabel>
-          {sprint.name}
-        </div>
-      )}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        {status && (
+          <div className="flex items-center gap-3">
+            <BaseLabel className="w-[72px]">Status:</BaseLabel>
+            <Badge value={taskStatus.label} className="text-sm" color={taskStatus.color} />
+          </div>
+        )}
+        {task?.storyPoint && (
+          <div className="flex items-center gap-3">
+            <BaseLabel className="w-[72px]">Estimation:</BaseLabel>
+            {task?.storyPoint}
+          </div>
+        )}
+        {assignee && (
+          <div className="flex items-center gap-3">
+            <BaseLabel className="w-[72px]">Assignee</BaseLabel>
+            {assignee.label}
+          </div>
+        )}
+        {sprint && (
+          <div className="flex items-center gap-3">
+            <BaseLabel className="w-[72px]">Sprint:</BaseLabel>
+            {sprint.name}
+          </div>
+        )}
+      </div>
+      <div className="grow mb-3">
+        <BaseLabel>Description:</BaseLabel>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
+        </Suspense>
+      </div>
       {subTasks.length > 0 && (
-        <div className="flex gap-3 mb-2 text-base w-full">
-          <BaseLabel>Sub Tasks</BaseLabel>
+        <div className="flex gap-3 w-full">
+          <BaseLabel className="w-[72px]">Sub Tasks:</BaseLabel>
           <div className="grow h-30 overflow-auto">
             {subTasks.map((subTask: ObjectType) => (
               <TaskRow key={subTask.id} task={subTask} onSelect={selectSubTask(subTask)} active={false} />
@@ -69,15 +85,9 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
           </div>
         </div>
       )}
-      <BaseLabel>Description</BaseLabel>
-      <div className="mb-3">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
-        </Suspense>
-      </div>
-      <div className="grow flex flex-col justify-end">
-        <BaseLabel>Comments</BaseLabel>
-        <div className="grow h-56 overflow-auto">
+      <div className="flex flex-col justify-end">
+        <BaseLabel className="w-[72px]">Comments:</BaseLabel>
+        <div className="grow max-h-56 min-h-6 overflow-auto">
           {(comments as Comment[]).map((comment: Comment) => (
             <CommentRow key={String(comment.id)} comment={comment} />
           ))}

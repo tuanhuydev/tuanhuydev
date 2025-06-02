@@ -3,7 +3,7 @@
 import { MutationParams, useMutateSprint } from "@app/_queries/sprintQueries";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
-import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
 import BaseButton from "@app/components/commons/buttons/BaseButton";
 import BaseModal from "@app/components/commons/modals/BaseModal";
@@ -45,7 +45,7 @@ export const SprintForm: React.FC<{ projectId: string; sprint?: Sprint; onSucces
 }) => {
   const { mutateAsync, isSuccess, isError } = useMutateSprint();
 
-  const config: DynamicFormConfig = useMemo(
+  const config: DynamicFormV2Config = useMemo(
     () => ({
       fields: [
         {
@@ -132,7 +132,7 @@ export const SprintForm: React.FC<{ projectId: string; sprint?: Sprint; onSucces
     }
   });
 
-  return <DynamicForm config={config} onSubmit={submit} mapValues={sprint} />;
+  return <DynamicFormV2 config={config} onSubmit={submit} mapValues={sprint} />;
 };
 
 export const SprintCard = ({ isLoading, sprints = [], projectId, className = "", onClick }: SprintCardProps) => {

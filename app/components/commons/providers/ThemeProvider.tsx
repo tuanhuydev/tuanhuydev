@@ -34,7 +34,7 @@ const MuiBaseTheme = createTheme({
           width: "100%",
           height: "2rem",
           "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-            backgroundColor: "rgb(226 232 240)", //slate-200
+            backgroundcolor: "rgb(203, 213, 225)",
             color: "rgb(203, 213, 225)", // slate-400
             borderColor: "rgb(203, 213, 225)",
           },
