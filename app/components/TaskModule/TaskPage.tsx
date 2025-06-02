@@ -53,7 +53,7 @@ function TaskPage({
 
   // States
   const [meta, setMeta] = useState({
-    selectedTask: null as ObjectType | null,
+    selectedTask: null as Task | null,
     openDrawer: false,
     mode: COMPONENT_MODE.VIEW,
   });
@@ -128,6 +128,12 @@ function TaskPage({
         },
       },
       {
+        name: "storyPoint",
+        type: "number",
+        options: { placeholder: "Story Point" },
+        validate: { required: true },
+      },
+      {
         name: "status",
         type: "select",
         options: {
@@ -186,7 +192,7 @@ function TaskPage({
     mutateTaskError,
   ]);
 
-  const onSelectTask = useCallback((task: ObjectType) => {
+  const onSelectTask = useCallback((task: Task) => {
     setMeta((prevState) => ({
       ...prevState,
       selectedTask: task,
@@ -199,11 +205,10 @@ function TaskPage({
     if (tasks.length && selectedTaskId) {
       const task = tasks.find((task: ObjectType) => String(task.id) === selectedTaskId);
       if (task) {
-        onSelectTask(task);
-        router.push(pathname, { scroll: false });
+        onSelectTask(task as Task);
       }
     }
-  }, [onSelectTask, pathname, router, selectedTaskId, tasks]);
+  }, [onSelectTask, selectedTaskId, tasks]);
 
   return (
     <Suspense fallback={<Loader />}>
@@ -211,7 +216,7 @@ function TaskPage({
         <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
         <TaskList
           projectId={project?.id}
-          tasks={tasks}
+          tasks={tasks as Array<Task>}
           selectedTask={selectedTask}
           onSelectTask={onSelectTask}
           isLoading={loading}
@@ -220,12 +225,22 @@ function TaskPage({
           open={openDrawer}
           aria-hidden="false"
           anchor="right"
-          PaperProps={{
-            style: { width: "35%" },
+          slotProps={{
+            paper: {
+              sx: {
+                width: {
+                  xs: "100%",
+                  sm: "100%",
+                  md: "50%",
+                  lg: "45%",
+                  xl: "30%",
+                },
+              },
+            },
           }}
           onClose={toggleDrawer(false)}>
           <TaskFormTitle
-            task={selectedTask}
+            task={selectedTask as unknown as Partial<Task>}
             allowSubTask={!!selectedTask && allowSubTasks}
             config={TaskFormConfig}
             mode={mode as "VIEW" | "EDIT"}

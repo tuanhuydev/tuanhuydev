@@ -10,6 +10,7 @@ type Task = {
   description?: string;
   type: TASK_TYPE;
   projectId?: string;
+  storyPoint?: number;
   sprintId?: string;
   assigneeId?: string;
   createdById?: string;
@@ -17,7 +18,6 @@ type Task = {
   updatedAt?: Date;
   deletedAt: Date | null;
 };
-type TaskBody = Omit<Task, "id">;
 
 type Sprint = {
   id: string;

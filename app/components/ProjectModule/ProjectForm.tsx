@@ -2,7 +2,7 @@
 
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/_queries/projectQueries";
 import { useUsersQuery } from "@app/_queries/userQueries";
-import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
 import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     await handleProjectMutation(formData, mutationFn);
   };
 
-  const config = useMemo((): DynamicFormConfig => {
+  const config = useMemo((): DynamicFormV2Config => {
     const userOptions = (users as ObjectType[]).map((user: ObjectType) => ({ label: user.name, value: user.id }));
     return {
       fields: [
@@ -136,5 +136,5 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     };
   }, [users]);
 
-  return <DynamicForm config={config} onSubmit={onSubmit} mapValues={project} />;
+  return <DynamicFormV2 config={config} onSubmit={onSubmit} mapValues={project} />;
 }

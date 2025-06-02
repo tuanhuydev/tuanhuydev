@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
@@ -12,12 +12,12 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import LogService from "server/services/LogService";
 
-const DynamicForm = importDynamic(() => import("@app/components/commons/Form/DynamicForm"), {
+const DynamicFormV2 = importDynamic(() => import("@app/components/commons/FormV2/DynamicFormV2"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const signInFormConfig: DynamicFormConfig = {
+const signInFormConfig: DynamicFormV2Config = {
   fields: [
     {
       name: "email",
@@ -82,7 +82,7 @@ export default function SignIn() {
       data-testid="sign-in-page-testid">
       <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
         <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
-        <DynamicForm config={signInFormConfig} onSubmit={submit} />
+        <DynamicFormV2 config={signInFormConfig} onSubmit={submit} />
       </div>
     </div>
   );

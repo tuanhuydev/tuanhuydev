@@ -3,7 +3,7 @@
 import { useUserPermissions } from "@app/_queries/permissionQueries";
 import { useProjectsQuery } from "@app/_queries/projectQueries";
 import { useCreateUser, useUpdateUserDetail } from "@app/_queries/userQueries";
-import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import { DRAWER_MODE } from "@app/components/commons/drawers";
 import BaseDrawerHeader from "@app/components/commons/drawers/BaseDrawerHeader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
@@ -70,7 +70,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   const editable = !!user;
   const title = isViewMode && user ? "User Detail" : !user ? "Create new user" : "Edit User";
 
-  const userFormConfig = useMemo((): DynamicFormConfig => {
+  const userFormConfig = useMemo((): DynamicFormV2Config => {
     const userDetailFields = [
       {
         name: "name",
@@ -283,7 +283,8 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
 
     return (
       <Fragment>
-        <DynamicForm
+        {" "}
+        <DynamicFormV2
           config={userFormConfig}
           onSubmit={submit}
           mapValues={{ ...user, permissions: tableUserPermissions }}
@@ -301,7 +302,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
         editable={editable}
         onToggle={(mode) => setMode(mode as DRAWER_MODE)}
       />
-      {DrawerContent}
+      <div className="px-1">{DrawerContent}</div>
     </div>
   );
 }

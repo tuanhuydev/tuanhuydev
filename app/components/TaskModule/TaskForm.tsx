@@ -1,17 +1,16 @@
 "use client";
 
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
-import { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import { Suspense, lazy, useCallback, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
 
-// Replace dynamic import with React lazy
-const DynamicForm = lazy(() => import("@app/components/commons/Form/DynamicForm"));
+const DynamicFormV2 = lazy(() => import("@app/components/commons/FormV2/DynamicFormV2"));
 
 export interface TaskFormProps {
   task?: Task;
-  config: DynamicFormConfig;
+  config: DynamicFormV2Config;
   onDone?: () => void;
   onError?: (error: Error) => void;
   projectId?: number;
@@ -80,7 +79,7 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
 
   return (
     <Suspense fallback={<div>Loading form...</div>}>
-      <DynamicForm disabled={creating} config={config} mapValues={task} onSubmit={onSubmit} />
+      <DynamicFormV2 disabled={creating} config={config} mapValues={task} onSubmit={onSubmit} />
     </Suspense>
   );
 }

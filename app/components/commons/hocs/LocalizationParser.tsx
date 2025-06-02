@@ -1,8 +1,7 @@
 "use client";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Suspense, lazy } from "react";
-import { PropsWithChildren } from "react";
+import { Fragment, PropsWithChildren, Suspense, lazy } from "react";
 
 // Replace dynamic import with React lazy
 const LocalizationProvider = lazy(() =>
@@ -13,7 +12,7 @@ const LocalizationProvider = lazy(() =>
 
 export const LocalizationParser = ({ children }: PropsWithChildren) => {
   return (
-    <Suspense fallback={<div>Loading localization...</div>}>
+    <Suspense fallback={<Fragment />}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>{children}</LocalizationProvider>
     </Suspense>
   );

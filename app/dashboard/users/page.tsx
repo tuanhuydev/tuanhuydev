@@ -72,11 +72,14 @@ export default function Page() {
     [],
   );
 
-  const RenderUsers = useCallback(() => {
+  const totalSize = getTotalSize();
+
+  // Use a function component instead of useMemo
+  const RenderUsers = () => {
     if (!users.length && !isFetching) return <Empty description="No users found" />;
     if (isFetching) return <Loader />;
     return (
-      <div className="w-full mt-3 relative" style={{ height: `${getTotalSize()}px` }}>
+      <div className="w-full mt-3 relative" style={{ height: `${totalSize}px` }}>
         {getVirtualItems().map(({ index, size, start }) => {
           const currentUser: ObjectType = users[index];
           const activeUser = selectedUser?.id === currentUser.id;
@@ -96,7 +99,7 @@ export default function Page() {
         })}
       </div>
     );
-  }, [getTotalSize, getVirtualItems, isFetching, selectedUser, users, viewUser]);
+  };
 
   return (
     <PageContainer title="Users">
@@ -107,8 +110,8 @@ export default function Page() {
         createLabel="New User"
         allowCreate={allowCreateUser}
       />
-      <div className="grow overflow-auto" ref={containerRef}>
-        {RenderUsers()}
+      <div className="grow overflow-auto h-full" ref={containerRef}>
+        <RenderUsers />
       </div>
 
       <Suspense fallback={<Loader />}>
