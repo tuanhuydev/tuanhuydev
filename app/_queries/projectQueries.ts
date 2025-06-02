@@ -1,5 +1,5 @@
 import { useFetch } from "./useSession";
-import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
@@ -7,7 +7,7 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
   const { fetch } = useFetch();
 
   return useQuery({
-    queryKey: ["projects"],
+    queryKey: ["projects", filter],
     queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/projects`;
       if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
@@ -45,8 +45,14 @@ export const useCreateProjectMutation = () => {
         body: JSON.stringify(formData),
       });
       if (!response.ok) throw new BaseError("Unable to save");
-      queryClient.invalidateQueries({
-        queryKey: ["projects"],
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return Array.isArray(queryKey) && queryKey[0] === "projects";
+        },
       });
     },
   });
@@ -63,7 +69,15 @@ export const useUpdateProjectMutation = () => {
         body: JSON.stringify(restBody),
       });
       if (!response.ok) throw new BaseError("Unable to update");
-      queryClient.invalidateQueries("projects" as InvalidateQueryFilters);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          return Array.isArray(queryKey) && queryKey[0] === "projects";
+        },
+      });
     },
   });
 };

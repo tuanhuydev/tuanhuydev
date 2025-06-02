@@ -14,7 +14,6 @@ export const useFetch = () => {
 
   const signOut = async () => {
     await signUserOut();
-    queryClient.removeQueries();
     router.replace("/auth/sign-in");
   };
 
@@ -43,6 +42,8 @@ export const useFetch = () => {
       return response;
     } catch (error) {
       if (error instanceof UnauthorizedError) {
+        queryClient.cancelQueries();
+        queryClient.removeQueries();
         signOut();
       }
       throw error;
