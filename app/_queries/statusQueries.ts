@@ -1,18 +1,32 @@
+import { QUERY_KEYS, createStableQueryKey } from "./queryKeys";
 import { useFetch } from "./useSession";
-import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
 export const useStatusQuery = (filter: ObjectType = {}) => {
   const { fetch } = useFetch();
+  const stableQueryKey = createStableQueryKey([], filter);
 
   return useQuery({
-    queryKey: ["status"],
+    queryKey: [QUERY_KEYS.STATUS, stableQueryKey],
     queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/status`;
-      if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
+      if (Object.keys(filter).length > 0) {
+        const params = new URLSearchParams();
+        Object.entries(filter).forEach(([key, value]) => {
+          if (value != null && value !== "") {
+            params.append(key, String(value));
+          }
+        });
+        if (params.toString()) {
+          url = `${url}?${params.toString()}`;
+        }
+      }
       const response = await fetch(url, { signal });
-      if (!response.ok) throw new BaseError("Unable to get status");
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch status: ${response.status} ${response.statusText}`);
+      }
       const { data: status } = await response.json();
       return status;
     },
@@ -21,8 +35,8 @@ export const useStatusQuery = (filter: ObjectType = {}) => {
 
 export const useCreateStatusMutation = () => {
   const { fetch } = useFetch();
-
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (params: any) => {
       const response = await fetch(`${BASE_URL}/api/status`, {
@@ -32,8 +46,13 @@ export const useCreateStatusMutation = () => {
         },
         body: JSON.stringify(params),
       });
-      if (!response.ok) throw new BaseError("Unable to create status");
-      queryClient.invalidateQueries("status" as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to create status: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      return result;
     },
   });
 };
@@ -51,8 +70,13 @@ export const useUpdateStatusMutation = () => {
         },
         body: JSON.stringify(params),
       });
-      if (!response.ok) throw new BaseError("Unable to update status");
-      queryClient.invalidateQueries("status" as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to update status: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      return result;
     },
   });
 };
@@ -66,8 +90,13 @@ export const useDeleteStatusMutation = () => {
       const response = await fetch(`${BASE_URL}/api/status/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new BaseError("Unable to delete status");
-      queryClient.invalidateQueries("status" as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to delete status: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      return result;
     },
   });
 };

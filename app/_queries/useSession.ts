@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export const useFetch = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { mutateAsync: signUserOut } = useSignOut();
+  const { mutateAsync: signUserOut, isPending } = useSignOut();
 
   const signOut = async () => {
     await signUserOut();
@@ -19,6 +19,7 @@ export const useFetch = () => {
 
   const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<any> => {
     try {
+      if (isPending) return new Promise((resolve) => setTimeout(() => resolve(fetchWithAuth(url, options)), 1000));
       const accessToken = queryClient.getQueryData<string>(["accessToken"]);
 
       if (!accessToken) throw new UnauthorizedError("Access token is missing");

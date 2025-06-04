@@ -2,7 +2,7 @@
 
 import BaseDatePickerV2 from "./BaseDatePickerV2";
 import { FormHelperText } from "@mui/material";
-import { forwardRef, Ref, memo } from "react";
+import { forwardRef, memo, Ref } from "react";
 import { useController, UseControllerProps } from "react-hook-form";
 
 export interface DynamicDatePickerV2Props extends UseControllerProps<any> {
@@ -24,7 +24,7 @@ export const DynamicDatePickerV2 = memo(
 
     const { isSubmitting } = formState;
     const { invalid, error } = fieldState;
-    const { onChange, ...restField } = field;
+    const { onChange, value = null, ...restField } = field;
 
     const handleChange = (date: Date | null) => onChange(date);
 
@@ -34,30 +34,11 @@ export const DynamicDatePickerV2 = memo(
           <BaseDatePickerV2
             inputRef={ref}
             key={keyProp}
+            value={value}
             disabled={isSubmitting || options?.disabled}
             onChange={handleChange}
             placeholder={options?.placeholder || "Select date"}
             error={invalid}
-            slotProps={{
-              textField: {
-                sx: {
-                  "& .MuiInputBase-input": {
-                    padding: "0.5rem 0.75rem",
-                    "&::placeholder": {
-                      color: "rgb(148, 163, 184)",
-                      opacity: 1,
-                      fontSize: "0.875rem",
-                      fontWeight: 400,
-                    },
-                    "&:disabled": {
-                      backgroundColor: "rgb(226 232 240)",
-                      cursor: "not-allowed",
-                    },
-                  },
-                },
-              },
-            }}
-            className="w-full"
             {...restField}
           />
           {invalid && error?.message && (
