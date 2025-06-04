@@ -51,7 +51,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   };
 
   const onSubmit = async (formData: ObjectType) => {
-    const mutationFn = project ? updateProjectMutation : createProjectMutation;
+    const mutationFn = project?.id ? updateProjectMutation : createProjectMutation;
     await handleProjectMutation(formData, mutationFn);
   };
 
