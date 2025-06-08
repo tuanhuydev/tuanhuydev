@@ -12,7 +12,7 @@ export const CommentRow = ({ comment }: CommentRowProps) => {
         <span className="font-bold">{comment.author.name}</span>
         <span className="text-gray-500">{formatDistance(new Date(), new Date(comment.createdAt))}</span>
       </div>
-      <div className="text-base">{comment.content}</div>
+      <div className="text-sm">{comment.content}</div>
     </div>
   );
 };

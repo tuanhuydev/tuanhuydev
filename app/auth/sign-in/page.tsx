@@ -23,7 +23,7 @@ const signInFormConfig: DynamicFormV2Config = {
       name: "email",
       type: "email",
       options: {
-        size: "large",
+        size: "small",
         placeholder: "Email",
       },
       validate: {
@@ -34,7 +34,7 @@ const signInFormConfig: DynamicFormV2Config = {
       name: "password",
       type: "password",
       options: {
-        size: "large",
+        size: "small",
         placeholder: "Password",
       },
       validate: {

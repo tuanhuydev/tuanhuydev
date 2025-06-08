@@ -13,6 +13,7 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import LogService from "server/services/LogService";
@@ -127,7 +128,7 @@ const useTaskActions = (
   notify: (message: string, type: string) => void,
   onClose: () => void,
 ) => {
-  console.log("useTaskActions called with task:", task);
+  const queryClient = useQueryClient();
   const { mutateAsync: deleteTaskMutation } = useDeleteTaskMutation();
   const { mutateAsync: updateTaskMutation } = useUpdateTaskMutation();
   const { mutateAsync: createTaskMutation, isSuccess: isCreateSuccess } = useCreateTaskMutation();
@@ -183,20 +184,24 @@ const useTaskActions = (
       } catch (error) {
         LogService.log(error);
         notify("Failed to create sub-task", "error");
+      } finally {
+        queryClient.invalidateQueries({ queryKey: ["tasks", task?.projectId] });
+        queryClient.invalidateQueries({ queryKey: ["tasks", task.id, "subTasks"] });
       }
     },
-    [createTaskMutation, notify, task?.id, task?.projectId],
+    [createTaskMutation, notify, queryClient, task?.id, task?.projectId],
   );
 
   const handleConvertToTask = useCallback(async () => {
     try {
       await updateTaskMutation({ ...task, parentId: null });
       notify("Task moved to sprint successfully", "success");
+      queryClient.invalidateQueries({ queryKey: ["tasks", task?.id, "subTasks"] });
     } catch (error) {
       LogService.log(error);
       notify("Failed to move task to sprint", "error");
     }
-  }, [notify, task, updateTaskMutation]);
+  }, [notify, queryClient, task, updateTaskMutation]);
 
   return {
     handleDelete,
@@ -281,21 +286,22 @@ export default function TaskFormTitle({
       },
     ];
     if (allowSubTask && config) {
-      items.unshift(
-        {
-          label: "Create sub-task",
-          icon: <PlaylistAddOutlined fontSize="small" />,
-          onClick: toggleModal("createSubTask", true),
-        },
-        {
+      if (task?.parentId) {
+        items.unshift({
           label: "Convert to task",
           icon: <PlaylistRemoveOutlinedIcon fontSize="small" />,
           onClick: toggleModal("convertToTask", true),
-        },
-      );
+        });
+      } else {
+        items.unshift({
+          label: "Create sub-task",
+          icon: <PlaylistAddOutlined fontSize="small" />,
+          onClick: toggleModal("createSubTask", true),
+        });
+      }
     }
     return <BaseMenu items={items} />;
-  }, [allowSubTask, config, toggleModal]);
+  }, [allowSubTask, config, task?.parentId, toggleModal]);
 
   const renderHeaderExtra = useMemo(() => {
     const existingTask = !!task;

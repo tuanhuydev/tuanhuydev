@@ -48,8 +48,6 @@ function TaskPage({
   const { data: users = [] } = useUsersQuery();
   const { data: sprints = [] } = useSprintQuery(project?.id);
   const { data: permissions = [] } = useCurrentUserPermission();
-  const pathname = usePathname();
-  const router = useRouter();
 
   // States
   const [meta, setMeta] = useState({
@@ -131,7 +129,6 @@ function TaskPage({
         name: "storyPoint",
         type: "number",
         options: { placeholder: "Story Point" },
-        validate: { required: true },
       },
       {
         name: "status",

@@ -3,6 +3,7 @@
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@app/_queries/projectQueries";
 import { useUsersQuery } from "@app/_queries/userQueries";
 import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
+import { useQueryClient } from "@tanstack/react-query";
 import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
 import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
@@ -30,7 +31,7 @@ const projectStatusOptions = createOptions(ProjectStatus, toCapitalize);
 export default function ProjectForm({ project }: ProjectFormProps) {
   // Hooks
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const { data: users = [] } = useUsersQuery({ projectId: project?.id });
   const { mutateAsync: createProjectMutation } = useCreateProjectMutation();
   const { mutateAsync: updateProjectMutation } = useUpdateProjectMutation();
@@ -50,7 +51,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   };
 
   const onSubmit = async (formData: ObjectType) => {
-    const mutationFn = project ? updateProjectMutation : createProjectMutation;
+    const mutationFn = project?.id ? updateProjectMutation : createProjectMutation;
     await handleProjectMutation(formData, mutationFn);
   };
 

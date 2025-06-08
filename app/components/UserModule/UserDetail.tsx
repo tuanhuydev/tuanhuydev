@@ -51,7 +51,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   const { notify } = useGlobal();
   const { mutateAsync: createUser, isSuccess: createdUserSuccess } = useCreateUser();
   const { mutateAsync: updateUser, isSuccess: updateUserSuccess } = useUpdateUserDetail();
-  const { data: projects = [] } = useProjectsQuery();
+  const { data: projects = [] } = useProjectsQuery({});
   const { data: userPermissions = [], refetch: refetchUserPermission } = useUserPermissions(user?.id);
 
   // Map user permissions to table format

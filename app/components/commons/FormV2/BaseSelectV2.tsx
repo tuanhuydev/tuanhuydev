@@ -1,17 +1,7 @@
 "use client";
 
-import {
-  FormControl,
-  Select,
-  MenuItem,
-  Chip,
-  SelectProps,
-  InputLabel,
-  OutlinedInput,
-  Box,
-  FormHelperText,
-} from "@mui/material";
-import { useEffect, useState, memo } from "react";
+import { Box, Chip, FormControl, FormHelperText, MenuItem, OutlinedInput, Select, SelectProps } from "@mui/material";
+import { memo, useEffect, useState } from "react";
 
 interface SelectOption {
   value: string | number;
@@ -120,52 +110,14 @@ const BaseSelectV2 = memo(function BaseSelectV2({
           key={keyProp}
           value={isMultiple ? (Array.isArray(value) ? value : []) : value || ""}
           onChange={handleChange}
+          slotProps={{}}
           multiple={isMultiple}
           displayEmpty
           renderValue={renderValue}
           input={<OutlinedInput />}
-          MenuProps={MenuProps}
-          sx={{
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgb(203, 213, 225)",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgb(203, 213, 225)",
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "var(--color-primary, #172733)",
-            },
-            "& .MuiSelect-select": {
-              padding: "0.5rem 0.75rem",
-              fontSize: "0.875rem",
-              minHeight: "auto",
-            },
-            "&.Mui-disabled": {
-              backgroundcolor: "rgb(203, 213, 225)",
-              cursor: "not-allowed",
-            },
-            height: "2.5rem", // Fixed height to match text input
-            borderRadius: "0.375rem",
-            backgroundColor: "white",
-            ...restProps.sx,
-          }}>
+          MenuProps={MenuProps}>
           {options.map((option: SelectOption) => (
-            <MenuItem
-              key={option.value}
-              value={option.value}
-              sx={{
-                fontSize: "0.875rem",
-                padding: "0.5rem 0.75rem",
-                "&:hover": {
-                  backgroundColor: "rgb(241 245 249)",
-                },
-                "&.Mui-selected": {
-                  backgroundColor: "rgba(23, 39, 51, 0.08)",
-                  "&:hover": {
-                    backgroundColor: "rgba(23, 39, 51, 0.12)",
-                  },
-                },
-              }}>
+            <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
