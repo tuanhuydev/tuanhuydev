@@ -1,6 +1,6 @@
-import { QUERY_KEYS } from "./queryKeys";
+import { QUERY_KEYS, createStableQueryKey } from "./queryKeys";
 import { useFetch } from "./useSession";
-import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
@@ -15,14 +15,17 @@ export const useTodayTasks = () => {
 export const useSubTasks = (taskId: string | undefined) => {
   const { fetch } = useFetch();
   return useQuery({
-    queryKey: ["tasks", taskId, "subTasks"],
+    queryKey: [QUERY_KEYS.TASKS, taskId, "subTasks"],
     queryFn: async ({ signal }) => {
       if (!taskId) return [];
       const response = await fetch(`${BASE_URL}/api/tasks/${taskId}/subtasks`, { signal });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch subtasks: ${response.status} ${response.statusText}`);
+      }
       const { data: subTasks = [] } = await response.json();
       return subTasks;
     },
+    enabled: !!taskId,
   });
 };
 
@@ -31,7 +34,7 @@ export const useUpdateTodayTasks = () => {
   return useMutation({
     mutationFn: async (updatedTasks: ObjectType[]) => {
       localStorage.setItem("todayTasks", JSON.stringify(updatedTasks));
-      queryClient.invalidateQueries(["todayTasks"] as InvalidateQueryFilters);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODAY_TASKS] });
     },
   });
 };
@@ -49,8 +52,23 @@ export const useCreateTaskMutation = () => {
         },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new BaseError(response.statusText);
-      queryClient.invalidateQueries(["tasks"] as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to create task: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      // Invalidate all task-related queries
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+
+      // If task belongs to a project, invalidate project tasks
+      if (data.projectId) {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.PROJECTS, "detail", data.projectId, QUERY_KEYS.TASKS],
+        });
+      }
+
+      return result;
     },
   });
 };
@@ -68,8 +86,23 @@ export const useUpdateTaskMutation = () => {
         },
         body: JSON.stringify(restTask),
       });
-      if (!response.ok) throw new BaseError(response.statusText);
-      queryClient.invalidateQueries("tasks" as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to update task: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      // Invalidate all task-related queries
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+
+      // If task belongs to a project, invalidate project tasks
+      if (restTask.projectId) {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.PROJECTS, "detail", restTask.projectId, QUERY_KEYS.TASKS],
+        });
+      }
+
+      return result;
     },
   });
 };
@@ -83,8 +116,25 @@ export const useDeleteTaskMutation = () => {
       const response = await fetch(`${BASE_URL}/api/tasks/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new BaseError(response.statusText);
-      queryClient.invalidateQueries("tasks" as InvalidateQueryFilters);
+      if (!response.ok) {
+        throw new BaseError(`Failed to delete task: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      // Invalidate all task-related queries
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+
+      // Invalidate project tasks (we don't know which project, so invalidate all)
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PROJECTS],
+        predicate: (query) => {
+          const queryKey = query.queryKey as string[];
+          return queryKey.includes(QUERY_KEYS.TASKS);
+        },
+      });
+
+      return result;
     },
   });
 };

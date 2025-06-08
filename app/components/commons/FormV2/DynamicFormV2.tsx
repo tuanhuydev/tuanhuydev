@@ -2,7 +2,7 @@
 
 import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Suspense, lazy, ReactNode, useCallback, useEffect, useState, memo, useMemo } from "react";
+import { ReactNode, Suspense, lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import LogService from "server/services/LogService";
 import * as yup from "yup";
@@ -215,7 +215,8 @@ const DynamicFormV2 = memo(function DynamicFormV2({
   // Hooks
   const form = useForm({
     resolver: yupResolver(schema),
-    mode: "onChange", // Better UX with real-time validation
+    mode: "onTouched", // Only validate after user interaction
+    defaultValues: {}, // Provide empty default values to prevent initial validation errors
   });
 
   // State
@@ -267,10 +268,26 @@ const DynamicFormV2 = memo(function DynamicFormV2({
   useEffect(() => {
     if (mapValues) {
       const initialValues = { ...mapValues };
+
+      // Convert date strings to Date objects for date picker fields
+      const allFields = isFields(config.fields) ? config.fields : config.fields.flatMap((group) => group.fields);
+      const dateFields = allFields.filter((field) => field.type === "datepicker");
+
+      dateFields.forEach((field) => {
+        const value = initialValues[field.name];
+        if (value && typeof value === "string") {
+          // Check if it's a valid date string
+          const date = new Date(value);
+          if (!isNaN(date.getTime())) {
+            initialValues[field.name] = date;
+          }
+        }
+      });
+
       // Use reset instead of multiple setValue calls to avoid re-renders
       reset(initialValues);
     }
-  }, [mapValues, reset]); // Only run when mapValues changes
+  }, [mapValues, reset, config.fields]); // Only run when mapValues changes
 
   // Check and render fields
   useEffect(() => {

@@ -1,17 +1,28 @@
+import { QUERY_KEYS, createStableQueryKey } from "./queryKeys";
 import { useFetch } from "./useSession";
-import { InvalidateQueryFilters, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
+import { useMemo } from "react";
 
 export const useUsersQuery = (filter: ObjectType = {}) => {
   const { fetch } = useFetch();
+  const queryKey = useMemo(() => createStableQueryKey([QUERY_KEYS.USERS], filter), [filter]);
+
   return useQuery({
-    queryKey: ["users", filter],
+    queryKey,
     queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/users`;
-      if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
+      const cleanFilter = Object.fromEntries(
+        Object.entries(filter).filter(([_, value]) => value !== "" && value != null),
+      ) as Record<string, string>;
+      if (Object.keys(cleanFilter).length > 0) {
+        url = `${url}?${new URLSearchParams(cleanFilter).toString()}`;
+      }
       const response = await fetch(url, { signal });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch users: ${response.status} ${response.statusText}`);
+      }
       const { data: users = [] } = await response.json();
       return users;
     },
@@ -20,16 +31,23 @@ export const useUsersQuery = (filter: ObjectType = {}) => {
 
 export const useCurrentUserTasks = (filter = {}) => {
   const { fetch } = useFetch();
+  const queryKey = useMemo(() => createStableQueryKey([QUERY_KEYS.CURRENT_USER, QUERY_KEYS.TASKS], filter), [filter]);
+
   return useQuery({
-    queryKey: ["currentUser", "tasks", filter],
+    queryKey,
     queryFn: async ({ signal }) => {
       let url: string = `${BASE_URL}/api/users/me/tasks`;
-      if (filter) {
-        url = `${url}?${new URLSearchParams(filter).toString()}`;
+      const cleanFilter = Object.fromEntries(
+        Object.entries(filter).filter(([_, value]) => value !== "" && value != null),
+      ) as Record<string, string>;
+      if (Object.keys(cleanFilter).length > 0) {
+        url = `${url}?${new URLSearchParams(cleanFilter).toString()}`;
       }
 
       const response = await fetch(url, { signal });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch current user tasks: ${response.status} ${response.statusText}`);
+      }
       const { data: tasks = [] } = await response.json();
       return tasks;
     },
@@ -39,13 +57,16 @@ export const useCurrentUserTasks = (filter = {}) => {
 export const useProjectUsers = (projectId: string) => {
   const { fetch } = useFetch();
   return useQuery({
-    queryKey: ["projects", projectId, "users"],
+    queryKey: [QUERY_KEYS.PROJECTS, projectId, QUERY_KEYS.USERS],
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/projects/${projectId}/users`, { signal });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch project users: ${response.status} ${response.statusText}`);
+      }
       const { data: users = [] } = await response.json();
       return users;
     },
+    enabled: !!projectId,
   });
 };
 
@@ -53,14 +74,18 @@ export const useCurrentUser = () => {
   const { fetch } = useFetch();
 
   return useQuery({
-    queryKey: ["currentUser"],
+    queryKey: [QUERY_KEYS.CURRENT_USER],
     enabled: false,
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/users/me`, { signal });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to fetch current user: ${response.status} ${response.statusText}`);
+      }
       const { data: currentUser = {} } = await response.json();
       return currentUser;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
@@ -77,9 +102,16 @@ export const useCreateUser = () => {
         },
         body: JSON.stringify(newUser),
       });
-      if (!response.ok) throw new BaseError(response.statusText);
-      queryClient.invalidateQueries(["users"] as InvalidateQueryFilters);
-      return response.json();
+      if (!response.ok) {
+        throw new BaseError(`Failed to create user: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      // Invalidate users queries
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USERS] });
+
+      return result;
     },
   });
 };
@@ -97,14 +129,24 @@ export const useUpdateUserDetail = () => {
         },
         body: JSON.stringify(user),
       });
-      if (!response.ok) throw new BaseError(response.statusText);
+      if (!response.ok) {
+        throw new BaseError(`Failed to update user: ${response.status} ${response.statusText}`);
+      }
 
-      return response.json();
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(["users"] as InvalidateQueryFilters);
-      console.log((variables as User).id);
-      queryClient.invalidateQueries(["permissions", "user", (variables as User).id] as InvalidateQueryFilters);
+      const result = await response.json();
+
+      // Invalidate users queries
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USERS] }); // Invalidate current user if updating self
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CURRENT_USER] });
+
+      // Invalidate user permissions
+      if (user.id) {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.PERMISSIONS, "user", user.id],
+        });
+      }
+
+      return result;
     },
   });
 };
