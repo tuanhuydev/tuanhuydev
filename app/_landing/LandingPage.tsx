@@ -17,9 +17,9 @@ export default async function LandingPage() {
     console.error("Failed to fetch posts:", error);
   }
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4">
+    <main className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 text-primary dark:text-slate-50">
       <Navbar />
-      <div className="w-full lg:w-4/5 lg:w-4xl mx-auto pt-32">
+      <div className="w-full lg:w-4/5 lg:w-4xl mx-auto pt-32 contain-layout">
         <Hero />
         <Suspense fallback={<Loader />}>
           <Experience />

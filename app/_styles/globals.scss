@@ -41,12 +41,62 @@ html {
 [data-theme="light"] {
   --background: #f8fafc;
   background-color: var(--background) !important;
+
+  /* Landing page theme variables */
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --contact-bg: rgb(255 255 255 / 0.8);
+  --contact-hover: rgb(243 244 246);
+  --contact-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1);
+  --contact-text: rgb(75 85 99);
+  --blog-gradient-start: rgb(30 41 59);
+  --blog-gradient-end: rgb(217 119 6);
+  --blog-text: rgb(75 85 99);
+  --highlight-bg: rgb(255 255 255);
+  --highlight-border: rgb(51 65 85);
+  --highlight-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --highlight-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --highlight-title: rgb(15 23 42);
+  --highlight-date: rgb(71 85 105);
+  --experience-gradient-start: rgb(30 41 59);
+  --experience-gradient-end: rgb(37 99 235);
+  --experience-text: rgb(75 85 99);
+  --experience-tag-bg: rgb(241 245 249);
+  --experience-tag-border: rgb(203 213 225);
+  --experience-tag-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --delight-text: rgb(71 85 105);
+  --delight-primary: rgb(15 23 42);
+  --pattern-stroke: rgba(200, 200, 200, 0.2);
 }
 
 .dark,
 [data-theme="dark"] {
   --background: #030712;
   background-color: var(--background) !important;
+
+  /* Landing page theme variables */
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --contact-bg: rgb(31 41 55 / 0.8);
+  --contact-hover: rgb(55 65 81);
+  --contact-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.2);
+  --contact-text: rgb(156 163 175);
+  --blog-gradient-start: rgb(241 245 249);
+  --blog-gradient-end: rgb(148 163 184);
+  --blog-text: rgb(209 213 219);
+  --highlight-bg: rgb(30 41 55);
+  --highlight-border: rgb(51 65 85);
+  --highlight-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+  --highlight-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+  --highlight-title: rgb(248 250 252);
+  --highlight-date: rgb(226 232 240);
+  --experience-gradient-start: rgb(241 245 249);
+  --experience-gradient-end: rgb(148 163 184);
+  --experience-text: rgb(209 213 219);
+  --experience-tag-bg: rgb(30 41 55);
+  --experience-tag-border: rgb(71 85 105);
+  --experience-tag-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+  --delight-text: rgb(203 213 225);
+  --delight-primary: rgb(248 250 252);
+  --pattern-stroke: rgba(148, 163, 184, 0.2);
 }
 
 a {
@@ -85,4 +135,47 @@ input:-webkit-autofill {
 
 .mdxeditor-popup-container {
   z-index: 2000 !important;
+}
+
+/* PostView code block styling for better dark mode support */
+.markdown-content pre {
+  font-family: "Fira Code", "Courier New", monospace;
+  font-weight: 400;
+}
+
+/* Landing page utility classes for SSR optimization */
+.landing-shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.landing-contact-shadow {
+  box-shadow: var(--contact-shadow);
+  backdrop-filter: blur(8px);
+}
+
+.landing-highlight-shadow {
+  box-shadow: var(--highlight-shadow);
+}
+
+.landing-highlight-shadow-hover:hover {
+  box-shadow: var(--highlight-shadow-hover);
+}
+
+.landing-experience-tag-shadow {
+  box-shadow: var(--experience-tag-shadow);
+}
+
+.landing-contact-text {
+  color: var(--contact-text);
+}
+
+.landing-navbar-bottom {
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.dark .landing-navbar-bottom {
+  background-color: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.2), 0 4px 6px -2px rgb(0 0 0 / 0.1);
 }
