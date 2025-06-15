@@ -8,10 +8,9 @@ export const Navbar = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [showAtBottom, setShowAtBottom] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-
   // Theme management
   const initializeTheme = () => {
-    const savedTheme = localStorage.theme;
+    const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
@@ -19,12 +18,11 @@ export const Navbar = () => {
       document.documentElement.classList.add("dark");
     }
   };
-
   const toggleTheme = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     document.documentElement.classList.toggle("dark", newDarkMode);
-    localStorage.theme = newDarkMode ? "dark" : "light";
+    localStorage.setItem("theme", newDarkMode ? "dark" : "light");
   };
 
   // Scroll handling
@@ -177,9 +175,16 @@ export const Navbar = () => {
       animate={{ y: 0, x: "-50%" }}
       className={`rounded-full flex justify-between fixed z-10 px-4 lg:px-5 py-2 left-1/2 ${
         showAtBottom ? "bg-slate-50 dark:bg-slate-900 shadow-md" : "bg-transparent"
-      } ${showAtBottom ? "bottom-[60px] w-3/5 lg:w-1/5 ease-in" : "top-4 w-5/6 md:w-4/5 lg:w-4xl"}`}>
+      } ${showAtBottom ? "bottom-[60px] w-3/5 lg:w-1/5 ease-in" : "top-4 w-full md:w-4/5 xl:w-4xl"}`}>
       <Logo />
-      <Actions />
+      <div className="flex items-center gap-3 lg:gap-8">
+        {!showAtBottom && (
+          <Link href="/posts" className="text-xs md:text-base hover:underline text-primary dark:text-slate-50">
+            Blogs
+          </Link>
+        )}
+        <Actions />
+      </div>
     </motion.header>
   );
 };

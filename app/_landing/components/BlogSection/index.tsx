@@ -10,27 +10,31 @@ const makeColumn = (index: number) => {
 
 export default function BlogSection({ posts }: { posts: ObjectType[] }) {
   if (!posts.length) return <>Not found</>;
-
   return (
-    <section id="blog" className="flex flex-col items-center">
+    <section id="blog" className="flex flex-col items-center contain-layout">
       {/* Title & Description */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-xl md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r from-slate-800 to-amber-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="text-xl md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r 
+                   from-slate-800 to-amber-600 dark:from-slate-100 dark:to-slate-400 
+                   bg-clip-text text-transparent will-change-auto">
         Reading Station
       </motion.h2>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="mt-4 text-gray-600 dark:text-gray-300 text-base md:text-lg text-center lg:text-left max-w-2xl mx-auto leading-relaxed">
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+        className="mt-4 text-base md:text-lg text-center lg:text-left max-w-2xl mx-auto 
+                   leading-relaxed text-gray-600 dark:text-gray-300 will-change-auto">
         Explore new ideas and expand your understanding through my blog posts.
       </motion.p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-6 w-3/4 gap-y-6 gap-x-4 p-3 grid-flow-row">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-6 
+                   w-3/4 gap-y-6 gap-x-4 p-3 grid-flow-row contain-style">
         {posts.map((post: ObjectType, index: number) => (
           <HighlightPost post={post} key={post.slug} className={makeColumn(index)} />
         ))}

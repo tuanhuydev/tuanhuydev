@@ -1,7 +1,6 @@
 "use client";
 
 import { useProjectQuery } from "@app/_queries/projectQueries";
-import { useSprintQuery } from "@app/_queries/sprintQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { SprintCard } from "@app/components/ProjectModule/ProjectDetail/SprintCard";
 import BaseLabel from "@app/components/commons/BaseLabel";
@@ -21,7 +20,6 @@ interface PageProps {
 export default function Page({ params }: PageProps) {
   const { projectId } = use(params);
   const { data: project, isLoading } = useProjectQuery(projectId);
-  const { data: sprints, isLoading: isSprintsLoading } = useSprintQuery(projectId, { status: "ACTIVE" });
   const {
     name = "",
     description = "",
@@ -70,18 +68,18 @@ export default function Page({ params }: PageProps) {
         </Card>
         {status && (
           <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-            <BaseLabel>status</BaseLabel>
+            <span className="text-lg font-bold capitalize">status</span>
             <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-green-600 capitalize">{status}</h4>
           </Card>
         )}
         {type && (
           <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-            <BaseLabel>type</BaseLabel>
+            <span className="text-lg font-bold capitalize">type</span>
             <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-cyan-500 capitalize">{type}</h4>
           </Card>
         )}
         <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-          <BaseLabel>Timeline</BaseLabel>
+          <span className="text-lg font-bold capitalize">Timeline</span>
           <div className="mt-4 flex flex-col items-center gap-4">
             <p className="text-xl font-medium capitalize">{TitleByPercent}</p>
             <div className="flex flex-wrap justify-between w-full">
@@ -96,22 +94,7 @@ export default function Page({ params }: PageProps) {
             </div>
           </div>
         </Card>
-        {/* <Card className="h-full col-span-full lg:col-span-3" onClick={navigateProjectTasks} loading={isTasksLoading}>
-          <div className="flex justify-between text-sm capitalize text-slate-400">
-            <BaseLabel>task</BaseLabel>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-5 md:gap-x-8 lg:gap-x-12 xl:gap-x-12">
-            <span>
-              <h3 className="text-5xl my-4">{tasks?.length ?? 0}</h3>
-            </span>
-          </div>
-        </Card> */}
-        <SprintCard
-          isLoading={isSprintsLoading}
-          projectId={projectId}
-          sprints={sprints}
-          className="col-span-full lg:col-span-3"
-        />
+        <SprintCard projectId={projectId} className="col-span-full lg:col-span-3" />
       </div>
     </PageContainer>
   );
