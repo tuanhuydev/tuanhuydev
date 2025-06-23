@@ -1,10 +1,11 @@
 "use client";
 
 import { DRAWER_MODE } from ".";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import { SxProps, Theme } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { Fragment, useCallback } from "react";
 
 export interface BaseDrawerHeaderProps {
@@ -15,6 +16,14 @@ export interface BaseDrawerHeaderProps {
   onClose: (open: boolean) => void;
   onToggle: (mode: string) => void;
 }
+
+const IconButtonStyles: SxProps<Theme> = {
+  backgroundColor: "primary.main",
+  borderRadius: "25%",
+  "&:hover": {
+    backgroundColor: "primary.dark",
+  },
+};
 
 export default function BaseDrawerHeader({
   mode,
@@ -43,24 +52,21 @@ export default function BaseDrawerHeader({
         {editable && (
           <Fragment>
             {isViewMode && (
-              <BaseButton
-                onClick={toggleMode(DRAWER_MODE.EDIT)}
-                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton sx={IconButtonStyles} size="small" onClick={toggleMode(DRAWER_MODE.EDIT)}>
+                <EditOutlined className="text-slate-50" />
+              </IconButton>
             )}
             {isEditMode && (
-              <BaseButton
-                onClick={toggleMode(DRAWER_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton size="small" sx={IconButtonStyles} onClick={toggleMode(DRAWER_MODE.VIEW)} color="primary">
+                <EditOffOutlined className="text-slate-50" />
+              </IconButton>
             )}
           </Fragment>
         )}
         {ExtraHeader}
-        <BaseButton
-          onClick={handleClose}
-          icon={<CloseOutlined className="!text-lg text-slate-50" fontSize="small" />}
-        />
+        <IconButton size="small" sx={IconButtonStyles} onClick={handleClose} color="primary">
+          <CloseOutlined className="text-slate-50" />
+        </IconButton>
       </div>
     </div>
   );

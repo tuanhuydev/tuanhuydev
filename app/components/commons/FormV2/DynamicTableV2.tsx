@@ -13,7 +13,7 @@ import {
   GridRenderCellParams,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
-import { useCallback, useEffect, useState, memo } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 
 export interface DynamicTableColumnProps {
@@ -47,12 +47,28 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
   const [fieldData, setFieldData] = useState<any>([]);
   const [gridColumns, setGridColumns] = useState<GridColDef[]>([]);
 
+  // Generate unique ID helper
+  const generateUniqueId = useCallback(() => {
+    return `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
+
+  // Fallback row ID getter for extra safety
+  const getRowId = useCallback(
+    (row: any) => {
+      if (row.id) return row.id;
+      // Emergency fallback - should not happen with proper ID generation
+      console.warn("Row missing ID in DynamicTableV2, generating emergency ID:", row);
+      return generateUniqueId();
+    },
+    [generateUniqueId],
+  );
+
   const CustomHeader = useCallback(
     ({ colDef }: GridColumnHeaderParams) => {
       const { headerName, field } = colDef;
 
       const addRow = () => {
-        let newRow = { id: Date.now().toString() };
+        let newRow = { id: generateUniqueId() };
         columns.forEach((column) => {
           const fieldName = column.config.field;
           newRow = { ...newRow, [fieldName]: "" };
@@ -76,7 +92,7 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
         </div>
       );
     },
-    [columns, fieldData, isSubmitting, onChange],
+    [columns, fieldData, isSubmitting, onChange, generateUniqueId],
   );
 
   const EditSelectCell = useCallback((props: GridRenderEditCellParams, selectOptions: SelectOptionType[]) => {
@@ -160,19 +176,30 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
   }, [makeColumns]);
 
   useEffect(() => {
-    if (field.value && Array.isArray(field.value)) {
-      setFieldData(field.value);
+    if (field.value && Array.isArray(field.value) && fieldData.length === 0) {
+      const dataWithIds = field.value.map((row: any) => {
+        // Check if row already has a valid ID
+        const hasValidId = row.id && typeof row.id === "string" && row.id.trim() !== "";
+
+        return {
+          ...row,
+          id: hasValidId ? row.id : generateUniqueId(),
+        };
+      });
+      setFieldData(dataWithIds);
     }
-  }, [field.value]);
+  }, [field.value, fieldData.length, generateUniqueId]);
 
   const processRowUpdate = useCallback(
     (newRow: any) => {
-      const updatedData = fieldData.map((row: any) => (row.id === newRow.id ? newRow : row));
-      setFieldData(updatedData);
-      onChange(updatedData);
+      setFieldData((prev: any[]) => {
+        const updatedData = prev.map((row: any) => (row.id === newRow.id ? newRow : row));
+        onChange(updatedData);
+        return updatedData;
+      });
       return newRow;
     },
-    [fieldData, onChange],
+    [onChange],
   );
 
   return (
@@ -181,6 +208,7 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
         <DataGrid
           rows={fieldData}
           columns={gridColumns}
+          getRowId={getRowId}
           processRowUpdate={processRowUpdate}
           hideFooter
           disableRowSelectionOnClick
