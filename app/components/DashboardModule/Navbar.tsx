@@ -8,7 +8,7 @@ import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
 import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import Popover from "@mui/material/Popover";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -27,11 +27,12 @@ import {
 interface NavbarProps extends PropsWithChildren {
   title?: string;
   goBack?: boolean;
+  goBackLink?: string;
   startComponent?: ReactNode;
   endComponent?: ReactNode;
 }
 
-const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarProps) => {
+const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponent }: NavbarProps) => {
   // Hook
   const router = useRouter();
   const { data: currentUser = {}, refetch } = useCurrentUser();
@@ -57,6 +58,14 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     router.replace("/auth/sign-in");
   }, [queryClient, router, signUserOut]);
 
+  const handleGoback = useCallback(() => {
+    if (goBackLink) {
+      router.push(goBackLink);
+    } else if (goBack) {
+      router.back();
+    }
+  }, [goBack, goBackLink, router]);
+
   const toggleMobileHamburger = useCallback(() => {
     queryClient.setQueryData<boolean>([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], (prev) => !prev);
   }, [queryClient]);
@@ -70,25 +79,22 @@ const Navbar = ({ title, goBack = false, startComponent, endComponent }: NavbarP
     if (title)
       return (
         <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl text-primary dark:text-slate-50">
-          <BaseButton
-            variants="text"
-            className="block lg:hidden"
-            icon={<MenuOutlined />}
-            onClick={toggleMobileHamburger}
-          />
+          <div className="block lg:hidden">
+            <IconButton size="small" aria-label="Toggle mobile menu" onClick={toggleMobileHamburger}>
+              <MenuOutlined fontSize="small" />
+            </IconButton>
+          </div>
 
           {goBack && (
-            <BaseButton
-              variants="text"
-              onClick={() => router.back()}
-              icon={<KeyboardArrowLeftOutlined className="!fill-primary dark:!fill-slate-50" />}
-            />
+            <IconButton size="small" aria-label="Go back button" onClick={handleGoback} className="block lg:hidden">
+              <KeyboardArrowLeftOutlined />
+            </IconButton>
           )}
           <h1 className="my-auto text-2xl font-bold capitalize grow truncate">{title}</h1>
         </div>
       );
     return <Fragment />;
-  }, [goBack, router, startComponent, title, toggleMobileHamburger]);
+  }, [goBack, handleGoback, startComponent, title, toggleMobileHamburger]);
 
   const popoverOpen = Boolean(anchorEl);
   const renderEnd = useMemo(() => {

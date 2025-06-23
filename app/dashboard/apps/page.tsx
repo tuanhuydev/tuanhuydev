@@ -1,15 +1,17 @@
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Card from "@app/components/commons/Card";
+import Link from "next/link";
 
-const Page = () => {
+export default async function Page() {
   return (
-    <PageContainer title="WorkSpace">
+    <PageContainer title="Apps">
       <div className="flex gap-3 flex-wrap">
         <Card className="w-[300px] h-[200px]">Personal Tasks</Card>
         <Card className="w-[300px] h-[200px]">AI</Card>
+        <Link href="/dashboard/apps/budtr">
+          <Card className="w-[300px] h-[200px]">Budtr</Card>
+        </Link>
       </div>
     </PageContainer>
   );
-};
-
-export default Page;
+}

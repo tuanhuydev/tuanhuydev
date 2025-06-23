@@ -1,7 +1,6 @@
 "use client";
 
 import { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
-import BaseButton from "../commons/buttons/BaseButton";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@app/_queries/postQueries";
@@ -209,14 +208,13 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
         </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
-        <BaseButton
-          label={hasPost ? "Update Post" : "Save Draft"}
-          variants="outline"
-          onClick={handleSubmit(false)}
-          loading={isPending}
-        />
+        <Button variant="outlined" onClick={handleSubmit(false)}>
+          {hasPost ? "Update Post" : "Save Draft"}
+        </Button>
         {hasPost && !(post as unknown as Post)?.publishedAt && (
-          <BaseButton label="Save & Publish" onClick={handleSubmit(true)} loading={isPending} />
+          <Button variant="contained" onClick={handleSubmit(true)}>
+            Save & Publish
+          </Button>
         )}
         {hasPost && (
           <Button

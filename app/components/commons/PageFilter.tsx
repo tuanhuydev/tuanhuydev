@@ -1,7 +1,7 @@
 import BaseInput from "./Inputs/BaseInput";
-import BaseButton from "./buttons/BaseButton";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
+import Button from "@mui/material/Button";
 import { ChangeEvent } from "react";
 
 export interface PageFilterProps {
@@ -28,7 +28,13 @@ export default function PageFilter({
         startAdornment={<SearchOutlined fontSize="small" className=" dark:fill-slate-50" />}
       />
       {allowCreate && (
-        <BaseButton label={createLabel} icon={<ControlPointOutlined fontSize="small" />} onClick={onNew} />
+        <Button
+          variant="contained"
+          endIcon={<ControlPointOutlined fontSize="small" />}
+          onClick={onNew}
+          className="flex-shrink-0">
+          {createLabel}
+        </Button>
       )}
     </div>
   );
