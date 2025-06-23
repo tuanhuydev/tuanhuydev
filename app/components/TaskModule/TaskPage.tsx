@@ -5,12 +5,11 @@ import { useSprintQuery } from "@app/_queries/sprintQueries";
 import { useUsersQuery } from "@app/_queries/userQueries";
 import { TaskStatusOptions, TaskTypeOptions } from "@app/_utils/constants";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
-import { DynamicFormConfig, Field, ObjectType } from "@app/components/commons/Form/DynamicForm";
+import { DynamicFormV2Config, Field, ObjectType } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { Drawer } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import LogService from "server/services/LogService";
 
@@ -109,7 +108,7 @@ function TaskPage({
     setMeta((prevState) => ({ ...prevState, openDrawer: false }));
   }, [queryClient]);
 
-  const TaskFormConfig = useMemo((): DynamicFormConfig => {
+  const TaskFormConfig = useMemo((): DynamicFormV2Config => {
     const fields: Field[] = [
       {
         name: "title",

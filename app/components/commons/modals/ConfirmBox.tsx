@@ -1,5 +1,5 @@
-import BaseButton from "../buttons/BaseButton";
 import BaseModal from "./BaseModal";
+import Button from "@mui/material/Button";
 import { PropsWithChildren } from "react";
 
 export interface ConfirmBoxProps extends PropsWithChildren {
@@ -36,8 +36,10 @@ export default function ConfirmBox({
     <BaseModal open={open} onClose={onClose} title={title}>
       {description && <p className=" mt-0 mb-4">{description}</p>}
       <div className="flex gap-2 justify-end w-full self-end">
-        <BaseButton variants="outline" onClick={cancel} label={cancelLabel}></BaseButton>
-        <BaseButton onClick={confirm} label={confirmLabel}></BaseButton>
+        <Button variant="outlined" onClick={cancel}>
+          {cancelLabel}
+        </Button>
+        <Button onClick={confirm}>{confirmLabel}</Button>
       </div>
     </BaseModal>
   );

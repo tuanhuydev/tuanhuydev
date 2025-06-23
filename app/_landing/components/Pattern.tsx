@@ -11,9 +11,10 @@ export const Pattern = () => {
       xmlns="http://www.w3.org/2000/svg"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}>
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="contain-layout will-change-auto">
       <rect width="100%" height="100%" fill="transparent" />
-      <g stroke="rgba(200, 200, 200, 0.2)" strokeWidth="1">
+      <g stroke="rgba(200, 200, 200, 0.2)" strokeWidth="1" className="dark:stroke-slate-400/20">
         {[...Array(19)].map((_, i) => (
           <motion.line
             key={`vertical-${i}`}
@@ -23,7 +24,8 @@ export const Pattern = () => {
             y2="400"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.4, delay: i * 0.05, ease: "easeOut" }}
+            className="will-change-auto"
           />
         ))}
 
@@ -36,7 +38,8 @@ export const Pattern = () => {
             y2={(i + 1) * 40}
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: i * 0.1 + 2 }}
+            transition={{ duration: 0.4, delay: i * 0.05 + 1, ease: "easeOut" }}
+            className="will-change-auto"
           />
         ))}
       </g>

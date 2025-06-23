@@ -1,11 +1,9 @@
+import PostView from "@app/components/PostModule/PostView";
 import Transition from "@app/components/commons/Transition";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense, lazy } from "react";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
-
-const PostView = lazy(() => import("@app/components/PostModule/PostView"));
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -62,20 +60,13 @@ export default async function Page(props: PageProps) {
   const params = await props.params;
   const { slug } = params;
 
-  try {
-    const post = await getPostBySlug(slug);
-    if (!post) return <h1>Not Found</h1>;
+  const post = await getPostBySlug(slug);
+  if (!post) return <h1>Not Found</h1>;
 
-    return (
-      <Transition>
-        <Suspense fallback={<div>Loading post...</div>}>
-          <PostView post={post} />
-        </Suspense>
-        {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-      </Transition>
-    );
-  } catch (error) {
-    console.error("Failed to fetch post:", error);
-    return <h1>Failed to load post</h1>;
-  }
+  return (
+    <Transition>
+      <PostView post={post} />
+      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+    </Transition>
+  );
 }

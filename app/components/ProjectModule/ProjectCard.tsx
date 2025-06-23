@@ -1,10 +1,10 @@
 "use client";
 
 import BaseCard from "../commons/Card";
-import BaseButton from "../commons/buttons/BaseButton";
 import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
@@ -56,16 +56,16 @@ export default function ProjectCard({
     <div className="flex items-center gap-1">
       {allowUpdateProject && (
         <Tooltip title="Go to project's edit" placement="top">
-          <BaseButton icon={<EditOutlined fontSize="small" />} variants="text" onClick={navigateProjectEdit} />
+          <IconButton size="small" onClick={navigateProjectEdit}>
+            <EditOutlined fontSize="small" />
+          </IconButton>
         </Tooltip>
       )}
       {allowViewTasks && (
         <Tooltip title="Go to project's tasks" placement="top">
-          <BaseButton
-            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-            variants="text"
-            onClick={navigateProjectTasks}
-          />
+          <IconButton size="small" onClick={navigateProjectTasks}>
+            <CheckBoxOutlineBlankIcon fontSize="small" />
+          </IconButton>
         </Tooltip>
       )}
     </div>

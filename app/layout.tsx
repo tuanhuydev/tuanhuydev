@@ -1,4 +1,5 @@
 import Loader from "./components/commons/Loader";
+import ThemeScript from "./components/commons/ThemeScript";
 import { sourceCodeFont } from "./font";
 import "@app/_styles/globals.scss";
 import { GoogleTagManager } from "@next/third-parties/google";
@@ -18,6 +19,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang="en" className={sourceCodeFont.className}>
       <head />
       <body>
+        <ThemeScript />
         <Suspense fallback={<Loader />}>
           <QueryProvider>{children}</QueryProvider>
         </Suspense>
