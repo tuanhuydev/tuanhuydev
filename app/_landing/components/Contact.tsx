@@ -23,42 +23,46 @@ const contactPoints = [
     href: "https://www.linkedin.com/in/tuanhuydev",
   },
 ];
+
 export default function Contact() {
   return (
-    <section id="contact" className="relative px-6 py-16 lg:py-24 text-center rounded-md overflow-hidden">
-      {/* Floating Background Elements */}
-      {/* <motion.div
-        className="absolute top-20 left-10 w-18 h-18 bg-blue-300 rounded-full opacity-20 blur-lg"
-        animate={{ y: [0, -20, 0] }}
-        transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-      /> */}
-      {/* <motion.div
-        className="absolute bottom-20 right-10 w-24 h-24 bg-indigo-300 rounded-full opacity-30 blur-xl"
-        style={{ WebkitBackdropFilter: "blur(20px)", WebkitFilter: "blur(20px)" }}
-        animate={{ y: [0, 30, 0] }}
-        transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-      /> */}
-
+    <section
+      id="contact"
+      className="relative px-6 py-16 lg:py-24 text-center rounded-md overflow-hidden contain-layout">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex flex-col items-center">
+        className="flex flex-col items-center will-change-auto">
         {/* Section Heading */}
         <h2 className="font-bold text-3xl lg:text-4xl tracking-tight text-gray-900 dark:text-white">
           Let&apos;s Connect
         </h2>
 
         {/* Contact Icons */}
-        <div className="flex gap-5 mt-8">
+        <div className="flex gap-5 mt-8 contain-style">
           {contactPoints.map(({ icon, alt, href }) => (
-            <motion.div key={href} whileHover={{ scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
+            <motion.div
+              key={href}
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="will-change-transform">
               <a
                 target="_blank"
                 href={href}
-                className="p-4 w-12 h-12 lg:w-16 lg:h-16 rounded-md flex items-center justify-center bg-white dark:bg-gray-800 shadow-lg transition hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-4 w-12 h-12 lg:w-16 lg:h-16 rounded-md flex items-center justify-center 
+                          bg-white/80 dark:bg-gray-800/80
+                          transition-colors duration-200 ease-out
+                          hover:bg-gray-100/90 dark:hover:bg-gray-700/90
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 aria-label={alt}>
-                <Image src={icon} width={32} height={32} alt={alt} className="brightness-0 dark:invert" />
+                <Image
+                  src={icon}
+                  width={32}
+                  height={32}
+                  alt={alt}
+                  className="brightness-0 dark:invert transition-transform duration-200"
+                />
               </a>
             </motion.div>
           ))}
@@ -68,7 +72,7 @@ export default function Contact() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 flex items-center justify-center gap-3 sm:gap-5 text-gray-600 dark:text-gray-400 text-sm">
+          className="mt-8 flex items-center justify-center gap-3 sm:gap-5 text-sm will-change-auto landing-contact-text">
           {[
             { emoji: "🚀", text: "Code" },
             { emoji: "💡", text: "Design" },
@@ -81,7 +85,7 @@ export default function Contact() {
               transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
               className="flex flex-shrink-0 items-center gap-2">
               <span>{item.emoji}</span>
-              <span>{item.text}</span>
+              <span className="text-gray-600 dark:text-gray-400">{item.text}</span>
             </motion.div>
           ))}
         </motion.div>

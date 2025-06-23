@@ -1,4 +1,6 @@
+import { DATE_FORMAT } from "@lib/commons/constants/base";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
+import { format } from "date-fns";
 
 export const transformTextToDashed = (text: string): string => {
   // clear space
@@ -59,3 +61,11 @@ export const hasPermission = (permissions: Array<any>, criteria: ObjectType) =>
       return permission[key] === criteria[key];
     }),
   );
+
+export const formatDateString = (date: string | Date | null | undefined): string => {
+  if (date === null || date === undefined) {
+    return "-";
+  }
+  const dateInstance = typeof date === "string" ? new Date(date) : date;
+  return format(dateInstance, DATE_FORMAT);
+};

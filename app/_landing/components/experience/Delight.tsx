@@ -39,14 +39,17 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
 
     return () => clearInterval(interval);
   }, [hasMounted, target]);
-
   return (
-    <div className="text-center text-primary dark:text-slate-50 p-3 self-stretch w-[16rem]">
-      <h4 className={`text-sm md:text-xl my-3 font-bold capitalize ${backgroundGradient}`}>
+    <div
+      className="text-center p-3 self-stretch w-[16rem] contain-layout will-change-auto
+                 text-primary dark:text-slate-50">
+      <h4
+        className={`text-sm md:text-xl my-3 font-bold capitalize transition-colors duration-200 ${backgroundGradient}`}>
         &#60;{title}&nbsp;&#47;&#62;
       </h4>
       <div
-        className={`text-2xl md:text-5xl font-semibold text-slate-700 dark:text-slate-300 flex gap-2 justify-center `}>
+        className="text-2xl md:text-5xl font-semibold flex gap-2 justify-center 
+                   text-slate-700 dark:text-slate-300 transition-colors duration-200">
         {count}+
       </div>
     </div>

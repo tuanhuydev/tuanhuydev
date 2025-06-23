@@ -61,10 +61,10 @@ const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
       id: "Home",
     },
     {
-      label: "Workspaces",
+      label: "Apps",
       icon: <WorkspacesOutlineIcon sx={{ fontSize: (theme) => theme.typography.body2 }} />,
-      path: "/dashboard/workspace",
-      id: "Workspace",
+      path: "/dashboard/apps",
+      id: "Apps",
     },
   ];
 

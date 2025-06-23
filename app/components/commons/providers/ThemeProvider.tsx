@@ -50,6 +50,34 @@ const MuiBaseTheme = createTheme({
         },
       },
     },
+    MuiSvgIcon: {
+      defaultProps: {
+        fontSize: "small", // Default icon size
+        sx: {
+          fontSize: "1.125rem", // 16px
+        },
+      },
+    },
+    MuiIconButton: {
+      defaultProps: {
+        size: "small",
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        variant: "outlined",
+        size: "small",
+      },
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+          fontSize: "0.875rem",
+          padding: "0.5rem 0.75rem",
+          lineHeight: "1.25rem",
+          borderRadius: "0.375rem",
+        },
+      },
+    },
     MuiInputBase: {
       defaultProps: {
         size: "small",
@@ -77,6 +105,7 @@ const MuiBaseTheme = createTheme({
         },
       },
     },
+
     MuiSelect: {
       defaultProps: {
         variant: "outlined",
@@ -101,6 +130,7 @@ const MuiBaseTheme = createTheme({
         },
       },
     },
+
     MuiMenuItem: {
       styleOverrides: {
         root: {
