@@ -5,13 +5,14 @@ import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
 import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
 import BaseModal from "@app/components/commons/modals/BaseModal";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { formatDateString } from "@lib/utils/helper";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
@@ -195,7 +196,9 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
       return (
         <Fragment>
           <h3 className="mx-auto my-3 font-medium text-slate-300 text-2xl">There is no sprint</h3>
-          <BaseButton label="Create new sprint" onClick={createNewSprint} />
+          <Button variant="text" onClick={createNewSprint}>
+            Create new sprint
+          </Button>
         </Fragment>
       );
     }
@@ -263,11 +266,9 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
             <b className="text-primary">End:</b> {formatDateString(sprint.endDate)}
           </span>
           <span className="flex gap-2">
-            <BaseButton
-              icon={<EditIcon fontSize="small" />}
-              variants="text"
-              onClick={toggleModal("isEditOpen", true, sprint)}
-            />
+            <IconButton onClick={toggleModal("isEditOpen", true, sprint)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
           </span>
         </div>
       ));
@@ -283,9 +284,17 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
 
   const Prefix = useMemo(() => {
     if (modalState.isEditOpen || modalState.isCreateOpen) {
-      return <BaseButton icon={<ArrowBackIcon fontSize="small" />} variants="text" onClick={goBackManageSprints} />;
+      return (
+        <IconButton onClick={goBackManageSprints}>
+          <ArrowBackIcon fontSize="small" />
+        </IconButton>
+      );
     }
-    return <BaseButton icon={<AddOutlined />} onClick={createNewSprint} />;
+    return (
+      <IconButton onClick={createNewSprint}>
+        <AddOutlined fontSize="small" />
+      </IconButton>
+    );
   }, [createNewSprint, goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);
 
   return (
@@ -293,12 +302,12 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
       <div className="flex justify-between">
         <span className="text-lg font-bold capitalize">sprint</span>
         {sprints.length > 0 && (
-          <BaseButton
-            label="Manage Sprints"
+          <Button
             onClick={toggleModal("isManageOpen", true)}
             className="hover:underline !text-slate-400"
-            variants="text"
-          />
+            variant="text">
+            Manage Sprints
+          </Button>
         )}
       </div>
       <div className="flex-1 flex flex-col justify-center items-center">{CardContent}</div>

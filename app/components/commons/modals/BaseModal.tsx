@@ -1,8 +1,8 @@
 "use client";
 
-import BaseButton from "../buttons/BaseButton";
 import { Modal as MuiBaseModal, ModalProps as MuiBaseModalProps } from "@mui/base/Modal";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import IconButton from "@mui/material/IconButton";
 import React, { forwardRef, PropsWithChildren } from "react";
 
 export interface ConfirmBoxProps extends PropsWithChildren {
@@ -48,7 +48,11 @@ const BaseModal = React.forwardRef(
           <div className="flex justify-between items-center mb-3">
             {prefix && <div className="mr-2">{prefix}</div>}
             {title && <h4 className="text-lg m-0">{title}</h4>}
-            {closable && <BaseButton icon={<CloseOutlined fontSize="small" />} variants="text" onClick={onClose} />}
+            {closable && (
+              <IconButton size="small" onClick={onClose}>
+                <CloseOutlined fontSize="small" />
+              </IconButton>
+            )}
           </div>
           {children && <div className=" mt-0 mb-4">{children}</div>}
         </div>

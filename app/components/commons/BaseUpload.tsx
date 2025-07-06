@@ -1,8 +1,9 @@
 "use client";
 
-import BaseButton from "./buttons/BaseButton";
 import { useGlobal } from "./providers/GlobalProvider";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
 import LogService from "server/services/LogService";
 
@@ -53,24 +54,16 @@ export default function BaseUpload() {
     <div className="flex flex-col bg-slate-50">
       {files.length ? (
         <Fragment>
-          <BaseButton
-            label="Start Upload"
-            disabled={uploading}
-            loading={uploading}
-            onClick={uploadFiles}
-            color="primary"
-          />
+          <Button variant="contained" disabled={uploading} loading={uploading} onClick={uploadFiles}>
+            Start Upload
+          </Button>
           <ul className="list-none p-0 mx-0">
             {Array.from(files).map((file: File) => (
               <li key={file.name} className="flex items-center gap-2">
                 {file.name}
-                <BaseButton
-                  onClick={removeFile(file)}
-                  icon={<CloseOutlined fontSize="small" />}
-                  variants="text"
-                  disabled={uploading}
-                  className="text-red-500"
-                />
+                <IconButton onClick={removeFile(file)} disabled={uploading} sx={{ color: "red" }}>
+                  <CloseOutlined fontSize="small" />
+                </IconButton>
               </li>
             ))}
           </ul>

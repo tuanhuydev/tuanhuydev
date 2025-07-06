@@ -5,7 +5,6 @@ import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useSprintQuery } from "@app/_queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
@@ -13,6 +12,8 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
@@ -78,6 +79,12 @@ const UI_CONSTANTS = {
   },
   TITLE_STYLES: "my-0 mr-3 px-3 py-2 bg-primary text-white text-base truncate",
 } as const;
+
+const IconButtonStyles = {
+  backgroundColor: "primary.main",
+  borderRadius: "6px",
+  "&:hover": { backgroundColor: "primary.dark" },
+};
 
 // Modal State Management
 type ModalAction =
@@ -310,21 +317,21 @@ export default function TaskFormTitle({
         {allowEditTask && (
           <Fragment>
             {isViewMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.EDIT)}
-                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton onClick={toggleMode(TASK_FORM_MODE.EDIT)} sx={IconButtonStyles}>
+                <EditOutlined className="text-slate-50" fontSize="small" />
+              </IconButton>
             )}
             {isEditMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton onClick={toggleMode(TASK_FORM_MODE.VIEW)} sx={IconButtonStyles}>
+                <EditOffOutlined className="text-slate-50" fontSize="small" />
+              </IconButton>
             )}
           </Fragment>
         )}
         {existingTask && <Fragment>{renderMenu}</Fragment>}
-        <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
+        <IconButton onClick={handleClose} sx={IconButtonStyles}>
+          <CloseOutlined className="text-slate-50" fontSize="small" />
+        </IconButton>
       </div>
     );
   }, [renderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
@@ -388,8 +395,12 @@ export default function TaskFormTitle({
           />
 
           <div className="flex gap-3 justify-end mt-5">
-            <BaseButton onClick={toggleModal("moveToSprint", false)} variants="text" label="Cancel" />
-            <BaseButton onClick={handleMoveToSprintWithId} label="Move" />
+            <Button variant="text" onClick={toggleModal("moveToSprint", false)}>
+              Cancel
+            </Button>
+            <Button variant="text" onClick={handleMoveToSprintWithId}>
+              Move
+            </Button>
           </div>
         </BaseModal>
         {config && (

@@ -1,10 +1,10 @@
 "use client";
 
-import BaseButton from "../buttons/BaseButton";
 import BaseInputV2 from "./BaseInputV2";
 import BaseSelectV2 from "./BaseSelectV2";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
 import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import IconButton from "@mui/material/IconButton";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -82,12 +82,9 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
         <div className="flex justify-between items-center w-full">
           <span className="font-semibold text-sm">{headerName}</span>
           {field === columns[0]?.config?.field && (
-            <BaseButton
-              variants="text"
-              disabled={isSubmitting}
-              onClick={addRow}
-              icon={<AddCircleOutlineOutlined fontSize="small" />}
-            />
+            <IconButton size="small" onClick={addRow} disabled={isSubmitting}>
+              <AddCircleOutlineOutlined fontSize="small" />
+            </IconButton>
           )}
         </div>
       );

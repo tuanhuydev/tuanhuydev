@@ -1,6 +1,5 @@
 "use client";
 
-import BaseButton from "../commons/buttons/BaseButton";
 import { useSignOut } from "@app/_queries/authQueries";
 import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import { useCurrentUser } from "@app/_queries/userQueries";
@@ -101,7 +100,9 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
     if (endComponent) return endComponent;
     return (
       <div className="relative">
-        <BaseButton variants="text" onClick={handleClick} icon={<PersonOutlineOutlined fontSize="small" />} />
+        <IconButton onClick={handleClick} size="small">
+          <PersonOutlineOutlined fontSize="small" />
+        </IconButton>
         <Popover
           title={name || email || "User"}
           open={popoverOpen}
