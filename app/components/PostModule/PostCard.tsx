@@ -1,3 +1,5 @@
+"use client";
+
 import BaseCard from "../commons/Card";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
