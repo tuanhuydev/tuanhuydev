@@ -1,3 +1,5 @@
+"use client";
+
 import BaseInput from "./Inputs/BaseInput";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
@@ -10,6 +12,7 @@ export interface PageFilterProps {
   createLabel?: string;
   searchPlaceholder?: string;
   allowCreate?: boolean;
+  value?: string;
 }
 
 export default function PageFilter({
@@ -18,13 +21,15 @@ export default function PageFilter({
   createLabel = "Create",
   searchPlaceholder = "Search",
   allowCreate = false,
+  value = "",
 }: PageFilterProps) {
   return (
     <div className="flex gap-2 items-center mb-6">
       <BaseInput
         onChange={onSearch}
+        value={value}
         placeholder={searchPlaceholder}
-        className="grow mr-2 rounded-sm"
+        className="grow rounded-sm m-2"
         startAdornment={<SearchOutlined fontSize="small" className=" dark:fill-slate-50" />}
       />
       {allowCreate && (
