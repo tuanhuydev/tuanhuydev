@@ -22,8 +22,17 @@ Allow: /
 User-agent: YandexBot
 Allow: /
 
+# Disallow private areas
 Disallow: /dashboard/
 Disallow: /api/
+Disallow: /auth/
+
+# Allow important public pages
+Allow: /posts/
+Allow: /privacy/
+
+# Crawl delay to be respectful
+Crawl-delay: 1
 
 Sitemap: https://www.tuanhuy.dev/sitemap.xml
 Host: https://www.tuanhuy.dev

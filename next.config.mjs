@@ -7,6 +7,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
   transpilePackages: ["@mdxeditor/editor", "date-fns"],
   turbopack: {
@@ -23,6 +24,36 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        // Security and performance headers for all pages
+        source: "/((?!api/).*)",
+        headers: [
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
       {
         // matching all API routes
         source: "/api/:path*",
