@@ -5,7 +5,7 @@ import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import { UrlParams } from "@lib/interfaces/shared";
 import { getPosts } from "@server/actions/blogActions";
-// Line removed as it is unused.
+import { Suspense } from "react";
 
 export default async function Page({ searchParams }: { searchParams: Promise<UrlParams> }) {
   const { search = "" } = await searchParams;
