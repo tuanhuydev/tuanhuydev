@@ -7,7 +7,9 @@ export default async function Page() {
     <PageContainer title="Apps">
       <div className="flex gap-3 flex-wrap">
         <Card className="w-[300px] h-[200px]">Personal Tasks</Card>
-        <Card className="w-[300px] h-[200px]">AI</Card>
+        <Link href="/dashboard/apps/chat">
+          <Card className="w-[300px] h-[200px]">AI</Card>
+        </Link>
         <Link href="/dashboard/apps/budtr">
           <Card className="w-[300px] h-[200px]">Budtr</Card>
         </Link>
