@@ -27,12 +27,23 @@ class MongoPostRepository {
     }
     let query = this.table.find(defaultWhere);
 
+    // Handle sorting
+    let sortOption: ObjectType = { createdAt: "desc" };
+    if ("sortBy" in filter && filter.sortBy) {
+      const sortBy = filter.sortBy as string;
+      const sortOrder = "sortOrder" in filter && filter.sortOrder ? filter.sortOrder : "desc";
+      sortOption = { [sortBy]: sortOrder };
+    }
+
     if ("page" in filter && "pageSize" in filter) {
       const page = Number(filter.page);
       const pageSize = Number(filter.pageSize);
       const skip = (page - 1) * pageSize;
       const limit = pageSize;
-      query.sort({ createdAt: -1 }).skip(skip).limit(limit);
+      query.sort(sortOption).skip(skip).limit(limit);
+    } else {
+      // Apply sorting even without pagination
+      query.sort(sortOption);
     }
 
     return query.toArray();

@@ -5,8 +5,10 @@ import BentoGrid from "@app/components/PostModule/BentoGrid";
 import { getPosts } from "@server/actions/blogActions";
 import React from "react";
 
+export const dynamic = "force-dynamic"; // Force dynamic rendering for this page
+export const revalidate = 3600; // Revalidate every hour
 const Page = async () => {
-  const posts = await getPosts({ published: true });
+  const posts = await getPosts({ published: true, sortBy: "publishedAt", sortOrder: "desc" });
 
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4">
