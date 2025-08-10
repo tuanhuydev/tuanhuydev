@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetch } from "@app/_queries/useSession";
+import { useFetch } from "@features/Auth";
 import {
   BlockTypeSelect,
   BoldItalicUnderlineToggles,

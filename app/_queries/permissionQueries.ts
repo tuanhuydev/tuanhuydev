@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "./queryKeys";
-import { useFetch } from "./useSession";
+import { useFetch } from "@features/Auth";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";

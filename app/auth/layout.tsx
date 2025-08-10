@@ -2,7 +2,9 @@ import GlobalProvider from "@app/components/commons/providers/GlobalProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { Viewport } from "next";
 import dynamic from "next/dynamic";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, Suspense } from "react";
+
+const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"));
 
 export const viewport: Viewport = {
   themeColor: [
@@ -14,7 +16,11 @@ export const viewport: Viewport = {
 export default async function SignInLayout({ children }: PropsWithChildren) {
   return (
     <AppRouterCacheProvider>
-      <GlobalProvider>{children}</GlobalProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ThemeProvider>
+          <GlobalProvider>{children}</GlobalProvider>
+        </ThemeProvider>
+      </Suspense>
     </AppRouterCacheProvider>
   );
 }

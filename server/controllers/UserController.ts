@@ -51,7 +51,7 @@ class UserController implements BaseController {
   }
 
   async store(request: NextRequest, params: any) {
-    const network = Network(request);
+    const network = new Network(request);
     const body = await network.getBody();
     try {
       const { password, permissionIds, roleId, ...restBody }: ObjectType = await this.validateStore(body);
@@ -92,7 +92,7 @@ class UserController implements BaseController {
   }
 
   async getAll(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
 
@@ -104,7 +104,7 @@ class UserController implements BaseController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       const CURRENT_USER_KEY: string = "me";
@@ -126,7 +126,7 @@ class UserController implements BaseController {
   async update(request: NextRequest, { id }: any) {
     const body = await request.json();
     if (!id || !body) throw new BadRequestError();
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const { permissionIds, id, ...restBody }: ObjectType = body;
 
@@ -160,7 +160,7 @@ class UserController implements BaseController {
 
   async delete(request: NextRequest, { id }: any) {
     // if (!id) throw new BadRequestError();
-    // const network = Network(request);
+    // const network = new Network(request);
     // try {
     //   return network.successResponse(deleted);
     // } catch (error) {
@@ -169,7 +169,7 @@ class UserController implements BaseController {
   }
 
   async getUserPermissions(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       let userId: string = id;

@@ -19,7 +19,8 @@
       "@app/*": ["app/*"],
       "@lib/*": ["lib/*"],
       "@server/*": ["server/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@features/*": ["features/*"]
     },
     "plugins": [
       {

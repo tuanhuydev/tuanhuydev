@@ -35,11 +35,6 @@ class Network {
     return new Network(req);
   }
 
-  // Backward compatibility - will be deprecated
-  static makeInstance(req: NextRequest): Network {
-    return new Network(req);
-  }
-
   async getBody(): Promise<any> {
     return this.req.json();
   }
@@ -122,4 +117,4 @@ class Network {
   };
 }
 
-export default Network.makeInstance;
+export default Network;

@@ -20,7 +20,7 @@ export class ProjectController implements BaseController {
   }
 
   async store(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     // TODO: Move this to sharable schemas
     try {
       const schema = z.object({
@@ -65,7 +65,7 @@ export class ProjectController implements BaseController {
   }
 
   async getAll(request: NextRequest, userId?: string) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
       if (userId) params.userId = userId;
@@ -78,7 +78,7 @@ export class ProjectController implements BaseController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       const projectById = await MongoProjectRepository.getProject(id);
@@ -89,7 +89,7 @@ export class ProjectController implements BaseController {
   }
 
   async update(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const body = await network.getBody();
       if (!id || !body) throw new BadRequestError();
@@ -103,7 +103,7 @@ export class ProjectController implements BaseController {
 
   async delete(request: NextRequest, { id }: any) {
     if (!id) throw new BadRequestError();
-    const network = Network(request);
+    const network = new Network(request);
     try {
       // const deleted = await ProjectService.deleteProject(Number(id));
       // return network.successResponse(deleted);
@@ -113,7 +113,7 @@ export class ProjectController implements BaseController {
   }
 
   async getProjectTasks(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     const filter = network.extractSearchParams();
     try {
       if (!id) throw new BadRequestError();
@@ -125,7 +125,7 @@ export class ProjectController implements BaseController {
   }
 
   async getProjectUsers(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const project = await MongoProjectRepository.getProject(id);
       if (!project) throw new NotFoundError("Project not found");
@@ -137,7 +137,7 @@ export class ProjectController implements BaseController {
   }
 
   async getProjectsByUser(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     let userId = id;
     try {
       if (!id) throw new BadRequestError();
@@ -152,7 +152,7 @@ export class ProjectController implements BaseController {
   }
 
   async getActiveSprint(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const sprint = await MongoSprintRepository.getSprints({ projectId: id, active: true });
       if (!sprint) throw new NotFoundError("sprint not found");

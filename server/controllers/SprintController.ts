@@ -14,7 +14,7 @@ export class SprintController {
   }
 
   async getAll(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     const filter = network.extractSearchParams();
     try {
       const sprints = await MongoSprintRepository.getSprints(filter);
@@ -26,7 +26,7 @@ export class SprintController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const sprint = await MongoSprintRepository.getSprint(id);
       return network.successResponse(sprint);
@@ -37,7 +37,7 @@ export class SprintController {
   }
 
   async store(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const body = await network.getBody();
       const schema = z.object({
@@ -60,7 +60,7 @@ export class SprintController {
   }
 
   async update(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const body = await network.getBody();
       const updatedSprint = await MongoSprintRepository.updateSprint(id, body);
@@ -72,7 +72,7 @@ export class SprintController {
   }
 
   async destroy(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       await MongoSprintRepository.deleteSprint(id);
       return network.successResponse({ message: "Sprint deleted" });

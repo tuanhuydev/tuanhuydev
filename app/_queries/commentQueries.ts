@@ -1,4 +1,4 @@
-import { useFetch } from "./useSession";
+import { useFetch } from "@features/Auth";
 import { BASE_URL } from "@lib/commons/constants/base";
 import { CreateCommentDto } from "@server/dto/Comment";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

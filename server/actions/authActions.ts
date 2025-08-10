@@ -6,6 +6,7 @@ import { redirect, RedirectType } from "next/navigation";
 import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
 import AuthService from "server/services/AuthService";
+import logService from "server/services/LogService";
 
 // Cache user permissions for 5 minutes to reduce database load
 const getCachedUserPermissions = unstable_cache(
@@ -37,7 +38,7 @@ export const userPermissionAction = async () => {
     // Use cached version to improve performance
     return await getCachedUserPermissions(userProfile.id);
   } catch (error) {
-    console.log(error);
+    logService.log(error);
     redirect("/auth/sign-in", "replace" as RedirectType);
   }
 };
