@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@app/_components/commons/ThemeToggle";
 import { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
@@ -78,8 +79,12 @@ export default function SignIn() {
 
   return (
     <div
-      className="bg-white dark:bg-slate-950 flex items-center justify-center w-screen h-screen"
+      className="bg-white dark:bg-slate-950 flex items-center justify-center w-screen h-screen relative"
       data-testid="sign-in-page-testid">
+      <div className="absolute top-0 z-10 w-full flex justify-end p-4">
+        <ThemeToggle size="md" />
+      </div>
+
       <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
         <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
         <DynamicFormV2 config={signInFormConfig} onSubmit={submit} />

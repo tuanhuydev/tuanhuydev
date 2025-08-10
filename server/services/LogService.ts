@@ -6,10 +6,16 @@ class LogService {
   static makeInstance() {
     return LogService.#instance ?? new LogService();
   }
-  log(error: string | Error | unknown) {
+
+  log(...args: any[]) {
     if (isDevelopmentEnv) {
-      if (error instanceof Error) return console.error((error as Error).message);
-      return console.log(error);
+      return console.log(...args);
+    }
+  }
+
+  error(...args: any[]) {
+    if (isDevelopmentEnv) {
+      return console.error(...args);
     }
   }
 }

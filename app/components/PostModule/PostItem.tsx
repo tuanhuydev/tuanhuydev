@@ -2,6 +2,7 @@
 
 import { formatDate } from "@app/_utils/helper";
 import Image from "next/image";
+import Link from "next/link";
 
 export interface PostsGridProps {
   posts: ObjectType[];
@@ -13,7 +14,7 @@ export const PostItem: React.FC<{ post: ObjectType }> = ({ post }) => {
   const displayDate = publishedAt ? formatDate(publishedAt) : createdAt ? formatDate(createdAt) : "";
 
   return (
-    <a
+    <Link
       href={`/posts/${slug}`}
       className="block bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 group">
       <div className="relative h-48 overflow-hidden">
@@ -38,6 +39,6 @@ export const PostItem: React.FC<{ post: ObjectType }> = ({ post }) => {
           {title}
         </h3>
       </div>
-    </a>
+    </Link>
   );
 };

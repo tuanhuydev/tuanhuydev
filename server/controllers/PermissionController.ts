@@ -12,7 +12,7 @@ export class PermissionController {
     return PermissionController.#instance ?? new PermissionController();
   }
   async getAll(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const permissions = await MongoPermissionRepository.getPermissions();
       return network.successResponse(permissions);
@@ -22,7 +22,7 @@ export class PermissionController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       let userId = id;

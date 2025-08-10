@@ -64,7 +64,7 @@ class StorageController {
 
   async uploadFile(request: NextRequest, { type }: any) {
     const formData = await request.formData();
-    const network = Network(request);
+    const network = new Network(request);
     try {
       switch (type) {
         case "image":

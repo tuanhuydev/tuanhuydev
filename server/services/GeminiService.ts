@@ -22,14 +22,17 @@ export class GeminiService {
   }
 
   public async generateContent(prompt: string) {
-    return this.client.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const config = {
       config: {
         thinkingConfig: {
-          thinkingBudget: 0,
+          thinkingBudget: 0, // Disable thinking budget for immediate response
         },
       },
+      model: "gemini-2.5-flash",
+    };
+    return this.client.models.generateContent({
+      ...config,
+      contents: prompt,
     });
   }
 }

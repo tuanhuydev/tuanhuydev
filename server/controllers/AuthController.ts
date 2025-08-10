@@ -26,7 +26,7 @@ class AuthController {
   }
 
   async signIn(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!AUTH_URL) throw new BaseError("Auth URL is not defined");
 
@@ -52,8 +52,9 @@ class AuthController {
   }
 
   async signOut(request: NextRequest) {
+    const network = new Network(request);
     (await cookies()).delete("jwt");
-    return Network(request).successResponse({ message: "Sign out successfully" });
+    return network.successResponse({ message: "Sign out successfully" });
   }
 }
 

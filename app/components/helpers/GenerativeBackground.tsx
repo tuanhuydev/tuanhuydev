@@ -1,6 +1,5 @@
 "use client";
 
-import html2canvas from "html2canvas";
 import React, { useState, useRef, useCallback, CSSProperties } from "react";
 
 // --- Helper Functions & Types ---
@@ -311,9 +310,10 @@ const GenerativeBackground: React.FC = () => {
     }));
   };
 
-  const handleDownload = useCallback(() => {
+  const handleDownload = useCallback(async () => {
     const panel = document.getElementById("gradient-preview-panel");
-    if (panel && typeof html2canvas === "function") {
+    if (panel) {
+      const { default: html2canvas } = await import("html2canvas");
       html2canvas(panel, {
         useCORS: true, // Important if any external resources were used (not in this case)
         backgroundColor: null, // Use transparent background for the canvas capture if element is transparent
