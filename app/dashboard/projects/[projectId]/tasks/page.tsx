@@ -32,11 +32,11 @@ export default function Page({ params }: PageProps) {
   const searchTasks: ChangeEventHandler<HTMLInputElement> = (event) => {
     const search = event.target.value;
     queryClient.invalidateQueries({ queryKey: ["projects", projectId, "tasks"], exact: true });
-    setFilter((filter) => {
-      if (search?.length) return { ...filter, search };
-
-      delete filter?.search;
-      return filter;
+    setFilter((prev) => {
+      if (search?.length) return { ...prev, search };
+      const next = { ...prev } as any;
+      delete next.search;
+      return next as FilterType;
     });
   };
 

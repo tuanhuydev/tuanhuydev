@@ -4,78 +4,117 @@ import { NextRequest, NextResponse } from "next/server";
 import qs from "qs";
 import LogService from "server/services/LogService";
 
-class Network {
-  #req: NextRequest;
-  cookie?: string;
+interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 
-  static #instance: Network;
+interface RequestParams {
+  [key: string]: string | number | boolean | null;
+}
+
+interface ParsingConfig {
+  numericKeys?: string[];
+  booleanKeys?: string[];
+  dateKeys?: string[];
+}
+
+// Define ObjectType locally to avoid dependencies
+type ObjectType = Record<string, any>;
+
+class Network {
+  private readonly req: NextRequest;
+  private cookie?: string;
 
   constructor(req: NextRequest) {
-    this.#req = req;
+    this.req = req;
   }
 
-  static makeInstance(req: NextRequest) {
-    if (Network.#instance) {
-      return Network.#instance;
-    }
+  static create(req: NextRequest): Network {
     return new Network(req);
   }
 
   async getBody(): Promise<any> {
-    return this.#req.json();
+    return this.req.json();
   }
 
-  extractSearchParams(): ObjectType {
-    const { searchParams } = new URL(this.#req.url);
+  extractSearchParams(config?: ParsingConfig): RequestParams {
+    const { searchParams } = new URL(this.req.url);
 
-    const params: ObjectType = {};
-    const numbericKeys = ["page", "pageSize"];
-    const booleanKeys = ["active"];
+    const defaultConfig: ParsingConfig = {
+      numericKeys: ["page", "pageSize"],
+      booleanKeys: ["active"],
+      dateKeys: [],
+    };
+
+    const finalConfig = { ...defaultConfig, ...config };
+    const params: RequestParams = {};
     const parsedParams: ObjectType = qs.parse(searchParams.toString()) ?? {};
 
     Object.entries(parsedParams).forEach(([key, values]) => {
-      if (numbericKeys.includes(key)) params[key] = parseInt(values, 10);
-      else if (booleanKeys.includes(key)) params[key] = Boolean(values === "true");
-      else if (values === "null") params[key] = null;
-      else {
-        params[key] = values;
+      if (finalConfig.numericKeys?.includes(key)) {
+        params[key] = parseInt(values as string, 10);
+      } else if (finalConfig.booleanKeys?.includes(key)) {
+        params[key] = Boolean(values === "true");
+      } else if (values === "null") {
+        params[key] = null;
+      } else {
+        params[key] = values as string;
       }
     });
     return params;
   }
 
-  setCookie(key: string, value: any) {
+  setCookie(key: string, value: any): void {
     this.cookie = `${key}=${value}`;
   }
 
-  successResponse(data: any) {
-    let formatedData: any = data;
-    if (Array.isArray(data)) {
-      formatedData = (formatedData as ObjectType[]).map(({ _id, ...restData }: ObjectType) => ({
-        id: _id,
-        ...restData,
-      }));
-    } else if (typeof data === "object" && "_id" in data) {
-      formatedData.id = data["_id"];
-      delete formatedData._id;
+  private transformSingleItem(item: any): any {
+    if (typeof item === "object" && item !== null && "_id" in item) {
+      const { _id, ...rest } = item;
+      return { id: _id, ...rest };
     }
-    const options: ObjectType = {
-      status: 200,
-    };
-    if (this.cookie) {
-      options["Set-Cookie"] = this.cookie;
-    }
-    return new NextResponse(JSON.stringify({ success: true, data: formatedData }), options);
+    return item;
   }
 
-  failResponse = (error: BaseError) => {
+  private transformMongoData<T>(data: T): T {
+    if (Array.isArray(data)) {
+      return data.map((item) => this.transformSingleItem(item)) as T;
+    }
+    return this.transformSingleItem(data);
+  }
+
+  successResponse<T>(data: T): NextResponse {
+    const formattedData = this.transformMongoData(data);
+    const options: Record<string, any> = {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (this.cookie) {
+      options.headers["Set-Cookie"] = this.cookie;
+    }
+
+    const response: ApiResponse<T> = { success: true, data: formattedData };
+    return new NextResponse(JSON.stringify(response), options);
+  }
+
+  failResponse = (error: BaseError): NextResponse => {
     LogService.log(`[Server Error] ${(error as Error)?.message}`);
     const { message, status = HTTP_CODE.INTERNAL_ERROR } = error;
-    const options: ObjectType = { status };
+    const options: Record<string, any> = {
+      status,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-    const dataString = JSON.stringify({ success: false, error: message });
-    return new NextResponse(dataString, options);
+    const response: ApiResponse = { success: false, error: message };
+    return new NextResponse(JSON.stringify(response), options);
   };
 }
 
-export default Network.makeInstance;
+export default Network;

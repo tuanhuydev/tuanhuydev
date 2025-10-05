@@ -2,6 +2,7 @@
 
 import BaseImage from "../commons/BaseImage";
 import WithCopy from "../commons/hocs/WithCopy";
+import MarkdownRenderer from "@app/components/commons/MarkdownRenderer";
 import { sourceCodeFont } from "@app/font";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
@@ -9,11 +10,6 @@ import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
-import Markdown from "react-markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { darcula } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
 
 // Optimized CSS variables and classes for better inheritance
 const elementClasses = "mx-0 my-1";
@@ -82,85 +78,7 @@ const PostView = memo(({ post }: PostViewProps) => {
       {/* Main content area */}
       <div className="col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none text-primary dark:text-slate-50 contain-layout">
         <div className={`markdown-content ${baseTextSizes}`}>
-          <Markdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              code(props) {
-                const { children, className, node, ...rest } = props;
-                const match = /language-(\w+)/.exec(className as string);
-                if (!match) {
-                  return (
-                    <code {...rest} className={`rounded-md ${className}`}>
-                      {children}
-                    </code>
-                  );
-                }
-                const extension = (match[1] as string) ?? "txt";
-
-                return match ? (
-                  <SyntaxHighlighter
-                    {...rest}
-                    PreTag="div"
-                    showLineNumbers
-                    language={language[extension] as string}
-                    className="rounded-md"
-                    ref={null}
-                    style={darcula}>
-                    {children as string}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code {...rest} className={`rounded-md ${className}`}>
-                    {children}
-                  </code>
-                );
-              },
-              img({ src }) {
-                return (
-                  <div className="w-full h-80 relative">
-                    <Image src={src as string} alt="image" fill className="object-cover rounded-md w-full" />
-                  </div>
-                );
-              },
-              p({ node, ...rest }) {
-                return <p {...rest} className={elementClasses} />;
-              },
-              li({ node, ...rest }) {
-                return <li {...rest} className={elementClasses} />;
-              },
-              h1({ node, ...rest }) {
-                return <h1 {...rest} className={`${elementClasses} text-2xl md:text-3xl lg:text-4xl font-bold`} />;
-              },
-              h2({ node, ...rest }) {
-                return <h2 {...rest} className={`${elementClasses} text-xl md:text-2xl lg:text-3xl font-semibold`} />;
-              },
-              h3({ node, ...rest }) {
-                return <h3 {...rest} className={`${elementClasses} text-lg md:text-xl lg:text-2xl font-semibold`} />;
-              },
-              h4({ node, ...rest }) {
-                return <h4 {...rest} className={`${elementClasses} text-base md:text-lg lg:text-xl font-medium`} />;
-              },
-              h5({ node, ...rest }) {
-                return <h5 {...rest} className={`${elementClasses} text-base lg:text-lg font-medium`} />;
-              },
-              h6({ node, ...rest }) {
-                return <h6 {...rest} className={`${elementClasses} text-base font-medium`} />;
-              },
-              a({ node, ...rest }) {
-                return (
-                  <a
-                    {...rest}
-                    target="_blank"
-                    className="mx-0 my-1 !text-blue-600 dark:!text-blue-400 hover:underline transition-colors duration-200"
-                  />
-                );
-              },
-              pre({ node, ...rest }) {
-                return <pre {...rest} className="rounded-md overflow-auto text-xs lg:text-base will-change-scroll" />;
-              },
-            }}>
-            {post.content}
-          </Markdown>
+          <MarkdownRenderer content={post.content} />
         </div>
       </div>
     </div>

@@ -17,6 +17,10 @@ class MongoService {
     return this.mongoClient.db(this.database);
   }
 
+  public getClient(): mongoDB.MongoClient {
+    return this.mongoClient;
+  }
+
   public setDatabase(database: string) {
     this.database = database;
   }

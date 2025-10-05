@@ -13,7 +13,7 @@ export class CommentController {
   }
 
   async getAll(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       return network.successResponse([]);
     } catch (error) {
@@ -22,7 +22,7 @@ export class CommentController {
   }
 
   async getCommentsByTaskId(request: NextRequest, params: { taskId: string }) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const { taskId } = params;
       if (!taskId) throw new BaseError("Task ID is required");
@@ -34,7 +34,7 @@ export class CommentController {
   }
 
   async createTaskComment(request: NextRequest, params: { taskId: string }) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const { taskId } = params;
       if (!taskId) throw new BaseError("Task ID is required");
