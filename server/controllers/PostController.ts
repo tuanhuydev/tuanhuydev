@@ -32,7 +32,7 @@ export class PostController implements BaseController {
   }
 
   async store(request: NextRequest, params: ObjectType) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const { assets = [], ...restBody } = await network.getBody();
       const schema = z.object({
@@ -58,7 +58,7 @@ export class PostController implements BaseController {
   }
 
   async getAll(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
       const posts = await MongoPostRepository.getPosts(params);
@@ -69,7 +69,7 @@ export class PostController implements BaseController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       const postById = await MongoPostRepository.getPost(id);
@@ -86,7 +86,7 @@ export class PostController implements BaseController {
     }
     if (!id || !body) throw new BadRequestError();
 
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const updated = await MongoPostRepository.updatePost(id, body);
       return network.successResponse(updated);
@@ -97,7 +97,7 @@ export class PostController implements BaseController {
 
   async delete(request: NextRequest, { id }: any) {
     if (!id) throw new BadRequestError();
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const deleted = await MongoPostRepository.deletePost(id);
       return network.successResponse(deleted);

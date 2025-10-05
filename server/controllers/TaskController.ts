@@ -18,7 +18,7 @@ export class TaskController implements BaseController {
   }
 
   async store(request: NextRequest) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const schema = z.object({
         title: z.string(),
@@ -46,7 +46,7 @@ export class TaskController implements BaseController {
   }
 
   async getAll(request: NextRequest, userId?: string) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const params: ObjectType = network.extractSearchParams();
       if (userId) params.userId = userId;
@@ -70,7 +70,7 @@ export class TaskController implements BaseController {
   }
 
   async getOne(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
 
@@ -82,7 +82,7 @@ export class TaskController implements BaseController {
   }
 
   async update(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const body = await network.getBody();
       if (!id || !body) throw new BadRequestError();
@@ -97,7 +97,7 @@ export class TaskController implements BaseController {
 
   async delete(request: NextRequest, { id }: any) {
     if (!id) throw new BadRequestError();
-    const network = Network(request);
+    const network = new Network(request);
     try {
       const deleted = await MongoTaskRepository.deleteTask(id);
       return network.successResponse(deleted);
@@ -107,7 +107,7 @@ export class TaskController implements BaseController {
   }
 
   async getSubTasks(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
 

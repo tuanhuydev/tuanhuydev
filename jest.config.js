@@ -14,6 +14,7 @@ const customJestConfig = {
     "^@shared(.*)$": "<rootDir>/lib/shared/$1",
     "^@public(.*)$": "<rootDir>/public/$1",
     "^@app/(.*)$": "<rootDir>/app/$1",
+    "^@server(.*)$": "<rootDir>/server/$1",
   },
   modulePathIgnorePatterns: ["<rootDir>/build/", "<rootDir>/.history/"],
   testEnvironment: "jest-environment-jsdom",

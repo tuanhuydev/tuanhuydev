@@ -70,17 +70,6 @@
     "plaintext": false,
     "markdown": false
   },
-  "github.copilot.chat.welcomeMessage": "always",
   "github.copilot.chat.localeOverride": "en",
-  "github.copilot.editor.enableAutoCompletions": true,
-  "github.copilot.editor.enableCodeActions": true,
-  "github.copilot.chat.experimental.codeGeneration.instructions": [
-    "Read .vscode/copilot-context.md for comprehensive project context and established patterns",
-    "Use withSearchFilter HOC pattern for all search/filter components with URL synchronization",
-    "Follow Next.js 15+ app router with proper server/client component boundaries and async server components",
-    "Implement debounced search using useDebounce utility with 500ms delay for optimal performance",
-    "Use FormV2 system for dynamic forms, React Query with createStableQueryKey for stable caching",
-    "Apply Material-UI v7 + TailwindCSS styling, maintain TypeScript safety and run linting after changes",
-    "Use Repository pattern with MongoDB, implement permission-based access control with allowCreate/allowEdit props"
-  ]
+  "github.copilot.editor.enableCodeActions": true
 }

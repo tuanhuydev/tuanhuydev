@@ -11,6 +11,10 @@ export const Footer = () => {
         <a href="/privacy" className="hover:underline text-slate-900 dark:text-slate-300">
           Privacy Policy
         </a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="/support" className="hover:underline text-slate-900 dark:text-slate-300">
+          Support Me
+        </a>
       </div>
       <div className="text-slate-900 dark:text-slate-300">&#128296; with &#128149; and &#x1F375;</div>
     </footer>

@@ -28,7 +28,7 @@ type SelectOptionType = {
 interface Timestamps {
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
 }
 
 interface Project extends Timestamps {
@@ -40,9 +40,5 @@ interface Project extends Timestamps {
   endDate: Date;
   type: ProjectType;
   status: ProjectStatus;
-  users: Array<User["id"]>;
-}
-
-interface User extends Timestamps {
-  id: string;
+  users: Array<string>;
 }

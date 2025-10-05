@@ -38,7 +38,7 @@ const BaseImage = ({
           quality={quality}
           priority={priority}
           sizes={sizes}
-          blurDataURL={src}
+          placeholder="empty"
           onError={() => setHasError(true)}
         />
       ) : (

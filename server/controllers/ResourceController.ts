@@ -13,7 +13,7 @@ export class ResourceController {
   constructor() {}
 
   async getResource(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       // if (!id) throw new BadRequestError();
       // const resourceById = id === "me";
@@ -39,7 +39,7 @@ export class ResourceController {
   }
 
   async getResourcesByPermission(request: NextRequest, { id }: any) {
-    const network = Network(request);
+    const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
       // const rawResult = await prismaClient.resourcePermission.findMany({
@@ -60,7 +60,7 @@ export class ResourceController {
   }
 
   async getResources(request: NextRequest) {
-    // const network = Network(request);
+    // const network = new Network(request);
     // try {
     //   const resources = await prismaClient.resource.findMany();
     //   return network.successResponse(resources);
