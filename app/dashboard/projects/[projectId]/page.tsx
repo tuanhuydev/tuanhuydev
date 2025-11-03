@@ -3,10 +3,10 @@
 import { useProjectQuery } from "@app/_queries/projectQueries";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { SprintCard } from "@app/components/ProjectModule/ProjectDetail/SprintCard";
-import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
 import WithCopy from "@app/components/commons/hocs/WithCopy";
 import ShareOutlined from "@mui/icons-material/ShareOutlined";
+import { Typography } from "@mui/material";
 import { format, formatDistanceToNow } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { use, useMemo } from "react";
@@ -57,12 +57,16 @@ export default function Page({ params }: PageProps) {
           </div>
           {clientName && (
             <div className="mb-3">
-              <BaseLabel>Client:&nbsp;</BaseLabel>
+              <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem]">
+                Client:&nbsp;
+              </Typography>
               <p className="text-sm m-0 p-0 inline">{clientName}</p>
             </div>
           )}
           <div className="line-clamp-6">
-            <BaseLabel>Description:&nbsp;</BaseLabel>
+            <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem]">
+              Description:&nbsp;
+            </Typography>
             <p className="text-sm m-0 p-0 inline">{description}</p>
           </div>
         </Card>
@@ -84,11 +88,15 @@ export default function Page({ params }: PageProps) {
             <p className="text-xl font-medium capitalize">{TitleByPercent}</p>
             <div className="flex flex-wrap justify-between w-full">
               <span className="text-xs flex-shrink-0">
-                <BaseLabel>Start Date:&nbsp;</BaseLabel>
+                <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem]">
+                  Start Date:&nbsp;
+                </Typography>
                 {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
               </span>
               <span className="text-xs flex-shrink-0">
-                <BaseLabel>End Date:&nbsp;</BaseLabel>
+                <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem]">
+                  End Date:&nbsp;
+                </Typography>
                 {endDate ? format(new Date(endDate), DATE_FORMAT) : "-"}
               </span>
             </div>

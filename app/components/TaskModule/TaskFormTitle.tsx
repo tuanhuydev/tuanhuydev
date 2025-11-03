@@ -1,26 +1,36 @@
 "use client";
 
 import DynamicFormV2, { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
-import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useSprintQuery } from "@app/_queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
+import MoreVert from "@mui/icons-material/MoreVert";
 import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  IconButton,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import { Button } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import LogService from "server/services/LogService";
 
 // Replace dynamic imports with React lazy
-const BaseMenu = lazy(() => import("@app/components/commons/BaseMenu"));
-const BaseModal = lazy(() => import("@app/components/commons/modals/BaseModal"));
 const WithCopy = lazy(() => import("@app/components/commons/hocs/WithCopy"));
 const ConfirmBox = lazy(() => import("@app/components/commons/modals/ConfirmBox"));
 
@@ -229,6 +239,7 @@ export default function TaskFormTitle({
 
   // States
   const [sprintIdToUpdate, setSprintIdToUpdate] = useState<string>("");
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   // Task Actions
   const handleCloseCallback = useCallback(() => onClose(false), [onClose]);
@@ -300,7 +311,40 @@ export default function TaskFormTitle({
         });
       }
     }
-    return <BaseMenu items={items} />;
+    const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+      setMenuAnchorEl(null);
+    };
+
+    const handleItemClick = (onClick: () => void) => {
+      onClick();
+      handleMenuClose();
+    };
+
+    return (
+      <div>
+        <IconButton
+          onClick={handleMenuClick}
+          size="small"
+          className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-600">
+          <MoreVert className="!text-lg text-slate-50" fontSize="small"/>
+        </IconButton>
+        <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
+          {items.map((item, index) => (
+            <MenuItem
+              key={`${item.label}-${index}`}
+              onClick={() => handleItemClick(item.onClick)}
+              className="flex items-center px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-600">
+              {item.icon && <span className="mr-2 flex items-center text-primary dark:text-slate-50">{item.icon}</span>}
+              {item.label}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+    );
   }, [allowSubTask, config, task?.parentId, toggleModal]);
 
   const renderHeaderExtra = useMemo(() => {
@@ -310,21 +354,21 @@ export default function TaskFormTitle({
         {allowEditTask && (
           <Fragment>
             {isViewMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.EDIT)}
-                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton onClick={toggleMode(TASK_FORM_MODE.EDIT)}>
+                <EditOutlined className="!text-lg text-slate-50" fontSize="small" />
+              </IconButton>
             )}
             {isEditMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <IconButton onClick={toggleMode(TASK_FORM_MODE.VIEW)}>
+                <EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />
+              </IconButton>
             )}
           </Fragment>
         )}
         {existingTask && <Fragment>{renderMenu}</Fragment>}
-        <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
+        <IconButton onClick={handleClose}>
+          <CloseOutlined className="!text-lg text-white" />
+        </IconButton>
       </div>
     );
   }, [renderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
@@ -367,42 +411,53 @@ export default function TaskFormTitle({
           onConfirm={handleConvertToTask}
         />
 
-        <BaseModal
-          className={UI_CONSTANTS.MODAL_WIDTHS.MOVE_TO_SPRINT}
-          title="Move to sprint"
-          closable
-          open={modalsVisible.moveToSprint}
-          onClose={toggleModal("moveToSprint", false)}>
-          <BaseSelect
-            value={sprintIdToUpdate}
-            options={{
-              className: "w-full",
-              placeholder: "Select sprint",
-              options: projectSprints.map((sprint: Sprint) => ({
-                label: sprint.name,
-                value: sprint.id,
-              })),
-            }}
-            onChange={(sprintId: string) => setSprintIdToUpdate(sprintId)}
-            keyProp="sprint"
-          />
-
-          <div className="flex gap-3 justify-end mt-5">
-            <BaseButton onClick={toggleModal("moveToSprint", false)} variants="text" label="Cancel" />
-            <BaseButton onClick={handleMoveToSprintWithId} label="Move" />
-          </div>
-        </BaseModal>
+        <Dialog open={modalsVisible.moveToSprint} onClose={toggleModal("moveToSprint", false)} maxWidth="sm" fullWidth>
+          <DialogTitle>
+            Move to sprint
+            <IconButton onClick={toggleModal("moveToSprint", false)} sx={{ position: "absolute", right: 8, top: 8 }}>
+              <CloseOutlined />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth sx={{ mt: 1 }}>
+              <InputLabel>Select sprint</InputLabel>
+              <Select
+                value={sprintIdToUpdate}
+                label="Select sprint"
+                onChange={(event) => setSprintIdToUpdate(event.target.value as string)}>
+                {projectSprints.map((sprint: Sprint) => (
+                  <MenuItem key={sprint.id} value={sprint.id}>
+                    {sprint.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={toggleModal("moveToSprint", false)} variant="text">
+              Cancel
+            </Button>
+            <Button onClick={handleMoveToSprintWithId} variant="contained">
+              Move
+            </Button>
+          </DialogActions>
+        </Dialog>
         {config && (
-          <BaseModal
-            className={UI_CONSTANTS.MODAL_WIDTHS.CREATE_SUB_TASK}
-            title="Create sub-task"
-            closable
+          <Dialog
             open={modalsVisible.createSubTask}
-            onClose={toggleModal("createSubTask", false)}>
-            <div className={UI_CONSTANTS.MODAL_WIDTHS.SUB_TASK_FORM_HEIGHT + " overflow-auto"}>
+            onClose={toggleModal("createSubTask", false)}
+            maxWidth="md"
+            fullWidth>
+            <DialogTitle>
+              Create sub-task
+              <IconButton onClick={toggleModal("createSubTask", false)} sx={{ position: "absolute", right: 8, top: 8 }}>
+                <CloseOutlined />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent sx={{ minHeight: "400px", overflow: "auto" }}>
               <DynamicFormV2 config={config} onSubmit={handleCreateSubTaskWithModal} />
-            </div>
-          </BaseModal>
+            </DialogContent>
+          </Dialog>
         )}
       </Suspense>
     </div>

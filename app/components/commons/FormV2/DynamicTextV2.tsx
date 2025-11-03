@@ -1,7 +1,6 @@
 "use client";
 
-import BaseInputV2 from "./BaseInputV2";
-import BaseTextareaV2 from "./BaseTextareaV2";
+import { TextField } from "@mui/material";
 import { Ref, forwardRef, memo } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
@@ -41,26 +40,38 @@ const DynamicTextV2 = memo(
     let element;
     switch (type) {
       case "password":
-        element = <BaseInputV2 key={keyProp} {...subElementProps} type="password" />;
+        element = (
+          <TextField key={keyProp} {...subElementProps} type="password" variant="outlined" size="small" fullWidth />
+        );
         break;
       case "email":
-        element = <BaseInputV2 key={keyProp} {...subElementProps} type="email" />;
+        element = (
+          <TextField key={keyProp} {...subElementProps} type="email" variant="outlined" size="small" fullWidth />
+        );
         break;
       case "number":
-        element = <BaseInputV2 key={keyProp} {...subElementProps} type="number" />;
+        element = (
+          <TextField key={keyProp} {...subElementProps} type="number" variant="outlined" size="small" fullWidth />
+        );
         break;
       case "textarea":
         element = (
-          <BaseTextareaV2
+          <TextField
             key={keyProp}
             {...subElementProps}
-            minRows={options.rows || 4}
+            multiline
+            rows={options.rows || 4}
             placeholder={options.placeholder || "Enter text..."}
+            variant="outlined"
+            size="small"
+            fullWidth
           />
         );
         break;
       default:
-        element = <BaseInputV2 key={keyProp} {...subElementProps} type="text" />;
+        element = (
+          <TextField key={keyProp} {...subElementProps} type="text" variant="outlined" size="small" fullWidth />
+        );
         break;
     }
 

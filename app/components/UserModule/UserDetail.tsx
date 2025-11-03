@@ -5,10 +5,13 @@ import { useProjectsQuery } from "@app/_queries/projectQueries";
 import { useCreateUser, useUpdateUserDetail } from "@app/_queries/userQueries";
 import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import { DRAWER_MODE } from "@app/components/commons/drawers";
-import BaseDrawerHeader from "@app/components/commons/drawers/BaseDrawerHeader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
+import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
+import EditOutlined from "@mui/icons-material/EditOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import { Avatar } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { format } from "date-fns";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -293,15 +296,42 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
     );
   }, [mode, submit, tableUserPermissions, user, userFormConfig]);
 
+  const IconButtonStyles = {
+    backgroundColor: "primary.main",
+    borderRadius: "25%",
+    "&:hover": {
+      backgroundColor: "primary.dark",
+    },
+  };
+
   return (
     <div className="flex flex-col h-full gap-3">
-      <BaseDrawerHeader
-        mode={mode}
-        title={title}
-        onClose={onClose}
-        editable={editable}
-        onToggle={(mode) => setMode(mode as DRAWER_MODE)}
-      />
+      <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
+        <h1 className="my-0 mr-3 px-3 py-2 bg-primary text-white text-base">{title}</h1>
+        <div className="px-2 flex gap-2 items-center relative">
+          {editable && (
+            <>
+              {mode === DRAWER_MODE.VIEW && (
+                <IconButton sx={IconButtonStyles} size="small" onClick={() => setMode(DRAWER_MODE.EDIT)}>
+                  <EditOutlined className="text-slate-50" />
+                </IconButton>
+              )}
+              {mode === DRAWER_MODE.EDIT && (
+                <IconButton
+                  size="small"
+                  sx={IconButtonStyles}
+                  onClick={() => setMode(DRAWER_MODE.VIEW)}
+                  color="primary">
+                  <EditOffOutlined className="text-slate-50" />
+                </IconButton>
+              )}
+            </>
+          )}
+          <IconButton size="small" sx={IconButtonStyles} onClick={onClose} color="primary">
+            <CloseOutlined className="text-slate-50" />
+          </IconButton>
+        </div>
+      </div>
       <div className="px-1">{DrawerContent}</div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import BaseSelectV2 from "./BaseSelectV2";
+import { Box, Chip, FormControl, FormHelperText, MenuItem, OutlinedInput, Select } from "@mui/material";
 import { useEffect, useState, memo } from "react";
 import { useController } from "react-hook-form";
 
@@ -45,21 +45,66 @@ const DynamicSelectV2 = memo(function DynamicSelectV2({
     }
   }, [defaultOption, staticOptions]);
 
+  const isMultiple = fieldOptions.mode === "multiple";
+
+  const handleChange = (event: any) => {
+    const value = event.target.value;
+    onChange(isMultiple ? (typeof value === "string" ? value.split(",") : value) : value);
+  };
+
+  const renderValue = (selected: any) => {
+    if (isMultiple && Array.isArray(selected)) {
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+          {selected.map((val) => {
+            const option = options.find((opt) => opt.value === val);
+            return (
+              <Chip
+                key={val}
+                label={option?.label || val}
+                size="small"
+                sx={{
+                  height: "1.5rem",
+                  "& .MuiChip-label": { fontSize: "0.75rem" },
+                }}
+              />
+            );
+          })}
+        </Box>
+      );
+    }
+
+    if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+      return <span style={{ color: "rgb(148, 163, 184)" }}>{placeholder}</span>;
+    }
+
+    const option = options.find((opt) => opt.value === selected);
+    return option?.label || selected;
+  };
+
   return (
     <div className={`p-2 self-stretch ${className}`}>
-      <BaseSelectV2
-        keyProp={keyProp}
-        value={field.value}
-        onChange={onChange}
-        options={{
-          ...fieldOptions,
-          options,
-        }}
-        error={invalid ? error?.message : undefined}
-        isSubmitting={isSubmitting}
-        placeholder={placeholder}
-        {...restProps}
-      />
+      <FormControl fullWidth size="small" error={invalid} disabled={isSubmitting}>
+        <Select
+          key={keyProp}
+          value={isMultiple ? (Array.isArray(field.value) ? field.value : []) : field.value || ""}
+          onChange={handleChange}
+          multiple={isMultiple}
+          displayEmpty
+          renderValue={renderValue}
+          input={<OutlinedInput />}>
+          {options.map((option: SelectOption) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      {invalid && error && (
+        <FormHelperText error={invalid} sx={{ margin: "0.25rem 0.875rem" }}>
+          {error?.message}
+        </FormHelperText>
+      )}
     </div>
   );
 });

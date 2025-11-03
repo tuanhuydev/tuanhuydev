@@ -1,5 +1,4 @@
-import BaseModal from "./BaseModal";
-import Button from "@mui/material/Button";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { PropsWithChildren } from "react";
 
 export interface ConfirmBoxProps extends PropsWithChildren {
@@ -33,14 +32,17 @@ export default function ConfirmBox({
   };
 
   return (
-    <BaseModal open={open} onClose={onClose} title={title}>
-      {description && <p className=" mt-0 mb-4">{description}</p>}
-      <div className="flex gap-2 justify-end w-full self-end">
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      {title && <DialogTitle>{title}</DialogTitle>}
+      <DialogContent>{description && <p className="mt-0 mb-4">{description}</p>}</DialogContent>
+      <DialogActions>
         <Button variant="outlined" onClick={cancel}>
           {cancelLabel}
         </Button>
-        <Button onClick={confirm}>{confirmLabel}</Button>
-      </div>
-    </BaseModal>
+        <Button variant="contained" onClick={confirm}>
+          {confirmLabel}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

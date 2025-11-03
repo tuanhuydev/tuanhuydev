@@ -1,7 +1,7 @@
 "use client";
 
-import BaseDatePickerV2 from "./BaseDatePickerV2";
 import { FormHelperText } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import { forwardRef, memo, Ref } from "react";
 import { useController, UseControllerProps } from "react-hook-form";
 
@@ -31,14 +31,20 @@ export const DynamicDatePickerV2 = memo(
     return (
       <div className={`p-2 self-stretch ${className}`}>
         <div className="self-stretch">
-          <BaseDatePickerV2
+          <DatePicker
             inputRef={ref}
             key={keyProp}
-            value={value}
+            value={value || null}
             disabled={isSubmitting || options?.disabled}
             onChange={handleChange}
-            placeholder={options?.placeholder || "Select date"}
-            error={invalid}
+            slotProps={{
+              textField: {
+                placeholder: options?.placeholder || "Select date",
+                size: "small",
+                fullWidth: true,
+                error: invalid,
+              },
+            }}
             {...restField}
           />
           {invalid && error?.message && (

@@ -393,8 +393,7 @@ const AdvancedFormExample: React.FC = () => {
                     fields: fieldGroups,
                     setForm: handleFormChange,
                     submitProps: {
-                      label: "Create Project",
-                      variants: "outline",
+                      variant: "outlined",
                       color: "primary",
                     },
                   }}

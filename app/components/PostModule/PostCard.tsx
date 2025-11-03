@@ -1,6 +1,6 @@
 "use client";
 
-import BaseCard from "../commons/Card";
+import Card from "../commons/Card";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
   }, [publishedAt]);
 
   return (
-    <BaseCard
+    <Card
       title={title}
       className="w-[18rem]"
       imageSrc={thumbnail as string}
@@ -48,6 +48,6 @@ export default function PostCard({ post, actions }: PostCardProps) {
         {Status}
       </div>
       {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}
-    </BaseCard>
+    </Card>
   );
 }

@@ -7,7 +7,7 @@ import { useMutateTaskComment, useTaskComment } from "@app/_queries/commentQueri
 import { useSubTasks } from "@app/_queries/taskQueries";
 import { TaskStatus, TaskStatusEnum } from "@app/_utils/constants";
 import Badge from "@app/components/commons/Badge";
-import BaseLabel from "@app/components/commons/BaseLabel";
+import { Typography } from "@mui/material";
 import { CreateCommentDto } from "@server/dto/Comment";
 import { Comment } from "@server/models/Comment";
 import { EMPTY_STRING } from "lib/commons/constants/base";
@@ -46,38 +46,50 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
       <div className="grid grid-cols-2 gap-3 mb-4">
         {status && (
           <div className="flex items-center gap-3">
-            <BaseLabel className="w-[72px]">Status:</BaseLabel>
+            <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+              Status:
+            </Typography>
             <Badge value={taskStatus.label} className="text-sm" color={taskStatus.color} />
           </div>
         )}
         {task?.storyPoint && (
           <div className="flex items-center gap-3">
-            <BaseLabel className="w-[72px]">Estimation:</BaseLabel>
+            <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+              Estimation:
+            </Typography>
             {task?.storyPoint}
           </div>
         )}
         {assignee && (
           <div className="flex items-center gap-3">
-            <BaseLabel className="w-[72px]">Assignee</BaseLabel>
+            <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+              Assignee
+            </Typography>
             {assignee.label}
           </div>
         )}
         {sprint && (
           <div className="flex items-center gap-3">
-            <BaseLabel className="w-[72px]">Sprint:</BaseLabel>
+            <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+              Sprint:
+            </Typography>
             {sprint.name}
           </div>
         )}
       </div>
       <div className="grow mb-3">
-        <BaseLabel>Description:</BaseLabel>
+        <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem]">
+          Description:
+        </Typography>
         <Suspense fallback={<div>Loading...</div>}>
           <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
         </Suspense>
       </div>
       {subTasks.length > 0 && (
         <div className="flex gap-3 w-full">
-          <BaseLabel className="w-[72px]">Sub Tasks:</BaseLabel>
+          <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+            Sub Tasks:
+          </Typography>
           <div className="grow h-30 overflow-auto">
             {subTasks.map((subTask: ObjectType) => (
               <TaskRow key={subTask.id} task={subTask} onSelect={selectSubTask(subTask)} active={false} />
@@ -86,7 +98,9 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
         </div>
       )}
       <div className="flex flex-col justify-end">
-        <BaseLabel className="w-[72px]">Comments:</BaseLabel>
+        <Typography variant="caption" className="text-slate-400 capitalize min-w-[3rem] w-[72px]">
+          Comments:
+        </Typography>
         <div className="grow max-h-56 min-h-6 overflow-auto">
           {(comments as Comment[]).map((comment: Comment) => (
             <CommentRow key={String(comment.id)} comment={comment} />

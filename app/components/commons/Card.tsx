@@ -1,7 +1,5 @@
-"use client";
-
-import BaseImage from "./BaseImage";
 import Skeleton from "@mui/material/Skeleton";
+import Image from "next/image";
 import React, { Fragment, PropsWithChildren } from "react";
 
 export interface CardProps extends PropsWithChildren {
@@ -32,9 +30,9 @@ export default function Card({
     <div
       className={`p-5 bg-white dark:bg-slate-800 rounded-md border border-solid border-slate-200 hover:border-slate-500 dark:border-transparent dark:hover:border-slate-400 cursor-pointer transition-all duration-150 ${className}`}
       onClick={onClick}>
-      {hasImage && (
+      {hasImage && imageSrc && (
         <div className="relative aspect-[3/2] rounded-sm mb-3">
-          <BaseImage src={imageSrc} alt="Image" fill className="rounded-md" />
+          <Image src={imageSrc} alt="Image" fill className="rounded-md" />
         </div>
       )}
       {loading ? (

@@ -6,12 +6,12 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Empty from "@app/components/commons/Empty";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
+import Drawer from "@mui/material/Drawer";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChangeEvent, Suspense, lazy, useCallback, useRef, useState } from "react";
 
 // Replace dynamic imports with React lazy
 const UserDetail = lazy(() => import("@app/components/UserModule/UserDetail"));
-const BaseDrawer = lazy(() => import("@app/components/commons/drawers/BaseDrawer"));
 const UserRow = lazy(() => import("@app/components/UserModule/UserRow"));
 
 export type RecordMode = "VIEW" | "EDIT";
@@ -115,9 +115,19 @@ export default function Page() {
       </div>
 
       <Suspense fallback={<Loader />}>
-        <BaseDrawer open={openDrawer} onClose={closeDrawer}>
+        <Drawer
+          anchor="right"
+          slotProps={{
+            paper: {
+              classes: {
+                root: "w-4/5 lg:w-[40rem]",
+              },
+            },
+          }}
+          open={openDrawer}
+          onClose={closeDrawer}>
           <UserDetail user={selectedUser} onClose={closeDrawer} />
-        </BaseDrawer>
+        </Drawer>
       </Suspense>
     </PageContainer>
   );

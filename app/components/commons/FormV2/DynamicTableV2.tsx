@@ -1,10 +1,8 @@
 "use client";
 
-import BaseButton from "../buttons/BaseButton";
-import BaseInputV2 from "./BaseInputV2";
-import BaseSelectV2 from "./BaseSelectV2";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
 import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import { Button, FormControl, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -82,12 +80,9 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
         <div className="flex justify-between items-center w-full">
           <span className="font-semibold text-sm">{headerName}</span>
           {field === columns[0]?.config?.field && (
-            <BaseButton
-              variants="text"
-              disabled={isSubmitting}
-              onClick={addRow}
-              icon={<AddCircleOutlineOutlined fontSize="small" />}
-            />
+            <Button variant="text" disabled={isSubmitting} onClick={addRow}>
+              <AddCircleOutlineOutlined fontSize="small" />
+            </Button>
           )}
         </div>
       );
@@ -103,16 +98,26 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
     };
 
     return (
-      <BaseSelectV2
-        value={value}
-        onChange={handleChange}
-        keyProp={`${id}-${field}`}
-        options={{
-          options: selectOptions,
-          placeholder: "Select...",
-        }}
-        className="w-full"
-      />
+      <FormControl fullWidth size="small">
+        <Select
+          value={value || ""}
+          onChange={(event) => handleChange(event.target.value)}
+          displayEmpty
+          input={<OutlinedInput />}
+          renderValue={(selected) =>
+            !selected ? (
+              <span style={{ color: "rgb(148, 163, 184)" }}>Select...</span>
+            ) : (
+              selectOptions.find((opt) => opt.value === selected)?.label || selected
+            )
+          }>
+          {selectOptions.map((option: SelectOptionType) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     );
   }, []);
 
@@ -124,7 +129,17 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
       api.setEditCellValue({ id, field, value: newValue });
     };
 
-    return <BaseInputV2 value={value || ""} onChange={handleChange} placeholder="Enter value" className="w-full" />;
+    return (
+      <TextField
+        value={value || ""}
+        onChange={handleChange}
+        placeholder="Enter value"
+        className="w-full"
+        variant="outlined"
+        size="small"
+        fullWidth
+      />
+    );
   }, []);
 
   const RenderSelectCell = useCallback((params: GridRenderCellParams, selectOptions: SelectOptionType[]) => {
