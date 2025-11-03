@@ -1,14 +1,11 @@
 "use client";
 
-import BaseImage from "../commons/BaseImage";
 import WithCopy from "../commons/hocs/WithCopy";
 import MarkdownRenderer from "@app/components/commons/MarkdownRenderer";
-import { sourceCodeFont } from "@app/font";
 import ArrowBackIosNewOutlined from "@mui/icons-material/ArrowBackIosNewOutlined";
 import LinkOutlined from "@mui/icons-material/LinkOutlined";
 import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import Image from "next/image";
-import Link from "next/link";
 import { memo } from "react";
 
 // Optimized CSS variables and classes for better inheritance
@@ -54,7 +51,7 @@ const PostView = memo(({ post }: PostViewProps) => {
         {/* Post thumbnail */}
         <div className="lg:grow relative">
           <div className="absolute inset-0 lg:relative lg:w-3/4 lg:h-[15rem] px-0 lg:px-6">
-            <BaseImage
+            <Image
               src={post.thumbnail ?? EMPTY_STRING}
               alt={post.title}
               fill

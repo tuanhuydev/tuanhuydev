@@ -1,7 +1,7 @@
 import Badge from "../commons/Badge";
-import Button from "../commons/buttons/BaseButton";
 import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_utils/constants";
 import StarOutlined from "@mui/icons-material/StarOutlined";
+import { Button, IconButton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import React, { useMemo } from "react";
@@ -68,11 +68,9 @@ export default function TaskRow({
       )}
       <div className="ml-auto flex justify-end">
         {onPin && (
-          <Button
-            variants="text"
-            onClick={pinTask}
-            icon={<StarOutlined className={`text-sm !w-4 !h-4 ${pinnedClass}`} />}
-          />
+          <IconButton onClick={pinTask} size="small">
+            <StarOutlined className={`text-sm !w-4 !h-4 ${pinnedClass}`} />
+          </IconButton>
         )}
       </div>
     </div>

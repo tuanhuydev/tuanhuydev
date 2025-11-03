@@ -1,8 +1,7 @@
 "use client";
 
-import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Divider } from "@mui/material";
+import { Button, ButtonProps, CircularProgress, Divider } from "@mui/material";
 import { ReactNode, Suspense, lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import LogService from "server/services/LogService";
@@ -75,7 +74,7 @@ export interface FieldGroup {
   fields: Field[];
 }
 
-interface SubmitProps extends BaseButtonProps {
+interface SubmitProps extends ButtonProps {
   allowDefault?: boolean;
 }
 
@@ -319,14 +318,15 @@ const DynamicFormV2 = memo(function DynamicFormV2({
 
       <div className="flex p-2">
         {allowDefault && (
-          <BaseButton
+          <Button
             {...restSubmitProps}
             type="submit"
-            label="Submit"
             onClick={handleSubmit(submit)}
-            loading={isSubmitting}
             disabled={disabled || isSubmitting}
-          />
+            variant="contained"
+            startIcon={isSubmitting ? <CircularProgress size={16} color="inherit" /> : undefined}>
+            Submit
+          </Button>
         )}
       </div>
     </form>
