@@ -110,9 +110,6 @@ const MuiBaseTheme = createTheme({
           padding: "0.5rem 0.75rem",
           lineHeight: "1.25rem",
           borderRadius: 6,
-          "&:hover": {
-            backgroundColor: theme.palette.action.hover,
-          },
         }),
       },
     },
@@ -122,10 +119,14 @@ const MuiBaseTheme = createTheme({
         fullWidth: true,
       },
       styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.mode === "dark" ? theme.palette.background.paper : "#ffffff",
+        }),
         input: ({ theme }) => ({
           padding: "0.5rem 0.75rem",
           fontSize: "0.875rem",
           outline: "none",
+          backgroundColor: "transparent",
           "&::placeholder": {
             color: theme.palette.text.secondary,
             fontSize: "0.875rem",

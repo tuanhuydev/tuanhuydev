@@ -73,15 +73,17 @@ export default function ProjectCard({
 
   return (
     <BaseCard onClick={navigateDetail} title={name} titleExtra={CardExtra} className="w-[18rem]">
-      <p className="mt-0 mb-3 text-sm line-clamp-3 min-h-[4.5rem]">{description}</p>
+      <p className="mt-0 mb-3 text-sm line-clamp-3 min-h-[4.5rem] text-slate-400">{description}</p>
       <div className="grid grid-cols-[minmax(max-content,_1fr)_minmax(max-content,_1fr)] gap-2 justify-between relative text-xs">
         <div>
           <span className="text-slate-400">People:&nbsp;</span>
-          {users?.length ?? 0}
+          <span className="text-primary dark:text-slate-200">{users?.length ?? 0}</span>
         </div>
         <div>
           <span className="text-slate-400">Start Date:&nbsp;</span>
-          {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
+          <span className="text-primary dark:text-slate-200">
+            {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
+          </span>
         </div>
       </div>
     </BaseCard>
