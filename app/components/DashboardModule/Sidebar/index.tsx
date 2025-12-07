@@ -3,7 +3,7 @@
 import { ItemProps } from "./Item";
 import { useMobileSidebar } from "@app/_queries/metaQueries";
 import { QUERY_KEYS } from "@app/_queries/queryKeys";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
+import { Button } from "@app/components/ui/button";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
@@ -121,12 +121,13 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
           <path d="M14 10.6391V8.68913C14 8.57412 13.9302 8.4699 13.8218 8.42319L9.02184 6.35364C8.82346 6.26811 8.6 6.40898 8.6 6.61959V8.01495C8.6 8.13244 8.67282 8.23841 8.78462 8.28359L11.5354 9.39547C11.7815 9.49497 11.7815 9.83326 11.5354 9.93276L8.78462 11.0446C8.67282 11.0898 8.6 11.1958 8.6 11.3133V12.7086C8.6 12.9192 8.82346 13.0601 9.02184 12.9746L13.8218 10.905C13.9302 10.8583 14 10.7541 14 10.6391Z" />
         </svg>
       </div>
-      <BaseButton
-        className="!bg-slate-50 !rounded-full dark:!bg-primary text-slate-400 text-center absolute -right-3 top-1/2 z-[10] transition-transform duration-300"
-        variants="text"
-        onClick={toggleSidebar}
-        icon={<ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />}
-      />
+      <Button
+        className="!bg-slate-50 !rounded-full dark:!bg-slate-800 text-slate-400 dark:text-slate-300 text-center absolute -right-3 top-1/2 z-[10] transition-transform duration-300"
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}>
+        <ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />
+      </Button>
       <ul
         className={`${
           sidebarOpen ? "w-[12.25rem]" : "w-[2.35rem]"

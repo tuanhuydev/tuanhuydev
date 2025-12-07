@@ -221,7 +221,7 @@ export default function Page() {
     <PageContainer title="AI chat">
       <div className="flex gap-4 h-full">
         {/* Sidebar */}
-        <aside className="w-64 shrink-0 border bg-white p-3 rounded-lg flex flex-col gap-3">
+        <aside className="w-64 shrink-0 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 rounded-lg flex flex-col gap-3">
           <div className="flex gap-2">
             <Button fullWidth variant="contained" onClick={newChat}>
               + New chat
@@ -229,8 +229,12 @@ export default function Page() {
           </div>
 
           <div className="flex-1 overflow-auto ">
-            {chatsQuery.isLoading && <div className="text-sm opacity-70">Loading…</div>}
-            {chatsQuery.isError && <div className="text-sm text-red-500">Failed to load sessions</div>}
+            {chatsQuery.isLoading && (
+              <div className="text-sm opacity-70 text-gray-600 dark:text-gray-400">Loading…</div>
+            )}
+            {chatsQuery.isError && (
+              <div className="text-sm text-red-500 dark:text-red-400">Failed to load sessions</div>
+            )}
             <ul className="flex flex-col gap-1 m-0 p-0">
               {sessions.map((s) => {
                 const isActive = String(s.id) === String(selectedId);
@@ -307,7 +311,7 @@ export default function Page() {
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}>
           <Box sx={{ p: 2, maxWidth: 260 }} onClick={(e) => e.stopPropagation()}>
-            <div className="text-sm mb-2">Delete this chat?</div>
+            <div className="text-sm mb-2 text-gray-900 dark:text-gray-100">Delete this chat?</div>
             <div className="flex gap-2 justify-end">
               <Button
                 size="small"
@@ -387,8 +391,8 @@ function Greeting() {
   return (
     <div className="h-full grid place-items-center text-center opacity-70">
       <div>
-        <div className="text-lg font-semibold mb-1">How can I help you today?</div>
-        <div className="text-sm">Ask me anything to get started.</div>
+        <div className="text-lg font-semibold mb-1 text-gray-900 dark:text-gray-100">How can I help you today?</div>
+        <div className="text-sm text-gray-700 dark:text-gray-300">Ask me anything to get started.</div>
       </div>
     </div>
   );

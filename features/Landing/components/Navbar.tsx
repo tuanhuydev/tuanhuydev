@@ -1,30 +1,13 @@
 "use client";
 
-import { ThemeToggle } from "@app/_components/commons/ThemeToggle";
+import { ThemeToggle } from "@app/components/commons/ThemeToggle";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
   const [showAtBottom, setShowAtBottom] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-  // Theme management
-  const initializeTheme = () => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  };
-  const toggleTheme = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    document.documentElement.classList.toggle("dark", newDarkMode);
-    localStorage.setItem("theme", newDarkMode ? "dark" : "light");
-  };
 
   // Scroll handling
   const handleScroll = () => {
@@ -36,10 +19,6 @@ export const Navbar = () => {
     const scrollPercentage = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
     setShowScrollTop(scrollPercentage > 0.1);
   };
-
-  useEffect(() => {
-    initializeTheme();
-  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -83,7 +62,7 @@ export const Navbar = () => {
       {!showAtBottom && (
         <a
           href="#contact"
-          className="rounded-full bg-stone-900 shadow-lg dark:bg-slate-50 dark:!text-primary !text-slate-50 text-xs md:text-base uppercase font-semibold px-4 py-2 md:px-4 cursor-pointer">
+          className="rounded-full bg-stone-900 shadow-lg dark:bg-slate-50 text-slate-50 dark:text-stone-900 text-xs md:text-base uppercase font-semibold px-4 py-2 md:px-4 cursor-pointer">
           Contact
         </a>
       )}
@@ -95,19 +74,13 @@ export const Navbar = () => {
             scale: 1,
           }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className={`${
-            showAtBottom ? "p-1" : "p-2"
-          } rounded-full shadow-lg cursor-pointer border-none bg-transparent dark:bg-slate-800`}>
-          <motion.svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={`w-4 lg:w-5 h-4 lg:h-5`}>
+          className={`p-2 rounded-full shadow-lg cursor-pointer border-none bg-transparent dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors`}>
+          <motion.svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
             <g>
               <motion.path
                 d="M12 20L12 4M12 4L18 10M12 4L6 10"
-                className="stroke-primary dark:stroke-slate-50"
-                strokeWidth="1.5"
+                className="stroke-stone-900 dark:stroke-slate-50"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 initial={{ pathLength: 0 }}

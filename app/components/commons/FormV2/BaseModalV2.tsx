@@ -35,6 +35,9 @@ const BaseModalV2 = memo(function BaseModalV2({
         timeout: 300,
         sx: {
           backgroundColor: "rgba(0, 0, 0, 0.5)",
+          "@media (prefers-color-scheme: dark)": {
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+          },
         },
       }}
       sx={{
@@ -97,6 +100,12 @@ const BaseModalV2 = memo(function BaseModalV2({
                     color: "rgb(107 114 128)",
                     "&:hover": {
                       backgroundColor: "rgb(243 244 246)",
+                    },
+                    "@media (prefers-color-scheme: dark)": {
+                      color: "rgb(156 163 175)",
+                      "&:hover": {
+                        backgroundColor: "rgb(55 65 81)",
+                      },
                     },
                   }}>
                   <CloseOutlined fontSize="small" />

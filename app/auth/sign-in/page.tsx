@@ -1,8 +1,8 @@
 "use client";
 
-import { ThemeToggle } from "@app/_components/commons/ThemeToggle";
 import { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
+import { ThemeToggle } from "@app/components/commons/ThemeToggle";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";

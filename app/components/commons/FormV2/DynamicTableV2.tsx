@@ -1,8 +1,8 @@
 "use client";
 
-import BaseButton from "../buttons/BaseButton";
 import BaseInputV2 from "./BaseInputV2";
 import BaseSelectV2 from "./BaseSelectV2";
+import { Button } from "@app/components/ui/button";
 import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
 import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import {
@@ -82,12 +82,9 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
         <div className="flex justify-between items-center w-full">
           <span className="font-semibold text-sm">{headerName}</span>
           {field === columns[0]?.config?.field && (
-            <BaseButton
-              variants="text"
-              disabled={isSubmitting}
-              onClick={addRow}
-              icon={<AddCircleOutlineOutlined fontSize="small" />}
-            />
+            <Button variant="ghost" size="icon" disabled={isSubmitting} onClick={addRow}>
+              <AddCircleOutlineOutlined fontSize="small" />
+            </Button>
           )}
         </div>
       );
@@ -216,19 +213,32 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
             "& .MuiDataGrid-root": {
               border: "1px solid rgb(203, 213, 225)",
               borderRadius: "0.375rem",
+              "@media (prefers-color-scheme: dark)": {
+                border: "1px solid rgb(75, 85, 99)",
+              },
             },
             "& .MuiDataGrid-cell": {
               fontSize: "0.875rem",
               borderColor: "rgb(229, 231, 235)",
+              "@media (prefers-color-scheme: dark)": {
+                borderColor: "rgb(55, 65, 81)",
+              },
             },
             "& .MuiDataGrid-columnHeader": {
               fontSize: "0.875rem",
               fontWeight: 600,
               backgroundColor: "rgb(249, 250, 251)",
               borderColor: "rgb(229, 231, 235)",
+              "@media (prefers-color-scheme: dark)": {
+                backgroundColor: "rgb(31, 41, 55)",
+                borderColor: "rgb(55, 65, 81)",
+              },
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "rgb(249, 250, 251)",
+              "@media (prefers-color-scheme: dark)": {
+                backgroundColor: "rgb(31, 41, 55)",
+              },
             },
           }}
         />

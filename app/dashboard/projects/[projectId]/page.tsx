@@ -48,7 +48,7 @@ export default function Page({ params }: PageProps) {
       <div className="grid grid-cols-12 grid-rows-2 gap-4">
         <Card className="h-full col-span-full lg:col-span-6" loading={isLoading}>
           <div className="flex items-center justify-between min-w-0 overflow-hidden">
-            <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 line-clamp-3">{name}</h1>
+            <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 line-clamp-3 text-gray-900 dark:text-gray-100">{name}</h1>
             <div className="flex gap-3">
               <WithCopy content={typeof window !== undefined ? window.location.href : ""} title="Share">
                 <ShareOutlined fontSize="small" />
@@ -58,30 +58,34 @@ export default function Page({ params }: PageProps) {
           {clientName && (
             <div className="mb-3">
               <BaseLabel>Client:&nbsp;</BaseLabel>
-              <p className="text-sm m-0 p-0 inline">{clientName}</p>
+              <p className="text-sm m-0 p-0 inline text-gray-700 dark:text-gray-300">{clientName}</p>
             </div>
           )}
           <div className="line-clamp-6">
             <BaseLabel>Description:&nbsp;</BaseLabel>
-            <p className="text-sm m-0 p-0 inline">{description}</p>
+            <p className="text-sm m-0 p-0 inline text-gray-700 dark:text-gray-300">{description}</p>
           </div>
         </Card>
         {status && (
           <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-            <span className="text-lg font-bold capitalize">status</span>
-            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-green-600 capitalize">{status}</h4>
+            <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">status</span>
+            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-green-600 dark:text-green-400 capitalize">
+              {status}
+            </h4>
           </Card>
         )}
         {type && (
           <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-            <span className="text-lg font-bold capitalize">type</span>
-            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-cyan-500 capitalize">{type}</h4>
+            <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">type</span>
+            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-cyan-500 dark:text-cyan-400 capitalize">
+              {type}
+            </h4>
           </Card>
         )}
         <Card className="h-full col-span-full lg:col-span-3" loading={isLoading}>
-          <span className="text-lg font-bold capitalize">Timeline</span>
+          <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">Timeline</span>
           <div className="mt-4 flex flex-col items-center gap-4">
-            <p className="text-xl font-medium capitalize">{TitleByPercent}</p>
+            <p className="text-xl font-medium capitalize text-gray-900 dark:text-gray-100">{TitleByPercent}</p>
             <div className="flex flex-wrap justify-between w-full">
               <span className="text-xs flex-shrink-0">
                 <BaseLabel>Start Date:&nbsp;</BaseLabel>
