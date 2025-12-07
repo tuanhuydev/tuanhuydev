@@ -34,7 +34,7 @@ export default function Group({ label, icon, children }: GroupProps) {
     </div>
   );
   return (
-    <li className="ease-in duration-200  mb-1 text-slate-600 cursor-pointer" onClick={toggleGroup}>
+    <li className="ease-in duration-200  mb-1 text-slate-600 dark:text-slate-300 cursor-pointer" onClick={toggleGroup}>
       {sidebarOpen ? (
         element
       ) : (

@@ -2,8 +2,10 @@
 
 import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
 import { useUsersQuery } from "@app/_queries/userQueries";
+import { useDebounce } from "@app/_utils/useDebounce";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import Empty from "@app/components/commons/Empty";
+import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -28,6 +30,7 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   // State
   const [filter, setFilter] = useState<ObjectType>({});
+  const [searchValue, setSearchValue] = useState("");
   const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   // Hooks
@@ -39,19 +42,27 @@ export default function Page() {
     estimateSize: useCallback(() => estimateSize, []),
   });
 
-  const onSearchUsers = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setTimeout(() => {
-        const search = event.target.value;
-        setFilter((prevFilter) => {
-          if (search?.length) return { ...prevFilter, search };
-          delete prevFilter?.search;
-          return prevFilter;
-        });
-        refetch();
-      }, 500);
+  const performSearch = useCallback(
+    (search: string) => {
+      setFilter((prevFilter) => {
+        if (search?.length) return { ...prevFilter, search };
+        const { search: _, ...rest } = prevFilter;
+        return rest;
+      });
+      refetch();
     },
     [refetch],
+  );
+
+  const debouncedSearch = useDebounce(performSearch, 500);
+
+  const onSearchUsers = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const search = event.target.value;
+      setSearchValue(search);
+      debouncedSearch(search);
+    },
+    [debouncedSearch],
   );
 
   const createUser = useCallback(() => {
@@ -109,16 +120,19 @@ export default function Page() {
         searchPlaceholder="Find your user"
         createLabel="New User"
         allowCreate={allowCreateUser}
+        value={searchValue}
       />
       <div className="grow overflow-auto h-full" ref={containerRef}>
         <RenderUsers />
       </div>
 
-      <Suspense fallback={<Loader />}>
-        <BaseDrawer open={openDrawer} onClose={closeDrawer}>
-          <UserDetail user={selectedUser} onClose={closeDrawer} />
-        </BaseDrawer>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<Loader />}>
+          <BaseDrawer open={openDrawer} onClose={closeDrawer}>
+            <UserDetail user={selectedUser} onClose={closeDrawer} />
+          </BaseDrawer>
+        </Suspense>
+      </ErrorBoundary>
     </PageContainer>
   );
 }

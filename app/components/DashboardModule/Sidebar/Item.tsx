@@ -18,8 +18,8 @@ export default function Item({ label, icon, path, id }: ItemProps) {
   const sidebarOpen = false;
 
   const activeClass = isPathActive(pathName, path)
-    ? "bg-primary text-slate-50 dark:text-slate-50 dark:bg-slate-600"
-    : "text-slate-700";
+    ? "bg-primary text-slate-50 dark:bg-slate-600"
+    : "text-slate-700 dark:text-slate-300";
 
   const itemElement = useMemo(
     () => (

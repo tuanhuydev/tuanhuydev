@@ -1,42 +1,49 @@
-"use client";
+import { PostItem } from "@app/components/PostModule/PostItem";
+import { getPosts } from "server/actions/blogActions";
 
-import HighlightPost from "./HighlightPost";
-import { motion } from "framer-motion";
+const FIRST_ITEM_CLASS = "col-span-full md:col-span-1 lg:col-span-2 lg:row-span-4";
+const OTHER_ITEM_CLASS = "col-span-full md:col-span-1 lg:col-span-2 lg:row-span-3";
 
-const makeColumn = (index: number) => {
-  const firstItemIndex = 0;
-  return index === firstItemIndex ? "lg:row-span-4" : "lg:row-span-3";
+const getColumnClass = (index: number): string => {
+  return index === 0 ? FIRST_ITEM_CLASS : OTHER_ITEM_CLASS;
 };
 
-export default function BlogSection({ posts }: { posts: ObjectType[] }) {
-  if (!posts.length) return <>Not found</>;
+export default async function BlogSection() {
+  let posts: Post[] = [];
+  try {
+    posts = await getPosts({ page: 1, pageSize: 5, published: true });
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+  }
+
+  if (!posts.length) {
+    return (
+      <section id="blog" className="flex flex-col items-center contain-layout">
+        <p className="text-gray-600 dark:text-gray-300">No posts available</p>
+      </section>
+    );
+  }
+
   return (
     <section id="blog" className="flex flex-col items-center contain-layout">
-      {/* Title & Description */}
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-xl md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r 
+      <h2
+        className="text-xl font-semibold md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r 
                    from-slate-800 to-amber-600 dark:from-slate-100 dark:to-slate-400 
-                   bg-clip-text text-transparent will-change-auto">
-        Reading Station
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+                   bg-clip-text text-transparent will-change-auto 
+                   animate-fadeIn">
+        Learning is a long journey
+      </h2>
+      <p
         className="mt-4 text-base md:text-lg text-center lg:text-left max-w-2xl mx-auto 
-                   leading-relaxed text-gray-600 dark:text-gray-300 will-change-auto">
+                   leading-relaxed text-gray-600 dark:text-gray-300 will-change-auto
+                   animate-fadeIn delay-200">
         Explore new ideas and expand your understanding through my blog posts.
-      </motion.p>
+      </p>
       <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-homePosts lg:grid-cols-6 
                    w-3/4 gap-y-6 gap-x-4 p-3 grid-flow-row contain-style">
-        {posts.map((post: ObjectType, index: number) => (
-          <HighlightPost post={post} key={post.slug} className={makeColumn(index)} />
+        {posts.map((post: Post, index: number) => (
+          <PostItem post={post} key={post.slug} className={getColumnClass(index)} />
         ))}
       </div>
     </section>

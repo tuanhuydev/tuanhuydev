@@ -33,11 +33,11 @@ const PostView = memo(({ post }: PostViewProps) => {
   if (!post) return <h1>Not Found</h1>;
 
   return (
-    <div className="grid grid-cols-12 w-screen h-screen overflow-x-hidden lg:overflow-hidden auto-rows-min lg:auto-rows-fr gap-0 transition-transform duration-300 ease-out bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
+    <div className="grid grid-cols-12 w-full min-h-screen overflow-x-hidden auto-rows-min lg:auto-rows-fr gap-0 transition-transform duration-300 ease-out bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
       {/* Left sidebar */}
-      <div className="col-span-full lg:col-span-3 px-0 py-6 flex flex-col relative contain-layout">
+      <div className="col-span-full lg:col-span-3 px-0 py-4 lg:py-6 flex flex-col relative contain-layout">
         {/* Back button */}
-        <div className="w-min h-min px-6">
+        <div className="w-min h-min px-4 lg:px-6">
           <button
             onClick={() => window.history.back()}
             aria-label="Go back to previous page"
@@ -47,12 +47,12 @@ const PostView = memo(({ post }: PostViewProps) => {
         </div>
 
         {/* Post title */}
-        <h1 className="text-4xl md:text-5xl font-bold px-6 py-4 m-0 lg:my-6 lg:max-h-[24rem] text-primary dark:text-slate-50 overflow-auto">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold px-4 lg:px-6 py-3 lg:py-4 m-0 lg:my-6 lg:max-h-[24rem] text-primary dark:text-slate-50 overflow-auto leading-tight">
           {post.title}
         </h1>
 
         {/* Post thumbnail */}
-        <div className="lg:grow relative">
+        <div className="lg:grow relative h-40 sm:h-48 lg:h-auto">
           <div className="absolute inset-0 lg:relative lg:w-3/4 lg:h-[15rem] px-0 lg:px-6">
             <BaseImage
               src={post.thumbnail ?? EMPTY_STRING}
@@ -66,7 +66,7 @@ const PostView = memo(({ post }: PostViewProps) => {
         </div>
 
         {/* Share button */}
-        <div className="absolute top-0 right-0 lg:relative flex gap-3 p-6 lg:px-6">
+        <div className="absolute top-0 right-0 lg:relative flex gap-3 p-4 lg:p-6">
           <WithCopy content={`${BASE_URL}/posts/${post?.slug}`} title="Share">
             <div className="p-2 rounded-md flex items-center justify-center bg-white dark:bg-slate-700 shadow-sm dark:shadow-none hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors duration-200 will-change-auto">
               <LinkOutlined fontSize="medium" className="text-primary dark:text-slate-300" />
@@ -76,8 +76,8 @@ const PostView = memo(({ post }: PostViewProps) => {
       </div>
 
       {/* Main content area */}
-      <div className="col-span-full overflow-y-auto lg:col-span-7 bg-white dark:bg-slate-800 px-6 pb-6 pt-0 lg:p-6 shadow-md dark:shadow-none text-primary dark:text-slate-50 contain-layout">
-        <div className={`markdown-content ${baseTextSizes}`}>
+      <div className="col-span-full lg:col-span-7 bg-white dark:bg-slate-800 px-4 sm:px-6 lg:px-8 py-6 lg:p-6 shadow-md dark:shadow-none text-primary dark:text-slate-50 contain-layout overflow-y-auto">
+        <div className={`markdown-content ${baseTextSizes} max-w-none`}>
           <MarkdownRenderer content={post.content} />
         </div>
       </div>
