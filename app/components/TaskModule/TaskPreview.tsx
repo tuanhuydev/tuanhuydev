@@ -41,8 +41,8 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   if (!task) return <Fragment />;
 
   return (
-    <div className="p-3 bg-transparent w-full flex flex-col grow">
-      <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate">{title ?? EMPTY_STRING}</h1>
+    <div className="p-3 w-full flex flex-col grow overflow-auto">
+      <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate text-foreground">{title ?? EMPTY_STRING}</h1>
       <div className="grid grid-cols-2 gap-3 mb-4">
         {status && (
           <div className="flex items-center gap-3">
@@ -53,26 +53,28 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
         {task?.storyPoint && (
           <div className="flex items-center gap-3">
             <BaseLabel className="w-[72px]">Estimation:</BaseLabel>
-            {task?.storyPoint}
+            <span className="text-foreground">{task?.storyPoint}</span>
           </div>
         )}
         {assignee && (
           <div className="flex items-center gap-3">
             <BaseLabel className="w-[72px]">Assignee</BaseLabel>
-            {assignee.label}
+            <span className="text-foreground">{assignee.label}</span>
           </div>
         )}
         {sprint && (
           <div className="flex items-center gap-3">
             <BaseLabel className="w-[72px]">Sprint:</BaseLabel>
-            {sprint.name}
+            <span className="text-foreground">{sprint.name}</span>
           </div>
         )}
       </div>
       <div className="grow mb-3">
         <BaseLabel>Description:</BaseLabel>
         <Suspense fallback={<div>Loading...</div>}>
-          <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
+          <div className="text-foreground prose prose-sm dark:prose-invert max-w-none">
+            <ReactMarkdown>{description ?? EMPTY_STRING}</ReactMarkdown>
+          </div>
         </Suspense>
       </div>
       {subTasks.length > 0 && (

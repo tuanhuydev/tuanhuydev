@@ -4,14 +4,14 @@ import BaseCard from "../commons/Card";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useMemo, type JSX } from "react";
+import React, { memo, useCallback, useMemo, type JSX } from "react";
 
 export interface PostCardProps {
   post: ObjectType;
   actions?: React.ReactNode;
 }
 
-export default function PostCard({ post, actions }: PostCardProps) {
+const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
   const router = useRouter();
 
   const { title, thumbnail = "", publishedAt, createdAt } = post;
@@ -36,7 +36,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
   return (
     <BaseCard
       title={title}
-      className="w-[18rem]"
+      className="w-full md:w-[18rem]"
       imageSrc={thumbnail as string}
       hasImage
       onClick={navigateProjectEdit}
@@ -50,4 +50,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
       {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}
     </BaseCard>
   );
-}
+});
+
+PostCard.displayName = "PostCard";
+export default PostCard;

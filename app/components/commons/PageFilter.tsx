@@ -1,9 +1,9 @@
 "use client";
 
-import BaseInput from "./Inputs/BaseInput";
+import { Button } from "@app/components/ui/button";
+import { Input } from "@app/components/ui/input";
 import ControlPointOutlined from "@mui/icons-material/ControlPointOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import Button from "@mui/material/Button";
 import { ChangeEvent } from "react";
 
 export interface PageFilterProps {
@@ -25,19 +25,16 @@ export default function PageFilter({
 }: PageFilterProps) {
   return (
     <div className="flex gap-2 items-center mb-6">
-      <BaseInput
-        onChange={onSearch}
-        value={value}
-        placeholder={searchPlaceholder}
-        className="grow rounded-sm m-2"
-        startAdornment={<SearchOutlined fontSize="small" className=" dark:fill-slate-50" />}
-      />
+      <div className="relative grow">
+        <SearchOutlined
+          fontSize="small"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground dark:text-slate-400"
+        />
+        <Input onChange={onSearch} value={value} placeholder={searchPlaceholder} className="pl-10" />
+      </div>
       {allowCreate && (
-        <Button
-          variant="contained"
-          endIcon={<ControlPointOutlined fontSize="small" />}
-          onClick={onNew}
-          className="flex-shrink-0">
+        <Button onClick={onNew} className="flex-shrink-0">
+          <ControlPointOutlined fontSize="small" className="mr-1" />
           {createLabel}
         </Button>
       )}

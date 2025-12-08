@@ -1,12 +1,14 @@
-import SupportImage from "@app/_assets/images/support.jpeg";
 import { Footer } from "@app/_landing/components/Footer";
-import { Navbar } from "@app/_landing/components/Navbar";
+import { Navbar } from "@features/Landing/components/Navbar";
+import { Metadata } from "next";
 import Image from "next/image";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Support Me | tuanhuydev",
   description: "Support my open-source and content work via donation or sponsorship.",
 };
+
+export const dynamic = "force-static";
 
 export default function Page() {
   return (
@@ -52,7 +54,7 @@ export default function Page() {
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Vietnamese only</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-3">Quét mã VietQR để ủng hộ qua ngân hàng nội địa.</p>
           <Image
-            src={SupportImage}
+            src="/assets/images/support.jpeg"
             alt="VietQR — ngân hàng Việt Nam"
             width={224}
             height={224}

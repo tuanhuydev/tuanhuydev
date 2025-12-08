@@ -23,7 +23,7 @@ export default function Page(props: PageProps) {
 
   return (
     <Suspense fallback={<Loader />}>
-      <PageContainer title="Edit Post" goBack>
+      <PageContainer title="Edit Post" goBack="/dashboard/posts">
         <div className="grow h-full">
           {isFetching ? (
             <Loader />

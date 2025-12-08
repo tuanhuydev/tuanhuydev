@@ -7,7 +7,8 @@ import { useSprintQuery } from "@app/_queries/sprintQueries";
 import { useTodayTasks } from "@app/_queries/taskQueries";
 import { formatDate } from "@app/_utils/helper";
 import { useQueryClient } from "@tanstack/react-query";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 
 type TaskGroupType = {
   [key: string]: ObjectType[];
@@ -26,9 +27,18 @@ export interface TaskListProps {
 
 export default function TaskList({ tasks, projectId, onSelectTask, selectedTask, isLoading = false }: TaskListProps) {
   const queryClient = useQueryClient();
+  const parentRef = useRef<HTMLDivElement>(null);
   const [taskGroups, setTaskGroups] = useState<TaskGroupType>({ backlog: [] });
   const { data: projectSprints } = useSprintQuery(projectId as string);
   const { data: todayTasks = [] } = useTodayTasks();
+
+  // Virtual scrolling for non-project tasks
+  const rowVirtualizer = useVirtualizer({
+    count: tasks.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: useCallback(() => 48, []),
+    overscan: 5,
+  });
 
   useEffect(() => {
     if (!projectId) return;
@@ -74,22 +84,41 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
 
   if (!projectId) {
     return (
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
-        {tasks.map((task) => {
-          const isTaskActive = selectedTask?.id === task.id;
-          const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask?.id === task.id);
-          return (
-            <Suspense fallback={<Loader />} key={task.id}>
-              <TaskRow
-                task={task}
-                active={isTaskActive}
-                onSelect={onSelectTask as any}
-                onPin={addTaskToToday}
-                isToday={isTaskToday}
-              />
-            </Suspense>
-          );
-        })}
+      <div ref={parentRef} className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}>
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const task = tasks[virtualRow.index];
+            const isTaskActive = selectedTask?.id === task.id;
+            const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask?.id === task.id);
+            return (
+              <div
+                key={task.id}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}>
+                <Suspense fallback={<Loader />}>
+                  <TaskRow
+                    task={task}
+                    active={isTaskActive}
+                    onSelect={onSelectTask as any}
+                    onPin={addTaskToToday}
+                    isToday={isTaskToday}
+                  />
+                </Suspense>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -116,9 +145,9 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
         return (
           <div key={key} className="mb-4">
             <div className="flex items-center gap-3 mb-2">
-              <h2 className="text-lg m-0 capitalize font-semibold">{sprintName}</h2>
+              <h2 className="text-lg m-0 capitalize font-semibold text-gray-900 dark:text-gray-100">{sprintName}</h2>
               {startDate && endDate && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   {formatDate(startDate)} - {formatDate(endDate)}
                 </span>
               )}

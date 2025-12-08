@@ -1,21 +1,14 @@
-import BlogSection from "./components/BlogSection";
 import { Footer } from "./components/Footer";
 import Hero from "./components/Hero";
-import { Navbar } from "./components/Navbar";
 import Loader from "@app/components/commons/Loader";
+import Contact from "@features/Landing/components/Contact";
+import { Navbar } from "@features/Landing/components/Navbar";
 import { lazy, Suspense } from "react";
-import { getPosts } from "server/actions/blogActions";
 
-const Contact = lazy(() => import("./components/Contact"));
-const Experience = lazy(() => import("./components/experience"));
+const Experience = lazy(() => import("@features/Landing/components/ExperienceSection"));
+const BlogSection = lazy(() => import("./components/BlogSection"));
 
 export default async function LandingPage() {
-  let posts: Post[] = [];
-  try {
-    posts = await getPosts({ page: 1, pageSize: 5, published: true });
-  } catch (error) {
-    console.error("Failed to fetch posts:", error);
-  }
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 text-primary dark:text-slate-50">
       <Navbar />
@@ -24,10 +17,11 @@ export default async function LandingPage() {
         <Suspense fallback={<Loader />}>
           <Experience />
         </Suspense>
-        <BlogSection posts={posts} />
         <Suspense fallback={<Loader />}>
-          <Contact />
+          <BlogSection />
         </Suspense>
+
+        <Contact />
         <Footer />
       </div>
     </main>

@@ -51,7 +51,7 @@ const AbstractGradientBackground: React.FC<AbstractGradientBackgroundProps> = ({
   height,
   overlayText,
   overlayTextSize,
-  fontFamily = "'Inter', sans-serif",
+  fontFamily = "var(--font-momo), system-ui, arial, sans-serif",
 }) => {
   const rgbWarmNeutralFade = hexToRgbString(colors.warmNeutral.end);
   const rgbMutedPurpleFade = hexToRgbString(colors.mutedPurple.end);
@@ -355,7 +355,7 @@ const GenerativeBackground: React.FC = () => {
 
   const appStyle: CSSProperties = {
     display: "flex",
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "var(--font-momo), system-ui, arial, sans-serif",
     height: "100vh",
     overflow: "hidden", // Prevent whole page scroll
     backgroundColor: "#e9e9e9", // A light background for the app itself

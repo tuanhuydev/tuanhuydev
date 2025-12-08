@@ -1,16 +1,16 @@
 "use client";
 
-import BaseButton from "../commons/buttons/BaseButton";
 import { useSignOut } from "@app/_queries/authQueries";
 import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import { useCurrentUser } from "@app/_queries/userQueries";
+import { ThemeToggle } from "@app/components/commons/ThemeToggle";
+import { Button } from "@app/components/ui/button";
 import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
-import KeyboardArrowLeftOutlined from "@mui/icons-material/KeyboardArrowLeftOutlined";
-import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Button, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import Popover from "@mui/material/Popover";
 import { useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Fragment,
@@ -80,15 +80,15 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
       return (
         <div className="flex items-center gap-1 grow max-sm:max-w-xs max-lg:max-w-sm max-xl:max-w-xl text-primary dark:text-slate-50">
           <div className="block lg:hidden">
-            <IconButton size="small" aria-label="Toggle mobile menu" onClick={toggleMobileHamburger}>
-              <MenuOutlined fontSize="small" />
-            </IconButton>
+            <Button size="icon" variant="ghost" aria-label="Toggle mobile menu" onClick={toggleMobileHamburger}>
+              <Menu className="h-5 w-5" />
+            </Button>
           </div>
 
           {goBack && (
-            <IconButton size="small" aria-label="Go back button" onClick={handleGoback} className="block lg:hidden">
-              <KeyboardArrowLeftOutlined />
-            </IconButton>
+            <Button size="icon" variant="ghost" aria-label="Go back button" onClick={handleGoback}>
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
           )}
           <h1 className="my-auto text-2xl font-bold capitalize grow truncate">{title}</h1>
         </div>
@@ -100,47 +100,50 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
   const renderEnd = useMemo(() => {
     if (endComponent) return endComponent;
     return (
-      <div className="relative">
-        <BaseButton variants="text" onClick={handleClick} icon={<PersonOutlineOutlined fontSize="small" />} />
-        <Popover
-          title={name || email || "User"}
-          open={popoverOpen}
-          anchorEl={anchorEl}
-          slotProps={{}}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          classes={{
-            paper: "bg-white dark:bg-slate-950 p-3",
-          }}
-          onClose={handleClose}>
-          <ul className="block m-0 p-0 list-none">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
-                <PersonOutlineOutlined />
+      <Fragment>
+        <ThemeToggle size="sm" />
+        <div className="relative">
+          <Button variant="ghost" size="icon" onClick={handleClick}>
+            <PersonOutlineOutlined />
+          </Button>
+          <Popover
+            title={name || email || "User"}
+            open={popoverOpen}
+            anchorEl={anchorEl}
+            slotProps={{}}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            classes={{
+              paper: "bg-white dark:bg-slate-950 p-3",
+            }}
+            onClose={handleClose}>
+            <ul className="block m-0 p-0 list-none">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                  <PersonOutlineOutlined />
+                </div>
+                <div className="mb-2">
+                  <p className="font-semibold text-base text-gray-900 dark:text-gray-100 m-0">{name || "User"}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs m-0">{email}</p>
+                </div>
               </div>
-              <div className="mb-2">
-                <p className="font-semibold text-base text-gray-900 dark:text-gray-100 m-0">{name || "User"}</p>
-                <p className="text-gray-500 dark:text-gray-400 text-xs m-0">{email}</p>
-              </div>
-            </div>
-            <Button
-              variant="text"
-              color="inherit"
-              disableRipple
-              size="small"
-              startIcon={<ExitToAppOutlined fontSize="small" />}
-              classes={{ root: "w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400" }}
-              onClick={() => {
-                handleClose();
-                signOut();
-              }}>
-              Sign out
-            </Button>
-          </ul>
-        </Popover>
-      </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400"
+                onClick={() => {
+                  handleClose();
+                  signOut();
+                }}>
+                <ExitToAppOutlined fontSize="small" className="mr-2" />
+                Sign out
+              </Button>
+            </ul>
+          </Popover>
+        </div>
+      </Fragment>
     );
   }, [endComponent, name, email, popoverOpen, anchorEl, handleClose, signOut]);
 

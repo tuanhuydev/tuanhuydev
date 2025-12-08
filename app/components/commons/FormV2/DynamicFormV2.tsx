@@ -1,6 +1,6 @@
 "use client";
 
-import BaseButton, { BaseButtonProps } from "../buttons/BaseButton";
+import { Button, ButtonProps } from "@app/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Divider } from "@mui/material";
 import { ReactNode, Suspense, lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -75,7 +75,7 @@ export interface FieldGroup {
   fields: Field[];
 }
 
-interface SubmitProps extends BaseButtonProps {
+interface SubmitProps extends ButtonProps {
   allowDefault?: boolean;
 }
 
@@ -319,14 +319,9 @@ const DynamicFormV2 = memo(function DynamicFormV2({
 
       <div className="flex p-2">
         {allowDefault && (
-          <BaseButton
-            {...restSubmitProps}
-            type="submit"
-            label="Submit"
-            onClick={handleSubmit(submit)}
-            loading={isSubmitting}
-            disabled={disabled || isSubmitting}
-          />
+          <Button {...restSubmitProps} type="submit" onClick={handleSubmit(submit)} disabled={disabled || isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </Button>
         )}
       </div>
     </form>

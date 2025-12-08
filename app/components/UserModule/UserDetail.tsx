@@ -248,32 +248,32 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
     if (mode === DRAWER_MODE.VIEW) {
       return (
         <div className="flex flex-col h-full gap-3">
-          <div className="flex gap-4 col-span-full border-b p-3">
+          <div className="flex gap-4 col-span-full border-b border-gray-200 dark:border-gray-700 p-3">
             <Avatar sx={{ width: 72, height: 72 }}>
               <PersonOutlineOutlined fontSize="inherit" />
             </Avatar>
             <div className="my-5">
-              <h2 className="text-2xl m-0 mb-1">{user?.name}</h2>
-              <h4 className="m-0 font-normal text-slate-400">{user?.email}</h4>
+              <h2 className="text-2xl m-0 mb-1 text-gray-900 dark:text-gray-100">{user?.name}</h2>
+              <h4 className="m-0 font-normal text-slate-400 dark:text-slate-500">{user?.email}</h4>
             </div>
           </div>
-          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100">
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Project:</label>
+          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100 dark:border-b-slate-700">
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Project:</label>
               Project
             </div>
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Role:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Role:</label>
               Field project
             </div>
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Status:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Status:</label>
               Field status
             </div>
           </div>
           <div className="mt-auto p-3">
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Created at:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Created at:</label>
               {user?.createdAt ? format(new Date(user?.createdAt), "dd/MM/yyyy") : "-"}
             </div>
           </div>

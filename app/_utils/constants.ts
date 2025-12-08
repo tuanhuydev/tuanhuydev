@@ -1,7 +1,7 @@
-import bugImageSrc from "@app/_assets/images/icons/bug.svg";
-import epicImageSrc from "@app/_assets/images/icons/epic.svg";
-import issueImageSrc from "@app/_assets/images/icons/issue.svg";
-import storyImageSrc from "@app/_assets/images/icons/story.svg";
+const bugImageSrc = "/assets/images/icons/bug.svg";
+const epicImageSrc = "/assets/images/icons/epic.svg";
+const issueImageSrc = "/assets/images/icons/issue.svg";
+const storyImageSrc = "/assets/images/icons/story.svg";
 
 export enum TaskStatusEnum {
   TODO = "TODO",
