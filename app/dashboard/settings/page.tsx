@@ -2,8 +2,8 @@
 
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import ConfigSection from "@app/components/SettingModule/ConfigSection";
+import { Button } from "@app/components/ui/button";
 import { useFetch } from "@features/Auth";
-import Button from "@mui/material/Button";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
@@ -39,7 +39,7 @@ function Page() {
     <PageContainer title="Setting">
       <ConfigSection title="Backup" description="Backup application data">
         <div className="flex items-start gap-3">
-          <Button variant="outlined" onClick={downloadBackup}>
+          <Button variant="outline" onClick={downloadBackup}>
             Download Backup
           </Button>
         </div>

@@ -2,6 +2,7 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import PostCard from "@app/components/PostModule/PostCard";
 import PostsFilter from "@app/components/PostModule/PostsFilter";
 import Empty from "@app/components/commons/Empty";
+import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
 import Loader from "@app/components/commons/Loader";
 import { UrlParams } from "@lib/interfaces/shared";
 import { getPosts } from "@server/actions/blogActions";
@@ -17,9 +18,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<Url
     return (
       <div className="flex flex-wrap gap-2">
         {posts.map((post: Post) => (
-          <Suspense fallback={<Loader />} key={post.id}>
-            <PostCard post={post} />
-          </Suspense>
+          <ErrorBoundary key={post.id}>
+            <Suspense fallback={<Loader />}>
+              <PostCard post={post} />
+            </Suspense>
+          </ErrorBoundary>
         ))}
       </div>
     );

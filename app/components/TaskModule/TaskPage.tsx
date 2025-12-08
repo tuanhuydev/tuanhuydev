@@ -8,7 +8,8 @@ import PageContainer from "@app/components/DashboardModule/PageContainer";
 import { DynamicFormV2Config, Field, ObjectType } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { Drawer } from "@mui/material";
+import { Drawer, DrawerContent, DrawerTitle } from "@app/components/ui/drawer";
+import { VisuallyHidden } from "@app/components/ui/visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import LogService from "server/services/LogService";
@@ -217,34 +218,26 @@ function TaskPage({
           onSelectTask={onSelectTask}
           isLoading={loading}
         />
-        <Drawer
-          open={openDrawer}
-          aria-hidden="false"
-          anchor="right"
-          slotProps={{
-            paper: {
-              sx: {
-                width: {
-                  xs: "100%",
-                  sm: "100%",
-                  md: "50%",
-                  lg: "45%",
-                  xl: "30%",
-                },
-              },
-            },
-          }}
-          onClose={toggleDrawer(false)}>
-          <TaskFormTitle
-            task={selectedTask as unknown as Partial<Task>}
-            allowSubTask={!!selectedTask && allowSubTasks}
-            config={TaskFormConfig}
-            mode={mode as "VIEW" | "EDIT"}
-            allowEditTask={!!selectedTask}
-            onClose={toggleDrawer(false)}
-            onToggle={toggleMode}
-          />
-          {RenderTaskDetails}
+        <Drawer open={openDrawer} onOpenChange={(isOpen) => !isOpen && toggleDrawer(false)()}>
+          <DrawerContent
+            side="right"
+            className="w-full sm:w-[500px] md:w-[600px] lg:w-[700px] sm:m-2 sm:mr-2 sm:rounded-lg">
+            <VisuallyHidden>
+              <DrawerTitle>{selectedTask?.title || "Task Details"}</DrawerTitle>
+            </VisuallyHidden>
+            <div className="flex flex-col h-full bg-background">
+              <TaskFormTitle
+                task={selectedTask as unknown as Partial<Task>}
+                allowSubTask={!!selectedTask && allowSubTasks}
+                config={TaskFormConfig}
+                mode={mode as "VIEW" | "EDIT"}
+                allowEditTask={!!selectedTask}
+                onClose={toggleDrawer(false)}
+                onToggle={toggleMode}
+              />
+              {RenderTaskDetails}
+            </div>
+          </DrawerContent>
         </Drawer>
       </PageContainer>
     </Suspense>

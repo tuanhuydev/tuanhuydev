@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "./components/commons/ErrorBoundary";
 import Loader from "./components/commons/Loader";
 import ThemeScript from "./components/commons/ThemeScript";
 import { sourceCodeFont } from "./font";
@@ -20,9 +21,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <head />
       <body>
         <ThemeScript />
-        <Suspense fallback={<Loader />}>
-          <QueryProvider>{children}</QueryProvider>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<Loader />}>
+            <QueryProvider>{children}</QueryProvider>
+          </Suspense>
+        </ErrorBoundary>
         {isDevelopmentEnv && <SpeedInsights />}
         <Analytics />
         <GoogleTagManager gtmId="G-19W3TP7JLT" />

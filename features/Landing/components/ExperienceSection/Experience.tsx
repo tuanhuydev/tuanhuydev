@@ -24,7 +24,7 @@ export default function Experience() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-base md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r 
+        className="text-base font-semibold md:text-3xl lg:text-4xl mb-3 bg-gradient-to-r 
                    from-slate-800 to-blue-600 dark:from-slate-100 dark:to-slate-400 
                    bg-clip-text text-transparent will-change-auto">
         Building High-Performance Enterprise Applications
@@ -65,7 +65,7 @@ export default function Experience() {
       </div>
 
       <div
-        className="grid grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 justify-items-center 
+        className="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 justify-items-center 
                    max-w-xl mx-auto overflow-hidden contain-style">
         <Delight title="Projects" value={10} gradient={{ from: "from-cyan-500", to: "to-cyan-900" }} />
 

@@ -1,11 +1,10 @@
-import bg from "@app/_assets/images/bg.jpeg";
 import Image from "next/image";
 
 export default async function Hero() {
   return (
     <section className="relative flex items-center justify-center rounded-md overflow-hidden min-h-[60dvh] lg:h-[80dvh] contain-layout contain-style">
       <div className="absolute inset-0 z-0 rounded-md will-change-contents">
-        <Image src={bg} fill className="object-cover" alt="Background Image" priority />
+        <Image src="/assets/images/bg.jpeg" fill className="object-cover" alt="Background Image" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80"></div>
       </div>
 

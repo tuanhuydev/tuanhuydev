@@ -5,15 +5,9 @@ import BaseSelect from "../commons/Inputs/BaseSelect";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useSprintQuery } from "@app/_queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@app/_queries/taskQueries";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
-import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
-import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
-import EditOutlined from "@mui/icons-material/EditOutlined";
-import LowPriorityOutlined from "@mui/icons-material/LowPriorityOutlined";
-import PlaylistAddOutlined from "@mui/icons-material/PlaylistAddOutlined";
-import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
+import { Button } from "@app/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { ArrowDownUp, Edit, Edit2, ListPlus, ListX, Trash2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import LogService from "server/services/LogService";
@@ -76,7 +70,7 @@ const UI_CONSTANTS = {
     CREATE_SUB_TASK: "w-[50rem]",
     SUB_TASK_FORM_HEIGHT: "h-96",
   },
-  TITLE_STYLES: "my-0 mr-3 px-3 py-2 bg-primary text-white text-base truncate",
+  TITLE_STYLES: "my-0 mr-3 px-3 py-2 text-foreground text-base font-semibold truncate",
 } as const;
 
 // Modal State Management
@@ -276,12 +270,12 @@ export default function TaskFormTitle({
     const items = [
       {
         label: "Move to sprint",
-        icon: <LowPriorityOutlined fontSize="small" />,
+        icon: <ArrowDownUp className="h-4 w-4" />,
         onClick: toggleModal("moveToSprint", true),
       },
       {
         label: "Delete task",
-        icon: <DeleteOutlined fontSize="small" />,
+        icon: <Trash2 className="h-4 w-4" />,
         onClick: toggleModal("openConfirmDelete", true),
       },
     ];
@@ -289,13 +283,13 @@ export default function TaskFormTitle({
       if (task?.parentId) {
         items.unshift({
           label: "Convert to task",
-          icon: <PlaylistRemoveOutlinedIcon fontSize="small" />,
+          icon: <ListX className="h-4 w-4" />,
           onClick: toggleModal("convertToTask", true),
         });
       } else {
         items.unshift({
           label: "Create sub-task",
-          icon: <PlaylistAddOutlined fontSize="small" />,
+          icon: <ListPlus className="h-4 w-4" />,
           onClick: toggleModal("createSubTask", true),
         });
       }
@@ -305,26 +299,29 @@ export default function TaskFormTitle({
 
   const renderHeaderExtra = useMemo(() => {
     const existingTask = !!task;
+    const buttonClasses =
+      "cursor-pointer outline-none rounded-md flex justify-center items-center gap-1 transition-all duration-300 p-1 bg-primary border-none text-slate-50 dark:bg-slate-500 dark:text-slate-200 disabled:bg-slate-200 disabled:text-slate-400 w-8 h-8";
+
     return (
       <div className="px-2 flex gap-2 items-center relative">
         {allowEditTask && (
           <Fragment>
             {isViewMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.EDIT)}
-                icon={<EditOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <button className={buttonClasses} onClick={toggleMode(TASK_FORM_MODE.EDIT)} title="Edit task">
+                <Edit className="h-4 w-4" />
+              </button>
             )}
             {isEditMode && (
-              <BaseButton
-                onClick={toggleMode(TASK_FORM_MODE.VIEW)}
-                icon={<EditOffOutlined className="!text-lg text-slate-50" fontSize="small" />}
-              />
+              <button className={buttonClasses} onClick={toggleMode(TASK_FORM_MODE.VIEW)} title="View mode">
+                <Edit2 className="h-4 w-4" />
+              </button>
             )}
           </Fragment>
         )}
         {existingTask && <Fragment>{renderMenu}</Fragment>}
-        <BaseButton onClick={handleClose} icon={<CloseOutlined className="!text-lg text-white" />} />
+        <button className={buttonClasses} onClick={handleClose} title="Close">
+          <X className="h-4 w-4" />
+        </button>
       </div>
     );
   }, [renderMenu, allowEditTask, handleClose, isEditMode, isViewMode, task, toggleMode]);
@@ -336,7 +333,10 @@ export default function TaskFormTitle({
 
     return (
       <WithCopy content={taskUrl} title="Copy task link">
-        <h1 className={`${UI_CONSTANTS.TITLE_STYLES} hover:underline cursor-pointer`}>{`Task #${id}`}</h1>
+        <h1
+          className={`${UI_CONSTANTS.TITLE_STYLES} hover:underline cursor-pointer max-w-[275px] sm:max-w-xs md:max-w-md`}>
+          {`Task #${id}`}
+        </h1>
       </WithCopy>
     );
   }, [task, pathname]);
@@ -348,7 +348,7 @@ export default function TaskFormTitle({
   }, [isCreateSuccess, toggleModal]);
 
   return (
-    <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
+    <div className="bg-background border-b mb-3 flex justify-between shadow-md">
       {renderTitle}
       {renderHeaderExtra}
       <Suspense fallback={<div>Loading...</div>}>
@@ -388,8 +388,10 @@ export default function TaskFormTitle({
           />
 
           <div className="flex gap-3 justify-end mt-5">
-            <BaseButton onClick={toggleModal("moveToSprint", false)} variants="text" label="Cancel" />
-            <BaseButton onClick={handleMoveToSprintWithId} label="Move" />
+            <Button onClick={toggleModal("moveToSprint", false)} variant="ghost">
+              Cancel
+            </Button>
+            <Button onClick={handleMoveToSprintWithId}>Move</Button>
           </div>
         </BaseModal>
         {config && (

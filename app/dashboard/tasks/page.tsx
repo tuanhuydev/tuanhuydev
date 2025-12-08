@@ -1,9 +1,11 @@
 "use client";
 
+import { useTaskFilter } from "@app/_hooks/useTaskFilter";
 import { useCurrentUserTasks } from "@app/_queries/userQueries";
+import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
 import Loader from "@app/components/commons/Loader";
 import { useSearchParams } from "next/navigation";
-import { ChangeEventHandler, Suspense, lazy, useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect } from "react";
 
 // Replace dynamic import with React lazy
 const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
@@ -16,42 +18,29 @@ export default function Page() {
   const searchParams = useSearchParams();
   const taskId = searchParams.get("taskId") ?? null;
 
-  const [filter, setFilter] = useState<FilterMyTasksType>({
-    projectId: null,
+  const { filter, searchValue, handleSearch, handleFilterChange, setFilter } = useTaskFilter<FilterMyTasksType>({
+    initialFilter: { projectId: null } as FilterMyTasksType,
   });
 
   const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useCurrentUserTasks(filter);
 
-  const handleFilterChange = useCallback((filter: FilterType) => {
-    setFilter((prevFilter) => ({ ...prevFilter, ...filter }));
-  }, []);
-
-  const searchTasks: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
-    const search = event.target.value;
-    setFilter((filter) => {
-      if (search?.length) return { ...filter, search };
-
-      delete filter?.search;
-      return filter;
-    });
-  }, []);
-
   useEffect(() => {
-    let searchTimeout: NodeJS.Timeout;
-    if (filter) searchTimeout = setTimeout(refetchTasks, 1000);
+    const searchTimeout = setTimeout(refetchTasks, 500);
     return () => clearTimeout(searchTimeout);
-  }, [filter, refetchTasks, tasks]);
+  }, [filter, refetchTasks]);
 
   return (
-    <Suspense fallback={<Loader />}>
-      <TaskPage
-        tasks={tasks}
-        selectedTaskId={taskId}
-        onSearch={searchTasks}
-        onFilterChange={handleFilterChange}
-        loading={isTasksLoading}
-        allowSubTasks={false}
-      />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<Loader />}>
+        <TaskPage
+          tasks={tasks}
+          selectedTaskId={taskId}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          loading={isTasksLoading}
+          allowSubTasks={false}
+        />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

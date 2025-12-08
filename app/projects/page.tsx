@@ -1,7 +1,7 @@
 import { Footer } from "@app/_landing/components/Footer";
-import { Navbar } from "@app/_landing/components/Navbar";
 import ProjectCard from "@app/components/ProjectModule/ProjectCard";
 import ProjectsFilter from "@app/components/ProjectModule/ProjectsFilter";
+import { Navbar } from "@features/Landing/components/Navbar";
 import { getProjects } from "@server/actions/projectActions";
 import React from "react";
 
