@@ -1,10 +1,8 @@
 "use client";
 
 import { DRAWER_MODE } from ".";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
-import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import EditOffOutlined from "@mui/icons-material/EditOffOutlined";
-import EditOutlined from "@mui/icons-material/EditOutlined";
+import { Button } from "@app/components/ui/button";
+import { Edit, Edit2, X } from "lucide-react";
 import { Fragment, useCallback } from "react";
 
 export interface BaseDrawerHeaderProps {
@@ -37,27 +35,27 @@ export default function BaseDrawerHeader({
   const handleClose = useCallback(() => onClose(false), [onClose]);
 
   return (
-    <div className="bg-slate-700 mb-3 flex justify-between shadow-md">
-      <h1 className="my-0 mr-3 px-3 py-2 bg-primary text-white text-base">{title}</h1>
+    <div className="bg-background border-b mb-3 flex justify-between shadow-md">
+      <h1 className="my-0 mr-3 px-3 py-2 text-foreground text-base font-semibold">{title}</h1>
       <div className="px-2 flex gap-2 items-center relative">
         {editable && (
           <Fragment>
             {isViewMode && (
-              <BaseButton
-                onClick={toggleMode(DRAWER_MODE.EDIT)}
-                icon={<EditOutlined className="text-slate-50" fontSize="small" />}
-              />
+              <Button size="icon" variant="default" onClick={toggleMode(DRAWER_MODE.EDIT)}>
+                <Edit className="h-4 w-4" />
+              </Button>
             )}
             {isEditMode && (
-              <BaseButton
-                onClick={toggleMode(DRAWER_MODE.VIEW)}
-                icon={<EditOffOutlined className=" text-slate-50" fontSize="small" />}
-              />
+              <Button size="icon" variant="default" onClick={toggleMode(DRAWER_MODE.VIEW)}>
+                <Edit2 className="h-4 w-4" />
+              </Button>
             )}
           </Fragment>
         )}
         {ExtraHeader}
-        <BaseButton onClick={handleClose} icon={<CloseOutlined className="text-slate-50" fontSize="small" />} />
+        <Button size="icon" variant="default" onClick={handleClose}>
+          <X className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

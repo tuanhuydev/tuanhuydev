@@ -1,35 +1,34 @@
+import { ErrorBoundary } from "./components/commons/ErrorBoundary";
+import Loader from "./components/commons/Loader";
+import ThemeScript from "./components/commons/ThemeScript";
 import { sourceCodeFont } from "./font";
-import "@app/styles/globals.scss";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import "@app/_styles/globals.scss";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Viewport } from "next";
-import dynamic from "next/dynamic";
-import { PropsWithChildren } from "react";
+import { isDevelopmentEnv } from "lib/commons/constants/base";
+import { PropsWithChildren, Suspense, lazy } from "react";
 
-const QueryProvider = dynamic(
-  () => import("@app/components/commons/providers/QueryProvider").then((module) => module.QueryProvider),
-  { ssr: false },
-);
+// Enable Partial Prerendering
+export const runtime = "nodejs";
+export const preferredRegion = "auto";
 
-const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"), { ssr: false });
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
-};
+const QueryProvider = lazy(() => import("@app/components/commons/providers/QueryProvider"));
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={sourceCodeFont.className}>
+      <head />
       <body>
-        <ThemeProvider>
-          <AppRouterCacheProvider>
+        <ThemeScript />
+        <ErrorBoundary>
+          <Suspense fallback={<Loader />}>
             <QueryProvider>{children}</QueryProvider>
-            <SpeedInsights />
-          </AppRouterCacheProvider>
-        </ThemeProvider>
+          </Suspense>
+        </ErrorBoundary>
+        {isDevelopmentEnv && <SpeedInsights />}
+        <Analytics />
+        <GoogleTagManager gtmId="G-19W3TP7JLT" />
       </body>
     </html>
   );

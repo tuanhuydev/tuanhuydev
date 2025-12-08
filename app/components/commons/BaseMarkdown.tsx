@@ -1,12 +1,15 @@
 "use client";
 
-import Loader from "./Loader";
-import { useFetch } from "@app/queries/useSession";
-import { EMPTY_STRING } from "@lib/configs/constants";
+import { useFetch } from "@features/Auth";
 import {
   BlockTypeSelect,
+  BoldItalicUnderlineToggles,
+  ChangeCodeMirrorLanguage,
   ConditionalContents,
-  DiffSourceToggleWrapper,
+  CreateLink,
+  InsertCodeBlock,
+  InsertImage,
+  ListsToggle,
   MDXEditor,
   MDXEditorMethods,
   UndoRedo,
@@ -22,129 +25,139 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import dynamic from "next/dynamic";
-import { RefObject, useEffect, useRef } from "react";
-
-const BoldItalicUnderlineToggles = dynamic(async () => (await import("@mdxeditor/editor")).BoldItalicUnderlineToggles, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const CreateLink = dynamic(async () => (await import("@mdxeditor/editor")).CreateLink, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const InsertCodeBlock = dynamic(async () => (await import("@mdxeditor/editor")).InsertCodeBlock, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const ListsToggle = dynamic(async () => (await import("@mdxeditor/editor")).ListsToggle, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const ChangeCodeMirrorLanguage = dynamic(async () => (await import("@mdxeditor/editor")).ChangeCodeMirrorLanguage, {
-  ssr: false,
-  loading: () => <Loader />,
-});
-const InsertImage = dynamic(async () => (await import("@mdxeditor/editor")).InsertImage, {
-  ssr: false,
-  loading: () => <Loader />,
-});
+import { EMPTY_STRING } from "lib/commons/constants/base";
+import { RefObject, memo, useCallback, useEffect, useMemo, useRef } from "react";
 
 export interface EditorProps {
   value: string;
-  onChange?: any;
+  onChange?: (markdown: string) => void;
   className?: string;
   readOnly?: boolean;
   editorRef?: RefObject<MDXEditorMethods | null>;
   placeholder?: string;
 }
 
-export default function BaseMarkdown({
+// Memoized toolbar component to prevent re-renders
+const ToolbarContents = memo(() => (
+  <div className="flex flex-wrap gap-3 relative z-300 max-w-lg">
+    <UndoRedo />
+    <BlockTypeSelect />
+    <BoldItalicUnderlineToggles />
+    <CreateLink />
+    <ListsToggle />
+    <ConditionalContents
+      options={[
+        {
+          when: (editor) => editor?.editorType === "codeblock",
+          contents: () => <ChangeCodeMirrorLanguage />,
+        },
+        {
+          fallback: () => <InsertCodeBlock />,
+        },
+      ]}
+    />
+    <InsertImage />
+  </div>
+));
+
+ToolbarContents.displayName = "ToolbarContents";
+
+function BaseMarkdown({
   value = EMPTY_STRING,
   onChange,
   readOnly = false,
   className = "",
   placeholder = "Placeholder",
+  editorRef,
 }: EditorProps) {
   const localRef = useRef<MDXEditorMethods | null>(null);
   const { fetch } = useFetch();
+  const previousValue = useRef<string>(value);
 
+  // Memoized image upload handler to prevent recreation
+  const imageUploadHandler = useCallback(
+    async (image: File) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      const response = await fetch("/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Unable to upload image");
+      const { data: uploadedImage } = await response.json();
+      return uploadedImage?.Location;
+    },
+    [fetch],
+  );
+
+  // Memoized plugins to prevent recreation on every render
+  const plugins = useMemo(
+    () => [
+      toolbarPlugin({
+        toolbarContents: () => <ToolbarContents />,
+      }),
+      diffSourcePlugin({ viewMode: "rich-text", diffMarkdown: value }),
+      linkDialogPlugin(),
+      headingsPlugin(),
+      listsPlugin(),
+      linkPlugin(),
+      imagePlugin({
+        imageUploadHandler,
+      }),
+      markdownShortcutPlugin(),
+      codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+      codeMirrorPlugin({
+        codeBlockLanguages: {
+          js: "JavaScript",
+          css: "CSS",
+          txt: "text",
+          tsx: "TypeScript",
+          bash: "Bash",
+          json: "JSON",
+          python: "Python",
+        },
+      }),
+    ],
+    [value, imageUploadHandler],
+  );
+
+  // Sync external ref more efficiently
   useEffect(() => {
-    if (localRef.current && !localRef.current?.getMarkdown()) {
-      localRef.current?.setMarkdown(value);
+    if (editorRef && localRef.current) {
+      (editorRef as any).current = localRef.current;
+    }
+  }, [editorRef]);
+
+  // Only update markdown if value actually changed
+  useEffect(() => {
+    if (localRef.current && previousValue.current !== value && value !== localRef.current.getMarkdown()) {
+      localRef.current.setMarkdown(value);
+      previousValue.current = value;
     }
   }, [value]);
 
-  return (
-    <div
-      className={`block z-0 gap-4 flex-1 relative !border !border-solid ${
+  // Memoized className to prevent unnecessary re-renders
+  const memoizedClassName = useMemo(
+    () =>
+      `block z-0 gap-4 flex-1 relative !border !border-solid ${
         readOnly ? "border-transparent" : "!border-slate-300"
-      } ${className} focus-within:outline outline-1 transition-all flex-1 ease-linear duration-200 rounded h-full relative overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`}>
+      } ${className} focus-within:outline outline-1 transition-all ease-linear duration-200 rounded h-full overflow-x-hidden overflow-y-auto bg-white dark:bg-primary`,
+    [readOnly, className],
+  );
+
+  return (
+    <div className={memoizedClassName}>
       <MDXEditor
-        placeholder={placeholder}
         ref={localRef}
-        markdown={EMPTY_STRING}
+        markdown={value}
         onChange={onChange}
         readOnly={readOnly}
-        contentEditableClassName="min-[16rem]"
-        plugins={[
-          toolbarPlugin({
-            toolbarContents: () => (
-              <div className="flex gap-3 relative z-300">
-                <DiffSourceToggleWrapper>
-                  <UndoRedo />
-                </DiffSourceToggleWrapper>
-                <BlockTypeSelect />
-                <BoldItalicUnderlineToggles />
-                <CreateLink />
-                <ListsToggle />
-                <ConditionalContents
-                  options={[
-                    {
-                      when: (editor) => editor?.editorType === "codeblock",
-                      contents: () => <ChangeCodeMirrorLanguage />,
-                    },
-                    {
-                      fallback: () => <InsertCodeBlock />,
-                    },
-                  ]}
-                />
-                <InsertImage />
-              </div>
-            ),
-          }),
-          diffSourcePlugin({ viewMode: "rich-text", diffMarkdown: value }),
-          linkDialogPlugin(),
-          headingsPlugin(),
-          listsPlugin(),
-          linkPlugin(),
-          imagePlugin({
-            imageUploadHandler: async (image: File) => {
-              const formData = new FormData();
-              formData.append("file", image);
-              const response: Response = await fetch("/api/upload/image", {
-                method: "POST",
-                body: formData,
-              });
-              if (!response.ok) throw new Error("Unable to upload image");
-              const { data: uploadedImage } = await response.json();
-              return uploadedImage?.Location;
-            },
-          }),
-          markdownShortcutPlugin(),
-          codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
-          codeMirrorPlugin({
-            codeBlockLanguages: {
-              js: "JavaScript",
-              css: "CSS",
-              txt: "text",
-              tsx: "TypeScript",
-              bash: "Bash",
-              json: "JSON",
-            },
-          }),
-        ]}
+        placeholder={placeholder}
+        contentEditableClassName="min-[16rem] text-primary dark:text-slate-50"
+        plugins={plugins}
       />
     </div>
   );
 }
+
+export default memo(BaseMarkdown);

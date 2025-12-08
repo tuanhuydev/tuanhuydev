@@ -4,4 +4,36 @@ Allow: /
 User-agent: Mediapartners-Google
 Allow: /
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: *
+# Disallow private areas
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /auth/
+
+# Allow important public pages
+Allow: /posts/
+Allow: /privacy/
+
+# Crawl delay to be respectful
+Crawl-delay: 1
+
 Sitemap: https://www.tuanhuy.dev/sitemap.xml
+Host: https://www.tuanhuy.dev

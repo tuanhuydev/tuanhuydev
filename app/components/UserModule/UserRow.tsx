@@ -1,12 +1,13 @@
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import Avatar from "@mui/material/Avatar";
+import { memo } from "react";
 
 export interface UserRowProps {
   user: ObjectType;
   active?: boolean;
 }
 
-export default function UserRow({ user, active }: UserRowProps) {
+const UserRow = memo(function UserRow({ user, active }: UserRowProps) {
   return (
     <div className="py-3 w-full">
       <div className="flex items-center">
@@ -20,4 +21,7 @@ export default function UserRow({ user, active }: UserRowProps) {
       </div>
     </div>
   );
-}
+});
+
+UserRow.displayName = "UserRow";
+export default UserRow;

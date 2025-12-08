@@ -18,7 +18,9 @@
     "paths": {
       "@app/*": ["app/*"],
       "@lib/*": ["lib/*"],
-      "@public/*": ["public/*"]
+      "@server/*": ["server/*"],
+      "@public/*": ["public/*"],
+      "@features/*": ["features/*"]
     },
     "plugins": [
       {

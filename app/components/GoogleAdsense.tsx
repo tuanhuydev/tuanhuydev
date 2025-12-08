@@ -1,19 +1,12 @@
-"use client";
-
-import { GOOGLE_ADSENSE, NODE_ENV } from "@lib/configs/constants";
+import { GOOGLE_ADSENSE } from "lib/commons/constants/base";
 import Script from "next/script";
-import React, { memo } from "react";
 
-export default memo(function GoogleAdsense() {
-  const shouldAttach = NODE_ENV === "production" && GOOGLE_ADSENSE;
+export default async function GoogleAdsense() {
   return (
-    <>
-      {shouldAttach && (
-        <Script
-          strategy="afterInteractive"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${GOOGLE_ADSENSE}`}
-          crossOrigin="anonymous"></Script>
-      )}
-    </>
+    <Script
+      strategy="afterInteractive"
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${GOOGLE_ADSENSE}`}
+      crossOrigin="anonymous"
+    />
   );
-});
+}

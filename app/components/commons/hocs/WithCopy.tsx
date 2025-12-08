@@ -1,7 +1,7 @@
 "use client";
 
 import Tooltip, { TooltipProps } from "@mui/material/Tooltip";
-import { PropsWithChildren, memo, useEffect, useState } from "react";
+import { PropsWithChildren, memo, useCallback, useEffect, useState } from "react";
 
 export interface WithCopyProps extends PropsWithChildren {
   title?: string;
@@ -17,11 +17,14 @@ export default memo(function WithCopy({
 }: WithCopyProps) {
   const [tooltipContent, setTooltipContent] = useState(title);
 
-  const copy = async (e: any) => {
-    e.stopPropagation();
-    setTooltipContent("Copied!");
-    await navigator.clipboard.writeText(content);
-  };
+  const copy = useCallback(
+    async (e: any) => {
+      e.stopPropagation();
+      setTooltipContent("Copied!");
+      await navigator.clipboard.writeText(content);
+    },
+    [content],
+  );
 
   useEffect(() => {
     const tooltipTimeout = setTimeout(() => {

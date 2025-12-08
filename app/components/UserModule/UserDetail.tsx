@@ -1,17 +1,18 @@
 "use client";
 
-import DynamicForm, { DynamicFormConfig } from "../commons/Form/DynamicForm";
-import { DRAWER_MODE } from "../commons/drawers";
-import BaseDrawerHeader from "../commons/drawers/BaseDrawerHeader";
-import { useUserPermissions } from "@app/queries/permissionQueries";
-import { useProjectsQuery } from "@app/queries/projectQueries";
-import { useCreateUser, useUpdateUserDetail } from "@app/queries/userQueries";
-import LogService from "@lib/services/LogService";
+import { useUserPermissions } from "@app/_queries/permissionQueries";
+import { useProjectsQuery } from "@app/_queries/projectQueries";
+import { useCreateUser, useUpdateUserDetail } from "@app/_queries/userQueries";
+import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
+import { DRAWER_MODE } from "@app/components/commons/drawers";
+import BaseDrawerHeader from "@app/components/commons/drawers/BaseDrawerHeader";
+import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Avatar, notification } from "antd";
-import format from "date-fns/format";
+import { Avatar } from "@mui/material";
+import { format } from "date-fns";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
 export interface UserDetailProps {
   user?: ObjectType;
@@ -44,11 +45,13 @@ const revertTableUserPermissions = (tableUserPermissions: any[]) => {
 export default function UserDetail({ user, onClose }: UserDetailProps) {
   // State
   const [mode, setMode] = useState<DRAWER_MODE>(DRAWER_MODE.VIEW);
+  const [form, setForm] = useState<UseFormReturn | null>(null);
 
   // Hooks
+  const { notify } = useGlobal();
   const { mutateAsync: createUser, isSuccess: createdUserSuccess } = useCreateUser();
   const { mutateAsync: updateUser, isSuccess: updateUserSuccess } = useUpdateUserDetail();
-  const { data: projects = [] } = useProjectsQuery();
+  const { data: projects = [] } = useProjectsQuery({});
   const { data: userPermissions = [], refetch: refetchUserPermission } = useUserPermissions(user?.id);
 
   // Map user permissions to table format
@@ -67,7 +70,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   const editable = !!user;
   const title = isViewMode && user ? "User Detail" : !user ? "Create new user" : "Edit User";
 
-  const userFormConfig = useMemo((): DynamicFormConfig => {
+  const userFormConfig = useMemo((): DynamicFormV2Config => {
     const userDetailFields = [
       {
         name: "name",
@@ -164,6 +167,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
                       { label: "Post", value: "post" },
                       { label: "User", value: "user" },
                       { label: "Sprint", value: "sprint" },
+                      { label: "Task", value: "task" },
                     ],
                   },
                   {
@@ -199,11 +203,15 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           ],
         },
       ],
+      setForm,
+      submitProps: {
+        className: "ml-auto",
+      },
     };
   }, [editable, userOptions]);
 
   const submit = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: ObjectType) => {
       try {
         const { permissions, ...restFormData } = formData;
         const userPermissions = revertTableUserPermissions(permissions);
@@ -212,14 +220,14 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
           return;
         }
         await createUser({ ...restFormData, permissionIds: userPermissions });
-        form?.reset();
         onClose();
       } catch (error) {
-        form?.reset();
         LogService.log(error);
+      } finally {
+        form?.reset();
       }
     },
-    [createUser, editable, onClose, updateUser, user],
+    [createUser, editable, form, onClose, updateUser, user],
   );
 
   useEffect(() => {
@@ -227,47 +235,45 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   }, [user]);
 
   useEffect(() => {
-    let message = "User created successfully";
-    if (updateUserSuccess) message = "User updated successfully";
     if (createdUserSuccess || updateUserSuccess) {
-      notification.success({ message });
+      notify("User saved successfully", "success");
     }
-  }, [createdUserSuccess, updateUserSuccess]);
+  }, [createdUserSuccess, notify, updateUserSuccess]);
 
   useEffect(() => {
-    if (user?.id) {
-      refetchUserPermission();
-    }
+    if (user?.id) refetchUserPermission();
   }, [refetchUserPermission, user?.id]);
 
   const DrawerContent = useMemo(() => {
     if (mode === DRAWER_MODE.VIEW) {
       return (
         <div className="flex flex-col h-full gap-3">
-          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100">
-            <div className="flex gap-4 col-span-full border-b">
-              <Avatar size={128} icon={<PersonOutlineOutlined fontSize="inherit" />} />
-              <div className="my-5">
-                <h2 className="text-2xl m-0 mb-1">{user?.name}</h2>
-                <h4 className="m-0 font-normal text-slate-400">{user?.email}</h4>
-              </div>
+          <div className="flex gap-4 col-span-full border-b border-gray-200 dark:border-gray-700 p-3">
+            <Avatar sx={{ width: 72, height: 72 }}>
+              <PersonOutlineOutlined fontSize="inherit" />
+            </Avatar>
+            <div className="my-5">
+              <h2 className="text-2xl m-0 mb-1 text-gray-900 dark:text-gray-100">{user?.name}</h2>
+              <h4 className="m-0 font-normal text-slate-400 dark:text-slate-500">{user?.email}</h4>
             </div>
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Project:</label>
+          </div>
+          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100 dark:border-b-slate-700">
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Project:</label>
               Project
             </div>
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Role:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Role:</label>
               Field project
             </div>
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Status:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Status:</label>
               Field status
             </div>
           </div>
           <div className="mt-auto p-3">
-            <div className="flex gap-4 col-span-3 border-b">
-              <label className="font-normal text-slate-400">Created at:</label>
+            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+              <label className="font-normal text-slate-400 dark:text-slate-500">Created at:</label>
               {user?.createdAt ? format(new Date(user?.createdAt), "dd/MM/yyyy") : "-"}
             </div>
           </div>
@@ -277,11 +283,11 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
 
     return (
       <Fragment>
-        <DynamicForm
+        {" "}
+        <DynamicFormV2
           config={userFormConfig}
           onSubmit={submit}
           mapValues={{ ...user, permissions: tableUserPermissions }}
-          submitProps={{ className: "ml-auto" }}
         />
       </Fragment>
     );
@@ -296,7 +302,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
         editable={editable}
         onToggle={(mode) => setMode(mode as DRAWER_MODE)}
       />
-      {DrawerContent}
+      <div className="px-1">{DrawerContent}</div>
     </div>
   );
 }

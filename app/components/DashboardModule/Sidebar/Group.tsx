@@ -1,8 +1,8 @@
 import Item, { ItemProps } from "./Item";
-import { EMPTY_STRING } from "@lib/configs/constants";
-import { isPathActive } from "@lib/shared/utils/helper";
 import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
 import Tooltip from "@mui/material/Tooltip";
+import { EMPTY_STRING } from "lib/commons/constants/base";
+import { isPathActive } from "lib/utils/helper";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 
@@ -34,7 +34,7 @@ export default function Group({ label, icon, children }: GroupProps) {
     </div>
   );
   return (
-    <li className="ease-in duration-200  mb-1 text-slate-600 cursor-pointer" onClick={toggleGroup}>
+    <li className="ease-in duration-200  mb-1 text-slate-600 dark:text-slate-300 cursor-pointer" onClick={toggleGroup}>
       {sidebarOpen ? (
         element
       ) : (

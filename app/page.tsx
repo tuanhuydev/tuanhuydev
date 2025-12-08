@@ -1,18 +1,13 @@
-import { getPosts } from "./server/actions/blog";
-import Hero from "@app/components/HomeModule/Hero";
-import Navbar from "@app/components/HomeModule/Navbar";
-import Services from "@app/components/HomeModule/ServiceSection/Services";
-import Loader from "@app/components/commons/Loader";
+import LandingPage from "./_landing/LandingPage";
+import Transition from "./components/commons/Transition";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata } from "next";
-import dynamicImport from "next/dynamic";
 
-const Contact = dynamicImport(() => import("@app/components/HomeModule/Contact"), { loading: () => <Loader /> });
-const BlogSection = dynamicImport(() => import("@app/components/HomeModule/BlogSection"), {
-  loading: () => <Loader />,
-});
-const Footer = dynamicImport(() => import("@app/components/HomeModule/Footer"), { loading: () => <Loader /> });
-
-export const dynamic = "force-dynamic";
+// Use dynamic rendering only when necessary
+// https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+export const dynamic = "auto";
+export const revalidate = 3600; // Revalidate content every hour
 
 export const metadata: Metadata = {
   title: "tuanhuydev - Fullstack Software Engineer",
@@ -62,25 +57,15 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export default async function Home() {
-  const posts = await getPosts({ page: 1, pageSize: 4, published: true });
+const HomePageContent = ({ children }: { children: React.ReactNode }) => {
+  return <Transition>{children}</Transition>;
+};
 
+export default function Home() {
   return (
-    <main className=" bg-slate-50 dark:bg-slate-900 font-sans relative min-h-screen-d" data-testid="homepage-testid">
-      <div className="container mx-auto">
-        <Navbar posts={posts} />
-        <div className="relative">
-          <Hero />
-          <Services />
-          <BlogSection posts={posts} />
-          <Contact />
-          <audio id="audio" src="/assets/sounds/click.wav">
-            Your browser does not support the
-            <code>audio</code> element.
-          </audio>
-        </div>
-        <Footer />
-      </div>
-    </main>
+    <HomePageContent>
+      <LandingPage />
+      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+    </HomePageContent>
   );
 }

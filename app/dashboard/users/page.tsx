@@ -1,29 +1,26 @@
 "use client";
 
+import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
+import { useUsersQuery } from "@app/_queries/userQueries";
+import { useDebounce } from "@app/_utils/useDebounce";
 import PageContainer from "@app/components/DashboardModule/PageContainer";
+import Empty from "@app/components/commons/Empty";
+import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
 import Loader from "@app/components/commons/Loader";
 import PageFilter from "@app/components/commons/PageFilter";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { useUsersQuery } from "@app/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Empty } from "antd";
-import dynamic from "next/dynamic";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { ChangeEvent, Suspense, lazy, useCallback, useRef, useState } from "react";
 
-const UserDetail = dynamic(() => import("@app/components/UserModule/UserDetail"), {
-  loading: () => <Loader />,
-});
-const BaseDrawer = dynamic(() => import("@app/components/commons/drawers/BaseDrawer"), {
-  loading: () => <Loader />,
-});
-const UserRow = dynamic(() => import("@app/components/UserModule/UserRow"), {
-  loading: () => <Loader />,
-});
+// Replace dynamic imports with React lazy
+const UserDetail = lazy(() => import("@app/components/UserModule/UserDetail"));
+const BaseDrawer = lazy(() => import("@app/components/commons/drawers/BaseDrawer"));
+const UserRow = lazy(() => import("@app/components/UserModule/UserRow"));
 
 export type RecordMode = "VIEW" | "EDIT";
+const estimateSize = 48;
 
 export default function Page() {
-  const { data: permissions } = useCurrentUserPermission();
+  const { data: permissions = [] } = useCurrentUserPermission();
 
   const allowCreateUser = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
     const { action = "", resourceId = "", type = "" } = permission;
@@ -33,31 +30,39 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   // State
   const [filter, setFilter] = useState<ObjectType>({});
+  const [searchValue, setSearchValue] = useState("");
   const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   // Hooks
   const { data: users = [], isFetching, refetch } = useUsersQuery(filter);
 
-  const count = users?.length;
   const { getTotalSize, getVirtualItems } = useVirtualizer({
-    count,
+    count: (users as Array<ObjectType>).length,
     getScrollElement: () => containerRef.current,
-    estimateSize: useCallback(() => 48, []),
+    estimateSize: useCallback(() => estimateSize, []),
   });
+
+  const performSearch = useCallback(
+    (search: string) => {
+      setFilter((prevFilter) => {
+        if (search?.length) return { ...prevFilter, search };
+        const { search: _, ...rest } = prevFilter;
+        return rest;
+      });
+      refetch();
+    },
+    [refetch],
+  );
+
+  const debouncedSearch = useDebounce(performSearch, 500);
 
   const onSearchUsers = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setTimeout(() => {
-        const search = event.target.value;
-        setFilter((prevFilter) => {
-          if (search?.length) return { ...prevFilter, search };
-          delete prevFilter?.search;
-          return prevFilter;
-        });
-        refetch();
-      }, 500);
+      const search = event.target.value;
+      setSearchValue(search);
+      debouncedSearch(search);
     },
-    [refetch],
+    [debouncedSearch],
   );
 
   const createUser = useCallback(() => {
@@ -78,11 +83,14 @@ export default function Page() {
     [],
   );
 
-  const renderUsers = useCallback(() => {
+  const totalSize = getTotalSize();
+
+  // Use a function component instead of useMemo
+  const RenderUsers = () => {
     if (!users.length && !isFetching) return <Empty description="No users found" />;
     if (isFetching) return <Loader />;
     return (
-      <div className="w-full mt-3 relative" style={{ height: `${getTotalSize()}px` }}>
+      <div className="w-full mt-3 relative" style={{ height: `${totalSize}px` }}>
         {getVirtualItems().map(({ index, size, start }) => {
           const currentUser: ObjectType = users[index];
           const activeUser = selectedUser?.id === currentUser.id;
@@ -102,7 +110,7 @@ export default function Page() {
         })}
       </div>
     );
-  }, [getTotalSize, getVirtualItems, isFetching, selectedUser, users, viewUser]);
+  };
 
   return (
     <PageContainer title="Users">
@@ -112,14 +120,19 @@ export default function Page() {
         searchPlaceholder="Find your user"
         createLabel="New User"
         allowCreate={allowCreateUser}
+        value={searchValue}
       />
-      <div className="grow overflow-auto" ref={containerRef}>
-        {renderUsers()}
+      <div className="grow overflow-auto h-full" ref={containerRef}>
+        <RenderUsers />
       </div>
 
-      <BaseDrawer open={openDrawer} style={{ width: 600 }} onClose={closeDrawer}>
-        <UserDetail user={selectedUser} onClose={closeDrawer} />
-      </BaseDrawer>
+      <ErrorBoundary>
+        <Suspense fallback={<Loader />}>
+          <BaseDrawer open={openDrawer} onClose={closeDrawer}>
+            <UserDetail user={selectedUser} onClose={closeDrawer} />
+          </BaseDrawer>
+        </Suspense>
+      </ErrorBoundary>
     </PageContainer>
   );
 }

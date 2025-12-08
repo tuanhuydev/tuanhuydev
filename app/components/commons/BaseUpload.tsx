@@ -1,12 +1,15 @@
-import BaseButton from "./buttons/BaseButton";
-import LogService from "@lib/services/LogService";
+"use client";
+
+import { useGlobal } from "./providers/GlobalProvider";
+import { Button } from "@app/components/ui/button";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
-import { notification } from "antd";
 import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
+import LogService from "server/services/LogService";
 
 export interface BaseUploadProps {}
 
 export default function BaseUpload() {
+  const { notify } = useGlobal();
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -38,7 +41,7 @@ export default function BaseUpload() {
       });
       if (!response.ok) throw new Error("Failed to upload backup");
       setFiles([]);
-      notification.success({ message: "Backup uploaded" });
+      notify("Backup uploaded", "success");
     } catch (error) {
       LogService.log(error);
     } finally {
@@ -50,24 +53,21 @@ export default function BaseUpload() {
     <div className="flex flex-col bg-slate-50">
       {files.length ? (
         <Fragment>
-          <BaseButton
-            label="Start Upload"
-            disabled={uploading}
-            loading={uploading}
-            onClick={uploadFiles}
-            color="primary"
-          />
+          <Button disabled={uploading} onClick={uploadFiles}>
+            {uploading ? "Uploading..." : "Start Upload"}
+          </Button>
           <ul className="list-none p-0 mx-0">
             {Array.from(files).map((file: File) => (
               <li key={file.name} className="flex items-center gap-2">
                 {file.name}
-                <BaseButton
+                <Button
                   onClick={removeFile(file)}
-                  icon={<CloseOutlined fontSize="small" />}
-                  variants="text"
+                  size="icon"
+                  variant="ghost"
                   disabled={uploading}
-                  className="text-red-500"
-                />
+                  className="text-red-500">
+                  <CloseOutlined fontSize="small" />
+                </Button>
               </li>
             ))}
           </ul>

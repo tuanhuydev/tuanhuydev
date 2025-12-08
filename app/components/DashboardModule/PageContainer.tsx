@@ -1,16 +1,21 @@
 import Navbar from "./Navbar";
-import { Fragment, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
 export interface PageContainerProps extends PropsWithChildren {
   title?: string;
-  goBack?: boolean;
+  goBack?: boolean | string;
 }
 
 export default function PageContainer({ title, goBack, children }: PageContainerProps) {
+  const navbarProps = {
+    title,
+    goBack: typeof goBack === "string" ? true : goBack,
+    goBackLink: typeof goBack === "string" ? goBack : undefined,
+  };
   return (
-    <Fragment>
-      <Navbar title={title} goBack={goBack} />
-      <div className="flex flex-col h-full">{children}</div>
-    </Fragment>
+    <div className="flex flex-col h-full">
+      <Navbar {...navbarProps} />
+      <div className="flex flex-col overflow-auto flex-grow">{children}</div>
+    </div>
   );
 }

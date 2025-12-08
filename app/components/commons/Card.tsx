@@ -1,3 +1,5 @@
+"use client";
+
 import BaseImage from "./BaseImage";
 import Skeleton from "@mui/material/Skeleton";
 import React, { Fragment, PropsWithChildren } from "react";
@@ -32,17 +34,15 @@ export default function Card({
       onClick={onClick}>
       {hasImage && (
         <div className="relative aspect-[3/2] rounded-sm mb-3">
-          <BaseImage src={imageSrc} alt="Image" fill />
+          <BaseImage src={imageSrc} alt="Image" fill className="rounded-md" />
         </div>
       )}
       {loading ? (
-        <Fragment>
-          <Skeleton className="w-full" />
-        </Fragment>
+        <Skeleton className="w-full" />
       ) : (
         <Fragment>
           {title && (
-            <div className="flex justify-between text-slate-600 font-medium dark:text-slate-100 text-xl mb-3">
+            <div className="flex justify-between text-slate-600 font-bold dark:text-slate-100 text-xl mb-3">
               <span className="truncate">{title}</span> {icon} {titleExtra}
             </div>
           )}

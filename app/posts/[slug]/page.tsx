@@ -1,28 +1,84 @@
 import PostView from "@app/components/PostModule/PostView";
-import { getPostBySlug } from "@app/server/actions/blog";
-import { BASE_URL } from "@lib/configs/constants";
+import Transition from "@app/components/commons/Transition";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import { Fragment } from "react";
+import { getPostBySlug, getPosts } from "server/actions/blogActions";
 
-const GoogleAdsense = dynamic(() => import("@app/components/GoogleAdsense"), { ssr: false });
+export const revalidate = 60;
+export const dynamicParams = true;
 
-export async function generateMetadata({ params }: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
-  const slug = params.slug;
+interface MetaDataParams {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export async function generateMetadata(props: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
+  const { slug } = params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
 
   const previousImages = (await parent).openGraph?.images || [];
   const currentPostURL = new URL(`${BASE_URL}/posts/${slug}`);
 
+  // Extract a clean description from content (remove HTML tags)
+  const cleanDescription =
+    post.content
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .replace(/\s+/g, " ") // Replace multiple spaces with single space
+      .trim()
+      .slice(0, 155) + (post.content.length > 155 ? "..." : "");
+
   return {
-    title: post.title,
-    metadataBase: currentPostURL,
-    description: post.content.slice(0, 160),
+    title: `${post.title} | tuanhuydev`,
+    metadataBase: new URL(BASE_URL),
+    description: cleanDescription,
+    keywords: `${post.title}, tuanhuydev, blog, web development, programming`,
+    authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
+    creator: "Huy Nguyen Tuan",
+    publisher: "tuanhuydev",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
     openGraph: {
       title: post.title,
+      description: cleanDescription,
       url: currentPostURL,
-      images: [post?.thumbnail, ...previousImages],
+      siteName: "tuanhuydev",
+      images: [
+        {
+          url: post.thumbnail ?? "/assets/images/preview.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+        ...previousImages,
+      ],
+      locale: "en_US",
+      type: "article",
+      publishedTime: post.publishedAt
+        ? new Date(post.publishedAt).toISOString()
+        : new Date(post.createdAt).toISOString(),
+      modifiedTime: post.updatedAt ? new Date(post.updatedAt).toISOString() : new Date(post.createdAt).toISOString(),
+      section: "Technology",
+      tags: ["web development", "programming", "technology"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: cleanDescription,
+      images: [post.thumbnail ?? "/assets/images/preview.png"],
+      creator: "@tuanhuydev",
     },
     alternates: {
       canonical: currentPostURL,
@@ -30,16 +86,35 @@ export async function generateMetadata({ params }: MetaDataParams, parent: Resol
   };
 }
 
-export default async function Page({ params }: any) {
+export async function generateStaticParams() {
+  try {
+    const posts: Post[] = await getPosts({ published: true });
+    return posts.map((post) => ({
+      slug: String(post.slug),
+    }));
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+    return [];
+  }
+}
+
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   const { slug } = params;
 
   const post = await getPostBySlug(slug);
   if (!post) return <h1>Not Found</h1>;
 
   return (
-    <Fragment>
+    <Transition>
       <PostView post={post} />
-      <GoogleAdsense />
-    </Fragment>
+      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
+    </Transition>
   );
 }

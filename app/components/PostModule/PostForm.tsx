@@ -1,40 +1,30 @@
 "use client";
 
-import { makeFieldMap } from "@app/_utils/helper";
-import Loader from "@app/components/commons/Loader";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useCreatePost, useUpdatePost } from "@app/queries/postQueries";
-import { EMPTY_STRING } from "@lib/configs/constants";
-import LogService from "@lib/services/LogService";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import { isURLValid, transformTextToDashed } from "@lib/shared/utils/helper";
-import { MDXEditorMethods } from "@mdxeditor/editor";
-import { InvalidateQueryFilters, useQueryClient } from "@tanstack/react-query";
-import { App, Form } from "antd";
-import dynamic from "next/dynamic";
+import { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
+import ConfirmBox from "../commons/modals/ConfirmBox";
+import { useGlobal } from "../commons/providers/GlobalProvider";
+import { useCreatePost, useDeletePost, useUpdatePost } from "@app/_queries/postQueries";
+import { Button } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
+import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import LogService from "server/services/LogService";
 
-const BaseMarkdown = dynamic(() => import("@app/components/commons/BaseMarkdown"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+// Replace dynamic import with React lazy
+const DynamicFormV2 = lazy(() => import("../commons/FormV2/DynamicFormV2"));
 
-const Upload = dynamic(() => import("antd/es/upload"), { ssr: false });
+export interface PostFormProps {
+  post?: Post;
+}
 
-const Input = dynamic(() => import("antd/es/input"), { ssr: false });
+export const PostForm: React.FC<PostFormProps> = ({ post }) => {
+  // Hooks
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { notify } = useGlobal();
 
-const initialValues = {
-  title: EMPTY_STRING,
-  slug: EMPTY_STRING,
-  content: EMPTY_STRING,
-  thumbnail: EMPTY_STRING,
-};
-
-const rules = [{ required: true, message: "This field is required" }];
-
-export default function PostForm({ post }: any) {
   const {
     mutateAsync: mutateCreatePost,
     isPending: isCreating,
@@ -49,60 +39,125 @@ export default function PostForm({ post }: any) {
     isError: updateError,
   } = useUpdatePost();
 
-  // Hooks
-  const [form] = Form.useForm();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const { notification } = App.useApp();
+  const { mutateAsync: mutateDeletePost, isSuccess: deleteSuccess, isPending: isDeleting } = useDeletePost();
 
-  // State
-  const [content, setContent] = useState<string>(EMPTY_STRING);
-  const [disabledUpload, setDisabledUpload] = useState(false);
-  const [fileList, setFileList] = useState([]);
-  const [assets, setAssets] = useState([]);
-  // const [previewValue, setPreviewValue] = useState<ObjectType>({});
-  const [isSaveDraft, setIsSaveDraft] = useState(false);
+  // States
+  const [form, setForm] = useState<UseFormReturn | null>(null);
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
-  const editorRef = useRef<MDXEditorMethods | null>(null);
-  const submitting = isCreating || isUpdating;
-  const isUpdatingPost = !!post;
+  // Constants
+  const isSuccess = createSuccess || updateSuccess;
+  const isError = createError || updateError;
+  const isPending = isCreating || isUpdating || isDeleting;
+  const hasPost = !!post;
 
-  const createPost = useCallback(
-    async (formData: ObjectType) => {
-      try {
-        await mutateCreatePost(formData);
-      } catch (error) {
-        LogService.log(error);
-      } finally {
-        form.resetFields();
-        setContent(EMPTY_STRING);
-        queryClient.invalidateQueries({ queryKey: ["posts"] });
-      }
+  const config: DynamicFormV2Config = {
+    fields: [
+      {
+        name: "title",
+        type: "text",
+        options: {
+          placeholder: "Post Title",
+        },
+        validate: { required: true },
+      },
+      {
+        name: "slug",
+        type: "text",
+        options: {
+          placeholder: "Post Slug",
+          disabled: true,
+        },
+        validate: { required: true },
+      },
+      {
+        name: "thumbnail",
+        type: "text",
+        options: {
+          placeholder: "Thumbnail URL",
+        },
+      },
+      {
+        name: "content",
+        type: "richeditor",
+        options: {
+          className: "min-h-96",
+          placeholder: "Post Content",
+        },
+        validate: { required: true },
+      },
+    ],
+    submitProps: {
+      allowDefault: false,
     },
-    [form, mutateCreatePost, queryClient],
+    setForm,
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      notify("Post saved successfully", "success");
+      if (post?.id) {
+        queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+      }
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      router.push("/dashboard/posts");
+    } else if (isError) {
+      notify("Failed to save post", "error");
+    }
+  }, [hasPost, isError, isSuccess, notify, post?.id, queryClient, router]);
+
+  useEffect(() => {
+    if (form) {
+      const subscription = form.watch((values, { name }) => {
+        switch (name) {
+          case "title":
+            const slug = transformTextToDashed(values.title);
+            form.setValue("slug", slug);
+            break;
+          case "thumbnail":
+            if (isURLValid(values.thumbnail)) {
+              form.clearErrors("thumbnail");
+            } else {
+              form.setError("thumbnail", {
+                type: "manual",
+                message: "Please enter a valid URL",
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, [form]);
+
+  const toggleConfirm = useCallback(
+    (toggle: boolean = false) =>
+      () => {
+        setOpenConfirm(toggle);
+      },
+    [],
   );
 
-  const updatePost = useCallback(
-    async (formData: ObjectType) => {
-      try {
-        const postToUpdate = { id: post.id, ...formData };
-        await mutateUpdatePost(postToUpdate);
-        queryClient.removeQueries(["posts", post.id] as InvalidateQueryFilters);
-      } catch (error) {
-        LogService.log(error);
-      } finally {
-        setContent(EMPTY_STRING);
-        queryClient.invalidateQueries({ queryKey: ["posts"] });
-      }
-    },
-    [mutateUpdatePost, post?.id, queryClient],
-  );
+  const deletePost = useCallback(async () => {
+    if (post?.id) {
+      await mutateDeletePost(post.id);
+      notify("Post deleted successfully", "success");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      router.push("/dashboard/posts");
+    }
+  }, [mutateDeletePost, notify, post, queryClient, router]);
 
   const handlePostMutation = useCallback(
     async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>, form?: UseFormReturn) => {
       try {
+        if (form) {
+          await form.trigger();
+        }
         await mutationFn(formData);
-        router.back();
+        router.push("/dashboard/posts");
       } catch (error) {
         LogService.log(error);
       } finally {
@@ -112,161 +167,74 @@ export default function PostForm({ post }: any) {
     [router],
   );
 
+  const createPost = useCallback(
+    async (formData: ObjectType) => {
+      await mutateCreatePost(formData);
+    },
+    [mutateCreatePost],
+  );
+
+  const updatePost = useCallback(
+    async (formData: ObjectType) => {
+      const postToUpdate = { id: post!.id, ...formData };
+      await mutateUpdatePost(postToUpdate);
+    },
+    [mutateUpdatePost, post],
+  );
+
   const submit = useCallback(
-    async (formData: ObjectType, returnForm?: UseFormReturn) => {
-      formData.assets = assets;
-      formData.publishedAt = isSaveDraft ? null : new Date();
-
-      const mutationFn = isUpdatingPost ? updatePost : createPost;
-      await handlePostMutation(formData, mutationFn, returnForm);
+    async (formData: ObjectType) => {
+      const mutationFn = hasPost ? updatePost : createPost;
+      await handlePostMutation(formData, mutationFn);
     },
-    [assets, createPost, handlePostMutation, isSaveDraft, isUpdatingPost, updatePost],
+    [createPost, handlePostMutation, hasPost, updatePost],
   );
 
-  const handleFieldChange = useCallback(
-    (changedFields: Array<ObjectType>, allFields: Array<ObjectType>) => {
-      const changedMap = makeFieldMap(changedFields);
-      const fieldsMap = makeFieldMap(allFields);
-
-      // Make slug from title
-      const hasTitleButNoSlug = changedMap.has("title") && !changedMap.has("slug");
-      if (hasTitleButNoSlug && changedMap.get("title").value) {
-        const dashedSlug = transformTextToDashed(changedMap.get("title").value);
-        form.setFieldValue("slug", dashedSlug);
+  const handleSubmit =
+    (willPublished: boolean = false) =>
+    async () => {
+      if (willPublished) {
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        form?.setValue("publishedAt", new Date().toISOString());
       }
-      // Disabled upload if there is a thumbnail
-      setDisabledUpload(fieldsMap.has("thumbnail") && fieldsMap.get("thumbnail").value);
-    },
-    [form],
-  );
-
-  const updatePostAssets = useCallback((asset: ObjectType) => {
-    setAssets((prevAssets) => [...prevAssets, asset.id] as never);
-  }, []);
-
-  const triggerSubmit = useCallback(() => {
-    form.submit();
-  }, [form]);
-
-  const uploadFile = ({ file, fileList }: any) => {
-    setFileList(fileList);
-    const { response = {}, error } = file;
-    const { data: asset } = response;
-    if (error) notification.error({ message: (error as BaseError).message });
-    if (asset) {
-      updatePostAssets(asset);
-      form.setFieldValue("thumbnail", asset.url);
-
-      setFileList([]);
-      setDisabledUpload(true);
-    }
-  };
-
-  const validateUrl = (ruleObject: any, value: string) => {
-    return isURLValid(value) || !value ? Promise.resolve() : Promise.reject(new Error("Please enter a valid URL"));
-  };
-
-  useEffect(() => {
-    const updateContentInterval = setInterval(() => {
-      form.setFieldsValue({ content: content });
-    }, 1500);
-    return () => clearInterval(updateContentInterval);
-  }, [content, form]);
-
-  useEffect(() => {
-    if (isUpdatingPost) {
-      for (let [key, value] of Object.entries(post)) {
-        form.setFieldValue(key, value);
-        if (key === "content") {
-          setContent(value as string);
-          editorRef.current?.setMarkdown(value as string);
-        } else if (key === "PostAsset") {
-          const assets = (value as Array<Partial<ObjectType>>).map(({ assetId }) => assetId);
-          setAssets(assets as never);
-        }
-      }
-    }
-  }, [form, isUpdatingPost, post]);
-
-  useEffect(() => {
-    if (createSuccess || updateSuccess) {
-      router.back();
-    }
-    if (createError || updateError) {
-      notification?.error({ message: "Save post failed" });
-    }
-  }, [createError, createSuccess, notification, router, updateError, updateSuccess]);
+      await form?.handleSubmit(submit as any)();
+    };
 
   return (
-    <div className="grid grid-cols-4 lg:grid-cols-12 grid-rows-1 gap-4" data-testid="post-form-testid">
-      <div className="col-span-full lg:col-span-10 p-2">
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={initialValues}
-          onFieldsChange={handleFieldChange}
-          onFinish={submit}>
-          <Form.Item name="title" rules={rules}>
-            <Input placeholder="How to make a new blog ?" size="large" className="mb-2" disabled={submitting} />
-          </Form.Item>
-          <Form.Item name="slug" rules={rules}>
-            <Input placeholder="how-to-make-a-new-blog" size="large" className="mb-2" disabled={submitting} />
-          </Form.Item>
-          <div className="flex items-center transition-all">
-            <Form.Item name="thumbnail" className="grow" rules={[{ validator: validateUrl }]}>
-              <Input placeholder="https://image-link-url" size="large" disabled={submitting} />
-            </Form.Item>
-            <div className="mb-6 flex items-center">
-              <div className="mx-3 text-slate-500">Or</div>
-              <Upload
-                name="file"
-                className="w-full"
-                onChange={uploadFile}
-                fileList={fileList}
-                action="/api/upload/image"
-                headers={{ Authorization: `Bearer ${queryClient.getQueryData(["accessToken"])}` }}
-                accept="image/png, image/jpeg"
-                multiple={false}
-                listType="picture"
-                disabled={disabledUpload}>
-                <BaseButton label="Upload Image" disabled={true} />
-              </Upload>
-            </div>
-          </div>
-          <Form.Item name="content" rules={rules}>
-            <Suspense fallback={<Loader />}>
-              <BaseMarkdown
-                onChange={(value: string) => setContent(value)}
-                placeholder="Post content here..."
-                value={content}
-                className="min-h-[20rem] grow"
-              />
-            </Suspense>
-          </Form.Item>
-        </Form>
+    <div className="grid grid-cols-12 gap-4 w-full">
+      <div className="lg:col-span-10 col-span-12">
+        <Suspense fallback={<div>Loading...</div>}>
+          <DynamicFormV2 config={config} onSubmit={submit} mapValues={post} />
+        </Suspense>
       </div>
-      <div className="col-span-full md:col-span-1 lg:col-span-full row-start-auto col-start-1 lg:col-start-11 gap-3 flex lg:flex-col p-2">
-        <BaseButton
-          onClick={triggerSubmit}
-          disabled={submitting && !isSaveDraft}
-          loading={submitting && !isSaveDraft}
-          label={isUpdatingPost && isSaveDraft ? "Save" : "Publish"}
-          className="bg-primary text-slate-100 capitalize mb-2"
-        />
-        {!post?.publishedAt && (
-          <BaseButton
-            variants="outline"
-            className="mb-2"
-            onClick={() => {
-              setIsSaveDraft(true);
-              triggerSubmit();
-            }}
-            disabled={submitting && isSaveDraft}
-            loading={submitting && isSaveDraft}
-            label="Save Draft"
-          />
+      <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
+        <Button variant="outlined" onClick={handleSubmit(false)}>
+          {hasPost ? "Update Post" : "Save Draft"}
+        </Button>
+        {hasPost && !(post as unknown as Post)?.publishedAt && (
+          <Button variant="contained" onClick={handleSubmit(true)}>
+            Save & Publish
+          </Button>
+        )}
+        {hasPost && (
+          <Button
+            variant="contained"
+            color="error"
+            disabled={isDeleting}
+            onClick={toggleConfirm(true)}
+            disableElevation
+            sx={{ mt: "0.2rem" }}>
+            Delete Post
+          </Button>
         )}
       </div>
+      <ConfirmBox
+        title="Delete Post"
+        description="Are you sure you want to delete this post?"
+        open={openConfirm}
+        onConfirm={deletePost}
+        onClose={toggleConfirm(false)}
+      />
     </div>
   );
-}
+};

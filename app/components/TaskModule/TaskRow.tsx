@@ -1,10 +1,10 @@
 import Badge from "../commons/Badge";
-import Button from "../commons/buttons/BaseButton";
 import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_utils/constants";
+import { Button } from "@app/components/ui/button";
 import StarOutlined from "@mui/icons-material/StarOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 
 export interface TaskRowProps {
   onSelect: (task: ObjectType) => void;
@@ -15,7 +15,7 @@ export interface TaskRowProps {
   showAssignee?: boolean;
 }
 
-export default function TaskRow({
+const TaskRow = memo(function TaskRow({
   task,
   onSelect,
   onPin,
@@ -55,26 +55,27 @@ export default function TaskRow({
       className={`flex flex-shrink-0 w-full items-center gap-5 p-1 mb-1 cursor-pointer transition-all duration-300 rounded-md ${activeClass} text-primary dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-gray-700`}
       onClick={selectTask}>
       {TaskTypeElement}
-      <h3 className="capitalize w-2/5 text-base flex items-center font-medium m-0 flex-shrink-0 truncate">{title}</h3>
+      <h3 className="capitalize w-2/5 text-base flex items-center font-medium m-0 truncate">{title}</h3>
       <div className="flex items-center gap-3 shrink-0 w-56">
-        <label className="text-sm font-normal text-slate-400">Status: </label>
+        <label className="text-sm font-normal text-slate-400 dark:text-slate-500">Status: </label>
         <Badge value={taskStatus.label} color={taskStatus.color} />
       </div>
       {showAssignee && (
         <div className="flex items-center gap-3 shrink-0 w-56">
-          <label className="text-sm font-normal text-slate-400">Assignee: </label>
+          <label className="text-sm font-normal text-slate-400 dark:text-slate-500">Assignee: </label>
           <span className="truncate">{assignee?.name ?? "Unassigned"}</span>
         </div>
       )}
       <div className="ml-auto flex justify-end">
         {onPin && (
-          <Button
-            variants="text"
-            onClick={pinTask}
-            icon={<StarOutlined className={`text-sm !w-4 !h-4 ${pinnedClass}`} />}
-          />
+          <Button variant="ghost" size="icon" onClick={pinTask}>
+            <StarOutlined className={`text-sm !w-4 !h-4 ${pinnedClass}`} />
+          </Button>
         )}
       </div>
     </div>
   );
-}
+});
+
+TaskRow.displayName = "TaskRow";
+export default TaskRow;

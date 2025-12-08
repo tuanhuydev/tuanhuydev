@@ -1,15 +1,34 @@
-import Drawer, { DrawerProps } from "@mui/material/Drawer";
-import { CSSProperties } from "react";
+"use client";
 
-const drawerStyle: { [key: string]: CSSProperties } = {
-  header: { display: "none" },
-  body: { padding: 0 },
-};
+import { Drawer, DrawerContent, DrawerTitle } from "@app/components/ui/drawer";
+import { VisuallyHidden } from "@app/components/ui/visually-hidden";
+import { ReactNode } from "react";
 
-export default function BaseDrawer({ children, open = false, onClose, ...restProps }: DrawerProps) {
+export interface BaseDrawerProps {
+  children: ReactNode;
+  open?: boolean;
+  onClose?: () => void;
+  side?: "bottom" | "right" | "left" | "top";
+  className?: string;
+  title?: string;
+}
+
+export default function BaseDrawer({
+  children,
+  open = false,
+  onClose,
+  side = "right",
+  className,
+  title = "Drawer",
+}: BaseDrawerProps) {
   return (
-    <Drawer {...restProps} style={drawerStyle} open={open} onClose={onClose}>
-      {children}
+    <Drawer open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
+      <DrawerContent side={side} className={className}>
+        <VisuallyHidden>
+          <DrawerTitle>{title}</DrawerTitle>
+        </VisuallyHidden>
+        {children}
+      </DrawerContent>
     </Drawer>
   );
 }

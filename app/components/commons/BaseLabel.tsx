@@ -1,5 +1,11 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 
-export default function BaseLabel({ children }: PropsWithChildren) {
-  return <label className="text-sm capitalize text-slate-400 min-w-[3rem]">{children}</label>;
+interface BaseLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {}
+
+export default function BaseLabel({ children, className = "", ...props }: BaseLabelProps) {
+  return (
+    <label className={`text-sm capitalize text-muted-foreground min-w-[3rem] ${className}`} {...props}>
+      {children}
+    </label>
+  );
 }

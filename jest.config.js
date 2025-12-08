@@ -7,13 +7,14 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-  setupFilesAfterEnv: ["<rootDir>/lib/configs/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/server/configs/jest.setup.js"],
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
     "^@lib(.*)$": "<rootDir>/lib/$1",
     "^@shared(.*)$": "<rootDir>/lib/shared/$1",
     "^@public(.*)$": "<rootDir>/public/$1",
     "^@app/(.*)$": "<rootDir>/app/$1",
+    "^@server(.*)$": "<rootDir>/server/$1",
   },
   modulePathIgnorePatterns: ["<rootDir>/build/", "<rootDir>/.history/"],
   testEnvironment: "jest-environment-jsdom",

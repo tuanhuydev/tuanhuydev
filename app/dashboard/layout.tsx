@@ -1,20 +1,24 @@
-import Sidebar from "@app/components/DashboardModule/Sidebar";
+import Loader from "@app/components/commons/Loader";
 import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
-import { PropsWithChildren } from "react";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { PropsWithChildren, Suspense, lazy } from "react";
 
+const GlobalProvider = lazy(() => import("@app/components/commons/providers/GlobalProvider"));
+const ThemeProvider = lazy(() => import("@app/components/commons/providers/ThemeProvider"));
+
+// Force all dashboard pages to be dynamic
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   return (
-    <LocalizationParser>
-      <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">
-        <div className="flex w-full relative">
-          <Sidebar />
-          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 p-3 h-full overflow-auto flex grow flex-col">
-            {children}
-          </div>
-        </div>
-      </div>
-    </LocalizationParser>
+    <Suspense fallback={<Loader />}>
+      <ThemeProvider>
+        <LocalizationParser>
+          <AppRouterCacheProvider>
+            <GlobalProvider>{children}</GlobalProvider>
+          </AppRouterCacheProvider>
+        </LocalizationParser>
+      </ThemeProvider>
+    </Suspense>
   );
 }

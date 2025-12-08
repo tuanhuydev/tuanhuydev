@@ -1,19 +1,17 @@
-import BaseCard from "../commons/Card";
-import Loader from "../commons/Loader";
-import { DATE_FORMAT } from "@lib/configs/constants";
-import format from "date-fns/format";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import React, { useCallback, useMemo } from "react";
+"use client";
 
-const Tag = dynamic(async () => (await import("antd/es/tag")).default, { ssr: false, loading: () => <Loader /> });
+import BaseCard from "../commons/Card";
+import { format } from "date-fns";
+import { DATE_FORMAT } from "lib/commons/constants/base";
+import { useRouter } from "next/navigation";
+import React, { memo, useCallback, useMemo, type JSX } from "react";
 
 export interface PostCardProps {
   post: ObjectType;
   actions?: React.ReactNode;
 }
 
-export default function PostCard({ post, actions }: PostCardProps) {
+const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
   const router = useRouter();
 
   const { title, thumbnail = "", publishedAt, createdAt } = post;
@@ -25,20 +23,20 @@ export default function PostCard({ post, actions }: PostCardProps) {
 
   const Status: JSX.Element = useMemo(() => {
     const isPublished = !!publishedAt;
-    const color = isPublished ? "success" : "warning";
+    const color = isPublished ? "bg-green-100 text-green-400" : "bg-amber-100 text-amber-400";
     const content = isPublished ? "published" : "draft";
 
     return (
-      <Tag bordered={false} color={color} className="capitalize">
+      <div color={color} className={`text-xs py-1 px-3 rounded-md capitalize ${color}`}>
         {content}
-      </Tag>
+      </div>
     );
   }, [publishedAt]);
 
   return (
     <BaseCard
       title={title}
-      className="w-[18rem]"
+      className="w-full md:w-[18rem]"
       imageSrc={thumbnail as string}
       hasImage
       onClick={navigateProjectEdit}
@@ -52,4 +50,7 @@ export default function PostCard({ post, actions }: PostCardProps) {
       {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}
     </BaseCard>
   );
-}
+});
+
+PostCard.displayName = "PostCard";
+export default PostCard;

@@ -2,18 +2,15 @@
 
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import ConfigSection from "@app/components/SettingModule/ConfigSection";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useFetch } from "@app/queries/useSession";
-import { BASE_URL } from "@lib/configs/constants";
-import BaseError from "@lib/shared/commons/errors/BaseError";
-import React from "react";
+import { Button } from "@app/components/ui/button";
+import { useFetch } from "@features/Auth";
+import { BASE_URL } from "lib/commons/constants/base";
+import BaseError from "lib/commons/errors/BaseError";
 
 function Page() {
   const { fetch } = useFetch();
-  const [downloading, setDownloading] = React.useState(false);
 
   const downloadBackup = async () => {
-    setDownloading(true);
     try {
       const response = await fetch(`${BASE_URL}/api/backup`, { method: "GET" });
       if (!response.ok) throw new BaseError("Unable to save backup");
@@ -35,8 +32,6 @@ function Page() {
       downloadElement.click();
     } catch (error) {
       console.error(error);
-    } finally {
-      setDownloading(false);
     }
   };
 
@@ -44,7 +39,9 @@ function Page() {
     <PageContainer title="Setting">
       <ConfigSection title="Backup" description="Backup application data">
         <div className="flex items-start gap-3">
-          <BaseButton variants="outline" loading={downloading} onClick={downloadBackup} label="Download Backup" />
+          <Button variant="outline" onClick={downloadBackup}>
+            Download Backup
+          </Button>
         </div>
       </ConfigSection>
     </PageContainer>

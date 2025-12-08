@@ -1,8 +1,9 @@
-import PermissionController from "@lib/controllers/PermissionController";
-import UserController from "@lib/controllers/UserController";
 import { NextRequest } from "next/server";
+import PermissionController from "server/controllers/PermissionController";
+import UserController from "server/controllers/UserController";
 
-export async function GET(request: NextRequest, { params }: any) {
+export async function GET(request: NextRequest, props: any) {
+  const params = await props.params;
   return UserController.getUserPermissions(request, params);
 }
 

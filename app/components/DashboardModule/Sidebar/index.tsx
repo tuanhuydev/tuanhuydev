@@ -1,94 +1,108 @@
 "use client";
 
 import { ItemProps } from "./Item";
-import Loader from "@app/components/commons/Loader";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
-import { useMobileSidebar } from "@app/queries/metaQueries";
-import { useCurrentUserPermission } from "@app/queries/permissionQueries";
-import { UserPermissions } from "@lib/shared/commons/constants/permissions";
-import { hasPermission } from "@lib/shared/utils/helper";
+import { useMobileSidebar } from "@app/_queries/metaQueries";
+import { QUERY_KEYS } from "@app/_queries/queryKeys";
+import { Button } from "@app/components/ui/button";
 import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
-import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
+import WorkspacesOutlineIcon from "@mui/icons-material/WorkspacesOutline";
 import { useQueryClient } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
-import { FC, useEffect, useMemo, useState } from "react";
+import { UserPermissions } from "lib/commons/constants/permissions";
+import { FC, lazy, ReactNode, useCallback, useEffect, useState } from "react";
 
-const Group = dynamic(() => import("./Group"), { ssr: false, loading: () => <Loader /> });
-const Item = dynamic(() => import("./Item"), { ssr: false, loading: () => <Loader /> });
+// Replace dynamic imports with React lazy
+const Group = lazy(() => import("./Group"));
+const Item = lazy(() => import("./Item"));
 
 const LargeScreenSize: number = 924;
 
-const Sidebar: FC = () => {
+export interface SidebarProps {
+  permissions: Record<string, any>[];
+}
+
+const permissionMap = {
+  [UserPermissions.VIEW_PROJECT]: {
+    label: "Manage Projects",
+    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    path: "/dashboard/projects",
+    id: UserPermissions.VIEW_PROJECT,
+  },
+  [UserPermissions.VIEW_POST]: {
+    label: "Manage Posts",
+    icon: <ArticleOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    path: "/dashboard/posts",
+    id: UserPermissions.VIEW_POST,
+  },
+  [UserPermissions.VIEW_USER]: {
+    label: "Manage Users",
+    icon: <PersonOutlineOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    path: "/dashboard/users",
+    id: UserPermissions.VIEW_USER,
+  },
+  [UserPermissions.VIEW_SETTING]: {
+    label: "Settings",
+    icon: <SettingsOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    path: "/dashboard/settings",
+    id: UserPermissions.VIEW_SETTING,
+  },
+};
+
+const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
+  const routes: Array<ItemProps> = [
+    {
+      label: "Home",
+      icon: <HomeOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      path: "/dashboard/home",
+      id: "Home",
+    },
+    {
+      label: "Apps",
+      icon: <WorkspacesOutlineIcon sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      path: "/dashboard/apps",
+      id: "Apps",
+    },
+  ];
+
+  permissions.forEach((permission) => {
+    Object.keys(permission).forEach((key) => {
+      if (Object.keys(permissionMap).includes(key)) {
+        routes.push(permissionMap[key]);
+      }
+    });
+  });
+
+  return routes.map((route: any) => {
+    const { children = [] } = route;
+    return children?.length ? <Group {...route} key={route.id} /> : <Item {...route} key={route.id} />;
+  });
+};
+
+const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
   const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const { data: openMobile } = useMobileSidebar();
-  const { data: permissions = [] } = useCurrentUserPermission();
-
-  const RenderRoutes = useMemo(() => {
-    const routes: Array<ItemProps> = [
-      { label: "Home", icon: <HomeOutlined className="!text-base" />, path: "/dashboard/home", id: "Home" },
-      { label: "Tasks", icon: <TaskAltOutlined className="!text-base" />, path: "/dashboard/tasks", id: "Task" },
-    ];
-    if (hasPermission(permissions, { type: "project", action: "view" })) {
-      routes.push({
-        label: "Manage Projects",
-        icon: <GridViewOutlined className="!text-base" />,
-        path: "/dashboard/projects",
-        id: UserPermissions.VIEW_PROJECT,
-      });
-    }
-    if (hasPermission(permissions, { type: "post", action: "view" })) {
-      routes.push({
-        label: "Manage Posts",
-        icon: <ArticleOutlined className="!text-base" />,
-        path: "/dashboard/posts",
-        id: UserPermissions.VIEW_POST,
-      });
-    }
-    if (hasPermission(permissions, { type: "user", action: "view" })) {
-      routes.push({
-        label: "Manage Users",
-        icon: <PersonOutlineOutlined className="!text-base" />,
-        path: "/dashboard/users",
-        id: UserPermissions.VIEW_USER,
-      });
-    }
-    if (hasPermission(permissions, { type: "setting", action: "view" })) {
-      routes.push({
-        label: "Settings",
-        icon: <SettingsOutlined className="!text-base" />,
-        path: "/dashboard/settings",
-        id: UserPermissions.VIEW_SETTING,
-      });
-    }
-
-    return routes.map((route: any) => {
-      const { children = [] } = route;
-      return children?.length ? <Group {...route} key={route.id} /> : <Item {...route} key={route.id} />;
-    });
-  }, [permissions]);
 
   useEffect(() => {
     const isMobile = window.innerWidth < LargeScreenSize;
     if (isMobile) {
-      queryClient.setQueryData(["showMobileHamburger"], isMobile);
+      queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], isMobile);
       setSidebarOpen(isMobile);
     }
   }, [queryClient]);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     if (window.innerWidth < LargeScreenSize) {
-      queryClient.setQueryData(["showMobileHamburger"], !openMobile);
+      queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], !openMobile);
       setSidebarOpen(true);
     } else {
       setSidebarOpen(!sidebarOpen);
     }
-  };
+  }, [openMobile, queryClient, sidebarOpen]);
 
   return (
     <div
@@ -107,17 +121,18 @@ const Sidebar: FC = () => {
           <path d="M14 10.6391V8.68913C14 8.57412 13.9302 8.4699 13.8218 8.42319L9.02184 6.35364C8.82346 6.26811 8.6 6.40898 8.6 6.61959V8.01495C8.6 8.13244 8.67282 8.23841 8.78462 8.28359L11.5354 9.39547C11.7815 9.49497 11.7815 9.83326 11.5354 9.93276L8.78462 11.0446C8.67282 11.0898 8.6 11.1958 8.6 11.3133V12.7086C8.6 12.9192 8.82346 13.0601 9.02184 12.9746L13.8218 10.905C13.9302 10.8583 14 10.7541 14 10.6391Z" />
         </svg>
       </div>
-      <BaseButton
-        className="!bg-slate-50 !rounded-full dark:!bg-primary text-slate-400 text-center absolute -right-3 top-1/2 z-[10] transition-transform duration-300"
-        variants="text"
-        onClick={toggleSidebar}
-        icon={<ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />}
-      />
+      <Button
+        className="!bg-slate-50 !rounded-full dark:!bg-slate-800 text-slate-400 dark:text-slate-300 text-center absolute -right-3 top-1/2 z-[10] transition-transform duration-300"
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}>
+        <ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />
+      </Button>
       <ul
         className={`${
-          sidebarOpen ? "w-[12.25rem]" : "w-[2.375rem]"
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.35rem]"
         } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
-        {RenderRoutes}
+        {makeRoutes(permissions)}
       </ul>
     </div>
   );

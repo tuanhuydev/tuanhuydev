@@ -1,17 +1,19 @@
 "use client";
 
+import { MutationParams, useMutateSprint, useSprintQuery } from "@app/_queries/sprintQueries";
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
-import DynamicForm, { DynamicFormConfig } from "@app/components/commons/Form/DynamicForm";
+import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
 import Loader from "@app/components/commons/Loader";
-import BaseButton from "@app/components/commons/buttons/BaseButton";
 import BaseModal from "@app/components/commons/modals/BaseModal";
-import { MutationParams, useMutateSprint } from "@app/queries/sprintQueries";
-import { DATE_FORMAT } from "@lib/configs/constants";
+import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
+import { Button } from "@app/components/ui/button";
+import { formatDateString } from "@lib/utils/helper";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { format } from "date-fns";
+import { DATE_FORMAT } from "lib/commons/constants/base";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
@@ -21,13 +23,19 @@ export interface Sprint {
   description: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: "active" | "inactive";
+  projectId?: string;
+}
+
+export interface SprintFilter {
+  status?: "active" | "inactive";
+  search?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface SprintCardProps {
-  isLoading: boolean;
   projectId: string;
-  sprints: Sprint[];
   className?: string;
   onClick?: () => void;
 }
@@ -38,136 +46,156 @@ export interface ModalState {
   isEditOpen: boolean;
 }
 
+const config: DynamicFormV2Config = {
+  fields: [
+    {
+      type: "text",
+      name: "name",
+      options: {
+        placeholder: "Sprint name",
+      },
+      validate: {
+        required: true,
+        min: 3,
+        max: 50,
+      },
+    },
+    {
+      type: "textarea",
+      name: "description",
+      options: {
+        placeholder: "Sprint goal",
+      },
+      validate: {
+        required: true,
+        min: 10,
+        max: 500,
+      },
+    },
+    {
+      type: "select",
+      name: "status",
+      options: {
+        placeholder: "Sprint status",
+        options: [
+          { label: "Active", value: "active" },
+          { label: "Inactive", value: "inactive" },
+        ],
+      },
+      validate: {
+        required: true,
+      },
+    },
+    {
+      type: "datepicker",
+      name: "startDate",
+      className: "w-1/2",
+      options: {
+        placeholder: "Start date",
+      },
+      validate: {
+        required: true,
+      },
+    },
+    {
+      type: "datepicker",
+      name: "endDate",
+      className: "w-1/2",
+      validate: {
+        required: true,
+        min: "startDate",
+      },
+    },
+  ],
+};
+
 export const SprintForm: React.FC<{ projectId: string; sprint?: Sprint; onSuccess?: () => void }> = ({
   projectId,
   sprint,
   onSuccess,
 }) => {
-  const { mutateAsync, isSuccess, isError } = useMutateSprint();
-
-  const config: DynamicFormConfig = useMemo(
-    () => ({
-      fields: [
-        {
-          type: "text",
-          name: "name",
-          options: {
-            placeholder: "Sprint name",
-          },
-          validate: {
-            required: true,
-          },
-        },
-        {
-          type: "textarea",
-          name: "description",
-          options: {
-            placeholder: "Sprint goal",
-          },
-          validate: {
-            required: true,
-          },
-        },
-        {
-          type: "select",
-          name: "status",
-          options: {
-            placeholder: "Sprint status",
-            options: [
-              { label: "Active", value: "active" },
-              { label: "Inactive", value: "inactive" },
-            ],
-          },
-          validate: {
-            required: true,
-          },
-        },
-        {
-          type: "datepicker",
-          name: "startDate",
-          className: "w-1/2",
-          options: {
-            placeholder: "start date",
-          },
-        },
-        {
-          type: "datepicker",
-          name: "endDate",
-          className: "w-1/2",
-          validate: {
-            min: "startDate",
-          },
-        },
-      ],
-    }),
-    [],
-  );
+  const { mutateAsync, reset } = useMutateSprint();
+  const { notify } = useGlobal();
 
   const submit = useCallback(
     async (formData: FieldValues, formInstance?: UseFormReturn) => {
-      let body = { ...formData, projectId };
-      if (sprint) {
-        body = { ...sprint, ...formData, projectId };
-      }
+      const body = sprint ? { ...sprint, ...formData, projectId } : { ...formData, projectId };
 
       try {
-        await mutateAsync({ body, method: sprint ? "PATCH" : "POST" } as MutationParams);
+        await mutateAsync({
+          body,
+          method: sprint ? "PATCH" : "POST",
+        } as MutationParams);
+        notify(sprint ? "Sprint updated successfully!" : "Sprint created successfully!", "success");
+        formInstance?.reset();
+        if (onSuccess) {
+          onSuccess();
+        }
       } catch (error) {
-        console.error(error);
-      } finally {
+        console.error("Sprint submission error:", error);
+        const errorMessage = error instanceof Error ? error.message : "Failed to save sprint. Please try again.";
+        notify(errorMessage, "error");
+        if (formInstance) {
+          formInstance.setError("root", {
+            type: "manual",
+            message: errorMessage,
+          });
+        }
       }
     },
-    [mutateAsync, projectId, sprint],
+    [sprint, projectId, mutateAsync, notify, onSuccess],
   );
 
+  // Reset mutation state when component unmounts or sprint changes
   useEffect(() => {
-    if (isSuccess) {
-      // TODO: Display success toast
-      console.log("success");
-      if (onSuccess) onSuccess();
-    }
-    if (isError) {
-      // TODO: Display error toast
-      console.error("error");
-    }
-  });
+    return () => {
+      reset();
+    };
+  }, [reset, sprint?.id]);
 
-  return <DynamicForm config={config} onSubmit={submit} mapValues={sprint} />;
+  return <DynamicFormV2 config={config} onSubmit={submit} mapValues={sprint} />;
 };
 
-export const SprintCard = ({ isLoading, sprints = [], projectId, className = "", onClick }: SprintCardProps) => {
+export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) => {
+  const { data: sprints = [], isFetching: isSprintsFetching } = useSprintQuery(projectId, {});
+  const { data: activeSprints = [] } = useSprintQuery(projectId, { status: "active" });
+
   const [modalState, setModalState] = useState<ModalState>({
     isManageOpen: false,
     isCreateOpen: false,
     isEditOpen: false,
   });
-  const [selectedSprint, setSelectedSprint] = useState<Sprint | undefined>(undefined);
+  const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);
 
-  const activeSprint = useMemo(() => sprints.find(({ status }: Sprint) => status === "active"), [sprints]);
+  const activeSprint = useMemo(() => activeSprints.find(({ status }: Sprint) => status === "active"), [activeSprints]);
 
   const toggleModal = useCallback(
     (modal: keyof ModalState, value: boolean, sprint?: Sprint) => () => {
       setModalState((prev) => ({ ...prev, [modal]: value }));
       if (sprint) {
         setSelectedSprint(sprint);
+      } else if (!value) {
+        // Clear selected sprint when closing modals
+        setSelectedSprint(null);
       }
     },
     [],
   );
+
   const createNewSprint = useCallback(() => {
     setModalState((prev) => ({ ...prev, isCreateOpen: true, isManageOpen: true }));
   }, []);
 
   const CardContent = useMemo(() => {
     // Loading then show loader
-    if (isLoading) {
+    if (isSprintsFetching) {
       return <Loader />;
     }
-    if (!sprints.length) {
+    if (!activeSprints.length) {
       return (
         <Fragment>
           <h3 className="mx-auto my-3 font-medium text-slate-300 text-2xl">There is no sprint</h3>
-          <BaseButton label="Create new sprint" onClick={createNewSprint} />
+          <Button onClick={createNewSprint}>Create new sprint</Button>
         </Fragment>
       );
     }
@@ -178,8 +206,8 @@ export const SprintCard = ({ isLoading, sprints = [], projectId, className = "",
 
     return (
       <div className="h-full w-full flex flex-col">
-        <h4 className="capitalize mx-0 my-3">{activeSprint?.name}</h4>
-        <p className="m-0 flex-1">{activeSprint?.description}</p>
+        <h4 className="capitalize mx-0 my-3 font-medium">{activeSprint?.name}</h4>
+        <p className="m-0 flex-1 text-sm">{activeSprint?.description}</p>
         <div className="flex flex-wrap justify-between">
           <div className="text-xs">
             <BaseLabel>Start Date: </BaseLabel>
@@ -192,7 +220,7 @@ export const SprintCard = ({ isLoading, sprints = [], projectId, className = "",
         </div>
       </div>
     );
-  }, [activeSprint, createNewSprint, isLoading, sprints?.length]);
+  }, [activeSprint, createNewSprint, isSprintsFetching, activeSprints?.length]);
 
   const handleCardClick = useCallback(() => {
     if (onClick && typeof onClick === "function") {
@@ -201,30 +229,46 @@ export const SprintCard = ({ isLoading, sprints = [], projectId, className = "",
   }, [onClick]);
 
   const goBackManageSprints = useCallback(() => {
-    setModalState((prev) => ({ ...prev, isCreateOpen: false, isEditOpen: false }));
+    setModalState((prev) => ({ ...prev, isCreateOpen: false, isEditOpen: false, isManageOpen: true }));
+    setSelectedSprint(null);
   }, []);
 
   const ModalContent = useMemo(() => {
     if (modalState.isCreateOpen) {
       return <SprintForm projectId={projectId} onSuccess={goBackManageSprints} />;
     }
-    if (modalState.isEditOpen) {
+    if (modalState.isEditOpen && selectedSprint) {
       return <SprintForm projectId={projectId} sprint={selectedSprint} onSuccess={goBackManageSprints} />;
     }
-    return sprints.map((sprint) => (
-      <div key={sprint.id} className="flex items-center gap-4 px-2 py-2 mb-1 hover:bg-slate-100 duration-75 rounded-sm">
-        <span className="grow">{sprint.name}</span>
-        <span>{format(new Date(sprint.startDate), DATE_FORMAT)}</span>
-        <span>{format(new Date(sprint.endDate), DATE_FORMAT)}</span>
-        <span className="flex gap-2">
-          <BaseButton
-            icon={<EditIcon fontSize="small" />}
-            variants="text"
-            onClick={toggleModal("isEditOpen", true, sprint)}
+    return sprints
+      .sort((a: Sprint, b: Sprint) => {
+        const dateA = new Date(a.startDate).getTime();
+        const dateB = new Date(b.startDate).getTime();
+        return dateB - dateA;
+      })
+      .map((sprint: Sprint) => (
+        <div
+          key={sprint.id}
+          className="flex items-center gap-4 px-2 py-2 mb-1 hover:bg-slate-100 dark:hover:bg-slate-700 duration-75 rounded-sm">
+          <span
+            className={`font-bold rounded-full w-3 h-3 ${
+              sprint.status === "active" ? "bg-green-400" : "bg-transparent"
+            }`}
           />
-        </span>
-      </div>
-    ));
+          <span className="grow">{sprint.name}</span>
+          <span className="text-sm text-slate-400 w-40">
+            <b className="text-primary">Start:</b> {formatDateString(sprint.startDate)}
+          </span>
+          <span className="text-sm text-slate-400 w-40">
+            <b className="text-primary">End:</b> {formatDateString(sprint.endDate)}
+          </span>
+          <span className="flex gap-2">
+            <Button size="icon" variant="ghost" onClick={toggleModal("isEditOpen", true, sprint)}>
+              <EditIcon fontSize="small" />
+            </Button>
+          </span>
+        </div>
+      ));
   }, [
     goBackManageSprints,
     modalState.isCreateOpen,
@@ -237,22 +281,30 @@ export const SprintCard = ({ isLoading, sprints = [], projectId, className = "",
 
   const Prefix = useMemo(() => {
     if (modalState.isEditOpen || modalState.isCreateOpen) {
-      return <BaseButton icon={<ArrowBackIcon fontSize="small" />} variants="text" onClick={goBackManageSprints} />;
+      return (
+        <Button size="icon" variant="ghost" onClick={goBackManageSprints}>
+          <ArrowBackIcon fontSize="small" />
+        </Button>
+      );
     }
-    return <BaseButton icon={<AddOutlined />} onClick={createNewSprint} />;
+    return (
+      <Button size="icon" onClick={createNewSprint}>
+        <AddOutlined />
+      </Button>
+    );
   }, [createNewSprint, goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);
 
   return (
-    <Card className={`h-full flex gap-3 ${className}`} loading={isLoading} onClick={handleCardClick}>
+    <Card className={`h-full flex gap-3 ${className}`} loading={isSprintsFetching} onClick={handleCardClick}>
       <div className="flex justify-between">
-        <BaseLabel>sprint</BaseLabel>
+        <span className="text-lg font-bold capitalize">sprint</span>
         {sprints.length > 0 && (
-          <BaseButton
-            label="Manage Sprints"
+          <Button
             onClick={toggleModal("isManageOpen", true)}
             className="hover:underline !text-slate-400"
-            variants="text"
-          />
+            variant="ghost">
+            Manage Sprints
+          </Button>
         )}
       </div>
       <div className="flex-1 flex flex-col justify-center items-center">{CardContent}</div>

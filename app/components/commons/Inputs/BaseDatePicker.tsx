@@ -1,7 +1,7 @@
-import { DatePicker, DatePickerProps } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers";
 import { forwardRef, Ref } from "react";
 
-export const BaseDatePicker: React.FC<DatePickerProps<Date>> = forwardRef(
+export const BaseDatePicker: React.FC<any> = forwardRef(
   ({ value, onChange, className = "", disabled = false, ...restProps }, ref: Ref<HTMLDivElement>) => (
     <div className={className}>
       <DatePicker
@@ -16,6 +16,14 @@ export const BaseDatePicker: React.FC<DatePickerProps<Date>> = forwardRef(
             InputProps: {
               sx: {
                 borderColor: "var(--slate-400)",
+                "::placeholder": {
+                  color: "var(--slate-400)",
+                },
+                "MuiInputBase-input MuiOutlinedInput-input": {
+                  "::placeholder": {
+                    color: "var(--slate-400)",
+                  },
+                },
               },
             },
             InputLabelProps: {

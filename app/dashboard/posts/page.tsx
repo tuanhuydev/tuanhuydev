@@ -1,64 +1,37 @@
-"use client";
-
 import PageContainer from "@app/components/DashboardModule/PageContainer";
+import PostCard from "@app/components/PostModule/PostCard";
+import PostsFilter from "@app/components/PostModule/PostsFilter";
+import Empty from "@app/components/commons/Empty";
+import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
 import Loader from "@app/components/commons/Loader";
-import PageFilter from "@app/components/commons/PageFilter";
-import { usePostsQuery } from "@app/queries/postQueries";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, useCallback, useState } from "react";
+import { UrlParams } from "@lib/interfaces/shared";
+import { getPosts } from "@server/actions/blogActions";
+import { Suspense } from "react";
 
-const PostCard = dynamic(() => import("@app/components/PostModule/PostCard"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
+export default async function Page({ searchParams }: { searchParams: Promise<UrlParams> }) {
+  const { search = "" } = await searchParams;
+  const posts = await getPosts({ search });
 
-const Empty = dynamic(() => import("antd/es/empty"), { ssr: false });
+  const RenderPosts = () => {
+    if (!posts.length) return <Empty />;
 
-function Page() {
-  const router = useRouter();
-  const [filter, setFilter] = useState<ObjectType>({});
-  const { data: posts = [], isFetching, refetch } = usePostsQuery(filter);
-
-  const navigateCreate = useCallback(() => router.push("/dashboard/posts/create"), [router]);
-
-  const onSearchPost = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setTimeout(() => {
-        const search = event.target.value;
-        setFilter((prevFilter) => {
-          if (search?.length) return { ...prevFilter, search };
-          delete prevFilter?.search;
-          return prevFilter;
-        });
-        refetch();
-      }, 500);
-    },
-    [refetch],
-  );
+    return (
+      <div className="flex flex-wrap gap-2">
+        {posts.map((post: Post) => (
+          <ErrorBoundary key={post.id}>
+            <Suspense fallback={<Loader />}>
+              <PostCard post={post} />
+            </Suspense>
+          </ErrorBoundary>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <PageContainer title="Posts">
-      <PageFilter
-        onSearch={onSearchPost}
-        onNew={navigateCreate}
-        searchPlaceholder="Find your post"
-        createLabel="New post"
-      />
-      <div className="grow overflow-auto pb-3">
-        {isFetching ? (
-          <Loader />
-        ) : posts.length ? (
-          <div className="flex flex-wrap gap-2">
-            {posts.map((post: ObjectType) => (
-              <PostCard post={post} key={post.id} />
-            ))}
-          </div>
-        ) : (
-          <Empty className="my-36" />
-        )}
-      </div>
+      <PostsFilter searchPlaceholder="Find your post" createLabel="New post" />
+      <div className="grow overflow-auto pb-3">{RenderPosts()}</div>
     </PageContainer>
   );
 }
-export default Page;
