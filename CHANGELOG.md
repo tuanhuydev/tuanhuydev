@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/tuanhuydev/tuanhuydev/compare/v2.1.0...v2.2.0) (2025-12-08)
+
+
+### Features
+
+* **241:** sprint should be in active order ([9ab536a](https://github.com/tuanhuydev/tuanhuydev/commit/9ab536a43efa013bf032d3220f09b437c1a080bb))
+* **ai:** setup basic generative chat ([4f37033](https://github.com/tuanhuydev/tuanhuydev/commit/4f370337ad8affbf98da58dd8338da4518bc6f86))
+* **comment:** integrate task comment ([0930513](https://github.com/tuanhuydev/tuanhuydev/commit/0930513978fcf6353f02917c708aab54b6e2cfe2))
+* **comment:** task comment ([683917a](https://github.com/tuanhuydev/tuanhuydev/commit/683917a21bfe4eda8280cc075ae388e4d42d80a4))
+* **form:** new dynamic form and small background util ([cde1f1d](https://github.com/tuanhuydev/tuanhuydev/commit/cde1f1d0263cf4e1c31e95c680e874e569dc1ce3))
+* **model:** integrate gemini into api ([ad43791](https://github.com/tuanhuydev/tuanhuydev/commit/ad437915c3adb4e55737af1d88fd51e88bf64615))
+* **model:** integrate gemini into api ([e27d318](https://github.com/tuanhuydev/tuanhuydev/commit/e27d318a0f2f2dfbd66f4185f510c1a4f52c7d2b))
+* **task:** task story point ([a404d67](https://github.com/tuanhuydev/tuanhuydev/commit/a404d6761823f3e48942bcf47d3090ffd39b3b85))
+
+
+### Bug Fixes
+
+* **component:** migrate client-side to server-side ([63f2741](https://github.com/tuanhuydev/tuanhuydev/commit/63f2741e02bc9a7f500bf8f5f53cd2521713f460))
+* **input:** disabled color match text color ([988449e](https://github.com/tuanhuydev/tuanhuydev/commit/988449ec5a48e302cffbc9d11d278fd8ef575196))
+* **modal:** increase zindex of modal ([076b996](https://github.com/tuanhuydev/tuanhuydev/commit/076b9969c2c4c11d2759f4bedcc6ac4a47224846))
+* **project:** tasks and sub-tasks are not sync ([a01586e](https://github.com/tuanhuydev/tuanhuydev/commit/a01586e8df39a9b77adb8304bc1772ef9118fd1b))
+* **queries:** enhance structure ([686be1f](https://github.com/tuanhuydev/tuanhuydev/commit/686be1f2c7023431747e13d9ea0dad15b36e3985))
+
 ## [2.1.0](https://github.com/tuanhuydev/tuanhuydev/compare/v2.0.0...v2.1.0) (2025-04-10)
 
 ### Features
