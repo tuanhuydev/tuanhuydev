@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "paths": {
       "@app/*": ["app/*"],
+      "@resources/*": ["app/resources/*"],
       "@lib/*": ["lib/*"],
       "@server/*": ["server/*"],
       "@public/*": ["public/*"],

@@ -1,9 +1,9 @@
-import { ErrorBoundary } from "./components/commons/ErrorBoundary";
-import Loader from "./components/commons/Loader";
-import ThemeScript from "./components/commons/ThemeScript";
-import { sourceCodeFont } from "./font";
-import "@app/_styles/globals.scss";
+import { ErrorBoundary } from "./resources/components/common/ErrorBoundary";
+import Loader from "./resources/components/common/Loader";
+import ThemeScript from "./resources/components/layout/ThemeScript";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { sourceCodeFont } from "@resources/font";
+import "@resources/styles/globals.scss";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { isDevelopmentEnv } from "lib/commons/constants/base";
@@ -13,7 +13,7 @@ import { PropsWithChildren, Suspense, lazy } from "react";
 export const runtime = "nodejs";
 export const preferredRegion = "auto";
 
-const QueryProvider = lazy(() => import("@app/components/commons/providers/QueryProvider"));
+const QueryProvider = lazy(() => import("@resources/components/common/providers/QueryProvider"));
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (

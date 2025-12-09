@@ -43,10 +43,10 @@ export const Delight = ({ title, value: target, gradient }: DelightProps) => {
     <div
       className="text-center p-3 self-stretch w-[16rem] contain-layout will-change-auto
                  text-primary dark:text-slate-50">
-      <h4
+      <h3
         className={`text-sm md:text-xl my-3 font-bold capitalize transition-colors duration-200 ${backgroundGradient}`}>
         &#60;{title}&nbsp;&#47;&#62;
-      </h4>
+      </h3>
       <div
         className="text-2xl md:text-5xl font-semibold flex gap-2 justify-center 
                    text-slate-700 dark:text-slate-300 transition-colors duration-200">
