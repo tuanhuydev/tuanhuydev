@@ -1,6 +1,6 @@
 import Loader from "@app/components/commons/Loader";
 import { LocalizationParser } from "@app/components/commons/hocs/LocalizationParser";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { Toaster } from "@app/components/ui/toaster";
 import { PropsWithChildren, Suspense, lazy } from "react";
 
 const GlobalProvider = lazy(() => import("@app/components/commons/providers/GlobalProvider"));
@@ -14,9 +14,10 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
     <Suspense fallback={<Loader />}>
       <ThemeProvider>
         <LocalizationParser>
-          <AppRouterCacheProvider>
-            <GlobalProvider>{children}</GlobalProvider>
-          </AppRouterCacheProvider>
+          <GlobalProvider>
+            {children}
+            <Toaster />
+          </GlobalProvider>
         </LocalizationParser>
       </ThemeProvider>
     </Suspense>

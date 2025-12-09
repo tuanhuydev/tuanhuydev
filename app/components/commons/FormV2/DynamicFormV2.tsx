@@ -1,8 +1,8 @@
 "use client";
 
 import { Button, ButtonProps } from "@app/components/ui/button";
+import { Separator } from "@app/components/ui/separator";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Divider } from "@mui/material";
 import { ReactNode, Suspense, lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import LogService from "server/services/LogService";
@@ -315,7 +315,7 @@ const DynamicFormV2 = memo(function DynamicFormV2({
         <div className="flex flex-wrap">{fieldNodes}</div>
       </fieldset>
 
-      <Divider sx={{ my: 3, mx: 2 }} />
+      <Separator className="my-6 mx-4" />
 
       <div className="flex p-2">
         {allowDefault && (

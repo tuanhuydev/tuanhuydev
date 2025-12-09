@@ -18,7 +18,7 @@ export default function BaseDrawer({
   open = false,
   onClose,
   side = "right",
-  className,
+  className = "w-full sm:w-[500px] md:w-[600px] lg:w-[700px] sm:m-2 sm:mr-2 sm:rounded-lg",
   title = "Drawer",
 }: BaseDrawerProps) {
   return (

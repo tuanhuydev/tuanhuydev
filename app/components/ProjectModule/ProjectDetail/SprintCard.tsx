@@ -9,11 +9,9 @@ import BaseModal from "@app/components/commons/modals/BaseModal";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
 import { Button } from "@app/components/ui/button";
 import { formatDateString } from "@lib/utils/helper";
-import AddOutlined from "@mui/icons-material/AddOutlined";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import EditIcon from "@mui/icons-material/Edit";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
+import { Plus, ArrowLeft, Pencil } from "lucide-react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
@@ -264,7 +262,7 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
           </span>
           <span className="flex gap-2">
             <Button size="icon" variant="ghost" onClick={toggleModal("isEditOpen", true, sprint)}>
-              <EditIcon fontSize="small" />
+              <Pencil className="w-4 h-4" />
             </Button>
           </span>
         </div>
@@ -283,13 +281,13 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
     if (modalState.isEditOpen || modalState.isCreateOpen) {
       return (
         <Button size="icon" variant="ghost" onClick={goBackManageSprints}>
-          <ArrowBackIcon fontSize="small" />
+          <ArrowLeft className="w-4 h-4" />
         </Button>
       );
     }
     return (
       <Button size="icon" onClick={createNewSprint}>
-        <AddOutlined />
+        <Plus className="w-5 h-5" />
       </Button>
     );
   }, [createNewSprint, goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);

@@ -4,8 +4,8 @@ import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import { useTodayTasks } from "@app/_queries/taskQueries";
 import Card from "@app/components/commons/Card";
 import Empty from "@app/components/commons/Empty";
-import TaskAltOutlined from "@mui/icons-material/TaskAltOutlined";
 import { InvalidateQueryFilters, QueryKey, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { SyntheticEvent } from "react";
 
@@ -22,7 +22,10 @@ export default function TodayTaskWidget() {
     queryClient.invalidateQueries([QUERY_KEYS.TODAY_TASKS] as InvalidateQueryFilters);
   };
   return (
-    <Card title="Today Tasks" className="w-[20rem] min-h-[8rem] overflow-hidden" icon={<TaskAltOutlined />}>
+    <Card
+      title="Today Tasks"
+      className="w-[20rem] min-h-[8rem] overflow-hidden"
+      icon={<CheckCircle className="w-5 h-5" />}>
       {todayTasks?.length ? (
         <ul className="list-none m-0 p-0 h-72 overflow-auto">
           {todayTasks.map((task: ObjectType) => (
