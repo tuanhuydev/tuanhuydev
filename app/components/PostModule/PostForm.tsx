@@ -4,7 +4,7 @@ import { DynamicFormV2Config } from "../commons/FormV2/DynamicFormV2";
 import ConfirmBox from "../commons/modals/ConfirmBox";
 import { useGlobal } from "../commons/providers/GlobalProvider";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@app/_queries/postQueries";
-import { Button } from "@mui/material";
+import { Button } from "@app/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
@@ -208,22 +208,14 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
         </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
-        <Button variant="outlined" onClick={handleSubmit(false)}>
+        <Button variant="outline" onClick={handleSubmit(false)}>
           {hasPost ? "Update Post" : "Save Draft"}
         </Button>
         {hasPost && !(post as unknown as Post)?.publishedAt && (
-          <Button variant="contained" onClick={handleSubmit(true)}>
-            Save & Publish
-          </Button>
+          <Button onClick={handleSubmit(true)}>Save & Publish</Button>
         )}
         {hasPost && (
-          <Button
-            variant="contained"
-            color="error"
-            disabled={isDeleting}
-            onClick={toggleConfirm(true)}
-            disableElevation
-            sx={{ mt: "0.2rem" }}>
+          <Button variant="destructive" disabled={isDeleting} onClick={toggleConfirm(true)} className="mt-1">
             Delete Post
           </Button>
         )}

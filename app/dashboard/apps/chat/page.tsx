@@ -2,17 +2,21 @@
 
 import PageContainer from "@app/components/DashboardModule/PageContainer";
 import MarkdownRenderer from "@app/components/commons/MarkdownRenderer";
+import { Button } from "@app/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@app/components/ui/dropdown-menu";
+import { Input } from "@app/components/ui/input";
 import { useFetch } from "@features/Auth/hooks/useFetch";
 import type { ChatSession } from "@features/GenAI";
 import { useDeleteChatSession, useNewChatSession } from "@features/GenAI/hooks/useChatSession";
 import { BASE_URL } from "@lib/commons/constants/base";
 import { ApiResponse } from "@lib/interfaces/shared";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import { Button, IconButton, Menu, MenuItem, Popover } from "@mui/material";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { MoreVertical, Send } from "lucide-react";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -40,10 +44,8 @@ export default function Page() {
   const [selectedId, setSelectedId] = useState<string>("");
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
   const [menuChatId, setMenuChatId] = useState<string | null>(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [confirmAnchorEl, setConfirmAnchorEl] = useState<HTMLElement | null>(null);
   const [confirmChatId, setConfirmChatId] = useState<string>("");
 
   const handleDelete = useCallback(
@@ -55,16 +57,10 @@ export default function Page() {
         console.error("Failed to delete chat session:", error);
       } finally {
         setShowConfirmDelete(false);
-        setConfirmAnchorEl(null);
       }
     },
     [deleteSession],
   );
-
-  const handleCloseMenu = () => {
-    setMenuAnchorEl(null);
-    setMenuChatId(null);
-  };
 
   // Load chat sessions
   const chatsQuery = useQuery<ChatSession[]>({
@@ -223,7 +219,7 @@ export default function Page() {
         {/* Sidebar */}
         <aside className="w-64 shrink-0 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 rounded-lg flex flex-col gap-3">
           <div className="flex gap-2">
-            <Button fullWidth variant="contained" onClick={newChat}>
+            <Button className="w-full" onClick={newChat}>
               + New chat
             </Button>
           </div>
@@ -263,17 +259,31 @@ export default function Page() {
                         {updated ? new Date(updated as any).toLocaleString() : ""}
                       </div>
                     </div>
-                    <IconButton
-                      size="small"
-                      className="opacity-0 group-hover:opacity-100"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMenuAnchorEl(e.currentTarget);
-                        setMenuChatId(String(s.id));
-                      }}
-                      aria-label="chat options">
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="opacity-0 group-hover:opacity-100 h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMenuChatId(String(s.id));
+                          }}
+                          aria-label="chat options">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setConfirmChatId(menuChatId ?? "");
+                            setShowConfirmDelete(true);
+                          }}>
+                          Delete chat
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </li>
                 );
               })}
@@ -281,54 +291,28 @@ export default function Page() {
           </div>
         </aside>
 
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleCloseMenu}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}>
-          <MenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              setConfirmAnchorEl(menuAnchorEl); // Store anchor before closing menu
-              setConfirmChatId(menuChatId ?? "");
-              setShowConfirmDelete(true);
-              handleCloseMenu();
-            }}>
-            Delete chat
-          </MenuItem>
-        </Menu>
-
         {/* Confirm popover */}
-        <Popover
-          open={showConfirmDelete}
-          anchorEl={confirmAnchorEl}
-          onClose={() => {
-            setShowConfirmDelete(false);
-            setConfirmAnchorEl(null);
-            setConfirmChatId("");
-          }}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}>
-          <Box sx={{ p: 2, maxWidth: 260 }} onClick={(e) => e.stopPropagation()}>
-            <div className="text-sm mb-2 text-gray-900 dark:text-gray-100">Delete this chat?</div>
-            <div className="flex gap-2 justify-end">
-              <Button
-                size="small"
-                variant="text"
-                onClick={() => {
-                  setShowConfirmDelete(false);
-                  setConfirmAnchorEl(null);
-                  setConfirmChatId("");
-                }}>
-                Cancel
-              </Button>
-              <Button size="small" color="error" variant="contained" onClick={() => handleDelete(confirmChatId)}>
-                Delete
-              </Button>
+        {showConfirmDelete && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg max-w-xs" onClick={(e) => e.stopPropagation()}>
+              <div className="text-sm mb-3 text-gray-900 dark:text-gray-100">Delete this chat?</div>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setShowConfirmDelete(false);
+                    setConfirmChatId("");
+                  }}>
+                  Cancel
+                </Button>
+                <Button size="sm" variant="destructive" onClick={() => handleDelete(confirmChatId)}>
+                  Delete
+                </Button>
+              </div>
             </div>
-          </Box>
-        </Popover>
+          </div>
+        )}
 
         {/* Chat content */}
         <section className="flex-1 border rounded-lg p-4 flex flex-col">
@@ -354,17 +338,15 @@ export default function Page() {
               if (!input.trim() || isSending) return;
               void sendPrompt(input.trim());
             }}>
-            <TextField
+            <Input
               className="flex-1"
               placeholder="Send a message…"
-              variant="outlined"
-              size="medium"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <Button type="submit" variant="outlined" disabled={isSending || !input.trim()}>
-              <Box sx={{ display: "flex", alignItems: "center", mr: 1 }}>{isSending ? "Sending…" : "Send"}</Box>
-              <SendOutlinedIcon />
+            <Button type="submit" variant="outline" disabled={isSending || !input.trim()}>
+              <span className="mr-2">{isSending ? "Sending…" : "Send"}</span>
+              <Send className="h-4 w-4" />
             </Button>
           </form>
         </section>

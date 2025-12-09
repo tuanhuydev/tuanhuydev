@@ -5,12 +5,9 @@ import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import { useCurrentUser } from "@app/_queries/userQueries";
 import { ThemeToggle } from "@app/components/commons/ThemeToggle";
 import { Button } from "@app/components/ui/button";
-import ExitToAppOutlined from "@mui/icons-material/ExitToAppOutlined";
-import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { IconButton } from "@mui/material";
-import Popover from "@mui/material/Popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@app/components/ui/popover";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Menu } from "lucide-react";
+import { ChevronLeft, Menu, LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Fragment,
@@ -41,16 +38,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
 
   const { email, name } = currentUser;
 
-  // State
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = useCallback(() => {
-    setAnchorEl(null);
-  }, []);
+  // State - removed anchorEl and popoverOpen states as they're handled by Popover component
 
   const signOut = useCallback(async () => {
     await signUserOut();
@@ -96,56 +84,40 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
     return <Fragment />;
   }, [goBack, handleGoback, startComponent, title, toggleMobileHamburger]);
 
-  const popoverOpen = Boolean(anchorEl);
   const renderEnd = useMemo(() => {
     if (endComponent) return endComponent;
     return (
       <Fragment>
         <ThemeToggle size="sm" />
-        <div className="relative">
-          <Button variant="ghost" size="icon" onClick={handleClick}>
-            <PersonOutlineOutlined />
-          </Button>
-          <Popover
-            title={name || email || "User"}
-            open={popoverOpen}
-            anchorEl={anchorEl}
-            slotProps={{}}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-            classes={{
-              paper: "bg-white dark:bg-slate-950 p-3",
-            }}
-            onClose={handleClose}>
-            <ul className="block m-0 p-0 list-none">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
-                  <PersonOutlineOutlined />
-                </div>
-                <div className="mb-2">
-                  <p className="font-semibold text-base text-gray-900 dark:text-gray-100 m-0">{name || "User"}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-xs m-0">{email}</p>
-                </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-3">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                <User className="h-5 w-5" />
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400"
-                onClick={() => {
-                  handleClose();
-                  signOut();
-                }}>
-                <ExitToAppOutlined fontSize="small" className="mr-2" />
-                Sign out
-              </Button>
-            </ul>
-          </Popover>
-        </div>
+              <div>
+                <p className="font-semibold text-base text-gray-900 dark:text-gray-100 m-0">{name || "User"}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs m-0">{email}</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400"
+              onClick={signOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign out
+            </Button>
+          </PopoverContent>
+        </Popover>
       </Fragment>
     );
-  }, [endComponent, name, email, popoverOpen, anchorEl, handleClose, signOut]);
+  }, [endComponent, name, email, signOut]);
 
   return (
     <div className="pt-2 py-3 text-primary dark:text-slate-50 flex item-center justify-between relative">
