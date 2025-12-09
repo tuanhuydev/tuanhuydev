@@ -1,10 +1,10 @@
-import GlobalProvider from "@app/components/commons/providers/GlobalProvider";
-import { Toaster } from "@app/components/ui/toaster";
+import { Toaster } from "@resources/components/common/Toaster";
+import GlobalProvider from "@resources/components/common/providers/GlobalProvider";
 import { Viewport } from "next";
 import dynamic from "next/dynamic";
 import { PropsWithChildren, Suspense } from "react";
 
-const ThemeProvider = dynamic(() => import("@app/components/commons/providers/ThemeProvider"));
+const ThemeProvider = dynamic(() => import("@resources/components/common/providers/ThemeProvider"));
 
 export const viewport: Viewport = {
   themeColor: [

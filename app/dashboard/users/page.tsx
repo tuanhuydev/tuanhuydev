@@ -1,20 +1,20 @@
 "use client";
 
-import { useCurrentUserPermission } from "@app/_queries/permissionQueries";
-import { useUsersQuery } from "@app/_queries/userQueries";
-import { useDebounce } from "@app/_utils/useDebounce";
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import Empty from "@app/components/commons/Empty";
-import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
-import Loader from "@app/components/commons/Loader";
-import PageFilter from "@app/components/commons/PageFilter";
+import Empty from "@resources/components/common/Empty";
+import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
+import Loader from "@resources/components/common/Loader";
+import PageFilter from "@resources/components/common/PageFilter";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
+import { useDebounce } from "@resources/hooks/useDebounce";
+import { useCurrentUserPermission } from "@resources/queries/permissionQueries";
+import { useUsersQuery } from "@resources/queries/userQueries";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChangeEvent, Suspense, lazy, useCallback, useRef, useState } from "react";
 
 // Replace dynamic imports with React lazy
-const UserDetail = lazy(() => import("@app/components/UserModule/UserDetail"));
-const BaseDrawer = lazy(() => import("@app/components/commons/drawers/BaseDrawer"));
-const UserRow = lazy(() => import("@app/components/UserModule/UserRow"));
+const UserDetail = lazy(() => import("@resources/components/features/User/UserDetail"));
+const BaseDrawer = lazy(() => import("@resources/components/common/drawers/BaseDrawer"));
+const UserRow = lazy(() => import("@resources/components/features/User/UserRow"));
 
 export type RecordMode = "VIEW" | "EDIT";
 const estimateSize = 48;

@@ -1,14 +1,14 @@
 "use client";
 
-import { useTaskFilter } from "@app/_hooks/useTaskFilter";
-import { useCurrentUserTasks } from "@app/_queries/userQueries";
-import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
-import Loader from "@app/components/commons/Loader";
+import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
+import Loader from "@resources/components/common/Loader";
+import { useTaskFilter } from "@resources/hooks/useTaskFilter";
+import { useCurrentUserTasks } from "@resources/queries/userQueries";
 import { useSearchParams } from "next/navigation";
 import { Suspense, lazy, useEffect } from "react";
 
 // Replace dynamic import with React lazy
-const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
+const TaskPage = lazy(() => import("@resources/components/features/Task/TaskPage"));
 
 interface FilterMyTasksType extends FilterType {
   projectId: string | null;

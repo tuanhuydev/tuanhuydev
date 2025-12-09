@@ -1,6 +1,6 @@
 "use client";
 
-import { ThemeToggle } from "@app/components/commons/ThemeToggle";
+import { ThemeToggle } from "@resources/components/common/ThemeToggle";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,7 +30,10 @@ export const Navbar = () => {
   // Components
   const Logo = () => (
     <div className="text-primary dark:text-slate-50 font-bold flex items-center">
-      <Link href="/" className="line-height-1 hover:underline flex items-center cursor-pointer">
+      <Link
+        href="/"
+        className="line-height-1 hover:underline flex items-center cursor-pointer"
+        aria-label="Go to homepage">
         <svg
           width="32"
           height="32"
@@ -74,6 +77,7 @@ export const Navbar = () => {
             scale: 1,
           }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
           className={`p-2 rounded-full shadow-lg cursor-pointer border-none bg-transparent dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors`}>
           <motion.svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
             <g>

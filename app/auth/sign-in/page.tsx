@@ -1,9 +1,9 @@
 "use client";
 
-import { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
-import Loader from "@app/components/commons/Loader";
-import { ThemeToggle } from "@app/components/commons/ThemeToggle";
-import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
+import Loader from "@resources/components/common/Loader";
+import { ThemeToggle } from "@resources/components/common/ThemeToggle";
+import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
+import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import LogService from "server/services/LogService";
 
-const DynamicFormV2 = importDynamic(() => import("@app/components/commons/FormV2/DynamicFormV2"), {
+const DynamicForm = importDynamic(() => import("@resources/components/form/DynamicForm"), {
   ssr: false,
   loading: () => <Loader />,
 });
 
-const signInFormConfig: DynamicFormV2Config = {
+const signInFormConfig: DynamicFormConfig = {
   fields: [
     {
       name: "email",
@@ -87,7 +87,7 @@ export default function SignIn() {
 
       <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
         <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
-        <DynamicFormV2 config={signInFormConfig} onSubmit={submit} />
+        <DynamicForm config={signInFormConfig} onSubmit={submit} />
       </div>
     </div>
   );

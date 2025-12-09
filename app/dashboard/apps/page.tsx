@@ -1,5 +1,5 @@
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import Card from "@app/components/commons/Card";
+import Card from "@resources/components/common/Card";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import Link from "next/link";
 
 export default async function Page() {
