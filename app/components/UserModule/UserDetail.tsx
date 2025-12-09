@@ -7,9 +7,9 @@ import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/Form
 import { DRAWER_MODE } from "@app/components/commons/drawers";
 import BaseDrawerHeader from "@app/components/commons/drawers/BaseDrawerHeader";
 import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
-import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import { Avatar } from "@mui/material";
+import { Avatar, AvatarFallback, AvatarImage } from "@app/components/ui/avatar";
 import { format } from "date-fns";
+import { User } from "lucide-react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import LogService from "server/services/LogService";
@@ -247,34 +247,42 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   const DrawerContent = useMemo(() => {
     if (mode === DRAWER_MODE.VIEW) {
       return (
-        <div className="flex flex-col h-full gap-3">
-          <div className="flex gap-4 col-span-full border-b border-gray-200 dark:border-gray-700 p-3">
-            <Avatar sx={{ width: 72, height: 72 }}>
-              <PersonOutlineOutlined fontSize="inherit" />
-            </Avatar>
-            <div className="my-5">
-              <h2 className="text-2xl m-0 mb-1 text-gray-900 dark:text-gray-100">{user?.name}</h2>
-              <h4 className="m-0 font-normal text-slate-400 dark:text-slate-500">{user?.email}</h4>
+        <div className="w-full h-full flex flex-col">
+          <div className="px-3 pt-3 pb-2 shrink-0">
+            <div className="flex gap-4">
+              <Avatar className="w-18 h-18 shrink-0">
+                <AvatarFallback>
+                  <User className="h-8 w-8" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="my-5">
+                <h2 className="text-2xl m-0 mb-1 text-gray-900 dark:text-gray-100">{user?.name}</h2>
+                <h4 className="m-0 font-normal text-slate-400 dark:text-slate-500">{user?.email}</h4>
+              </div>
             </div>
           </div>
-          <div className="p-3 grid grid-cols-6 grid-rows-12 gap-5 border-b border-solid border-transparent border-b-slate-100 dark:border-b-slate-700">
-            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
-              <label className="font-normal text-slate-400 dark:text-slate-500">Project:</label>
-              Project
-            </div>
-            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
-              <label className="font-normal text-slate-400 dark:text-slate-500">Role:</label>
-              Field project
-            </div>
-            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
-              <label className="font-normal text-slate-400 dark:text-slate-500">Status:</label>
-              Field status
+          <div className="flex-1 overflow-y-auto px-3">
+            <div className="grid grid-cols-6 gap-5 mb-5">
+              <div className="flex gap-4 col-span-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <label className="font-normal text-slate-400 dark:text-slate-500">Project:</label>
+                <span className="text-foreground">Project</span>
+              </div>
+              <div className="flex gap-4 col-span-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <label className="font-normal text-slate-400 dark:text-slate-500">Role:</label>
+                <span className="text-foreground">Field project</span>
+              </div>
+              <div className="flex gap-4 col-span-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <label className="font-normal text-slate-400 dark:text-slate-500">Status:</label>
+                <span className="text-foreground">Field status</span>
+              </div>
             </div>
           </div>
-          <div className="mt-auto p-3">
-            <div className="flex gap-4 col-span-3 border-b border-gray-200 dark:border-gray-700">
+          <div className="px-3 pb-3 shrink-0 border-t pt-3">
+            <div className="flex gap-4">
               <label className="font-normal text-slate-400 dark:text-slate-500">Created at:</label>
-              {user?.createdAt ? format(new Date(user?.createdAt), "dd/MM/yyyy") : "-"}
+              <span className="text-foreground">
+                {user?.createdAt ? format(new Date(user?.createdAt), "dd/MM/yyyy") : "-"}
+              </span>
             </div>
           </div>
         </div>
@@ -294,7 +302,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
   }, [mode, submit, tableUserPermissions, user, userFormConfig]);
 
   return (
-    <div className="flex flex-col h-full gap-3">
+    <div className="flex flex-col h-full bg-background overflow-hidden sm:rounded-lg">
       <BaseDrawerHeader
         mode={mode}
         title={title}
@@ -302,7 +310,7 @@ export default function UserDetail({ user, onClose }: UserDetailProps) {
         editable={editable}
         onToggle={(mode) => setMode(mode as DRAWER_MODE)}
       />
-      <div className="px-1">{DrawerContent}</div>
+      <div className="flex-1 overflow-y-auto px-1">{DrawerContent}</div>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import Item, { ItemProps } from "./Item";
-import KeyboardArrowDownOutlined from "@mui/icons-material/KeyboardArrowDownOutlined";
-import Tooltip from "@mui/material/Tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@app/components/ui/tooltip";
 import { EMPTY_STRING } from "lib/commons/constants/base";
 import { isPathActive } from "lib/utils/helper";
+import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 
@@ -27,10 +27,10 @@ export default function Group({ label, icon, children }: GroupProps) {
   }, [sidebarOpen]);
   const element = (
     <div
-      className={`capitalize flex rounded-sm items-center min-w-0 py-2 px-3 mb-3 hover:bg-primary hover:text-white ${activeClass}`}>
-      {icon ? <span className="mr-4">{icon}</span> : <Fragment />}
+      className={`capitalize flex items-center gap-2 min-w-0 py-2 px-3 mb-3 rounded-sm hover:bg-primary hover:text-white ${activeClass}`}>
+      {icon ? <span className="shrink-0 min-w-4">{icon}</span> : <Fragment />}
       <span className="truncate font-medium">{label}</span>
-      <KeyboardArrowDownOutlined className={`text-base ml-auto font-bold ${open ? "rotate-90" : ""}`} />
+      <ChevronDown className={`w-4 h-4 min-w-4 ml-auto shrink-0 ${open ? "rotate-90" : ""}`} />
     </div>
   );
   return (
@@ -38,9 +38,14 @@ export default function Group({ label, icon, children }: GroupProps) {
       {sidebarOpen ? (
         element
       ) : (
-        <Tooltip title={label} placement="right">
-          {element}
-        </Tooltip>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>{element}</TooltipTrigger>
+            <TooltipContent side="right">
+              <p>{label}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
       {open && (
         <ul className={`list-none p-0 ${childClass}`}>
