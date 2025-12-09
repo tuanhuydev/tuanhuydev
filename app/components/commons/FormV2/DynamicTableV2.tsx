@@ -3,8 +3,6 @@
 import BaseInputV2 from "./BaseInputV2";
 import BaseSelectV2 from "./BaseSelectV2";
 import { Button } from "@app/components/ui/button";
-import AddCircleOutlineOutlined from "@mui/icons-material/AddCircleOutlineOutlined";
-import RemoveCircleOutlineOutlined from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -13,6 +11,7 @@ import {
   GridRenderCellParams,
   GridRenderEditCellParams,
 } from "@mui/x-data-grid";
+import { PlusCircle, MinusCircle } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useController } from "react-hook-form";
 
@@ -83,7 +82,7 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
           <span className="font-semibold text-sm">{headerName}</span>
           {field === columns[0]?.config?.field && (
             <Button variant="ghost" size="icon" disabled={isSubmitting} onClick={addRow}>
-              <AddCircleOutlineOutlined fontSize="small" />
+              <PlusCircle className="w-4 h-4" />
             </Button>
           )}
         </div>
@@ -153,7 +152,7 @@ const DynamicTableV2 = memo(function DynamicTableV2({ control, name, options }: 
       getActions: (params) => [
         <GridActionsCellItem
           key="delete"
-          icon={<RemoveCircleOutlineOutlined />}
+          icon={<MinusCircle className="w-4 h-4" />}
           label="Delete"
           onClick={() => {
             const newData = fieldData.filter((row: any) => row.id !== params.id);

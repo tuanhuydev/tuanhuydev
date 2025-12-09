@@ -6,9 +6,9 @@ import { SprintCard } from "@app/components/ProjectModule/ProjectDetail/SprintCa
 import BaseLabel from "@app/components/commons/BaseLabel";
 import Card from "@app/components/commons/Card";
 import WithCopy from "@app/components/commons/hocs/WithCopy";
-import ShareOutlined from "@mui/icons-material/ShareOutlined";
 import { format, formatDistanceToNow } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
+import { Share } from "lucide-react";
 import { use, useMemo } from "react";
 
 interface PageProps {
@@ -51,7 +51,7 @@ export default function Page({ params }: PageProps) {
             <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 line-clamp-3 text-gray-900 dark:text-gray-100">{name}</h1>
             <div className="flex gap-3">
               <WithCopy content={typeof window !== undefined ? window.location.href : ""} title="Share">
-                <ShareOutlined fontSize="small" />
+                <Share className="w-4 h-4" />
               </WithCopy>
             </div>
           </div>

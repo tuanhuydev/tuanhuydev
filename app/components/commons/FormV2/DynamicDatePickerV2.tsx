@@ -1,7 +1,6 @@
 "use client";
 
 import BaseDatePickerV2 from "./BaseDatePickerV2";
-import { FormHelperText } from "@mui/material";
 import { forwardRef, memo, Ref } from "react";
 import { useController, UseControllerProps } from "react-hook-form";
 
@@ -41,11 +40,7 @@ export const DynamicDatePickerV2 = memo(
             error={invalid}
             {...restField}
           />
-          {invalid && error?.message && (
-            <FormHelperText error={true} sx={{ margin: "0.25rem 0.875rem" }}>
-              {error?.message}
-            </FormHelperText>
-          )}
+          {invalid && error?.message && <p className="text-sm text-red-500 mt-1.5 mx-3.5">{error?.message}</p>}
         </div>
       </div>
     );

@@ -35,9 +35,9 @@ export default function BaseDrawerHeader({
   const handleClose = useCallback(() => onClose(false), [onClose]);
 
   return (
-    <div className="bg-background border-b mb-3 flex justify-between shadow-md">
-      <h1 className="my-0 mr-3 px-3 py-2 text-foreground text-base font-semibold">{title}</h1>
-      <div className="px-2 flex gap-2 items-center relative">
+    <div className="bg-background flex justify-between items-center px-3 py-2 shrink-0 sm:rounded-t-lg">
+      <h1 className="my-0 mr-3 text-foreground text-base font-semibold truncate">{title}</h1>
+      <div className="flex gap-2 items-center shrink-0">
         {editable && (
           <Fragment>
             {isViewMode && (

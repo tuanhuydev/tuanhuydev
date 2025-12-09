@@ -1,7 +1,7 @@
 "use client";
 
 import BaseImage from "./BaseImage";
-import Skeleton from "@mui/material/Skeleton";
+import { Skeleton } from "@app/components/ui/skeleton";
 import React, { Fragment, PropsWithChildren } from "react";
 
 export interface CardProps extends PropsWithChildren {

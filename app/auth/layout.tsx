@@ -1,5 +1,5 @@
 import GlobalProvider from "@app/components/commons/providers/GlobalProvider";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { Toaster } from "@app/components/ui/toaster";
 import { Viewport } from "next";
 import dynamic from "next/dynamic";
 import { PropsWithChildren, Suspense } from "react";
@@ -15,12 +15,13 @@ export const viewport: Viewport = {
 
 export default async function SignInLayout({ children }: PropsWithChildren) {
   return (
-    <AppRouterCacheProvider>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ThemeProvider>
-          <GlobalProvider>{children}</GlobalProvider>
-        </ThemeProvider>
-      </Suspense>
-    </AppRouterCacheProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ThemeProvider>
+        <GlobalProvider>
+          {children}
+          <Toaster />
+        </GlobalProvider>
+      </ThemeProvider>
+    </Suspense>
   );
 }

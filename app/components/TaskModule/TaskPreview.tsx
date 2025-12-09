@@ -41,9 +41,13 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   if (!task) return <Fragment />;
 
   return (
-    <div className="p-3 w-full flex flex-col grow overflow-auto">
-      <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate text-foreground">{title ?? EMPTY_STRING}</h1>
-      <div className="grid grid-cols-2 gap-3 mb-4">
+    <div className="w-full h-full flex flex-col">
+      <div className="px-3 pt-3 pb-2">
+        <h1 className="text-3xl capitalize px-0 m-0 mb-3 font-bold truncate text-foreground">
+          {title ?? EMPTY_STRING}
+        </h1>
+      </div>
+      <div className="px-3 grid grid-cols-2 gap-3 mb-4 shrink-0">
         {status && (
           <div className="flex items-center gap-3">
             <BaseLabel className="w-[72px]">Status:</BaseLabel>
@@ -69,7 +73,7 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
           </div>
         )}
       </div>
-      <div className="grow mb-3">
+      <div className="flex-1 overflow-y-auto px-3 mb-3">
         <BaseLabel>Description:</BaseLabel>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="text-foreground prose prose-sm dark:prose-invert max-w-none">
@@ -78,18 +82,18 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
         </Suspense>
       </div>
       {subTasks.length > 0 && (
-        <div className="flex gap-3 w-full">
+        <div className="flex gap-3 w-full px-3 mb-3 shrink-0">
           <BaseLabel className="w-[72px]">Sub Tasks:</BaseLabel>
-          <div className="grow h-30 overflow-auto">
+          <div className="grow max-h-40 overflow-auto">
             {subTasks.map((subTask: ObjectType) => (
               <TaskRow key={subTask.id} task={subTask} onSelect={selectSubTask(subTask)} active={false} />
             ))}
           </div>
         </div>
       )}
-      <div className="flex flex-col justify-end">
-        <BaseLabel className="w-[72px]">Comments:</BaseLabel>
-        <div className="grow max-h-56 min-h-6 overflow-auto">
+      <div className="flex flex-col px-3 pb-3 shrink-0 border-t pt-3">
+        <BaseLabel className="mb-2">Comments:</BaseLabel>
+        <div className="max-h-56 min-h-6 overflow-auto mb-3">
           {(comments as Comment[]).map((comment: Comment) => (
             <CommentRow key={String(comment.id)} comment={comment} />
           ))}
