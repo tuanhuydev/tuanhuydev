@@ -107,44 +107,63 @@ Personal portfolio and blog website built with Next.js 16, showcasing full-stack
 
 ```
 app/                    # Next.js App Router pages
-  _landing/            # Landing page components
-    LandingPage.tsx    # Main landing page component
-    components/        # Server components (Hero, Footer, BlogSection)
-  _queries/            # TanStack Query hooks
-  _styles/             # Global SCSS styles
-  _utils/              # Helper functions and constants
   api/                 # API routes (auth, posts, tasks, AI, upload)
-  auth/                # Authentication pages
-  components/          # Feature components
-    ui/                # shadcn/ui components
-    commons/           # Shared components (forms, modals, inputs, ThemeToggle)
-    DashboardModule/   # Dashboard layout components
-    PostModule/        # Blog post components
-    ProjectModule/     # Project management components
-    TaskModule/        # Task tracking components
-  dashboard/           # Dashboard pages
-  posts/               # Blog pages
-features/              # Feature modules
+  auth/                # Authentication pages (sign-in)
+  dashboard/           # Dashboard pages (home, posts, projects, tasks, users, settings)
+  posts/               # Public blog pages
+  privacy/             # Privacy policy page
+  projects/            # Public projects page
+  resources/           # Shared resources (MAIN ORGANIZATION)
+    components/        # All reusable components
+      common/          # shadcn/ui components (Button, Card, Input, Drawer, etc.)
+      content/         # Content-specific components
+      features/        # Feature modules (Task, Project, Post, User, Dashboard)
+      form/            # Form components (DynamicForm, inputs, selects)
+      helpers/         # Helper components
+      layout/          # Layout components (ThemeScript, etc.)
+    font.ts            # Font configuration (local fonts)
+    hooks/             # Custom React hooks
+    landing/           # Landing page components (Hero, Footer, BlogSection)
+    queries/           # TanStack Query hooks (ALL query files here)
+    styles/            # Global SCSS styles
+    utils/             # Helper functions and constants
+  support/             # Support page
+  error.tsx            # Error boundary
+  layout.tsx           # Root layout
+  loading.tsx          # Loading states
+  page.tsx             # Home page (uses resources/landing)
+  sitemap.ts           # Sitemap generation
+features/              # Feature modules (client-side logic)
   Auth/                # Authentication logic
   GenAI/               # AI/LLM integration
-  Landing/             # Client-side landing components
+  Landing/             # Landing page client components
     components/        # Client components (Navbar, Contact, Experience)
 lib/                   # Shared utilities and interfaces
+  commons/
+    constants/         # Constants
+    errors/            # Error definitions
+  interfaces/          # TypeScript interfaces
+  utils/               # Utility functions
 server/                # Backend logic
   actions/             # Server actions
   controllers/         # API controllers
   models/              # Mongoose models
   repositories/        # Data access layer
   services/            # Business logic
+  dto/                 # Data transfer objects
+  utils/               # Server utilities
 public/                # Static assets
-  assets/              # Images and icons
-    images/            # All image files (bg.jpeg, logo.svg, icons/, socials/)
+  assets/
+    images/            # All image files (bg.jpeg, icons/, socials/)
+  fonts/               # Font files
+  locales/             # Translations
 ```
 
 ### Path Aliases (tsconfig.json)
 
 ```typescript
 "@app/*"      → "app/*"
+"@resources/*" → "app/resources/*"  // Primary alias for shared resources
 "@lib/*"      → "lib/*"
 "@server/*"   → "server/*"
 "@public/*"   → "public/*"
@@ -160,7 +179,7 @@ public/                # Static assets
 **Server Components (default in app/ directory):**
 
 ```typescript
-// app/_landing/components/Hero.tsx
+// app/resources/landing/components/Hero.tsx
 export default async function Hero() {
   const data = await fetchData();
   return <section>...</section>;
@@ -174,18 +193,6 @@ export default async function Hero() {
 "use client";
 
 import { useState } from "react";
-
-// features/Landing/components/Navbar.tsx
-
-// features/Landing/components/Navbar.tsx
-
-// features/Landing/components/Navbar.tsx
-
-// features/Landing/components/Navbar.tsx
-
-// features/Landing/components/Navbar.tsx
-
-// features/Landing/components/Navbar.tsx
 
 // features/Landing/components/Navbar.tsx
 
@@ -212,9 +219,10 @@ export const Navbar = () => {
 
 ```typescript
 // ✅ Correct
-import { Button } from "@app/components/ui/button";
-import { Card } from "@app/components/ui/card";
-import { Input } from "@app/components/ui/input";
+import { Button } from "@resources/components/common/Button";
+import { Card } from "@resources/components/common/Card";
+import { Input } from "@resources/components/common/Input";
+import { Drawer, DrawerContent } from "@resources/components/common/Drawer";
 
 <Button variant="default">Click</Button>
 <Button variant="outline">Cancel</Button>
@@ -234,7 +242,7 @@ import BaseButton from "@app/components/commons/buttons/BaseButton";
 **Utility Function:**
 
 ```typescript
-import { cn } from "@app/lib/utils";
+import { cn } from "@resources/utils/cn";
 
 <div className={cn("base-class", condition && "conditional-class", className)} />;
 ```
@@ -266,27 +274,28 @@ import { cn } from "@app/lib/utils";
 
 ## 5. Critical Constraints
 
-### Material-UI → shadcn/ui Migration (IN PROGRESS)
+### Material-UI → shadcn/ui Migration (COMPLETED)
 
 **Status:**
 
-- ✅ Button components migrated
+- ✅ Button components migrated to shadcn/ui
 - ✅ BaseButton deleted
-- ⚠️ Still using MUI: IconButton, Drawer, Modal, Tooltip, Avatar, DataGrid, DatePicker
-- ⚠️ Theme system still uses MUI ThemeProvider
+- ✅ Drawer migrated to shadcn/ui (vaul)
+- ✅ All common components use shadcn/ui
+- ⚠️ Legacy: Some MUI theme provider code may still exist but is unused
 
 **DO NOT:**
 
 - Import or use BaseButton (deleted)
-- Create new MUI Button instances
+- Create new MUI component instances
 - Use MUI-specific props (variant="contained", color="primary", startIcon)
+- Import from @mui/material
 
-**Next Steps:**
+**ALWAYS USE:**
 
-- Migrate IconButton → Button with size="icon"
-- Replace DataGrid with TanStack Table
-- Replace DatePicker with shadcn date-picker
-- Remove MUI ThemeProvider
+- shadcn/ui components from `@resources/components/common/`
+- Tailwind CSS for styling
+- `cn()` utility for className composition
 
 ### Quick Decision Rules
 
@@ -316,12 +325,14 @@ import { cn } from "@app/lib/utils";
 
 ### Form Handling (Back Reference)
 
-**React Hook Form + DynamicFormV2:**
+**React Hook Form + DynamicForm:**
 
 ```typescript
-import DynamicFormV2, { DynamicFormV2Config } from "@app/components/commons/FormV2/DynamicFormV2";
+import DynamicForm from "@resources/components/form/DynamicForm";
+// OR for newer version:
+import DynamicFormV2 from "@resources/components/form/DynamicFormV2";
 
-const config: DynamicFormV2Config = {
+const config: DynamicFormConfig = {
   fields: [
     { name: "title", label: "Title", type: "text", required: true },
     { name: "content", label: "Content", type: "textarea" },
@@ -329,7 +340,7 @@ const config: DynamicFormV2Config = {
   submitProps: { children: "Save" },
 };
 
-<DynamicFormV2 config={config} onSubmit={handleSubmit} />;
+<DynamicForm config={config} onSubmit={handleSubmit} />;
 ```
 
 **Custom Forms:**
@@ -349,9 +360,9 @@ const { register, handleSubmit } = useForm({ resolver: yupResolver(schema) });
 
 ```typescript
 // Query
-import { usePostsQuery } from "@app/_queries/postQueries";
+import { usePostsQuery, usePostQuery } from "@resources/queries/postQueries";
 // Mutation
-import { useCreatePostMutation } from "@app/_queries/postQueries";
+import { useCreatePostMutation, useUpdatePostMutation } from "@resources/queries/postQueries";
 
 const { data: posts, isLoading } = usePostsQuery({ published: true });
 
@@ -446,12 +457,12 @@ if (!user) return unauthorized();
 **Session Hook:**
 
 ```typescript
-import { useSession } from "@app/_queries/useSession";
+import { useSession } from "@resources/queries/useSession";
 
 const { user, isLoading } = useSession();
 ```
 
-### Testingg & Development Commands
+### Testing & Development Commands
 
 ```bash
 # Testing
@@ -506,7 +517,7 @@ const Contact = lazy(() => import("@features/Landing/components/Contact"));
 **Error Handling:**
 
 ```typescript
-import { useGlobal } from "@app/components/commons/providers/GlobalProvider";
+import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
 
 const { notify } = useGlobal();
 notify("Success message", "success");

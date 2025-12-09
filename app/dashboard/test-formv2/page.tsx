@@ -1,4 +1,4 @@
-import GenerativeBackground from "@app/components/helpers/GenerativeBackground";
+import GenerativeBackground from "@resources/components/helpers/GenerativeBackground";
 
 export default function FormV2TestPage() {
   return (

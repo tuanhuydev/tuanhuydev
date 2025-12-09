@@ -1,9 +1,9 @@
 "use client";
 
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import PostWidget from "@app/components/DashboardModule/widgets/PostWidget";
-import ProjectWidget from "@app/components/DashboardModule/widgets/ProjectWidget";
-import TodayTaskWidget from "@app/components/DashboardModule/widgets/TodayTaskWidget";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
+import PostWidget from "@resources/components/features/Dashboard/widgets/PostWidget";
+import ProjectWidget from "@resources/components/features/Dashboard/widgets/ProjectWidget";
+import TodayTaskWidget from "@resources/components/features/Dashboard/widgets/TodayTaskWidget";
 import { UserPermissions } from "lib/commons/constants/permissions";
 import { Suspense } from "react";
 

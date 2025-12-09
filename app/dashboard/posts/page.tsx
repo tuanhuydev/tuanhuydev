@@ -1,10 +1,10 @@
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import PostCard from "@app/components/PostModule/PostCard";
-import PostsFilter from "@app/components/PostModule/PostsFilter";
-import Empty from "@app/components/commons/Empty";
-import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
-import Loader from "@app/components/commons/Loader";
 import { UrlParams } from "@lib/interfaces/shared";
+import Empty from "@resources/components/common/Empty";
+import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
+import Loader from "@resources/components/common/Loader";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
+import PostCard from "@resources/components/features/Post/PostCard";
+import PostsFilter from "@resources/components/features/Post/PostsFilter";
 import { getPosts } from "@server/actions/blogActions";
 import { Suspense } from "react";
 

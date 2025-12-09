@@ -1,7 +1,7 @@
-import PostsGrid from "../components/PostModule/PostsGrid";
-import { Footer } from "@app/_landing/components/Footer";
-import BentoGrid from "@app/components/PostModule/BentoGrid";
+import PostsGrid from "../resources/components/features/Post/PostsGrid";
 import { Navbar } from "@features/Landing/components/Navbar";
+import BentoGrid from "@resources/components/features/Post/BentoGrid";
+import { Footer } from "@resources/landing/components/Footer";
 import { getPosts } from "@server/actions/blogActions";
 import React from "react";
 

@@ -1,6 +1,6 @@
-import PostView from "@app/components/PostModule/PostView";
-import Transition from "@app/components/commons/Transition";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Transition from "@resources/components/common/Transition";
+import PostView from "@resources/components/features/Post/PostView";
 import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";

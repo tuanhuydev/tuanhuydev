@@ -1,11 +1,11 @@
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import Loader from "@app/components/commons/Loader";
+import Loader from "@resources/components/common/Loader";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { redirect } from "next/navigation";
 import { Suspense, lazy } from "react";
 import { getProjectByIdAction } from "server/actions/projectActions";
 
 // Replace dynamic import with React lazy
-const ProjectForm = lazy(() => import("@app/components/ProjectModule/ProjectForm"));
+const ProjectForm = lazy(() => import("@resources/components/features/Project/ProjectForm"));
 
 export default async function Page(props: any) {
   const params = await props.params;
