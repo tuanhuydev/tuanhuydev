@@ -1,20 +1,20 @@
 "use client";
 
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import MarkdownRenderer from "@app/components/commons/MarkdownRenderer";
-import { Button } from "@app/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@app/components/ui/dropdown-menu";
-import { Input } from "@app/components/ui/input";
 import { useFetch } from "@features/Auth/hooks/useFetch";
 import type { ChatSession } from "@features/GenAI";
 import { useDeleteChatSession, useNewChatSession } from "@features/GenAI/hooks/useChatSession";
 import { BASE_URL } from "@lib/commons/constants/base";
 import { ApiResponse } from "@lib/interfaces/shared";
+import { Button } from "@resources/components/common/Button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@resources/components/common/DropdownMenu";
+import { Input } from "@resources/components/common/Input";
+import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MoreVertical, Send } from "lucide-react";
 import * as React from "react";

@@ -1,4 +1,4 @@
-import Sidebar from "@app/components/DashboardModule/Sidebar";
+import Sidebar from "@resources/components/features/Dashboard/Sidebar";
 import { userPermissionAction } from "@server/actions/authActions";
 import { PropsWithChildren } from "react";
 

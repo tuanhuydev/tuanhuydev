@@ -1,9 +1,9 @@
 "use client";
 
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import ConfigSection from "@app/components/SettingModule/ConfigSection";
-import { Button } from "@app/components/ui/button";
 import { useFetch } from "@features/Auth";
+import { Button } from "@resources/components/common/Button";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
+import ConfigSection from "@resources/components/features/Settings/ConfigSection";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 

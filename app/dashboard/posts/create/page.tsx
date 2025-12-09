@@ -1,10 +1,10 @@
-import PageContainer from "@app/components/DashboardModule/PageContainer";
-import Loader from "@app/components/commons/Loader";
+import Loader from "@resources/components/common/Loader";
+import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { Suspense, lazy } from "react";
 
 // Replace dynamic import with React lazy - note we need to handle non-default export differently
 const PostForm = lazy(() =>
-  import("@app/components/PostModule/PostForm").then((module) => ({
+  import("@resources/components/features/Post/PostForm").then((module) => ({
     default: module.PostForm,
   })),
 );

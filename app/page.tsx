@@ -1,5 +1,5 @@
-import LandingPage from "./_landing/LandingPage";
-import Transition from "./components/commons/Transition";
+import Transition from "./resources/components/common/Transition";
+import LandingPage from "./resources/landing/LandingPage";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata } from "next";

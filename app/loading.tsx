@@ -1,4 +1,4 @@
-import Loader from "@app/components/commons/Loader";
+import Loader from "@resources/components/common/Loader";
 
 export default async function Page() {
   return (

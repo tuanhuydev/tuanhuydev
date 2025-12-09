@@ -1,14 +1,14 @@
 "use client";
 
-import { useTaskFilter } from "@app/_hooks/useTaskFilter";
-import { useProjectQuery, useProjectTasks } from "@app/_queries/projectQueries";
-import { ErrorBoundary } from "@app/components/commons/ErrorBoundary";
-import Loader from "@app/components/commons/Loader";
+import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
+import Loader from "@resources/components/common/Loader";
+import { useTaskFilter } from "@resources/hooks/useTaskFilter";
+import { useProjectQuery, useProjectTasks } from "@resources/queries/projectQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { Suspense, lazy, use, useEffect } from "react";
 
-const TaskPage = lazy(() => import("@app/components/TaskModule/TaskPage"));
+const TaskPage = lazy(() => import("@resources/components/features/Task/TaskPage"));
 
 interface PageProps {
   params: Promise<{
