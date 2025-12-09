@@ -3,12 +3,9 @@
 import Loader from "./Loader";
 import { EMPTY_STRING } from "lib/commons/constants/base";
 import { isURLValid } from "lib/utils/helper";
+import { TriangleAlert } from "lucide-react";
 import Image, { ImageProps } from "next/image";
-import { Suspense, lazy } from "react";
 import { useEffect, useState } from "react";
-
-// Replace dynamic import with React lazy
-const WarningOutlined = lazy(() => import("@mui/icons-material/WarningAmberOutlined"));
 
 interface BaseImageProps extends Partial<ImageProps> {
   src?: string;
@@ -42,9 +39,7 @@ const BaseImage = ({
           onError={() => setHasError(true)}
         />
       ) : (
-        <Suspense fallback={<Loader />}>
-          <WarningOutlined />
-        </Suspense>
+        <TriangleAlert className="w-6 h-6 text-amber-500" />
       )}
     </div>
   );

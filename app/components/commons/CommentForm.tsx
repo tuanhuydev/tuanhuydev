@@ -1,7 +1,7 @@
 "use client";
 
-import SendIcon from "@mui/icons-material/Send";
-import { IconButton } from "@mui/material";
+import { Button } from "@app/components/ui/button";
+import { Send } from "lucide-react";
 import { useRef } from "react";
 
 export interface CommentForm {
@@ -37,9 +37,9 @@ export const CommentForm = ({ onSubmit }: CommentFormProps) => {
         placeholder="Write a comment..."
         className="py-2 px-4 border-none rounded-sm grow outline-none focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
       />
-      <IconButton type="submit" color="primary" aria-label="send" size="small" className="rounded-sm">
-        <SendIcon fontSize="small" color="primary" />
-      </IconButton>
+      <Button type="submit" size="icon" variant="ghost" aria-label="send" className="rounded-sm">
+        <Send className="h-4 w-4" />
+      </Button>
     </form>
   );
 };

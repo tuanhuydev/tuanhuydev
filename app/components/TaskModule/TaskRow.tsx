@@ -1,8 +1,8 @@
 import Badge from "../commons/Badge";
 import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@app/_utils/constants";
 import { Button } from "@app/components/ui/button";
-import StarOutlined from "@mui/icons-material/StarOutlined";
-import Tooltip from "@mui/material/Tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@app/components/ui/tooltip";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import React, { memo, useMemo } from "react";
 
@@ -43,11 +43,18 @@ const TaskRow = memo(function TaskRow({
   const TaskTypeElement = useMemo(() => {
     const { label, icon } = taskType;
     return (
-      <Tooltip title={label}>
-        <div className={`flex items-center justify-center w-6 h-6 rounded-full  text-white dark:text-primary`}>
-          <Image src={icon} width={24} height={24} alt="task type icon"></Image>
-        </div>
-      </Tooltip>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className={`flex items-center justify-center w-6 h-6 rounded-full  text-white dark:text-primary`}>
+              <Image src={icon} width={24} height={24} alt="task type icon"></Image>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{label}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }, [taskType]);
   return (
@@ -69,7 +76,7 @@ const TaskRow = memo(function TaskRow({
       <div className="ml-auto flex justify-end">
         {onPin && (
           <Button variant="ghost" size="icon" onClick={pinTask}>
-            <StarOutlined className={`text-sm !w-4 !h-4 ${pinnedClass}`} />
+            <Star className={`w-4 h-4 ${pinnedClass}`} />
           </Button>
         )}
       </div>

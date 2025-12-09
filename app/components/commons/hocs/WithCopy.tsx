@@ -1,20 +1,15 @@
 "use client";
 
-import Tooltip, { TooltipProps } from "@mui/material/Tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@app/components/ui/tooltip";
 import { PropsWithChildren, memo, useCallback, useEffect, useState } from "react";
 
 export interface WithCopyProps extends PropsWithChildren {
   title?: string;
   content: string;
-  TooltipProps?: Partial<TooltipProps>;
+  tooltipSide?: "top" | "right" | "bottom" | "left";
 }
 
-export default memo(function WithCopy({
-  title = "Copy",
-  content,
-  children,
-  TooltipProps = { placement: "left" },
-}: WithCopyProps) {
+export default memo(function WithCopy({ title = "Copy", content, children, tooltipSide = "left" }: WithCopyProps) {
   const [tooltipContent, setTooltipContent] = useState(title);
 
   const copy = useCallback(
@@ -38,9 +33,16 @@ export default memo(function WithCopy({
 
   return (
     <div onClick={copy} className="cursor-pointer">
-      <Tooltip {...TooltipProps} title={tooltipContent}>
-        <div>{children}</div>
-      </Tooltip>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>{children}</div>
+          </TooltipTrigger>
+          <TooltipContent side={tooltipSide}>
+            <p>{tooltipContent}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 });

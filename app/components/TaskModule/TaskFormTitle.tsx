@@ -348,7 +348,7 @@ export default function TaskFormTitle({
   }, [isCreateSuccess, toggleModal]);
 
   return (
-    <div className="bg-background border-b mb-3 flex justify-between shadow-md">
+    <div className="bg-background flex justify-between items-center px-3 py-2 shrink-0 sm:rounded-t-lg">
       {renderTitle}
       {renderHeaderExtra}
       <Suspense fallback={<div>Loading...</div>}>

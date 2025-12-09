@@ -2,7 +2,7 @@
 
 import { useGlobal } from "./providers/GlobalProvider";
 import { Button } from "@app/components/ui/button";
-import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import { X } from "lucide-react";
 import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
 import LogService from "server/services/LogService";
 
@@ -66,7 +66,7 @@ export default function BaseUpload() {
                   variant="ghost"
                   disabled={uploading}
                   className="text-red-500">
-                  <CloseOutlined fontSize="small" />
+                  <X className="w-4 h-4" />
                 </Button>
               </li>
             ))}

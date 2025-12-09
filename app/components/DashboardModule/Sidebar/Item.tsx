@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
+// Typography replaced with Tailwind classes
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@app/components/ui/tooltip";
 import { UserPermissions } from "lib/commons/constants/permissions";
 import { isPathActive } from "lib/utils/helper";
 import Link from "next/link";
@@ -26,11 +26,9 @@ export default function Item({ label, icon, path, id }: ItemProps) {
       <Link href={path} key={path} prefetch={false} className={id === UserPermissions.VIEW_SETTING ? "mt-auto" : ""}>
         <li
           className={`ease-in duration-200 font-sans rounded-sm mb-1 dark:text-slate-300  cursor-pointer py-2 px-3 hover:bg-primary hover:text-slate-50 dark:hover:bg-slate-600 dark:hover:text-slate-50 ${activeClass}`}>
-          <div className="capitalize flex items-center justify-start relative min-w-0">
-            {icon}
-            <Typography variant="body2" sx={{ ml: 1 }} className="truncate">
-              {label}
-            </Typography>
+          <div className="capitalize flex items-center gap-2 min-w-0">
+            <span className="shrink-0 min-w-4">{icon}</span>
+            <span className="text-sm truncate">{label}</span>
           </div>
         </li>
       </Link>
@@ -40,8 +38,13 @@ export default function Item({ label, icon, path, id }: ItemProps) {
 
   if (!sidebarOpen) return itemElement;
   return (
-    <Tooltip title={label} placement="right">
-      {itemElement}
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{itemElement}</TooltipTrigger>
+        <TooltipContent side="right">
+          <p>{label}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

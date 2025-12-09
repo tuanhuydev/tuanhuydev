@@ -1,5 +1,5 @@
-import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import Avatar from "@mui/material/Avatar";
+import { Avatar, AvatarFallback } from "@app/components/ui/avatar";
+import { User } from "lucide-react";
 import { memo } from "react";
 
 export interface UserRowProps {
@@ -12,7 +12,9 @@ const UserRow = memo(function UserRow({ user, active }: UserRowProps) {
     <div className="py-3 w-full">
       <div className="flex items-center">
         <Avatar className="mr-3">
-          <PersonOutlineOutlined fontSize="inherit" />
+          <AvatarFallback>
+            <User className="w-6 h-6" />
+          </AvatarFallback>
         </Avatar>
         <div className="grow flex items-center">
           <span className="text-base font-semibold capitalize w-48 text-primary dark:text-slate-400">{user.name}</span>

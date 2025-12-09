@@ -4,15 +4,9 @@ import { ItemProps } from "./Item";
 import { useMobileSidebar } from "@app/_queries/metaQueries";
 import { QUERY_KEYS } from "@app/_queries/queryKeys";
 import { Button } from "@app/components/ui/button";
-import ArrowCircleRightOutlined from "@mui/icons-material/ArrowCircleRightOutlined";
-import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
-import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
-import HomeOutlined from "@mui/icons-material/HomeOutlined";
-import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
-import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
-import WorkspacesOutlineIcon from "@mui/icons-material/WorkspacesOutline";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserPermissions } from "lib/commons/constants/permissions";
+import { CircleArrowRight, FileText, LayoutGrid, Home, User, Settings, Layers } from "lucide-react";
 import { FC, lazy, ReactNode, useCallback, useEffect, useState } from "react";
 
 // Replace dynamic imports with React lazy
@@ -28,25 +22,25 @@ export interface SidebarProps {
 const permissionMap = {
   [UserPermissions.VIEW_PROJECT]: {
     label: "Manage Projects",
-    icon: <GridViewOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    icon: <LayoutGrid className="w-4 h-4" />,
     path: "/dashboard/projects",
     id: UserPermissions.VIEW_PROJECT,
   },
   [UserPermissions.VIEW_POST]: {
     label: "Manage Posts",
-    icon: <ArticleOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    icon: <FileText className="w-4 h-4" />,
     path: "/dashboard/posts",
     id: UserPermissions.VIEW_POST,
   },
   [UserPermissions.VIEW_USER]: {
     label: "Manage Users",
-    icon: <PersonOutlineOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    icon: <User className="w-4 h-4" />,
     path: "/dashboard/users",
     id: UserPermissions.VIEW_USER,
   },
   [UserPermissions.VIEW_SETTING]: {
     label: "Settings",
-    icon: <SettingsOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+    icon: <Settings className="w-4 h-4" />,
     path: "/dashboard/settings",
     id: UserPermissions.VIEW_SETTING,
   },
@@ -56,13 +50,13 @@ const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
   const routes: Array<ItemProps> = [
     {
       label: "Home",
-      icon: <HomeOutlined sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      icon: <Home className="w-4 h-4" />,
       path: "/dashboard/home",
       id: "Home",
     },
     {
       label: "Apps",
-      icon: <WorkspacesOutlineIcon sx={{ fontSize: (theme) => theme.typography.body2 }} />,
+      icon: <Layers className="w-4 h-4" />,
       path: "/dashboard/apps",
       id: "Apps",
     },
@@ -126,11 +120,11 @@ const Sidebar: FC<SidebarProps> = ({ permissions = [] }) => {
         variant="ghost"
         size="icon"
         onClick={toggleSidebar}>
-        <ArrowCircleRightOutlined fontSize="small" className={`${sidebarOpen ? "rotate-180" : ""}`} />
+        <CircleArrowRight className={`w-4 h-4 ${sidebarOpen ? "rotate-180" : ""}`} />
       </Button>
       <ul
         className={`${
-          sidebarOpen ? "w-[12.25rem]" : "w-[2.35rem]"
+          sidebarOpen ? "w-[12.25rem]" : "w-[2.4rem]"
         } ease-in duration-150 grow overflow-x-hidden flex flex-col list-none p-0 m-0`}>
         {makeRoutes(permissions)}
       </ul>
