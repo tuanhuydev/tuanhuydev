@@ -1,8 +1,7 @@
 "use client";
 
-import Alert from "@mui/material/Alert";
-import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
-import { createContext, PropsWithChildren, useCallback, useContext, useState } from "react";
+import { useToast } from "@app/hooks/use-toast";
+import { createContext, PropsWithChildren, useCallback, useContext } from "react";
 
 export const severities = {
   SUCCESS: "success",
@@ -11,44 +10,28 @@ export const severities = {
   INFO: "info",
 } as const;
 
-type SnackbarConfig = {
-  open: boolean;
-  message: string;
-  severity: (typeof severities)[keyof typeof severities];
-};
+type ToastSeverity = (typeof severities)[keyof typeof severities] | string;
 
 export interface GlobalContextProps {
-  notify: (message: SnackbarConfig["message"], severity: SnackbarConfig["severity"]) => void;
+  notify: (message: string, severity?: ToastSeverity) => void;
 }
 
-export const GlobalContext = createContext<null | ObjectType>(null);
+export const GlobalContext = createContext<null | GlobalContextProps>(null);
 
 const GlobalProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [config, setConfig] = useState<SnackbarConfig>({
-    open: false,
-    message: "This is a toast",
-    severity: "info",
-  });
+  const { toast } = useToast();
 
-  const handleClose = useCallback((event?: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
-    if (reason === "clickaway") return;
-    setConfig((prevConfig) => ({ ...prevConfig, open: false }));
-  }, []);
-
-  const notify = useCallback((message: SnackbarConfig["message"], severity: SnackbarConfig["severity"] = "info") => {
-    setConfig(() => ({ open: true, message, severity }));
-  }, []);
-
-  return (
-    <GlobalContext.Provider value={{ notify }}>
-      {children}
-      <Snackbar open={config.open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={config.severity} variant="filled" sx={{ width: "100%" }}>
-          {config.message}
-        </Alert>
-      </Snackbar>
-    </GlobalContext.Provider>
+  const notify = useCallback(
+    (message: string, severity: ToastSeverity = "info") => {
+      toast({
+        description: message,
+        variant: severity === "error" ? "destructive" : "default",
+      });
+    },
+    [toast],
   );
+
+  return <GlobalContext.Provider value={{ notify }}>{children}</GlobalContext.Provider>;
 };
 export default GlobalProvider;
 

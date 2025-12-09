@@ -164,15 +164,13 @@ function TaskPage({
   const RenderTaskDetails = useMemo(() => {
     if (isEditMode) {
       return (
-        <div className="px-1">
-          <TaskForm
-            projectId={project?.id}
-            config={TaskFormConfig}
-            onDone={mutateTaskSuccess}
-            onError={mutateTaskError}
-            task={selectedTask as Task | undefined}
-          />
-        </div>
+        <TaskForm
+          projectId={project?.id}
+          config={TaskFormConfig}
+          onDone={mutateTaskSuccess}
+          onError={mutateTaskError}
+          task={selectedTask as Task | undefined}
+        />
       );
     }
     const projectUser = projectUsers.find(({ value: userId }: SelectOption) => userId === selectedTask?.assigneeId);
@@ -225,7 +223,7 @@ function TaskPage({
             <VisuallyHidden>
               <DrawerTitle>{selectedTask?.title || "Task Details"}</DrawerTitle>
             </VisuallyHidden>
-            <div className="flex flex-col h-full bg-background">
+            <div className="flex flex-col h-full bg-background overflow-hidden sm:rounded-lg">
               <TaskFormTitle
                 task={selectedTask as unknown as Partial<Task>}
                 allowSubTask={!!selectedTask && allowSubTasks}
@@ -235,7 +233,7 @@ function TaskPage({
                 onClose={toggleDrawer(false)}
                 onToggle={toggleMode}
               />
-              {RenderTaskDetails}
+              <div className="flex-1 overflow-y-auto px-1">{RenderTaskDetails}</div>
             </div>
           </DrawerContent>
         </Drawer>
