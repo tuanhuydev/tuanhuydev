@@ -310,7 +310,7 @@ const DynamicForm = memo(function DynamicForm({ config, onSubmit, mapValues, dis
         <div className="flex flex-wrap">{fieldNodes}</div>
       </fieldset>
 
-      <Separator className="my-6 mx-4" />
+      <Separator className="my-6 px-4" />
 
       <div className="flex p-2">
         {allowDefault && (

@@ -44,6 +44,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
     if (!projectId) return;
 
     const taskGroups: TaskGroupType = { backlog: [] };
+
     projectSprints?.forEach((sprint: ObjectType) => {
       taskGroups[sprint.id] = [];
     });
