@@ -44,13 +44,13 @@ const baseComponents = (darkMode: boolean): Components => ({
     );
   },
   pre({ node, ...rest }) {
-    return <pre {...rest} className="rounded-lg overflow-auto text-xs sm:text-sm lg:text-base my-4" />;
+    return <pre {...rest} className="rounded-lg overflow-auto text-xs sm:text-sm my-3 sm:my-4" />;
   },
   h1({ node, ...rest }) {
     return (
       <h1
         {...rest}
-        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mt-8 mb-4 pb-3 border-b-2 border-gray-200 dark:border-gray-700 leading-tight"
+        className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-5 sm:mt-6 mb-2.5 sm:mb-3 pb-2 border-b-2 border-gray-200 dark:border-gray-700 leading-tight"
       />
     );
   },
@@ -58,7 +58,7 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <h2
         {...rest}
-        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-6 mb-3 pb-2 border-b border-gray-200 dark:border-gray-700 leading-tight"
+        className="text-base sm:text-lg md:text-xl font-bold text-gray-900 dark:text-white mt-4 sm:mt-5 mb-2 pb-1.5 border-b border-gray-200 dark:border-gray-700 leading-tight"
       />
     );
   },
@@ -66,7 +66,7 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <h3
         {...rest}
-        className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white mt-5 mb-3 leading-snug"
+        className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white mt-3 sm:mt-4 mb-1.5 sm:mb-2 leading-snug"
       />
     );
   },
@@ -74,7 +74,7 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <h4
         {...rest}
-        className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white mt-4 mb-2 leading-snug"
+        className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mt-3 mb-1.5 leading-snug"
       />
     );
   },
@@ -82,7 +82,7 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <h5
         {...rest}
-        className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-gray-900 dark:text-white mt-3 mb-2 leading-normal"
+        className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 mt-2 sm:mt-3 mb-1 sm:mb-1.5 leading-normal"
       />
     );
   },
@@ -90,23 +90,18 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <h6
         {...rest}
-        className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-gray-700 dark:text-gray-300 mt-3 mb-2 leading-normal"
+        className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mt-2 mb-1 leading-normal"
       />
     );
   },
   p({ node, ...rest }) {
-    return (
-      <p
-        {...rest}
-        className="my-3 text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 text-gray-700 dark:text-gray-300"
-      />
-    );
+    return <p {...rest} className="my-2 text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300" />;
   },
   ul({ node, ...rest }) {
     return (
       <ul
         {...rest}
-        className="list-disc pl-5 sm:pl-6 md:pl-8 my-3 sm:my-4 space-y-1.5 sm:space-y-2 text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300"
+        className="list-disc pl-4 sm:pl-5 my-2 space-y-1 text-sm sm:text-base text-gray-700 dark:text-gray-300"
       />
     );
   },
@@ -114,12 +109,12 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <ol
         {...rest}
-        className="list-decimal pl-5 sm:pl-6 md:pl-8 my-3 sm:my-4 space-y-1.5 sm:space-y-2 text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300"
+        className="list-decimal pl-4 sm:pl-5 my-2 space-y-1 text-sm sm:text-base text-gray-700 dark:text-gray-300"
       />
     );
   },
   li({ node, ...rest }) {
-    return <li {...rest} className="leading-6 sm:leading-7 md:leading-8 pl-1 sm:pl-2" />;
+    return <li {...rest} className="leading-relaxed pl-0.5 sm:pl-1" />;
   },
   a({ node, ...rest }) {
     return (
@@ -127,7 +122,7 @@ const baseComponents = (darkMode: boolean): Components => ({
         {...rest}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-2 font-medium transition-colors"
+        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-2 transition-colors"
       />
     );
   },
@@ -135,14 +130,14 @@ const baseComponents = (darkMode: boolean): Components => ({
     return (
       <blockquote
         {...rest}
-        className="border-l-4 border-blue-500 dark:border-blue-400 pl-4 py-2 my-4 bg-blue-50 dark:bg-slate-800/50 rounded-r-md italic text-gray-700 dark:text-gray-300"
+        className="border-l-4 border-blue-500 dark:border-blue-400 pl-3 sm:pl-4 py-1.5 sm:py-2 my-2 sm:my-3 bg-blue-50 dark:bg-slate-800/50 rounded-r-md italic text-sm sm:text-base text-gray-700 dark:text-gray-300"
       />
     );
   },
   table({ node, ...rest }) {
     return (
-      <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
-        <table {...rest} className="min-w-full divide-y divide-slate-200 dark:divide-slate-700" />
+      <div className="my-3 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+        <table {...rest} className="min-w-full divide-y divide-slate-200 dark:divide-slate-700 text-xs sm:text-sm" />
       </div>
     );
   },
@@ -156,13 +151,18 @@ const baseComponents = (darkMode: boolean): Components => ({
     return <tr {...rest} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" />;
   },
   th({ node, ...rest }) {
-    return <th {...rest} className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white" />;
+    return (
+      <th
+        {...rest}
+        className="px-2 sm:px-3 py-1.5 sm:py-2 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-white"
+      />
+    );
   },
   td({ node, ...rest }) {
-    return <td {...rest} className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300" />;
+    return <td {...rest} className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300" />;
   },
   hr({ node, ...rest }) {
-    return <hr {...rest} className="my-6 border-t-2 border-gray-200 dark:border-gray-700" />;
+    return <hr {...rest} className="my-4 border-t border-gray-200 dark:border-gray-700" />;
   },
   strong({ node, ...rest }) {
     return <strong {...rest} className="font-semibold text-gray-900 dark:text-white" />;
@@ -175,7 +175,7 @@ const baseComponents = (darkMode: boolean): Components => ({
   },
   img({ src, alt }) {
     return (
-      <div className="w-full max-w-full h-64 md:h-96 relative my-4 rounded-lg overflow-hidden shadow-md">
+      <div className="w-full max-w-full h-40 sm:h-48 md:h-64 relative my-2 sm:my-3 rounded-lg overflow-hidden shadow-md">
         <Image src={src as string} alt={(alt as string) || "image"} fill className="object-contain" />
       </div>
     );

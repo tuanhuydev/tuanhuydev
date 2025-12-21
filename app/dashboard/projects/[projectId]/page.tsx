@@ -1,6 +1,6 @@
 "use client";
 
-import Card from "@resources/components/common/Card";
+import Card, { CardContent, CardFooter, CardHeader } from "@resources/components/common/Card";
 import WithCopy from "@resources/components/common/hocs/WithCopy";
 import BaseLabel from "@resources/components/content/BaseLabel";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
@@ -46,57 +46,79 @@ export default function Page({ params }: PageProps) {
   return (
     <PageContainer title="View Project" goBack>
       <div className="grid grid-cols-12 grid-rows-2 gap-4">
-        <Card className="h-full col-span-full lg:col-span-6">
-          <div className="flex items-center justify-between min-w-0 overflow-hidden">
-            <h1 className="capitalize text-3xl mx-0 mt-0 mb-2 line-clamp-3 text-gray-900 dark:text-gray-100">{name}</h1>
-            <div className="flex gap-3">
-              <WithCopy content={typeof window !== undefined ? window.location.href : ""} title="Share">
-                <Share className="w-4 h-4" />
+        <Card className="h-full col-span-full lg:col-span-6 flex flex-col">
+          <CardHeader className="p-5 pb-0">
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="capitalize text-2xl font-bold text-gray-900 dark:text-gray-100">{name}</h1>
+              <WithCopy content={typeof window !== "undefined" ? window.location.href : ""} title="Share">
+                <div className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer">
+                  <Share className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                </div>
               </WithCopy>
             </div>
-          </div>
-          {clientName && (
-            <div className="mb-3">
-              <BaseLabel>Client:&nbsp;</BaseLabel>
-              <p className="text-sm m-0 p-0 inline text-gray-700 dark:text-gray-300">{clientName}</p>
+          </CardHeader>
+          <CardContent className="p-5 pt-4 flex-1">
+            {clientName && (
+              <div className="mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Client
+                </span>
+                <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">{clientName}</p>
+              </div>
+            )}
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Description
+              </span>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 line-clamp-3">
+                {description || "No description provided"}
+              </p>
             </div>
-          )}
-          <div className="line-clamp-6">
-            <BaseLabel>Description:&nbsp;</BaseLabel>
-            <p className="text-sm m-0 p-0 inline text-gray-700 dark:text-gray-300">{description}</p>
-          </div>
+          </CardContent>
         </Card>
         {status && (
-          <Card className="h-full col-span-full lg:col-span-3">
-            <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">status</span>
-            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-green-600 dark:text-green-400 capitalize">
-              {status}
-            </h4>
+          <Card className="h-full col-span-full lg:col-span-3 flex flex-col">
+            <CardHeader className="p-5 pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 block">
+                Status
+              </span>
+            </CardHeader>
+            <CardContent className="px-5 pb-5 pt-0 flex-1 flex items-center justify-center">
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400 capitalize">{status}</p>
+            </CardContent>
           </Card>
         )}
         {type && (
-          <Card className="h-full col-span-full lg:col-span-3">
-            <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">type</span>
-            <h4 className="text-bold text-4xl text-center mt-5 mb-3 text-cyan-500 dark:text-cyan-400 capitalize">
-              {type}
-            </h4>
+          <Card className="h-full col-span-full lg:col-span-3 flex flex-col">
+            <CardHeader className="p-5 pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 block">
+                Type
+              </span>
+            </CardHeader>
+            <CardContent className="px-5 pb-5 pt-0 flex-1 flex items-center justify-center">
+              <p className="text-2xl font-bold text-cyan-500 dark:text-cyan-400 capitalize">{type}</p>
+            </CardContent>
           </Card>
         )}
-        <Card className="h-full col-span-full lg:col-span-3">
-          <span className="text-lg font-bold capitalize text-gray-900 dark:text-gray-100">Timeline</span>
-          <div className="mt-4 flex flex-col items-center gap-4">
-            <p className="text-xl font-medium capitalize text-gray-900 dark:text-gray-100">{TitleByPercent}</p>
-            <div className="flex flex-wrap justify-between w-full">
-              <span className="text-xs flex-shrink-0">
-                <BaseLabel>Start Date:&nbsp;</BaseLabel>
-                {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
-              </span>
-              <span className="text-xs flex-shrink-0">
-                <BaseLabel>End Date:&nbsp;</BaseLabel>
-                {endDate ? format(new Date(endDate), DATE_FORMAT) : "-"}
-              </span>
+        <Card className="h-full col-span-full lg:col-span-3 flex flex-col">
+          <CardHeader className="p-5 pb-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 block">
+              Timeline
+            </span>
+          </CardHeader>
+          <CardContent className="px-5 pt-0 flex-1 flex items-center justify-center">
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 capitalize">{TitleByPercent}</p>
+          </CardContent>
+          <CardFooter className="px-5 pb-5 pt-0 flex gap-4 text-xs text-gray-600 dark:text-gray-400">
+            <div>
+              <span className="font-semibold">Start: </span>
+              {startDate ? format(new Date(startDate), DATE_FORMAT) : "-"}
             </div>
-          </div>
+            <div>
+              <span className="font-semibold">End: </span>
+              {endDate ? format(new Date(endDate), DATE_FORMAT) : "-"}
+            </div>
+          </CardFooter>
         </Card>
         <SprintCard projectId={projectId} className="col-span-full lg:col-span-3" />
       </div>

@@ -2,17 +2,16 @@
 
 import { formatDateString } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
-import Card from "@resources/components/common/Card";
+import Card, { CardContent, CardFooter, CardHeader } from "@resources/components/common/Card";
 import Loader from "@resources/components/common/Loader";
 import BaseModal from "@resources/components/common/modals/BaseModal";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
-import BaseLabel from "@resources/components/content/BaseLabel";
 import DynamicForm, { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { MutationParams, useMutateSprint, useSprintQuery } from "@resources/queries/sprintQueries";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { Plus, ArrowLeft, Pencil } from "lucide-react";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
 export interface Sprint {
@@ -184,37 +183,37 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
     setModalState((prev) => ({ ...prev, isCreateOpen: true, isManageOpen: true }));
   }, []);
 
-  const CardContent = useMemo(() => {
+  const SprintContent = useMemo(() => {
     // Loading then show loader
     if (isSprintsFetching) {
       return <Loader />;
     }
     if (!activeSprints.length) {
       return (
-        <Fragment>
-          <h3 className="mx-auto my-3 font-medium text-slate-300 text-2xl">There is no sprint</h3>
-          <Button onClick={createNewSprint}>Create new sprint</Button>
-        </Fragment>
+        <div className="text-center py-6">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">No sprints yet</p>
+          <Button onClick={createNewSprint} size="sm">
+            Create Sprint
+          </Button>
+        </div>
       );
     }
     // there's active sprint and no sprints
     if (!activeSprint) {
-      return <h3 className="m-0 font-medium text-slate-300 text-2xl">There is no active sprint</h3>;
+      return (
+        <div className="text-center py-6">
+          <p className="text-gray-500 dark:text-gray-400">No active sprint</p>
+        </div>
+      );
     }
 
     return (
-      <div className="h-full w-full flex flex-col">
-        <h4 className="capitalize mx-0 my-3 font-medium">{activeSprint?.name}</h4>
-        <p className="m-0 flex-1 text-sm">{activeSprint?.description}</p>
-        <div className="flex flex-wrap justify-between">
-          <div className="text-xs">
-            <BaseLabel>Start Date: </BaseLabel>
-            {activeSprint.startDate ? format(new Date(activeSprint.startDate), DATE_FORMAT) : "-"}
-          </div>
-          <div className="text-xs">
-            <BaseLabel>End Date: </BaseLabel>
-            {activeSprint.endDate ? format(new Date(activeSprint.endDate), DATE_FORMAT) : "-"}
-          </div>
+      <div className="flex items-start justify-start h-full">
+        <div>
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 capitalize mb-1">
+            {activeSprint?.name}
+          </h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{activeSprint?.description}</p>
         </div>
       </div>
     );
@@ -247,24 +246,22 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
       .map((sprint: Sprint) => (
         <div
           key={sprint.id}
-          className="flex items-center gap-4 px-2 py-2 mb-1 hover:bg-slate-100 dark:hover:bg-slate-700 duration-75 rounded-sm">
-          <span
-            className={`font-bold rounded-full w-3 h-3 ${
-              sprint.status === "active" ? "bg-green-400" : "bg-transparent"
+          className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+          <div
+            className={`w-2 h-2 rounded-full flex-shrink-0 ${
+              sprint.status === "active" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
             }`}
           />
-          <span className="grow">{sprint.name}</span>
-          <span className="text-sm text-slate-400 w-40">
-            <b className="text-primary">Start:</b> {formatDateString(sprint.startDate)}
-          </span>
-          <span className="text-sm text-slate-400 w-40">
-            <b className="text-primary">End:</b> {formatDateString(sprint.endDate)}
-          </span>
-          <span className="flex gap-2">
-            <Button size="icon" variant="ghost" onClick={toggleModal("isEditOpen", true, sprint)}>
-              <Pencil className="w-4 h-4" />
-            </Button>
-          </span>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{sprint.name}</p>
+            <div className="flex gap-4 mt-1 text-xs text-gray-600 dark:text-gray-400">
+              <span>Start: {formatDateString(sprint.startDate)}</span>
+              <span>End: {formatDateString(sprint.endDate)}</span>
+            </div>
+          </div>
+          <Button size="icon" variant="ghost" onClick={toggleModal("isEditOpen", true, sprint)}>
+            <Pencil className="w-4 h-4" />
+          </Button>
         </div>
       ));
   }, [
@@ -293,19 +290,34 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
   }, [createNewSprint, goBackManageSprints, modalState.isCreateOpen, modalState.isEditOpen]);
 
   return (
-    <Card className={`h-full flex gap-3 ${className}`} onClick={handleCardClick}>
-      <div className="flex justify-between">
-        <span className="text-lg font-bold capitalize">sprint</span>
-        {sprints.length > 0 && (
-          <Button
-            onClick={toggleModal("isManageOpen", true)}
-            className="hover:underline !text-slate-400"
-            variant="ghost">
-            Manage Sprints
-          </Button>
-        )}
-      </div>
-      <div className="flex-1 flex flex-col justify-center items-center">{CardContent}</div>
+    <Card className={`flex flex-col ${className}`} onClick={handleCardClick}>
+      <CardHeader className="p-5 pb-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Sprint</span>
+          {sprints.length > 0 && (
+            <Button
+              onClick={toggleModal("isManageOpen", true)}
+              size="sm"
+              variant="ghost"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+              Manage Sprints
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="px-5 pt-0 flex-1">{SprintContent}</CardContent>
+      {activeSprint && (
+        <CardFooter className="px-5 pb-5 pt-0 flex gap-4 text-xs text-gray-600 dark:text-gray-400">
+          <div>
+            <span className="font-semibold">Start: </span>
+            {activeSprint.startDate ? format(new Date(activeSprint.startDate), DATE_FORMAT) : "-"}
+          </div>
+          <div>
+            <span className="font-semibold">End: </span>
+            {activeSprint.endDate ? format(new Date(activeSprint.endDate), DATE_FORMAT) : "-"}
+          </div>
+        </CardFooter>
+      )}
       <BaseModal
         open={modalState.isManageOpen}
         prefix={Prefix}
@@ -313,7 +325,7 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
         title="Manage Sprints"
         className="min-w-[96] w-[40rem] min-h-96 overflow-auto"
         closable>
-        <div className="mt-3">{ModalContent}</div>
+        <div className="mt-4">{ModalContent}</div>
       </BaseModal>
     </Card>
   );

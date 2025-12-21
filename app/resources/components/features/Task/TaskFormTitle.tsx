@@ -3,11 +3,13 @@
 import { useGlobal } from "../../common/providers/GlobalProvider";
 import DynamicForm, { DynamicFormConfig } from "../../form/DynamicForm";
 import BaseSelect from "../../form/Fields/Select";
+import { useProjectTasks } from "@app/resources/queries/projectQueries";
+import { BASE_URL } from "@lib/commons/constants/base";
 import { Button } from "@resources/components/common/Button";
 import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@resources/queries/taskQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowDownUp, Edit, Edit2, ListPlus, ListX, Trash2, X } from "lucide-react";
+import { ArrowDownUp, Edit, Edit2, ListEnd, ListPlus, ListX, Trash2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import LogService from "server/services/LogService";
@@ -45,6 +47,7 @@ export interface TaskFormModalsVisibility {
   moveToSprint: boolean;
   openConfirmDelete: boolean;
   convertToTask: boolean;
+  convertIntoSubTask: boolean;
 }
 
 export interface TaskFormTitleProps {
@@ -88,6 +91,7 @@ const modalReducer = (state: TaskFormModalsVisibility, action: ModalAction): Tas
         moveToSprint: false,
         openConfirmDelete: false,
         convertToTask: false,
+        convertIntoSubTask: false,
       };
     default:
       return state;
@@ -100,6 +104,7 @@ const useModalManager = () => {
     moveToSprint: false,
     openConfirmDelete: false,
     convertToTask: false,
+    convertIntoSubTask: false,
   });
 
   const toggleModal = useCallback(
@@ -186,6 +191,24 @@ const useTaskActions = (
     [createTaskMutation, notify, queryClient, task?.id, task?.projectId],
   );
 
+  const handleConvertIntoSubTask = useCallback(
+    async (taskId: string) => {
+      if (!task) {
+        notify("Task is required", "error");
+        return;
+      }
+      try {
+        await updateTaskMutation({ ...task, parentId: taskId });
+        notify("Task converted into sub-task successfully", "success");
+        queryClient.invalidateQueries({ queryKey: ["tasks", task?.id, "subTasks"] });
+      } catch (error) {
+        LogService.log(error);
+        notify("Failed to convert task into sub-task", "error");
+      }
+    },
+    [notify, task, updateTaskMutation],
+  );
+
   const handleConvertToTask = useCallback(async () => {
     try {
       await updateTaskMutation({ ...task, parentId: null });
@@ -202,6 +225,7 @@ const useTaskActions = (
     handleMoveToSprint,
     handleCreateSubTask,
     handleConvertToTask,
+    handleConvertIntoSubTask,
     isCreateSuccess,
   };
 };
@@ -220,14 +244,22 @@ export default function TaskFormTitle({
   const pathname = usePathname();
   const { modalsVisible, toggleModal, resetModals } = useModalManager();
   const { data: projectSprints = [] } = useSprintQuery(task?.projectId || "", { status: "ACTIVE" });
+  const { data: projectTasks = [] } = useProjectTasks(task?.projectId || "", {});
 
   // States
   const [sprintIdToUpdate, setSprintIdToUpdate] = useState<string>("");
+  const [parentTaskIdToUpdate, setParentTaskIdToUpdate] = useState<string>("");
 
   // Task Actions
   const handleCloseCallback = useCallback(() => onClose(false), [onClose]);
-  const { handleDelete, handleMoveToSprint, handleCreateSubTask, handleConvertToTask, isCreateSuccess } =
-    useTaskActions(task, notify, handleCloseCallback);
+  const {
+    handleDelete,
+    handleMoveToSprint,
+    handleCreateSubTask,
+    handleConvertToTask,
+    isCreateSuccess,
+    handleConvertIntoSubTask,
+  } = useTaskActions(task, notify, handleCloseCallback);
 
   // Constants
   const isViewMode = mode === TASK_FORM_MODE.VIEW;
@@ -252,6 +284,26 @@ export default function TaskFormTitle({
     resetModals();
     setSprintIdToUpdate("");
   }, [handleMoveToSprint, sprintIdToUpdate, resetModals, notify]);
+
+  const handleConvertIntoSubTaskWithId = useCallback(
+    async (taskId: string) => {
+      if (!parentTaskIdToUpdate) {
+        notify("Please select a parent task", "error");
+        return;
+      }
+
+      try {
+        await handleConvertIntoSubTask(taskId);
+        notify("Task converted into sub-task successfully", "success");
+        resetModals();
+        setParentTaskIdToUpdate("");
+      } catch (error) {
+        LogService.log(error);
+        notify("Failed to convert task into sub-task", "error");
+      }
+    },
+    [handleConvertToTask, parentTaskIdToUpdate, resetModals, notify],
+  );
 
   const handleDeleteWithModal = useCallback(async () => {
     await handleDelete();
@@ -287,6 +339,12 @@ export default function TaskFormTitle({
           onClick: toggleModal("convertToTask", true),
         });
       } else {
+        items.unshift({
+          label: "Convert into sub-task",
+          icon: <ListEnd className="h-4 w-4" />,
+          onClick: toggleModal("convertIntoSubTask", true),
+        });
+
         items.unshift({
           label: "Create sub-task",
           icon: <ListPlus className="h-4 w-4" />,
@@ -329,7 +387,7 @@ export default function TaskFormTitle({
   const renderTitle = useMemo(() => {
     if (!task) return <h1 className={UI_CONSTANTS.TITLE_STYLES}>Create new task</h1>;
     const { id } = task;
-    const taskUrl = `${pathname}?taskId=${id}`;
+    const taskUrl = `${BASE_URL}/dashboard/projects?taskId=${id}`;
 
     return (
       <WithCopy content={taskUrl} title="Copy task link">
@@ -392,6 +450,35 @@ export default function TaskFormTitle({
               Cancel
             </Button>
             <Button onClick={handleMoveToSprintWithId}>Move</Button>
+          </div>
+        </BaseModal>
+        <BaseModal
+          className={UI_CONSTANTS.MODAL_WIDTHS.MOVE_TO_SPRINT}
+          title="Convert into sub-task"
+          closable
+          open={modalsVisible.convertIntoSubTask}
+          onClose={toggleModal("convertIntoSubTask", false)}>
+          <BaseSelect
+            value={parentTaskIdToUpdate}
+            options={{
+              className: "w-full",
+              placeholder: "Select parent task",
+              options: projectTasks
+                .filter((t: Task) => t.id !== task?.id && !t.parentId)
+                .map((t: Task) => ({
+                  label: t.title,
+                  value: t.id,
+                })),
+            }}
+            onChange={(taskId: string) => setParentTaskIdToUpdate(taskId)}
+            keyProp="parentTask"
+          />
+
+          <div className="flex gap-3 justify-end mt-5">
+            <Button onClick={toggleModal("convertIntoSubTask", false)} variant="ghost">
+              Cancel
+            </Button>
+            <Button onClick={() => handleConvertIntoSubTaskWithId(parentTaskIdToUpdate)}>Convert</Button>
           </div>
         </BaseModal>
         {config && (
