@@ -89,85 +89,259 @@ Personal portfolio and blog website built with Next.js 16, showcasing full-stack
 
 ### Tech Stack
 
-- **Framework:** Next.js 16.0.1 (App Router, React 19, Turbopack)
+- **Framework:** Next.js 15.5.7 (App Router, React 19, Turbopack)
 - **Language:** TypeScript 5.9.3
-- **Styling:** Tailwind CSS + shadcn/ui (New York style) + SCSS
-- **UI Components:** shadcn/ui (replacing Material-UI)
-- **Database:** MongoDB (Mongoose ODM)
+- **Styling:** Tailwind CSS 4 + shadcn/ui (New York style) + SCSS
+- **UI Components:** shadcn/ui (Radix UI primitives) + Base UI Components
+- **Database:** MongoDB 6.5+ (native driver, no Mongoose)
 - **State Management:** TanStack Query v5
 - **Forms:** React Hook Form + Yup
-- **Authentication:** Custom auth with bcryptjs
-- **Cloud:** AWS S3 (file storage)
+- **Authentication:** Custom auth with bcrypt + jose (JWT)
+- **Cloud:** AWS S3 (file storage via @aws-sdk/client-s3)
 - **AI:** Google Generative AI (@google/genai)
 - **Rich Text:** MDXEditor
+- **Charts:** AG Charts React
+- **Animation:** Framer Motion
+- **Date:** date-fns & dayjs
+- **i18n:** i18next & react-i18next
+- **Analytics:** Vercel Analytics & Speed Insights
 
 ### Architecture
 
 ### Directory Structure
 
 ```
-app/                    # Next.js App Router pages
-  api/                 # API routes (auth, posts, tasks, AI, upload)
-  auth/                # Authentication pages (sign-in)
-  dashboard/           # Dashboard pages (home, posts, projects, tasks, users, settings)
-  posts/               # Public blog pages
-  privacy/             # Privacy policy page
-  projects/            # Public projects page
-  resources/           # Shared resources (MAIN ORGANIZATION)
-    components/        # All reusable components
-      common/          # shadcn/ui components (Button, Card, Input, Drawer, etc.)
-      content/         # Content-specific components
-      features/        # Feature modules (Task, Project, Post, User, Dashboard)
-      form/            # Form components (DynamicForm, inputs, selects)
-      helpers/         # Helper components
-      layout/          # Layout components (ThemeScript, etc.)
-    font.ts            # Font configuration (local fonts)
-    hooks/             # Custom React hooks
-    landing/           # Landing page components (Hero, Footer, BlogSection)
-    queries/           # TanStack Query hooks (ALL query files here)
-    styles/            # Global SCSS styles
-    utils/             # Helper functions and constants
-  support/             # Support page
-  error.tsx            # Error boundary
-  layout.tsx           # Root layout
-  loading.tsx          # Loading states
-  page.tsx             # Home page (uses resources/landing)
-  sitemap.ts           # Sitemap generation
-features/              # Feature modules (client-side logic)
-  Auth/                # Authentication logic
-  GenAI/               # AI/LLM integration
-  Landing/             # Landing page client components
-    components/        # Client components (Navbar, Contact, Experience)
-lib/                   # Shared utilities and interfaces
+app/                      # Next.js App Router pages
+  api/                   # API routes
+    ai/                  # AI chat endpoints
+    auth/                # Authentication endpoints
+    backup/              # Database backup endpoints
+    comments/            # Comment CRUD endpoints
+    mongo/               # MongoDB utility endpoints
+    permissions/         # Permission management endpoints
+    posts/               # Blog post endpoints
+    projects/            # Project management endpoints
+    resources/           # Resource/file endpoints
+    sprints/             # Sprint management endpoints
+    tasks/               # Task management endpoints
+    upload/              # File upload endpoints (S3)
+    users/               # User management endpoints
+    route.ts             # Root API route
+  auth/                  # Authentication pages
+    sign-in/             # Sign-in page
+    layout.tsx           # Auth layout
+    loading.tsx          # Auth loading state
+  dashboard/             # Dashboard pages
+    apps/                # Apps section
+    home/                # Dashboard home
+    notes/               # Notes management
+    posts/               # Post management
+    projects/            # Project management
+    settings/            # Settings pages
+    users/               # User management
+    layout.tsx           # Dashboard layout
+    template.tsx         # Dashboard template
+  posts/                 # Public blog pages
+    [slug]/              # Dynamic blog post pages
+    page.tsx             # Blog listing page
+  privacy/               # Privacy policy page
+  projects/              # Public projects page
+  resources/             # Shared resources (PRIMARY ORGANIZATION HUB)
+    components/          # All reusable components
+      common/            # Core UI components (shadcn/ui + custom)
+        Avatar.tsx
+        Badge.tsx
+        Button.tsx
+        Card.tsx
+        Dialog.tsx
+        Drawer.tsx
+        DropdownMenu.tsx
+        Empty.tsx
+        ErrorBoundary.tsx
+        Input.tsx
+        Label.tsx
+        Loader.tsx
+        PageFilter.tsx
+        Popover.tsx
+        Select.tsx
+        Separator.tsx
+        Skeleton.tsx
+        Table.tsx
+        Textarea.tsx
+        ThemeToggle.tsx
+        Toast.tsx
+        Toaster.tsx
+        Tooltip.tsx
+        Transition.tsx
+        VisuallyHidden.tsx
+        calendar.tsx
+        drawers/           # Drawer components
+        hocs/              # Higher-order components
+        modals/            # Modal components
+        providers/         # Context providers (Global, Theme, Query)
+        withSearchFilter.tsx
+      content/             # Content-specific components
+      features/            # Feature-specific components
+        Dashboard/         # Dashboard feature components
+        Post/              # Post feature components
+        Project/           # Project feature components
+        Settings/          # Settings feature components
+        Task/              # Task feature components
+        User/              # User feature components
+      form/                # Form components
+        DynamicDatePicker.tsx
+        DynamicForm.tsx
+        DynamicMarkdown.tsx
+        DynamicSelect.tsx
+        DynamicTable.tsx
+        DynamicText.tsx
+        Fields/            # Form field components
+        types.ts
+      helpers/             # Helper components
+      layout/              # Layout components
+      index.ts             # Component exports
+    hooks/                 # Custom React hooks
+      use-toast.ts
+      useDebounce.ts
+      useTaskFilter.ts
+      useTheme.ts
+    landing/               # Landing page components
+      components/          # Landing sub-components
+      LandingPage.tsx      # Main landing page
+    queries/               # TanStack Query hooks (ALL DATA FETCHING)
+      authQueries.ts
+      commentQueries.ts
+      metaQueries.ts
+      permissionQueries.ts
+      postQueries.ts
+      projectQueries.ts
+      queryKeys.ts
+      resourceQueries.ts
+      sprintQueries.ts
+      statusQueries.ts
+      taskQueries.ts
+      userQueries.ts
+      useSession.ts
+    styles/                # Global SCSS styles
+    utils/                 # Helper functions and constants
+    font.ts                # Font configuration (local fonts)
+  support/                 # Support page
+  error.tsx                # Error boundary
+  layout.tsx               # Root layout
+  loading.tsx              # Root loading state
+  page.tsx                 # Home page
+  sitemap.ts               # Sitemap generation
+features/                  # Feature modules (client-side logic)
+  Auth/                    # Authentication logic
+    hooks/                 # Auth hooks
+    models/                # Auth models
+    services/              # Auth services
+    types/                 # Auth types
+    index.ts
+  GenAI/                   # AI/LLM integration (Google Gemini)
+    controllers/           # AI controllers
+    dto/                   # Data transfer objects
+    hooks/                 # AI hooks
+    models/                # AI models
+    prompts/               # AI prompts
+    repositories/          # AI repositories
+    schemas/               # AI schemas
+    services/              # AI services
+    index.ts
+  Landing/                 # Landing page client components
+    components/            # Client components (Navbar, Contact, Experience)
+lib/                       # Shared utilities and interfaces
   commons/
-    constants/         # Constants
-    errors/            # Error definitions
-  interfaces/          # TypeScript interfaces
-  utils/               # Utility functions
-server/                # Backend logic
-  actions/             # Server actions
-  controllers/         # API controllers
-  models/              # Mongoose models
-  repositories/        # Data access layer
-  services/            # Business logic
-  dto/                 # Data transfer objects
-  utils/               # Server utilities
-public/                # Static assets
+    constants/             # Application constants
+    errors/                # Error definitions
+  interfaces/              # TypeScript interfaces
+    base.d.ts
+    controller.ts
+    enums.ts
+    model.d.ts
+    shared.ts
+  utils/                   # Utility functions
+    helper.ts
+    network.ts
+server/                    # Backend logic
+  .aws/                    # AWS configurations
+  actions/                 # Server actions (Next.js server actions)
+    authActions.ts
+    blogActions.ts
+    dataActions.ts
+    projectActions.ts
+  configs/                 # Server configurations
+    jest.setup.js
+  controllers/             # API controllers (MVC pattern)
+    AIController.ts
+    AuthController.ts
+    CommentController.ts
+    PermissionController.ts
+    PostController.ts
+    ProjectController.ts
+    ResourceController.ts
+    SprintController.ts
+    StorageController.ts
+    TaskController.ts
+    UserController.ts
+  dto/                     # Data transfer objects
+    Comment.ts
+    Task.ts
+  models/                  # Database models (MongoDB native)
+    Comment.ts
+    User.ts
+  repositories/            # Data access layer (Repository pattern)
+    MongoCommentRepository.ts
+    MongoPermissionRepository.ts
+    MongoPostRepository.ts
+    MongoProjectRepository.ts
+    MongoSprintRepository.ts
+    MongoTaskRepository.ts
+    MongoUserPermissionRepository.ts
+    MongoUserRepository.ts
+  services/                # Business logic services
+    AuthService.ts
+    CommentService.ts
+    GeminiService.ts
+    LogService.ts
+    MongoService.ts
+    PermissionService.ts
+    S3Service.ts
+public/                    # Static assets
   assets/
-    images/            # All image files (bg.jpeg, icons/, socials/)
-  fonts/               # Font files
-  locales/             # Translations
+    images/                # Image files
+      avatar.png
+      bg.jpeg
+      email.svg
+      logo.svg
+      logo-dark.svg
+      preview.png
+      support.jpeg
+      vietnam_flag.png
+      icons/               # Icon files
+      socials/             # Social media icons
+    sounds/                # Audio files
+  fonts/                   # Font files
+  locales/                 # i18n translations
+    en/                    # English translations
+    ge/                    # Georgian translations
+  ads.txt
+  browserconfig.xml
+  favicon files...
+  robots.txt
+  site.webmanifest
+  test.glb
 ```
 
 ### Path Aliases (tsconfig.json)
 
 ```typescript
-"@app/*"      → "app/*"
+"@app/*"       → "app/*"            // App Router pages and API routes
 "@resources/*" → "app/resources/*"  // Primary alias for shared resources
-"@lib/*"      → "lib/*"
-"@server/*"   → "server/*"
-"@public/*"   → "public/*"
-"@features/*" → "features/*"
+"@lib/*"       → "lib/*"            // Shared utilities and interfaces
+"@server/*"    → "server/*"         // Backend logic (controllers, services, repositories)
+"@public/*"    → "public/*"         // Static assets
+"@features/*"  → "features/*"       // Feature modules (Auth, GenAI, Landing)
 ```
 
 ---
@@ -193,6 +367,12 @@ export default async function Hero() {
 "use client";
 
 import { useState } from "react";
+
+// features/Landing/components/Navbar.tsx
+
+// features/Landing/components/Navbar.tsx
+
+// features/Landing/components/Navbar.tsx
 
 // features/Landing/components/Navbar.tsx
 
@@ -416,29 +596,26 @@ class PostController extends BaseController {
 **Model Definition:**
 
 ```typescript
-// server/models/Post.ts
-import { Schema, model } from "mongoose";
+// server/models/User.ts or Comment.ts
+// Uses MongoDB native driver (no Mongoose)
+// Models are plain TypeScript interfaces + repository pattern
 
-const PostSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    slug: { type: String, unique: true },
-    content: String,
-    published: { type: Boolean, default: false },
-  },
-  { timestamps: true },
-);
-
-export default model("Post", PostSchema);
+export interface User {
+  _id?: ObjectId;
+  email: string;
+  name: string;
+  createdAt?: Date;
+}
 ```
 
 **Repository Pattern:**
 
 ```typescript
-// server/repositories/PostRepository.ts
-class PostRepository extends MongoRepository<Post> {
-  async findPublished() {
-    return this.model.find({ published: true });
+// server/repositories/MongoUserRepository.ts
+class MongoUserRepository {
+  async findById(id: string): Promise<User | null> {
+    const collection = await this.getCollection();
+    return collection.findOne({ _id: new ObjectId(id) });
   }
 }
 ```
