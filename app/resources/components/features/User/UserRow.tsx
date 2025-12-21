@@ -7,7 +7,7 @@ export interface UserRowProps {
   active?: boolean;
 }
 
-const UserRow = memo(function UserRow({ user, active }: UserRowProps) {
+const UserRow = memo(function UserRow({ user }: UserRowProps) {
   return (
     <div className="py-3 w-full">
       <div className="flex items-center">
