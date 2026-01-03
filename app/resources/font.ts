@@ -3,27 +3,27 @@ import localFont from "next/font/local";
 export const sourceCodeFont = localFont({
   src: [
     {
-      path: "../../public/fonts/momo-light.ttf",
+      path: "./fonts/momo-light.ttf",
       weight: "300",
       style: "normal",
     },
     {
-      path: "../../public/fonts/momo-regular.ttf",
+      path: "./fonts/momo-regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/momo-medium.ttf",
+      path: "./fonts/momo-medium.ttf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/fonts/momo-semibold.ttf",
+      path: "./fonts/momo-semibold.ttf",
       weight: "600",
       style: "normal",
     },
     {
-      path: "../../public/fonts/momo-bold.ttf",
+      path: "./fonts/momo-bold.ttf",
       weight: "700",
       style: "normal",
     },

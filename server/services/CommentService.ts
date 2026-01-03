@@ -9,7 +9,7 @@ class CommentService {
   static makeInstance() {
     return CommentService.#instance ?? new CommentService();
   }
-  async getAll(filter: any) {}
+  async getAll() {}
   async getCommentsByTaskId(taskId: string) {
     if (!taskId) throw new BaseError("Task ID is required");
     const comments = await MongoCommentRepository.getCommentsByTaskId(taskId);
