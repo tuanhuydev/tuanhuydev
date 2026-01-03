@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@resources/components/common/Avatar";
+import { Avatar, AvatarFallback } from "@resources/components/common/Avatar";
 import { DRAWER_MODE } from "@resources/components/common/drawers";
 import BaseDrawerHeader from "@resources/components/common/drawers/BaseDrawerHeader";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
