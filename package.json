@@ -59,7 +59,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "framer-motion": "^12.5.0",
+    "framer-motion": "^12.23.26",
     "html2canvas": "^1.4.1",
     "husky": "^8.0.3",
     "i18next": "^23.2.3",
