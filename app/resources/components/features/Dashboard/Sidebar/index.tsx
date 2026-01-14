@@ -1,5 +1,6 @@
 "use client";
 
+import { GroupProps } from "./Group";
 import { ItemProps } from "./Item";
 import { Button } from "@resources/components/common/Button";
 import { useMobileSidebar } from "@resources/queries/metaQueries";
@@ -16,7 +17,7 @@ const Item = lazy(() => import("./Item"));
 const LargeScreenSize: number = 924;
 
 export interface SidebarProps {
-  permissions: Record<string, any>[];
+  permissions: string[];
 }
 
 const permissionMap = {
@@ -46,7 +47,7 @@ const permissionMap = {
   },
 };
 
-const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
+const makeRoutes = (permissions: string[]): ReactNode[] => {
   const routes: Array<ItemProps> = [
     {
       label: "Home",
@@ -63,16 +64,19 @@ const makeRoutes = (permissions: Record<string, any>[]): ReactNode[] => {
   ];
 
   permissions.forEach((permission) => {
-    Object.keys(permission).forEach((key) => {
-      if (Object.keys(permissionMap).includes(key)) {
-        routes.push(permissionMap[key]);
+    Object.keys(permission).forEach(() => {
+      if (Object.keys(permissionMap).includes(permission)) {
+        routes.push(permissionMap[permission as keyof typeof permissionMap]);
       }
     });
   });
 
-  return routes.map((route: any) => {
-    const { children = [] } = route;
-    return children?.length ? <Group {...route} key={route.id} /> : <Item {...route} key={route.id} />;
+  return routes.map((route: ItemProps | GroupProps) => {
+    return "children" in route && route.children?.length ? (
+      <Group {...route} key={route.id} />
+    ) : (
+      <Item {...route} key={route.id} />
+    );
   });
 };
 

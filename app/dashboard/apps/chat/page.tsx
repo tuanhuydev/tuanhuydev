@@ -68,12 +68,12 @@ export default function Page() {
     queryKey: ["ai", "chats"],
     queryFn: async () => {
       const res = await fetch(`${BASE_URL}/api/ai/chats`);
-      const json: ApiResponse<ChatSession[]> = await res.json();
+      const json: ApiResponse<ChatSession[]> = (await res.json()) as ApiResponse<ChatSession[]>;
       if (!json.success) throw new Error(json.error || "Failed to load chat sessions");
       // Ensure id is string
-      return (json.data || []).map((s: any) => ({
+      return (json.data || []).map((s: ChatSession) => ({
         ...s,
-        id: String((s as any).id ?? (s as any)._id ?? ""),
+        id: String(s.id ?? ""),
       })) as ChatSession[];
     },
   });
@@ -81,15 +81,17 @@ export default function Page() {
   const createEmptyChat = useCallback(() => {
     queryClient.setQueryData<ChatSession[] | undefined>(["ai", "chats"], (prev) => {
       const list = prev ?? [];
-      const hasPlaceholder = list.some((s: any) => String(s.id) === "");
+      const hasPlaceholder = list.some((s: ChatSession) => String(s.id) === "");
       if (hasPlaceholder) return list;
-      const placeholder: any = {
+
+      const placeholder: ChatSession = {
         id: "",
         name: "New Chat",
         model: "gemini-2.5-flash",
         messages: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        userId: "",
       };
       return [placeholder, ...list];
     });
@@ -185,7 +187,7 @@ export default function Page() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt: text, chatId: targetId }),
         });
-        const json: ApiResponse<{ response: string }> = await res.json();
+        const json = (await res.json()) as unknown as ApiResponse<{ response: string }>;
         if (!json.success) throw new Error(json.error || "AI request failed");
         await queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
       } catch (e) {
@@ -203,18 +205,20 @@ export default function Page() {
     [createSession, fetch, queryClient, selectedId, sessions, createEmptyChat],
   );
 
-  const newChat = useCallback(async () => {
+  const newChat = useCallback(() => {
     queryClient.setQueryData<ChatSession[] | undefined>(["ai", "chats"], (prev) => {
       const list = prev ?? [];
-      const hasPlaceholder = list.some((s: any) => String(s.id) === "");
+      const hasPlaceholder = list.some((s: ChatSession) => String(s.id) === "");
       if (hasPlaceholder) return list;
-      const placeholder: any = {
+
+      const placeholder: ChatSession = {
         id: "",
         name: "New Chat",
         model: "gemini-2.5-flash",
         messages: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        userId: "",
       };
       return [placeholder, ...list];
     });
@@ -243,7 +247,7 @@ export default function Page() {
             <ul className="flex flex-col gap-1 m-0 p-0">
               {sessions.map((s) => {
                 const isActive = String(s.id) === String(selectedId);
-                const updated = (s as any).updatedAt || (s as any).createdAt;
+                const updated = s.updatedAt || s.createdAt;
                 return (
                   <li
                     key={String(s.id)}
@@ -257,7 +261,7 @@ export default function Page() {
                       if (String(s.id) !== "") {
                         queryClient.setQueryData<ChatSession[] | undefined>(["ai", "chats"], (prev) => {
                           if (!prev) return prev;
-                          return prev.filter((it: any) => String(it.id) !== "");
+                          return prev.filter(({ id }: ChatSession) => String(id) !== "");
                         });
                       }
                       setSelectedId(String(s.id));
@@ -265,7 +269,7 @@ export default function Page() {
                     <div className="flex-1 min-w-0">
                       <div className="truncate text-sm font-medium">{s.name || "New Chat"}</div>
                       <div className="truncate text-xs opacity-60">
-                        {updated ? new Date(updated as any).toLocaleString() : ""}
+                        {updated ? new Date(updated).toLocaleString() : ""}
                       </div>
                     </div>
                     <DropdownMenu>
@@ -312,7 +316,12 @@ export default function Page() {
                   }}>
                   Cancel
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(confirmChatId)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => {
+                    void handleDelete(confirmChatId);
+                  }}>
                   Delete
                 </Button>
               </div>
@@ -400,7 +409,7 @@ function Greeting() {
     <div className="h-full grid place-items-center text-center opacity-70">
       <div>
         <div className="text-lg font-semibold mb-1 text-gray-900 dark:text-gray-100">How can I help you today?</div>
-        <div className="text-sm text-gray-700 dark:text-gray-300">Ask me anything to get started.</div>
+        <div className="text-sm text-gray-700 dark:text-gray-300">Ask me unknownthing to get started.</div>
       </div>
     </div>
   );

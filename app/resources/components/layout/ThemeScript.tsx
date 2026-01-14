@@ -29,5 +29,5 @@ export default function ThemeScript() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  return null; // This component doesn't render anything
+  return null; // This component doesn't render unknownthing
 }

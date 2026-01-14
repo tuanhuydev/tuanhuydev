@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@resources/components/common/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@resources/components/common/Dialog";
-import { X } from "lucide-react";
 import React, { PropsWithChildren } from "react";
 
 export interface ConfirmBoxProps extends PropsWithChildren {
@@ -15,7 +13,7 @@ export interface ConfirmBoxProps extends PropsWithChildren {
 }
 
 const BaseModal = React.forwardRef(
-  ({ open, closable = false, title, children, onClose, className = "", prefix }: ConfirmBoxProps, ref: any) => {
+  ({ open, closable = false, title, children, onClose, className = "", prefix }: ConfirmBoxProps) => {
     return (
       <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <DialogContent className={className} hideCloseButton={!closable}>

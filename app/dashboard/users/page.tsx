@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@lib/types/user";
 import Empty from "@resources/components/common/Empty";
 import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
 import Loader from "@resources/components/common/Loader";
@@ -22,39 +23,45 @@ const estimateSize = 48;
 export default function Page() {
   const { data: permissions = [] } = useCurrentUserPermission();
 
-  const allowCreateUser = (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
-    const { action = "", resourceId = "", type = "" } = permission;
-    return action === "create" && type === "user" && resourceId === "*";
-  });
+  const allowCreateUser = (permissions as Array<Record<string, unknown>>).some(
+    (permission: Record<string, unknown> = {}) => {
+      const { action = "", resourceId = "", type = "" } = permission;
+      return action === "create" && type === "user" && resourceId === "*";
+    },
+  );
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   // State
-  const [filter, setFilter] = useState<ObjectType>({});
+  const [filter, setFilter] = useState<Record<string, unknown>>({});
   const [searchValue, setSearchValue] = useState("");
-  const [selectedUser, setSelectedUser] = useState<ObjectType | undefined>();
+  const [selectedUser, setSelectedUser] = useState<Record<string, unknown> | undefined>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   // Hooks
   const { data: users = [], isFetching, refetch } = useUsersQuery(filter);
 
   const { getTotalSize, getVirtualItems } = useVirtualizer({
-    count: (users as Array<ObjectType>).length,
+    count: (users as Array<Record<string, unknown>>).length,
     getScrollElement: () => containerRef.current,
     estimateSize: useCallback(() => estimateSize, []),
   });
 
   const performSearch = useCallback(
-    (search: string) => {
+    async (search: string) => {
       setFilter((prevFilter) => {
         if (search?.length) return { ...prevFilter, search };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { search: _, ...rest } = prevFilter;
         return rest;
       });
-      refetch();
+      await refetch();
     },
     [refetch],
   );
 
-  const debouncedSearch = useDebounce(performSearch, 500);
+  // Wrap performSearch so useDebounce receives a sync function
+  const debouncedSearch = useDebounce((search: string) => {
+    void performSearch(search);
+  }, 500);
 
   const onSearchUsers = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +83,7 @@ export default function Page() {
   }, []);
 
   const viewUser = useCallback(
-    (user: ObjectType) => () => {
+    (user: Record<string, unknown>) => () => {
       setSelectedUser(user);
       setOpenDrawer(true);
     },
@@ -92,7 +99,7 @@ export default function Page() {
     return (
       <div className="w-full mt-3 relative" style={{ height: `${totalSize}px` }}>
         {getVirtualItems().map(({ index, size, start }) => {
-          const currentUser: ObjectType = users[index];
+          const currentUser: User = users[index];
           const activeUser = selectedUser?.id === currentUser.id;
           const userClasses = activeUser
             ? "bg-slate-200 hover:bg-slate-200 dark:bg-slate-800"

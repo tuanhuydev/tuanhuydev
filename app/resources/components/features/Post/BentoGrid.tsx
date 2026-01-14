@@ -1,7 +1,8 @@
 import { PostItem } from "./PostItem";
+import { Post } from "@features/Post/post";
 
 export interface BentoGridProps {
-  featurePosts: ObjectType[];
+  featurePosts: Post[];
   className?: string;
 }
 

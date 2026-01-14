@@ -5,7 +5,7 @@ import { unstable_cache } from "next/cache";
 import { redirect, RedirectType } from "next/navigation";
 import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
-import AuthService from "server/services/AuthService";
+import { authService } from "server/services/AuthService";
 import logService from "server/services/LogService";
 
 // Cache user permissions for 5 minutes to reduce database load
@@ -17,11 +17,11 @@ const getCachedUserPermissions = unstable_cache(
     const { permissionId } = user;
     if (!permissionId) throw new BaseError("Permission not found");
 
-    const permission = await MongoPermissionRepository.getPermission(permissionId);
+    const permission = await MongoPermissionRepository.getPermission(permissionId as string);
     if (!permission) throw new BaseError("Permission not found");
 
     const { rules = [] } = permission;
-    return rules;
+    return rules as string[];
   },
   ["user-permissions"],
   {
@@ -32,7 +32,7 @@ const getCachedUserPermissions = unstable_cache(
 
 export const userPermissionAction = async () => {
   try {
-    const userProfile = await AuthService.getCurrentUserProfile();
+    const userProfile = await authService.getCurrentUserProfile();
     if (!userProfile) throw new BaseError("User not found");
 
     // Use cached version to improve performance

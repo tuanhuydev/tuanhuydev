@@ -55,7 +55,7 @@ export default function SignIn() {
   const { notify } = useGlobal();
 
   const submit = useCallback(
-    async (formData: any) => {
+    async (formData: unknown) => {
       try {
         const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
           method: "POST",
@@ -64,7 +64,7 @@ export default function SignIn() {
         });
         if (!response.ok) throw new UnauthorizedError("Invalid Credentials");
 
-        const { data = {} } = await response.json();
+        const { data = {} } = (await response.json()) as { data?: { accessToken: string } };
         if (!data || !("accessToken" in data)) throw new UnauthorizedError("Invalid Credentials");
 
         await queryClient.setQueryData(["accessToken" as unknown as QueryKey], data.accessToken);

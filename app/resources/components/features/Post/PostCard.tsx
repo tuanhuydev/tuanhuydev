@@ -2,13 +2,14 @@
 
 import { Card, CardContent, CardHeader } from "../../common/Card";
 import BaseImage from "../../content/BaseImage";
+import { Post } from "@features/Post/post";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
 import React, { memo, useCallback, useMemo, type JSX } from "react";
 
 export interface PostCardProps {
-  post: ObjectType;
+  post: Post;
   actions?: React.ReactNode;
 }
 
@@ -18,7 +19,7 @@ const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
   const { title, thumbnail = "", publishedAt, createdAt } = post;
 
   const navigateProjectEdit = useCallback(() => {
-    router.push(`/dashboard/posts/${(post as ObjectType).id}`);
+    router.push(`/dashboard/posts/${post.id}`);
   }, [post, router]);
 
   const Status: JSX.Element = useMemo(() => {
@@ -36,7 +37,7 @@ const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
   return (
     <Card className="w-full md:w-[18rem] cursor-pointer" onClick={navigateProjectEdit}>
       <div className="relative w-full h-40 overflow-hidden rounded-t-xl bg-slate-100 dark:bg-slate-700">
-        {thumbnail && <BaseImage src={thumbnail as string} alt={title} fill className="object-cover" />}
+        {thumbnail && <BaseImage src={thumbnail} alt={title} fill className="object-cover" />}
       </div>
       <CardHeader>
         <h3 className="font-semibold text-lg line-clamp-2">{title}</h3>

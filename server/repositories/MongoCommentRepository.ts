@@ -27,7 +27,7 @@ class MongoCommentRepository {
     };
     return this.table.insertOne(newComment);
   }
-  async updateComment(id: string, body: ObjectType) {
+  async updateComment(id: string, body: Record<string, unknown>) {
     return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
   }
   async deleteComment(id: string) {

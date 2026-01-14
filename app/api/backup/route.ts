@@ -1,16 +1,15 @@
-import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import MongoPostRepository from "server/repositories/MongoPostRepository";
 import MongoProjectRepository from "server/repositories/MongoProjectRepository";
-import MongoTaskRepository from "server/repositories/MongoTaskRepository";
+import { mongoTaskRepository } from "server/repositories/MongoTaskRepository";
 import MongoUserRepository from "server/repositories/MongoUserRepository";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const posts = await MongoPostRepository.getPosts();
   const permissions = await MongoPermissionRepository.getPermissions();
   const projects = await MongoProjectRepository.getProjects();
-  const tasks = await MongoTaskRepository.getTasks();
+  const tasks = await mongoTaskRepository.findAll({});
   const users = await MongoUserRepository.getUsers({});
 
   const dataJSON = {

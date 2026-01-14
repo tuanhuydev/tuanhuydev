@@ -50,12 +50,12 @@ export const extractTokenFromRequest = (bearerString: string) => {
   return token;
 };
 
-export const isPathActive = (pathName: string, path: string) => {
+export const isPathActive = (pathName: string, path: string): boolean => {
   if (!pathName || !path) return false;
-  return (pathName as string).startsWith(path);
+  return pathName.startsWith(path);
 };
 
-export const hasPermission = (permissions: Array<any>, criteria: ObjectType) =>
+export const hasPermission = (permissions: Array<Record<string, unknown>>, criteria: Record<string, unknown>) =>
   permissions.some((permission) =>
     Object.keys(criteria).every((key) => {
       return permission[key] === criteria[key];

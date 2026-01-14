@@ -3,10 +3,8 @@
 import { useGlobal } from "../common/providers/GlobalProvider";
 import { Button } from "@resources/components/common/Button";
 import { X } from "lucide-react";
-import React, { ChangeEvent, Fragment, MouseEventHandler, useState } from "react";
+import React, { ChangeEvent, Fragment, useState } from "react";
 import LogService from "server/services/LogService";
-
-export interface BaseUploadProps {}
 
 export default function BaseUpload() {
   const { notify } = useGlobal();
@@ -25,7 +23,7 @@ export default function BaseUpload() {
     setFiles(updatedFiles);
   };
 
-  const uploadFiles: MouseEventHandler<HTMLButtonElement> = async (event) => {
+  const uploadFiles = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
     if (!files?.length) return;
@@ -53,7 +51,7 @@ export default function BaseUpload() {
     <div className="flex flex-col bg-slate-50">
       {files.length ? (
         <Fragment>
-          <Button disabled={uploading} onClick={uploadFiles}>
+          <Button disabled={uploading} onClick={void uploadFiles}>
             {uploading ? "Uploading..." : "Start Upload"}
           </Button>
           <ul className="list-none p-0 mx-0">

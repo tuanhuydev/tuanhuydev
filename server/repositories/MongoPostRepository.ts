@@ -11,8 +11,8 @@ class MongoPostRepository {
   static makeInstance() {
     return MongoPostRepository.#instance ?? new MongoPostRepository();
   }
-  async getPosts(filter: ObjectType = {}) {
-    let defaultWhere: ObjectType = { deletedAt: null };
+  async getPosts(filter: Record<string, unknown> = {}) {
+    let defaultWhere: Record<string, unknown> = { deletedAt: null };
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
     }
@@ -28,7 +28,7 @@ class MongoPostRepository {
     let query = this.table.find(defaultWhere);
 
     // Handle sorting
-    let sortOption: ObjectType = { createdAt: "desc" };
+    let sortOption: Record<string, unknown> = { createdAt: "desc" };
     if ("sortBy" in filter && filter.sortBy) {
       const sortBy = filter.sortBy as string;
       const sortOrder = "sortOrder" in filter && filter.sortOrder ? filter.sortOrder : "desc";
@@ -40,10 +40,13 @@ class MongoPostRepository {
       const pageSize = Number(filter.pageSize);
       const skip = (page - 1) * pageSize;
       const limit = pageSize;
-      query.sort(sortOption).skip(skip).limit(limit);
+      query
+        .sort(sortOption as Record<string, 1 | -1>)
+        .skip(skip)
+        .limit(limit);
     } else {
       // Apply sorting even without pagination
-      query.sort(sortOption);
+      query.sort(sortOption as Mongo.Sort);
     }
 
     return query.toArray();
@@ -57,12 +60,12 @@ class MongoPostRepository {
     return this.table.findOne({ slug });
   }
 
-  async createPost(body: ObjectType) {
+  async createPost(body: Record<string, unknown>) {
     body.createdAt = new Date().toISOString();
     return this.table.insertOne(body);
   }
 
-  async updatePost(id: string, body: ObjectType) {
+  async updatePost(id: string, body: Record<string, unknown>) {
     return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
   }
   async deletePost(id: string) {

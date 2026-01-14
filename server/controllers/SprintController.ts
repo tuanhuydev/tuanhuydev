@@ -25,10 +25,10 @@ export class SprintController {
     }
   }
 
-  async getOne(request: NextRequest, { id }: any) {
+  async getOne(request: NextRequest, { id }: { id?: string }) {
     const network = new Network(request);
     try {
-      const sprint = await MongoSprintRepository.getSprint(id);
+      const sprint = await MongoSprintRepository.getSprint(id as string);
       return network.successResponse(sprint);
     } catch (error) {
       LogService.log(error);
@@ -51,7 +51,7 @@ export class SprintController {
       const validationResult = schema.safeParse(body);
       if (!validationResult.success) throw new BadRequestError();
 
-      const sprint = await MongoSprintRepository.createSprint(body);
+      const sprint = await MongoSprintRepository.createSprint(body as Record<string, unknown>);
       return network.successResponse(sprint);
     } catch (error) {
       LogService.log(error);
@@ -59,11 +59,11 @@ export class SprintController {
     }
   }
 
-  async update(request: NextRequest, { id }: any) {
+  async update(request: NextRequest, { id }: { id?: string }) {
     const network = new Network(request);
     try {
       const body = await network.getBody();
-      const updatedSprint = await MongoSprintRepository.updateSprint(id, body);
+      const updatedSprint = await MongoSprintRepository.updateSprint(id as string, body as Record<string, unknown>);
       return network.successResponse(updatedSprint);
     } catch (error) {
       LogService.log(error);
@@ -71,10 +71,10 @@ export class SprintController {
     }
   }
 
-  async destroy(request: NextRequest, { id }: any) {
+  async destroy(request: NextRequest, { id }: { id?: string }) {
     const network = new Network(request);
     try {
-      await MongoSprintRepository.deleteSprint(id);
+      await MongoSprintRepository.deleteSprint(id as string);
       return network.successResponse({ message: "Sprint deleted" });
     } catch (error) {
       LogService.log(error);

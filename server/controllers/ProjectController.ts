@@ -2,17 +2,16 @@ import LogService from "../services/LogService";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
-import { BaseController } from "@lib/interfaces/controller";
 import Network from "@lib/utils/network";
 import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
 import MongoProjectRepository from "server/repositories/MongoProjectRepository";
 import MongoSprintRepository from "server/repositories/MongoSprintRepository";
-import MongoTaskRepository from "server/repositories/MongoTaskRepository";
-import AuthService from "server/services/AuthService";
+import { mongoTaskRepository } from "server/repositories/MongoTaskRepository";
+import { authService } from "server/services/AuthService";
 import { z } from "zod";
 
-export class ProjectController implements BaseController {
+export class ProjectController {
   static #instance: ProjectController;
 
   static makeInstance() {
@@ -51,7 +50,7 @@ export class ProjectController implements BaseController {
         users: z.array(z.string().transform((value) => new ObjectId(value))).default([]),
       });
 
-      const body = await network.getBody();
+      const body = (await network.getBody()) as Record<string, unknown>;
       const validatedBody = schema.safeParse(body);
 
       if (!validatedBody.success) throw new BadRequestError("Inavlid request body");
@@ -67,7 +66,7 @@ export class ProjectController implements BaseController {
   async getAll(request: NextRequest, userId?: string) {
     const network = new Network(request);
     try {
-      const params: ObjectType = network.extractSearchParams();
+      const params: Record<string, unknown> = network.extractSearchParams();
       if (userId) params.userId = userId;
       const projects = await MongoProjectRepository.getProjects(params);
 
@@ -77,7 +76,7 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async getOne(request: NextRequest, { id }: any) {
+  async getOne(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
@@ -88,10 +87,10 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async update(request: NextRequest, { id }: any) {
+  async update(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
-      const body = await network.getBody();
+      const body = (await network.getBody()) as Record<string, unknown>;
       if (!id || !body) throw new BadRequestError();
 
       const updated = await MongoProjectRepository.updateProject(id, body);
@@ -101,7 +100,7 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async delete(request: NextRequest, { id }: any) {
+  async delete(request: NextRequest, { id }: { id: string }) {
     if (!id) throw new BadRequestError();
     const network = new Network(request);
     try {
@@ -112,19 +111,19 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async getProjectTasks(request: NextRequest, { id }: any) {
+  async getProjectTasks(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     const filter = network.extractSearchParams();
     try {
       if (!id) throw new BadRequestError();
-      const projectTasks = await MongoTaskRepository.getTasksByProject(id, filter);
+      const projectTasks = await mongoTaskRepository.findAll({ projectId: id, ...filter });
       return network.successResponse(projectTasks);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
-  async getProjectUsers(request: NextRequest, { id }: any) {
+  async getProjectUsers(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       const project = await MongoProjectRepository.getProject(id);
@@ -136,14 +135,15 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async getProjectsByUser(request: NextRequest, { id }: any) {
+  async getProjectsByUser(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     let userId = id;
     try {
       if (!id) throw new BadRequestError();
       if (id === "me") {
-        const { id: tokenUserId } = await AuthService.getCurrentUserProfile();
-        userId = tokenUserId as string;
+        const currentUser = await authService.getCurrentUserProfile();
+        if (!currentUser) throw new BadRequestError();
+        userId = currentUser.id;
       }
       return this.getAll(request, userId);
     } catch (error) {
@@ -151,7 +151,7 @@ export class ProjectController implements BaseController {
     }
   }
 
-  async getActiveSprint(request: NextRequest, { id }: any) {
+  async getActiveSprint(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       const sprint = await MongoSprintRepository.getSprints({ projectId: id, active: true });

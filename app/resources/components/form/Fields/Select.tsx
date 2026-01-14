@@ -9,7 +9,7 @@ import {
 } from "@resources/components/common/Select";
 import { memo, useEffect, useState } from "react";
 
-interface SelectOption {
+export interface SelectOption {
   value: string | number;
   label: string;
 }
@@ -19,16 +19,16 @@ interface SelectProps {
     options?: SelectOption[];
     defaultOption?: SelectOption;
     mode?: "single" | "multiple";
-    [key: string]: any;
+    [key: string]: unknown;
   };
   keyProp: string;
   className?: string;
-  value: any;
-  onChange: (value: any) => void;
+  value: string | number | Array<string | number> | null;
+  onChange: (value: unknown) => void;
   error?: string;
   isSubmitting?: boolean;
   placeholder?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const Select = memo(function Select({

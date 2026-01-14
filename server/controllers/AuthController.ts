@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";
 
 class AuthController {
-  #signInSchema: ObjectSchema<any>;
+  #signInSchema: ObjectSchema<{ email: string; password: string }>;
 
   constructor() {
     this.#signInSchema = object({
@@ -17,10 +17,10 @@ class AuthController {
     });
   }
 
-  async validateSignIn(body: any) {
+  async validateSignIn(body: unknown) {
     try {
       return this.#signInSchema.validate(body);
-    } catch (error) {
+    } catch {
       throw new BadRequestError();
     }
   }
@@ -40,7 +40,7 @@ class AuthController {
       });
       if (!signInResponse.ok) throw new UnauthorizedError("Authenticate Failed");
 
-      const { accessToken } = await signInResponse.json();
+      const { accessToken } = (await signInResponse.json()) as { accessToken: string };
       if (!accessToken) throw new UnauthorizedError("Authenticate Failed");
 
       (await cookies()).set("jwt", accessToken, { sameSite: "strict", httpOnly: true });

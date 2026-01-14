@@ -1,33 +1,27 @@
 "use client";
 
 import Select from "./Fields/Select";
-import { useEffect, useState, memo } from "react";
-import { useController } from "react-hook-form";
-
-interface SelectOption {
-  value: string | number;
-  label: string;
-}
+import MultiSelect from "@resources/components/common/MultiSelect";
+import { memo, useMemo } from "react";
+import { Control, FieldValues, useController } from "react-hook-form";
 
 interface DynamicSelectProps {
   options?: {
-    options?: SelectOption[];
-    defaultOption?: SelectOption;
+    options?: SelectOption<string>[];
+    defaultOption?: SelectOption<string>;
     mode?: "single" | "multiple";
     placeholder?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   keyProp: string;
-  className?: string;
-  control: any;
+  control: Control<FieldValues>;
   name: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const DynamicSelect = memo(function DynamicSelect({
   options: fieldOptions = {},
   keyProp,
-  className = "w-full",
   ...restProps
 }: DynamicSelectProps) {
   const { field, fieldState, formState } = useController(restProps);
@@ -35,32 +29,56 @@ const DynamicSelect = memo(function DynamicSelect({
   const { invalid, error } = fieldState;
   const { onChange } = field;
 
-  const [options, setOptions] = useState<SelectOption[]>([]);
-  const { options: staticOptions = [], defaultOption, placeholder = "Select..." } = fieldOptions;
+  const { options: staticOptions = [], defaultOption, placeholder = "Select...", mode = "single" } = fieldOptions;
 
-  useEffect(() => {
-    if (staticOptions.length) {
-      const newDropdownOptions = defaultOption ? [defaultOption, ...staticOptions] : staticOptions;
-      setOptions(newDropdownOptions);
-    }
+  const options = useMemo(() => {
+    if (!staticOptions.length) return [];
+    return defaultOption ? [defaultOption, ...staticOptions] : staticOptions;
   }, [defaultOption, staticOptions]);
 
-  return (
-    <div className={`p-2 self-stretch ${className}`}>
-      <Select
-        keyProp={keyProp}
-        value={field.value}
+  const isMultiple = mode === "multiple";
+
+  // Convert options to the format expected by MultiSelect (string values)
+  const multiSelectOptions = useMemo(
+    () =>
+      options.map((opt) => ({
+        value: String(opt.value),
+        label: opt.label,
+      })),
+    [options],
+  );
+
+  if (isMultiple) {
+    // Ensure field.value is typed as an array of strings for multiple select
+    const fieldValue = field.value as unknown;
+    const multiValue = Array.isArray(fieldValue) ? fieldValue.map(String) : [];
+
+    return (
+      <MultiSelect
+        options={multiSelectOptions}
+        value={multiValue}
         onChange={onChange}
-        options={{
-          ...fieldOptions,
-          options,
-        }}
-        error={invalid ? error?.message : undefined}
-        isSubmitting={isSubmitting}
         placeholder={placeholder}
-        {...restProps}
+        disabled={isSubmitting}
+        error={invalid ? error?.message : undefined}
       />
-    </div>
+    );
+  }
+
+  return (
+    <Select
+      keyProp={keyProp}
+      value={field.value !== undefined ? (field.value as string | number) : null}
+      onChange={onChange}
+      options={{
+        ...fieldOptions,
+        options,
+      }}
+      error={invalid ? error?.message : undefined}
+      isSubmitting={isSubmitting}
+      placeholder={placeholder}
+      {...restProps}
+    />
   );
 });
 

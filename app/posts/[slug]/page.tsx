@@ -1,3 +1,4 @@
+import { Post } from "@features/Post/post";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Transition from "@resources/components/common/Transition";
 import PostView from "@resources/components/features/Post/PostView";

@@ -12,7 +12,7 @@ export class ResourceController {
 
   constructor() {}
 
-  async getResource(request: NextRequest, { id }: any) {
+  async getResource(request: NextRequest) {
     const network = new Network(request);
     try {
       // if (!id) throw new BadRequestError();
@@ -22,7 +22,7 @@ export class ResourceController {
       //   const user = await prismaClient.user.findUnique({ where: { id: userId } });
       //   if (!user) throw new BaseError("User not found");
       //   const { permissionId } = user;
-      //   const rawResult = await prismaClient.resourcePermission.findMany({
+      //   const rawResult = await prismaClient.resourcePermission.findMunknown({
       //     where: { permissionId },
       //     select: { Resource: true, permissionId: true, resourceType: true },
       //   });
@@ -38,11 +38,11 @@ export class ResourceController {
     }
   }
 
-  async getResourcesByPermission(request: NextRequest, { id }: any) {
+  async getResourcesByPermission(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
-      // const rawResult = await prismaClient.resourcePermission.findMany({
+      // const rawResult = await prismaClient.resourcePermission.findMunknown({
       //   where: {
       //     permissionId: parseInt(id, 10),
       //   },
@@ -59,10 +59,10 @@ export class ResourceController {
     }
   }
 
-  async getResources(request: NextRequest) {
+  async getResources() {
     // const network = new Network(request);
     // try {
-    //   const resources = await prismaClient.resource.findMany();
+    //   const resources = await prismaClient.resource.findMunknown();
     //   return network.successResponse(resources);
     // } catch (error) {
     //   return network.failResponse(error as BaseError);

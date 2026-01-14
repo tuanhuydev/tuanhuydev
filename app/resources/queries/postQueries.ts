@@ -1,18 +1,19 @@
 import { useFetch } from "@features/Auth";
+import { Post } from "@features/Post/post";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
-export const usePostsQuery = (filter: ObjectType = {}) => {
+export const usePostsQuery = (filter: Record<string, unknown> = {}) => {
   return useQuery({
     queryKey: ["posts", filter],
     queryFn: async ({ signal }) => {
       let url = `${BASE_URL}/api/posts`;
-      if (filter) url = `${url}?${new URLSearchParams(filter).toString()}`;
+      if (filter) url = `${url}?${new URLSearchParams(filter as Record<string, string>).toString()}`;
 
       const response = await fetch(url, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch posts");
-      const { data: posts = [] } = await response.json();
+      const { data: posts = [] } = (await response.json()) as { data: Post[] };
       return posts;
     },
   });
@@ -24,7 +25,7 @@ export const usePostQuery = (id: string) => {
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/posts/${id}`, { signal });
       if (!response.ok) throw new BaseError("Unable to fetch post");
-      const { data } = await response.json();
+      const { data } = (await response.json()) as { data: Post };
       return data;
     },
   });
@@ -34,10 +35,10 @@ export const useCreatePost = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (post: ObjectType) => {
+    mutationFn: async (post: Post) => {
       const response = await fetch(`${BASE_URL}/api/posts`, { method: "POST", body: JSON.stringify(post) });
       if (!response.ok) throw new Error(response.statusText);
-      const { data } = await response.json();
+      const { data } = (await response.json()) as { data: Post };
       return data;
     },
   });
@@ -45,10 +46,10 @@ export const useCreatePost = () => {
 
 export const useUpdatePost = () => {
   return useMutation({
-    mutationFn: async (post: ObjectType) => {
+    mutationFn: async (post: Post) => {
       const response = await fetch(`${BASE_URL}/api/posts/${post.id}`, { method: "PATCH", body: JSON.stringify(post) });
       if (!response.ok) throw new Error(response.statusText);
-      const { data } = await response.json();
+      const { data } = (await response.json()) as { data: Post };
       return data;
     },
   });

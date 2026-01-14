@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-type ControllerMethod = (req: NextRequest, params?: any) => Promise<any>;
+type ControllerMethod = (req: NextRequest, params?: unknown) => Promise<unknown>;
 
 export interface BaseController {
   store: ControllerMethod;

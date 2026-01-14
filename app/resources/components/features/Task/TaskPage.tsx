@@ -1,11 +1,13 @@
 "use client";
 
+import { Task } from "@lib/types/task";
+import { User } from "@lib/types/user";
 import { Drawer, DrawerContent, DrawerTitle } from "@resources/components/common/Drawer";
 import Loader from "@resources/components/common/Loader";
 import PageFilter from "@resources/components/common/PageFilter";
 import { VisuallyHidden } from "@resources/components/common/VisuallyHidden";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
-import { DynamicFormConfig, Field, ObjectType } from "@resources/components/form/DynamicForm";
+import { DynamicFormConfig, Field } from "@resources/components/form/DynamicForm";
 import { useCurrentUserPermission } from "@resources/queries/permissionQueries";
 import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useUsersQuery } from "@resources/queries/userQueries";
@@ -26,8 +28,8 @@ const COMPONENT_MODE = {
 };
 
 interface TaskPageProps {
-  project?: ObjectType;
-  tasks?: ObjectType[];
+  project?: Record<string, unknown>;
+  tasks?: Record<string, unknown>[];
   selectedTaskId?: string | null;
   allowSubTasks?: boolean;
   onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -46,7 +48,7 @@ function TaskPage({
   // Hooks
   const queryClient = useQueryClient();
   const { data: users = [] } = useUsersQuery();
-  const { data: sprints = [] } = useSprintQuery(project?.id);
+  const { data: sprints = [] } = useSprintQuery(project?.id as string);
   const { data: permissions = [] } = useCurrentUserPermission();
 
   // States
@@ -61,7 +63,7 @@ function TaskPage({
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
   const allowCreateTask = project?.id
-    ? (permissions as Array<ObjectType>).some((permission: ObjectType = {}) => {
+    ? (permissions as Array<Record<string, unknown>>).some((permission: Record<string, unknown> = {}) => {
         const { action = "", resourceId = "", type = "" } = permission;
         return action === "create" && type === "task" && ["*", project?.id].includes(resourceId);
       })
@@ -71,9 +73,9 @@ function TaskPage({
     const { users: projectUserIds = [] } = project;
     if (!(projectUserIds as Array<string>).length) return [];
 
-    return (users as Array<ObjectType>)
-      .filter(({ id }: ObjectType) => (projectUserIds as Array<string>).includes(id))
-      .map(({ id, name }: ObjectType) => ({ label: name, value: id }));
+    return users
+      .filter(({ id }: User) => (projectUserIds as Array<string>).includes(id))
+      .map(({ id, name }: User) => ({ label: name, value: id }));
   }, [project, users]);
 
   const createNewTask = useCallback(() => {
@@ -104,8 +106,8 @@ function TaskPage({
     LogService.log(error.message);
   }, []);
 
-  const mutateTaskSuccess = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["tasks"] });
+  const mutateTaskSuccess = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["tasks"] });
     setMeta((prevState) => ({ ...prevState, openDrawer: false }));
   }, [queryClient]);
 
@@ -165,16 +167,18 @@ function TaskPage({
     if (isEditMode) {
       return (
         <TaskForm
-          projectId={project?.id}
+          projectId={project?.id as number}
           config={TaskFormConfig}
-          onDone={mutateTaskSuccess}
+          onDone={() => void mutateTaskSuccess()}
           onError={mutateTaskError}
           task={selectedTask as Task | undefined}
         />
       );
     }
-    const projectUser = projectUsers.find(({ value: userId }: SelectOption) => userId === selectedTask?.assigneeId);
-    const taskSprint = sprints?.find(({ id }: ObjectType) => id === selectedTask?.sprintId);
+    const projectUser = projectUsers.find(
+      ({ value: userId }: SelectOption<string>) => userId === selectedTask?.assigneeId,
+    );
+    const taskSprint = sprints?.find(({ id }: Record<string, unknown>) => id === selectedTask?.sprintId);
     return <TaskPreview task={selectedTask} assignee={projectUser} sprint={taskSprint} />;
   }, [
     isEditMode,
@@ -198,7 +202,7 @@ function TaskPage({
 
   useEffect(() => {
     if (tasks.length && selectedTaskId) {
-      const task = tasks.find((task: ObjectType) => String(task.id) === selectedTaskId);
+      const task = tasks.find((task: Record<string, unknown>) => String(task.id) === selectedTaskId);
       if (task) {
         onSelectTask(task as Task);
       }
@@ -207,19 +211,23 @@ function TaskPage({
 
   return (
     <Suspense fallback={<Loader />}>
-      <PageContainer title={project.name} goBack={!!project.name}>
-        <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
-        <TaskList
-          projectId={project?.id}
-          tasks={tasks as Array<Task>}
-          selectedTask={selectedTask}
-          onSelectTask={onSelectTask}
-          isLoading={loading}
-        />
+      <PageContainer title={(project.name as string) ?? ""} goBack={!!project.name}>
+        <div className="flex flex-col gap-4 h-full">
+          <PageFilter onSearch={onSearch} onNew={createNewTask} createLabel="New Task" allowCreate={allowCreateTask} />
+          <div className="flex-1 overflow-auto">
+            <TaskList
+              projectId={project?.id as string}
+              tasks={tasks as Array<Task>}
+              selectedTask={selectedTask}
+              onSelectTask={onSelectTask}
+              isLoading={loading}
+            />
+          </div>
+        </div>
         <Drawer open={openDrawer} onOpenChange={(isOpen) => !isOpen && toggleDrawer(false)()}>
           <DrawerContent
             side="right"
-            className="w-full sm:w-[500px] md:w-[600px] lg:w-[700px] sm:m-2 sm:mr-2 sm:rounded-lg">
+            className="w-full sm:w-[90vw] md:w-[600px] lg:w-[700px] xl:w-[800px] h-full sm:h-[calc(100vh-1rem)] sm:m-2 sm:mr-2 sm:rounded-lg">
             <VisuallyHidden>
               <DrawerTitle>{selectedTask?.title || "Task Details"}</DrawerTitle>
             </VisuallyHidden>
@@ -233,7 +241,7 @@ function TaskPage({
                 onClose={toggleDrawer(false)}
                 onToggle={toggleMode}
               />
-              <div className="flex-1 overflow-y-auto px-1">{RenderTaskDetails}</div>
+              <div className="flex-1 overflow-y-auto px-2 sm:px-4 md:px-6">{RenderTaskDetails}</div>
             </div>
           </DrawerContent>
         </Drawer>

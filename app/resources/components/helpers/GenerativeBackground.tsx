@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState, useRef, useCallback, CSSProperties } from "react";
+import React, { useState, useCallback, CSSProperties } from "react";
 
 // --- Helper Functions & Types ---
 const hexToRgbString = (hex?: string): string => {
   if (!hex) return "0,0,0";
   const hexValue = hex.startsWith("#") ? hex.slice(1) : hex;
   const shorthandRegex = /^([a-f\d])([a-f\d])([a-f\d])$/i;
-  const fullHex = hexValue.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+  const fullHex = hexValue.replace(
+    shorthandRegex,
+    (_m: string, r: string, g: string, b: string): string => r + r + g + g + b + b,
+  );
   const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
   return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : "0,0,0";
 };
@@ -301,8 +304,6 @@ const GenerativeBackground: React.FC = () => {
   const [overlayText, setOverlayText] = useState<string>("Your Text Here");
   const [overlayTextSize, setOverlayTextSize] = useState<number>(30);
 
-  const previewPanelRef = useRef<HTMLDivElement>(null); // For html2canvas, though we target by ID
-
   const handleColorChange = (zone: ColorZoneKey, type: "start" | "end", value: string) => {
     setColors((prevColors) => ({
       ...prevColors,
@@ -328,7 +329,7 @@ const GenerativeBackground: React.FC = () => {
           link.href = image;
           link.click();
         })
-        .catch((error: any) => {
+        .catch((error) => {
           console.error("Error generating image with html2canvas:", error);
           // Show a user-friendly message
           const messageBox = document.createElement("div");
@@ -396,7 +397,9 @@ const GenerativeBackground: React.FC = () => {
           onOverlayTextChange={setOverlayText}
           overlayTextSize={overlayTextSize}
           onOverlayTextSizeChange={setOverlayTextSize}
-          onDownload={handleDownload}
+          onDownload={() => {
+            void handleDownload();
+          }}
         />
       </div>
       <div style={previewAreaStyle}>

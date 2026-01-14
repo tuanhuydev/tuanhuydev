@@ -14,8 +14,8 @@ class MongoUserRepository {
     return MongoUserRepository.#instance ?? new MongoUserRepository();
   }
 
-  async getUsers(filter: any = {}) {
-    let defaultWhere: ObjectType = { deletedAt: null };
+  async getUsers(filter: Record<string, unknown> = {}) {
+    let defaultWhere: Record<string, unknown> = { deletedAt: null };
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
     }
@@ -29,17 +29,17 @@ class MongoUserRepository {
     let query = this.table.find(defaultWhere);
 
     if (orderBy) {
-      const sort: ObjectType = {};
-      orderBy.forEach((order: any) => {
+      const sort: Mongo.Sort = {};
+      (orderBy as Array<{ field: string; direction: "asc" | "desc" }>).forEach((order) => {
         sort[order.field] = order.direction === "desc" ? -1 : 1;
       });
       query = query.sort(sort);
     }
 
     if (page && pageSize) {
-      query = query.skip((page - 1) * pageSize).limit(pageSize);
+      query = query.skip(((page as number) - 1) * (pageSize as number)).limit(pageSize as number);
     } else if (pageSize) {
-      query = query.limit(pageSize);
+      query = query.limit(pageSize as number);
     }
 
     return query.toArray();
@@ -49,22 +49,22 @@ class MongoUserRepository {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }
 
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string): Promise<Mongo.BSON.Document | null> {
     return this.table.findOne({ email });
   }
 
-  async createUser(body: ObjectType = {}) {
+  async createUser(body: Record<string, unknown> = {}) {
     const { email } = body;
     if (!email) throw new BadRequestError("Email is required");
 
-    const existingUser = await this.getUserByEmail(email);
+    const existingUser = await this.getUserByEmail(email as string);
     if (existingUser) throw new BadRequestError("Email already exists");
 
     return this.table.insertOne(body);
   }
 
-  async updateUser(id: string, user: any) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: user });
+  async updateUser(id: string, user: unknown) {
+    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: user as Record<string, unknown> });
   }
 
   async deleteUser(id: string) {

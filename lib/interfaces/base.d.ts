@@ -1,10 +1,6 @@
-interface ObjectType {
-  [key: string]: any;
-}
-
-type SelectOption = {
+type SelectOption<T> = {
   label: string;
-  value: any;
+  value: T;
 };
 
 interface FilterType {
@@ -12,7 +8,7 @@ interface FilterType {
   pageSize?: number;
   active?: boolean;
   search?: string;
-  orderBy?: ObjectType[];
+  orderBy?: Record<string, unknown>[];
 }
 
 type MetaDataParams = {
@@ -20,25 +16,8 @@ type MetaDataParams = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-type SelectOptionType = {
-  label: string;
-  value: any;
-};
-
 interface Timestamps {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
-}
-
-interface Project extends Timestamps {
-  id: string;
-  name: string;
-  clientName: string;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  type: ProjectType;
-  status: ProjectStatus;
-  users: Array<string>;
 }

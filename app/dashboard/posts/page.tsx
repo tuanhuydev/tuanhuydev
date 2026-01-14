@@ -1,3 +1,4 @@
+import { Post } from "@features/Post/post";
 import { UrlParams } from "@lib/interfaces/shared";
 import Empty from "@resources/components/common/Empty";
 import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";

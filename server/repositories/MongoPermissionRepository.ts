@@ -14,18 +14,18 @@ class MongoPermissionRepository {
   async getPermissions() {
     return this.table.find().toArray();
   }
-  async getPermission(id: string) {
+  async getPermission(id: string): Promise<Mongo.BSON.Document | null> {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }
 
-  async createPermission(body: any): Promise<Mongo.InsertOneResult<Mongo.BSON.Document>> {
+  async createPermission(body: Record<string, unknown>): Promise<Mongo.InsertOneResult<Mongo.BSON.Document>> {
     body.createdAt = new Date().toISOString();
     body.updatedAt = new Date().toISOString();
     body.deletedAt = null;
     return this.table.insertOne(body);
   }
 
-  async updatePermission(id: string, body: ObjectType) {
+  async updatePermission(id: string, body: Record<string, unknown>) {
     return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
   }
   async deletePermission(id: string) {
