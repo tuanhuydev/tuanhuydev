@@ -1,4 +1,4 @@
-import { CreateChatSessionDTO, NewChatSessionRequest, UpdateChatSessionDTO } from "../dto/ChatSessionDTOs";
+import { CreateChatSessionDTO, UpdateChatSessionDTO } from "../dto/ChatSessionDTOs";
 import ChatSession, { MessageRoles } from "../models/ChatSession";
 import { GENERATIVE_CHAT_SESSION_NAME_PROMPT } from "../prompts";
 import MongoChatSessionRepository from "../repositories/MongoChatSessionRepository";
@@ -15,7 +15,7 @@ interface ChatSessionFilter {
   offset?: number;
 }
 
-class ChatSessionService {
+export class ChatSessionService {
   static #instance: ChatSessionService;
   #geminiService: GeminiService;
   #repository: typeof MongoChatSessionRepository;
@@ -46,7 +46,7 @@ class ChatSessionService {
     }
   }
 
-  async createChatSession(dto: CreateChatSessionDTO): Promise<any> {
+  async createChatSession(dto: CreateChatSessionDTO): Promise<unknown> {
     try {
       // Generate session name from the prompt
       const sessionName = await this.generateChatSessionName(dto.prompt);
@@ -61,7 +61,7 @@ class ChatSessionService {
         deletedAt: null,
       };
 
-      return await this.#repository.createChatSession(chatSessionData as any);
+      return await this.#repository.createChatSession(chatSessionData as unknown as ChatSession);
     } catch (error) {
       if (error instanceof BaseError) {
         throw error;
@@ -122,7 +122,7 @@ class ChatSessionService {
     }
   }
 
-  async getChatSessions(filter: ChatSessionFilter): Promise<any[]> {
+  async getChatSessions(filter: ChatSessionFilter): Promise<unknown[]> {
     try {
       this.validateUserId(filter.userId);
       return await this.#repository.getChatSessions(filter);
@@ -135,7 +135,7 @@ class ChatSessionService {
     }
   }
 
-  async getChatSession(id: string): Promise<any> {
+  async getChatSession(id: string): Promise<unknown> {
     try {
       if (!id?.trim()) {
         throw new BadRequestError("Session ID is required");
@@ -150,7 +150,7 @@ class ChatSessionService {
     }
   }
 
-  async updateChatSession(id: string, updates: UpdateChatSessionDTO): Promise<any> {
+  async updateChatSession(id: string, updates: UpdateChatSessionDTO): Promise<unknown> {
     try {
       if (!id?.trim()) {
         throw new BadRequestError("Session ID is required");
@@ -185,7 +185,7 @@ class ChatSessionService {
     }
   }
 
-  async addMessageToChatSession(sessionId: string, message: { role: MessageRoles; content: string }): Promise<any> {
+  async addMessageToChatSession(sessionId: string, message: { role: MessageRoles; content: string }): Promise<unknown> {
     try {
       if (!sessionId?.trim()) {
         throw new BadRequestError("Session ID is required");
@@ -209,7 +209,7 @@ class ChatSessionService {
     }
   }
 
-  async clearChatSessionMessages(sessionId: string): Promise<any> {
+  async clearChatSessionMessages(sessionId: string): Promise<unknown> {
     try {
       if (!sessionId?.trim()) {
         throw new BadRequestError("Session ID is required");
@@ -284,5 +284,4 @@ class ChatSessionService {
 }
 
 const geminiServiceInstance = GeminiService.getInstance();
-export default ChatSessionService.makeInstance(geminiServiceInstance);
-export type { ChatSessionService };
+export const chatSessionService = ChatSessionService.makeInstance(geminiServiceInstance);

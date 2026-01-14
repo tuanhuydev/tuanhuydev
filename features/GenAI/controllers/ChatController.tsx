@@ -1,4 +1,4 @@
-import chatSessionService from "../services/ChatSessionService";
+import { chatSessionService } from "../services/ChatSessionService";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
@@ -21,19 +21,14 @@ class AIController {
   async prompt(request: NextRequest) {
     const network = new Network(request);
     try {
-      const body = await network.getBody();
+      const body = (await network.getBody()) as { prompt: string; chatId?: string };
       const { prompt, chatId } = body;
       logService.log("Received prompt:", { prompt, chatId });
 
-      if (!prompt) {
-        throw new BadRequestError("Prompt is required");
-      }
+      if (!prompt) throw new BadRequestError("Prompt is required");
 
       const response = await this.#geminiService.generateContent(prompt);
-
-      if (!response?.text) {
-        throw new BadRequestError("Failed to generate AI response");
-      }
+      if (!response?.text) throw new BadRequestError("Failed to generate AI response");
 
       if (chatId) {
         await chatSessionService.addConversationToChatSession(chatId, prompt, response.text);

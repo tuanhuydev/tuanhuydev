@@ -1,14 +1,14 @@
+import { TASK_TYPE } from "@server/models/task.model";
 import { z } from "zod";
 
-const CreateTaskSchema = z.object({
+export const CreateTaskSchema = z.object({
   title: z.string(),
   description: z.string(),
-  status: z.string(),
+  type: z.nativeEnum(TASK_TYPE),
+  storyPoint: z.number().optional(),
+  parentTaskId: z.string().optional(),
 });
 
-export type CreateTaskDto = z.infer<typeof CreateTaskSchema> & {
-  createdById: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-};
+export type CreateTaskDTO = z.infer<typeof CreateTaskSchema>;
+
+export type UpdateTaskDTO = Partial<CreateTaskDTO>;

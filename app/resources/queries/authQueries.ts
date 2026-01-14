@@ -13,7 +13,7 @@ export const usePermissions = () => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch permissions: ${response.status} ${response.statusText}`);
       }
-      const { data: permissions = [] } = await response.json();
+      const { data: permissions = [] } = (await response.json()) as { data: string[] };
       return permissions;
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - permissions don't change often

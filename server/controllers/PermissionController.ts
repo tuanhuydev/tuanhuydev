@@ -21,7 +21,7 @@ export class PermissionController {
     }
   }
 
-  async getOne(request: NextRequest, { id }: any) {
+  async getOne(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
@@ -29,7 +29,7 @@ export class PermissionController {
       const user = await MongoUserRepository.getUser(userId);
       if (!user) throw new BaseError("User not found");
 
-      const { permissionId } = user;
+      const { permissionId } = user as { permissionId?: string };
       if (!permissionId) throw new BaseError("Permission not found");
 
       const permission = await MongoPermissionRepository.getPermission(permissionId);
@@ -39,7 +39,7 @@ export class PermissionController {
     }
   }
 
-  async store(request: NextRequest) {}
+  async store() {}
 }
 
 export default PermissionController.makeInstance();

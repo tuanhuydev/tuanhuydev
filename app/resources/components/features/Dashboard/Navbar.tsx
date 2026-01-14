@@ -9,17 +9,7 @@ import { useCurrentUser } from "@resources/queries/userQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Menu, LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  Fragment,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactNode,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Fragment, PropsWithChildren, ReactNode, memo, useCallback, useEffect, useMemo } from "react";
 
 interface NavbarProps extends PropsWithChildren {
   title?: string;
@@ -36,7 +26,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
   const { mutateAsync: signUserOut } = useSignOut();
   const queryClient = useQueryClient();
 
-  const { email, name } = currentUser;
+  const { email, name } = currentUser as { email?: string; name?: string };
 
   // State - removed anchorEl and popoverOpen states as they're handled by Popover component
 
@@ -59,7 +49,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
   }, [queryClient]);
 
   useEffect(() => {
-    refetch();
+    void refetch();
   }, [refetch]);
 
   const renderStart = useMemo(() => {
@@ -109,7 +99,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
               variant="ghost"
               size="sm"
               className="w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400"
-              onClick={signOut}>
+              onClick={void signOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign out
             </Button>

@@ -1,9 +1,9 @@
 import { Navbar } from "@features/Landing/components/Navbar";
+import { Project } from "@lib/types/project";
 import ProjectCard from "@resources/components/features/Project/ProjectCard";
 import ProjectsFilter from "@resources/components/features/Project/ProjectsFilter";
 import { Footer } from "@resources/landing/components/Footer";
 import { getProjects } from "@server/actions/projectActions";
-import React from "react";
 
 const Page = async () => {
   const projects = await getProjects({});
@@ -17,8 +17,8 @@ const Page = async () => {
         <div
           className="grid gap-6 auto-rows-max mb-12"
           style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} {...project} />
+          {projects.map((project: Project) => (
+            <ProjectCard key={project.id} {...project} users={[]} />
           ))}
         </div>
 

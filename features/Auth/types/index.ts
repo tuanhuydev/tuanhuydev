@@ -1,11 +1,12 @@
 export interface User {
   id: string;
+  name: string;
   email: string;
-  name?: string;
   permissionId?: string;
   createdAt?: string;
   updatedAt?: string;
-  [key: string]: any;
+  deletedAt: Date | string | null;
+  [key: string]: unknown;
 }
 
 export interface Permission {
@@ -68,5 +69,5 @@ export enum UserPermissions {
 export type PermissionCheck = {
   hasPermission: (permission: string | UserPermissions) => boolean;
   hasAllPermissions: (permissions: (string | UserPermissions)[]) => boolean;
-  hasAnyPermission: (permissions: (string | UserPermissions)[]) => boolean;
+  hasunknownPermission: (permissions: (string | UserPermissions)[]) => boolean;
 };

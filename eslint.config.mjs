@@ -18,6 +18,7 @@ export default [
       "pnpm-lock.yaml",
       ".DS_Store",
       "Thumbs.db",
+      "next-env.d.ts",
     ],
   },
   // TypeScript support
@@ -37,6 +38,7 @@ export default [
     rules: {
       ...tseslint.configs.recommended.rules,
       ...tseslint.configs["recommended-type-checked"].rules,
+      "@typescript-eslint/require-await": "off",
     },
   },
   // React/Next/Prettier support

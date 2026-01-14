@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { useController } from "react-hook-form";
+import { Control, FieldValues, useController } from "react-hook-form";
 
 export interface DynamicTableColumnProps {
   field: string;
@@ -19,7 +19,7 @@ export interface DynamicTableColumnProps {
 }
 
 export interface DynamicTableProps {
-  control: any;
+  control: Control<FieldValues>;
   name: string;
   keyProp: string;
   options?: {
@@ -40,7 +40,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
   const { isSubmitting } = formState;
   const { invalid, error } = fieldState;
 
-  const [fieldData, setFieldData] = useState<any[]>([]);
+  const [fieldData, setFieldData] = useState<unknown[]>([]);
   const [editingCell, setEditingCell] = useState<{ rowId: string; columnId: string } | null>(null);
 
   // Generate unique ID helper
@@ -49,7 +49,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
   }, []);
 
   const addRow = useCallback(() => {
-    let newRow: any = { id: generateUniqueId() };
+    let newRow: Record<string, unknown> = { id: generateUniqueId() };
     columnConfigs.forEach((column) => {
       newRow[column.field] = "";
     });
@@ -60,7 +60,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
 
   const deleteRow = useCallback(
     (rowId: string) => {
-      const newData = fieldData.filter((row: any) => row.id !== rowId);
+      const newData = fieldData.filter((row: unknown) => (row as Record<string, unknown>).id !== rowId);
       setFieldData(newData);
       onChange(newData);
     },
@@ -68,9 +68,11 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
   );
 
   const updateCell = useCallback(
-    (rowId: string, columnId: string, value: any) => {
+    (rowId: string, columnId: string, value: unknown) => {
       setFieldData((prev) => {
-        const updatedData = prev.map((row) => (row.id === rowId ? { ...row, [columnId]: value } : row));
+        const updatedData = (prev as Record<string, unknown>[]).map((row) =>
+          row.id === rowId ? { ...row, [columnId]: value } : row,
+        );
         onChange(updatedData);
         return updatedData;
       });
@@ -79,11 +81,11 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
     [onChange],
   );
 
-  const columns = useMemo<ColumnDef<any>[]>(() => {
-    const cols: ColumnDef<any>[] = columnConfigs.map((colConfig, index) => ({
+  const columns = useMemo<ColumnDef<unknown>[]>(() => {
+    const cols: ColumnDef<unknown>[] = columnConfigs.map((colConfig, index) => ({
       accessorKey: colConfig.field,
       id: colConfig.field,
-      header: ({ table }) => (
+      header: () => (
         <div className="flex justify-between items-center w-full">
           <span className="font-semibold text-sm">{colConfig.headerName}</span>
           {index === 0 && (
@@ -101,7 +103,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
           if (colConfig.options && colConfig.options.length > 0) {
             return (
               <Select
-                value={cellValue}
+                value={cellValue as string | number}
                 onChange={(newValue) => updateCell(row.id, column.id, newValue)}
                 keyProp={`${row.id}-${column.id}`}
                 options={{
@@ -114,7 +116,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
           }
           return (
             <Input
-              value={String(cellValue || "")}
+              value={String((cellValue as string) || "")}
               onChange={(e) => updateCell(row.id, column.id, e.target.value)}
               placeholder="Enter value"
               className="w-full"
@@ -131,7 +133,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
             <div
               className="cursor-pointer hover:bg-muted/50 p-2 rounded"
               onClick={() => setEditingCell({ rowId: row.id, columnId: column.id })}>
-              {option?.label || String(cellValue || "")}
+              {option?.label || String((cellValue as string) || "")}
             </div>
           );
         }
@@ -140,7 +142,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
           <div
             className="cursor-pointer hover:bg-muted/50 p-2 rounded"
             onClick={() => setEditingCell({ rowId: row.id, columnId: column.id })}>
-            {String(cellValue || "")}
+            {String((cellValue as string) || "")}
           </div>
         );
       },
@@ -164,7 +166,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
 
   useEffect(() => {
     if (field.value && Array.isArray(field.value) && fieldData.length === 0) {
-      const dataWithIds = field.value.map((row: any) => {
+      const dataWithIds = field.value.map((row: Record<string, unknown>) => {
         const hasValidId = row.id && typeof row.id === "string" && row.id.trim() !== "";
         return {
           ...row,
@@ -179,7 +181,7 @@ const DynamicTable = memo(function DynamicTable({ control, name, options }: Dyna
     data: fieldData,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row.id,
+    getRowId: (row) => (row as Record<string, unknown>).id as string,
   });
 
   return (

@@ -31,7 +31,7 @@ export const useFetch = () => {
       await AuthApiService.signOut();
 
       // Clear only auth-related queries to preserve non-sensitive data
-      queryClient.cancelQueries();
+      await queryClient.cancelQueries();
       queryClient.removeQueries({
         predicate: (query) => {
           const key = query.queryKey[0] as string;
@@ -67,14 +67,14 @@ export const useFetch = () => {
         if (!accessToken) {
           const error = new UnauthorizedError("Access token is missing");
           console.warn("No access token found, signing out user");
-          signOut(); // Sign out immediately for missing token
+          await signOut(); // Sign out immediately for missing token
           throw error;
         }
 
         if (!AuthApiService.isValidTokenFormat(accessToken)) {
           const error = new UnauthorizedError("Invalid token format");
           console.warn("Invalid token format detected, signing out user");
-          signOut(); // Sign out immediately for invalid token
+          await signOut(); // Sign out immediately for invalid token
           throw error;
         }
 
@@ -118,7 +118,7 @@ export const useFetch = () => {
         // Handle unauthorized errors by signing out
         if (error instanceof UnauthorizedError) {
           console.warn("Unauthorized access detected, signing out user");
-          signOut(); // Don't await to avoid blocking the current request
+          await signOut(); // Don't await to avoid blocking the current request
         }
         throw error;
       }

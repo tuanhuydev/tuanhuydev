@@ -1,4 +1,5 @@
 import { getPosts } from "../server/actions/blogActions";
+import { Post } from "@features/Post/post";
 import { BASE_URL } from "lib/commons/constants/base";
 import { MetadataRoute } from "next";
 

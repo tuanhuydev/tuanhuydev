@@ -1,5 +1,6 @@
 "use client";
 
+import { Task } from "@lib/types/task";
 import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@resources/queries/taskQueries";
 import { Suspense, lazy, useCallback, useEffect } from "react";
@@ -25,7 +26,7 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   const creating = isCreating || isUpdating;
   const isSuccess = isCreateSuccess || isUpdateSuccess;
   const createTaskMutation = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       try {
         const newTaskBody = { ...formData, projectId };
         await mutateCrateTask(newTaskBody);
@@ -39,9 +40,9 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   );
 
   const updateTaskMutation = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       try {
-        await mutateUpdateTask(formData);
+        await mutateUpdateTask(formData as Partial<Task>);
       } catch (error) {
         LogService.log(error);
       } finally {
@@ -52,8 +53,8 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   );
 
   const handleTaskMutation = async (
-    formData: ObjectType,
-    mutationFn: (data: ObjectType) => Promise<any>,
+    formData: Record<string, unknown>,
+    mutationFn: (data: Record<string, unknown>) => Promise<unknown>,
     form?: UseFormReturn,
   ) => {
     try {
@@ -66,7 +67,7 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   };
 
   const onSubmit = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       const mutationFn = task ? updateTaskMutation : createTaskMutation;
       await handleTaskMutation(formData, mutationFn, form);
     },

@@ -1,5 +1,5 @@
 // Default Type
-export const EMPTY_OBJECT: ObjectType = {};
+export const EMPTY_OBJECT: Record<string, unknown> = {};
 export const EMPTY_STRING: string = "";
 
 // Theme

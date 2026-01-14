@@ -14,9 +14,9 @@ export const useCurrentUserPermission = () => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch permissions: ${response.status} ${response.statusText}`);
       }
-      const { data: permissions = [] } = await response.json();
+      const { data: permissions = [] } = (await response.json()) as { data: Record<string, unknown>[] };
 
-      return permissions.flatMap((permission: any) => permission.rules);
+      return permissions.flatMap((permission: { rules?: unknown[] }) => permission.rules || []);
     },
     staleTime: 10 * 60 * 1000, // 10 minutes - permissions don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes
@@ -32,7 +32,7 @@ export const useUserPermissions = (userId: string) => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch user permissions: ${response.status} ${response.statusText}`);
       }
-      const { data: permissions = [] } = await response.json();
+      const { data: permissions = [] } = (await response.json()) as { data: Record<string, unknown>[] };
       return permissions;
     },
     enabled: !!userId,

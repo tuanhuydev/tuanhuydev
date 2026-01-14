@@ -1,9 +1,10 @@
+import { User } from "@lib/types/user";
 import { Avatar, AvatarFallback } from "@resources/components/common/Avatar";
-import { User } from "lucide-react";
+import { User as UserIcon } from "lucide-react";
 import { memo } from "react";
 
 export interface UserRowProps {
-  user: ObjectType;
+  user: User;
   active?: boolean;
 }
 
@@ -13,7 +14,7 @@ const UserRow = memo(function UserRow({ user }: UserRowProps) {
       <div className="flex items-center">
         <Avatar className="mr-3">
           <AvatarFallback>
-            <User className="w-6 h-6" />
+            <UserIcon className="w-6 h-6" />
           </AvatarFallback>
         </Avatar>
         <div className="grow flex items-center">

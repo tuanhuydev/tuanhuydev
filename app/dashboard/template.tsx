@@ -2,10 +2,8 @@ import Sidebar from "@resources/components/features/Dashboard/Sidebar";
 import { userPermissionAction } from "@server/actions/authActions";
 import { PropsWithChildren } from "react";
 
-interface DashboardTemplateProps extends PropsWithChildren {}
-
-export default async function DashboardTemplate({ children }: DashboardTemplateProps) {
-  const userPermission: Record<string, any>[] = await userPermissionAction();
+export default async function DashboardTemplate({ children }: PropsWithChildren) {
+  const userPermission: string[] = await userPermissionAction();
 
   return (
     <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">

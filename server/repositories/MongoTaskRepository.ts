@@ -1,118 +1,87 @@
-import { BSON, Collection, ObjectId } from "mongodb";
+import { CreateTaskDTO, UpdateTaskDTO } from "@server/dto/Task";
+import { TaskModel } from "@server/models/task.model";
+import { TaskDocument } from "@server/mongo/task.document";
+import { Collection, ObjectId } from "mongodb";
 import MongoService from "server/services/MongoService";
 
-class MongoTaskRepository {
-  static #instance: MongoTaskRepository;
-  private table: Collection<BSON.Document>;
+export class MongoTaskRepository {
+  private static instance: MongoTaskRepository;
+  private collection: Collection;
 
-  constructor() {
-    this.table = MongoService.getDatabase().collection("tasks");
+  private constructor() {
+    this.collection = MongoService.getDatabase().collection("tasks");
   }
 
-  static makeInstance() {
-    return MongoTaskRepository.#instance ?? new MongoTaskRepository();
-  }
-
-  async createTask({ projectId, parentId, ...restBody }: ObjectType) {
-    restBody.createdAt = new Date();
-    restBody.updatedAt = new Date();
-    restBody.deletedAt = null;
-    if (projectId) {
-      restBody.projectId = new ObjectId(projectId as string);
+  static getInstance(): MongoTaskRepository {
+    if (!this.instance) {
+      this.instance = new MongoTaskRepository();
     }
-    if (parentId) {
-      restBody.parentId = new ObjectId(parentId as string);
-    }
-
-    const result = await this.table.insertOne(restBody);
-    return result;
+    return this.instance;
   }
 
-  private applySearchFilter(where: ObjectType, search: string = ""): ObjectType {
-    if (search) {
-      return { ...where, title: { $regex: search, $options: "i" } };
-    }
-    return where;
-  }
-
-  private applyProjectIdFilter(where: ObjectType, projectId?: string): ObjectType {
-    return typeof projectId === "string"
-      ? { ...where, projectId: new ObjectId(projectId) }
-      : { ...where, $or: [{ projectId: null }, { projectId: { $exists: false } }] };
-  }
-
-  private applyUserIdFilter(where: ObjectType, userId?: string): ObjectType {
-    if (userId) {
-      return { ...where, createdById: userId };
-    }
-    return where;
-  }
-
-  private applySorting(
-    query: any,
-    orderBy: Array<{ field: string; direction: string }> = [{ field: "createdAt", direction: "desc" }],
-  ): any {
-    const sort: ObjectType = {};
-    orderBy.forEach((order) => {
-      sort[order.field] = order.direction === "desc" ? -1 : 1;
-    });
-    return query.sort(sort);
-  }
-
-  private applyPagination(query: any, page?: number, pageSize?: number): any {
-    if (page && pageSize) {
-      return query.skip((page - 1) * pageSize).limit(pageSize);
-    } else if (pageSize) {
-      return query.limit(pageSize);
-    }
-    return query;
-  }
-
-  private constructWhereStatement = (filter: ObjectType) => {
-    let defaultWhere: ObjectType = { deletedAt: null };
-    defaultWhere = this.applySearchFilter(defaultWhere, filter?.search);
-    defaultWhere = this.applyProjectIdFilter(defaultWhere, filter?.projectId);
-    defaultWhere = this.applyUserIdFilter(defaultWhere, filter?.userId);
-
-    let query = this.table.find(defaultWhere);
-    query = this.applySorting(query, filter?.orderBy);
-    query = this.applyPagination(query, filter?.page, filter?.pageSize);
-
-    return defaultWhere;
-  };
-
-  async getTasks(filter: ObjectType = {}) {
-    const where = this.constructWhereStatement(filter);
-    return this.table.find(where).toArray();
-  }
-
-  async getTask(id: string) {
-    return this.table.findOne({ deletedAt: null, _id: new ObjectId(id) });
-  }
-
-  async updateTask(id: string, { assigneeId, projectId, sprintId, ...restData }: Partial<Omit<Task, "id">>) {
-    const bodyToUpdate = {
-      $set: {
-        ...restData,
-        projectId: projectId ? new ObjectId(projectId) : null,
-        assigneeId: assigneeId ? new ObjectId(assigneeId) : null,
-        sprintId: sprintId ? new ObjectId(sprintId) : null,
-      },
+  async create(taskData: CreateTaskDTO, userId: string): Promise<TaskModel> {
+    const taskDoc: Omit<TaskDocument, "_id"> = {
+      ...taskData,
+      createdById: new ObjectId(userId),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      parentTaskId: taskData?.parentTaskId ? new ObjectId(taskData.parentTaskId) : null,
+      storyPoint: taskData.storyPoint || 0,
+      deletedAt: null,
+      assigneeId: null,
+      projectId: null,
+      sprintId: null,
     };
-    this.table.updateOne({ _id: new ObjectId(id) }, bodyToUpdate);
-    return true;
+    const result = await this.collection.insertOne(taskDoc);
+
+    const createdDocument = await this.findById(result.insertedId.toHexString());
+    return TaskModel.toModel(createdDocument as unknown as TaskDocument);
   }
 
-  async deleteTask(id: string) {
-    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: { deletedAt: new Date() } });
+  async save(id: string, task: UpdateTaskDTO): Promise<boolean> {
+    const result = await this.collection.updateOne({ _id: new ObjectId(id) }, { $set: task }, { upsert: true });
+    return result.modifiedCount > 0;
   }
 
-  async getTasksByProject(projectId: string, filter: ObjectType = {}) {
-    return this.getTasks({ ...filter, projectId });
+  async findById(id: string): Promise<TaskModel | null> {
+    const doc = await this.collection.findOne({
+      _id: new ObjectId(id),
+      deletedAt: null,
+    });
+
+    return doc ? TaskModel.toModel(doc as unknown as TaskDocument) : null;
   }
-  async getSubTasks(taskId: string) {
-    return this.table.find({ parentId: new ObjectId(taskId) }).toArray();
+
+  async findAll(params: Record<string, unknown>): Promise<TaskModel[]> {
+    const query: Record<string, unknown> = { deletedAt: null };
+
+    // Example of handling a filter parameter
+    if (params.userId) {
+      query.createdById = new ObjectId(params.userId as string);
+    }
+    if (params.parentTaskId) {
+      query.parentTaskId = new ObjectId(params.parentTaskId as string);
+    }
+
+    const docs = await this.collection.find(query).sort({ createdAt: -1 }).toArray();
+    return docs.map((doc) => TaskModel.toModel(doc as unknown as TaskDocument));
+  }
+
+  async findByProject(projectId: string): Promise<TaskModel[]> {
+    const docs = await this.collection
+      .find({
+        projectId: new ObjectId(projectId),
+        deletedAt: null,
+      })
+      .toArray();
+
+    return docs.map((doc) => TaskModel.toModel(doc as unknown as TaskDocument));
+  }
+
+  async softDelete(id: string): Promise<boolean> {
+    const result = await this.collection.updateOne({ _id: new ObjectId(id) }, { $set: { deletedAt: new Date() } });
+    return result.modifiedCount > 0;
   }
 }
 
-export default MongoTaskRepository.makeInstance();
+export const mongoTaskRepository = MongoTaskRepository.getInstance();

@@ -10,7 +10,7 @@ export const severities = {
   INFO: "info",
 } as const;
 
-type ToastSeverity = (typeof severities)[keyof typeof severities] | string;
+type ToastSeverity = (typeof severities)[keyof typeof severities];
 
 export interface GlobalContextProps {
   notify: (message: string, severity?: ToastSeverity) => void;

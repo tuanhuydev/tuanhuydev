@@ -44,7 +44,7 @@ class StorageController {
     this.validateFile(file as unknown as File);
 
     const fileContent: string = await file.text();
-    const backup = JSON.parse(fileContent);
+    const backup = JSON.parse(fileContent) as Record<string, unknown>;
 
     if ("posts" in backup) {
       // Promise.all(
@@ -62,7 +62,7 @@ class StorageController {
     }
   }
 
-  async uploadFile(request: NextRequest, { type }: any) {
+  async uploadFile(request: NextRequest, { type }: { type: string }) {
     const formData = await request.formData();
     const network = new Network(request);
     try {

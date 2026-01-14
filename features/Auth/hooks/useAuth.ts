@@ -7,10 +7,12 @@ import { useQuery } from "@tanstack/react-query";
 
 export interface User {
   id: string;
+  name: string;
   email: string;
-  name?: string;
-  permissionId?: string;
-  [key: string]: any;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  deletedAt: Date | string | null;
+  permissionId: string;
 }
 
 export interface Permission {
@@ -38,7 +40,7 @@ export const useAuth = () => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch current user: ${response.status} ${response.statusText}`);
       }
-      const { data: user = {} } = await response.json();
+      const { data: user = {} } = (await response.json()) as { data: User };
       return user as User;
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -64,8 +66,8 @@ export const useAuth = () => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch permissions: ${response.status} ${response.statusText}`);
       }
-      const { data: permissions = [] } = await response.json();
-      return permissions.flatMap((permission: any) => permission.rules) as string[];
+      const { data: permissions = [] } = (await response.json()) as { data: Permission[] };
+      return permissions.flatMap((permission: Permission) => permission.rules);
     },
     enabled: !!currentUser, // Only fetch permissions if user is loaded
     staleTime: 10 * 60 * 1000, // 10 minutes - permissions don't change often
@@ -88,8 +90,8 @@ export const useAuth = () => {
     return requiredPermissions.every((permission) => permissions.includes(permission));
   };
 
-  // Check multiple permissions (user needs ANY of them)
-  const hasAnyPermission = (requiredPermissions: string[]): boolean => {
+  // Check multiple permissions (user needs unknown of them)
+  const hasunknownPermission = (requiredPermissions: string[]): boolean => {
     if (!permissions || !isAuthenticated) return false;
     return requiredPermissions.some((permission) => permissions.includes(permission));
   };
@@ -112,7 +114,7 @@ export const useAuth = () => {
     refetchUser,
     hasPermission,
     hasAllPermissions,
-    hasAnyPermission,
+    hasunknownPermission,
   };
 };
 

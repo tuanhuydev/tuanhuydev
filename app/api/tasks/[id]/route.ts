@@ -1,17 +1,21 @@
 import { NextRequest } from "next/server";
 import TaskController from "server/controllers/TaskController";
 
-export async function GET(request: NextRequest, props: any) {
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export async function GET(request: NextRequest, props: RouteParams) {
   const params = await props.params;
   return TaskController.getOne(request, params);
 }
 
-export async function PATCH(request: NextRequest, props: any) {
+export async function PATCH(request: NextRequest, props: RouteParams) {
   const params = await props.params;
   return TaskController.update(request, params);
 }
 
-export async function DELETE(request: NextRequest, props: any) {
+export async function DELETE(request: NextRequest, props: RouteParams) {
   const params = await props.params;
   return TaskController.delete(request, params);
 }

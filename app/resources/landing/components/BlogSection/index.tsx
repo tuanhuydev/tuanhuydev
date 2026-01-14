@@ -1,3 +1,4 @@
+import { Post } from "@features/Post/post";
 import { PostItem } from "@resources/components/features/Post/PostItem";
 import { getPosts } from "server/actions/blogActions";
 

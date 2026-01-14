@@ -3,11 +3,13 @@
 import { CommentForm } from "../../content/CommentForm";
 import { CommentRow } from "../../content/CommentRow";
 import TaskRow from "./TaskRow";
+import { Sprint } from "@lib/types/sprint";
+import { Task } from "@lib/types/task";
 import Badge from "@resources/components/common/Badge";
 import BaseLabel from "@resources/components/content/BaseLabel";
 import { useMutateTaskComment, useTaskComment } from "@resources/queries/commentQueries";
 import { useSubTasks } from "@resources/queries/taskQueries";
-import { TaskStatus, TaskStatusEnum } from "@resources/utils/constants";
+import { TaskStatus } from "@resources/utils/constants";
 import { CreateCommentDto } from "@server/dto/Comment";
 import { Comment } from "@server/models/Comment";
 import { EMPTY_STRING } from "lib/commons/constants/base";
@@ -16,22 +18,22 @@ import { Fragment, Suspense, lazy } from "react";
 const ReactMarkdown = lazy(() => import("react-markdown"));
 
 export interface TaskPreviewProps {
-  task: ObjectType | null;
-  assignee?: SelectOptionType | null;
-  sprint?: ObjectType | null;
+  task: Task | null;
+  assignee?: SelectOption<string> | null;
+  sprint?: Sprint;
 }
 export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps) {
-  const { data: subTasks = [] } = useSubTasks(task?.id || "");
-  const { data: comments = [] as Comment[] } = useTaskComment(task?.id);
+  const { data: subTasks = [] } = useSubTasks(task?.id || ("" as string));
+  const { data: comments = [] as Comment[] } = useTaskComment(task?.id as string);
   const { mutateAsync } = useMutateTaskComment(task?.id || "");
 
-  const { title = "", description = "", status = "" } = task || {};
+  const { title = "", description = "" } = task || {};
 
-  const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
+  const taskStatus = TaskStatus.TODO;
 
-  const selectSubTask = (subTask: ObjectType) => () => {
+  const selectSubTask = (subTask: Record<string, unknown>) => () => {
     if (!subTask.id || typeof window === undefined) return;
-    window.open(` ${window.location.href}?taskId=${subTask.id}`, "_blank");
+    window.open(` ${window.location.href}?taskId=${subTask.id as string}`, "_blank");
   };
 
   const submitComment = async (formData: CommentForm) => {
@@ -87,7 +89,7 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
         <div className="flex gap-3 w-full px-3 mb-3 shrink-0">
           <BaseLabel className="w-[72px]">Sub Tasks:</BaseLabel>
           <div className="grow max-h-40 overflow-auto">
-            {subTasks.map((subTask: ObjectType) => (
+            {subTasks.map((subTask: Task) => (
               <TaskRow key={subTask.id} task={subTask} onSelect={selectSubTask(subTask)} active={false} />
             ))}
           </div>

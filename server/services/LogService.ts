@@ -7,15 +7,15 @@ class LogService {
     return LogService.#instance ?? new LogService();
   }
 
-  log(...args: any[]) {
+  log(...args: unknown[]) {
     if (isDevelopmentEnv) {
-      return console.log(...args);
+      console.log(...args);
     }
   }
 
-  error(...args: any[]) {
+  error(...args: unknown[]) {
     if (isDevelopmentEnv) {
-      return console.error(...args);
+      console.error(...args);
     }
   }
 }

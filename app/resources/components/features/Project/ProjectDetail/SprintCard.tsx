@@ -1,5 +1,6 @@
 "use client";
 
+import { Sprint, SprintEnum } from "@lib/types/sprint";
 import { formatDateString } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
 import Card, { CardContent, CardFooter, CardHeader } from "@resources/components/common/Card";
@@ -14,18 +15,8 @@ import { Plus, ArrowLeft, Pencil } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 
-export interface Sprint {
-  id: string;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: "active" | "inactive";
-  projectId?: string;
-}
-
 export interface SprintFilter {
-  status?: "active" | "inactive";
+  status?: SprintEnum;
   search?: string;
   page?: number;
   pageSize?: number;
@@ -150,7 +141,7 @@ export const SprintForm: React.FC<{ projectId: string; sprint?: Sprint; onSucces
     };
   }, [reset, sprint?.id]);
 
-  return <DynamicForm config={config} onSubmit={submit} mapValues={sprint} />;
+  return <DynamicForm config={config} onSubmit={submit} mapValues={sprint as Record<string, unknown> | undefined} />;
 };
 
 export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) => {
@@ -164,7 +155,7 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
   });
   const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);
 
-  const activeSprint = useMemo(() => activeSprints.find(({ status }: Sprint) => status === "active"), [activeSprints]);
+  const activeSprint = useMemo(() => activeSprints.find(({ status }) => status === SprintEnum.ACTIVE), [activeSprints]);
 
   const toggleModal = useCallback(
     (modal: keyof ModalState, value: boolean, sprint?: Sprint) => () => {
@@ -237,10 +228,10 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
     if (modalState.isEditOpen && selectedSprint) {
       return <SprintForm projectId={projectId} sprint={selectedSprint} onSuccess={goBackManageSprints} />;
     }
-    return sprints
+    return (sprints as unknown as Sprint[])
       .sort((a: Sprint, b: Sprint) => {
-        const dateA = new Date(a.startDate).getTime();
-        const dateB = new Date(b.startDate).getTime();
+        const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
+        const dateB = b.endDate ? new Date(b.endDate).getTime() : 0;
         return dateB - dateA;
       })
       .map((sprint: Sprint) => (
@@ -249,7 +240,7 @@ export const SprintCard = ({ projectId, onClick, className }: SprintCardProps) =
           className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
           <div
             className={`w-2 h-2 rounded-full flex-shrink-0 ${
-              sprint.status === "active" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
+              sprint.status === SprintEnum.ACTIVE ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
             }`}
           />
           <div className="flex-1 min-w-0">

@@ -1,4 +1,5 @@
 import { UrlParams } from "@lib/interfaces/shared";
+import { Project } from "@lib/types/project";
 import Empty from "@resources/components/common/Empty";
 import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
 import Loader from "@resources/components/common/Loader";
@@ -17,10 +18,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<Url
 
     return (
       <div className="flex flex-wrap gap-2">
-        {projects.map((project: ObjectType) => (
+        {projects.map((project: Project) => (
           <ErrorBoundary key={project.id}>
             <Suspense fallback={<Loader />}>
-              <ProjectCard {...project} />
+              <ProjectCard {...project} users={[]} />
             </Suspense>
           </ErrorBoundary>
         ))}

@@ -26,7 +26,9 @@ export const CommentForm = ({ onSubmit }: CommentFormProps) => {
     }
   };
   return (
-    <form className="flex gap-2 text-base rounded-md bg-slate-100 dark:bg-slate-800 p-2 mb-2" onSubmit={handleSubmit}>
+    <form
+      className="flex gap-2 text-base rounded-md bg-slate-100 dark:bg-slate-800 p-2 mb-2"
+      onSubmit={void handleSubmit}>
       <input
         id="comment"
         name="comment"

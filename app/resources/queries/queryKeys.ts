@@ -27,9 +27,9 @@ export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];
  * This prevents unnecessary refetches due to object reference changes
  */
 export const createStableQueryKey = (
-  baseKey: (string | QueryKey)[],
-  filter?: ObjectType,
-): (string | QueryKey | ObjectType)[] => {
+  baseKey: QueryKey[],
+  filter?: Record<string, unknown>,
+): (QueryKey | Record<string, unknown>)[] => {
   if (!filter || Object.keys(filter).length === 0) {
     return baseKey;
   }
@@ -43,7 +43,7 @@ export const createStableQueryKey = (
         acc[key] = filter[key];
       }
       return acc;
-    }, {} as ObjectType);
+    }, {} as Record<string, unknown>);
 
   // Return base key if no valid filter properties
   if (Object.keys(sortedFilter).length === 0) {
@@ -56,10 +56,14 @@ export const createStableQueryKey = (
 /**
  * Helper to create consistent mutation success handlers
  */
-export const createInvalidationHandler = (queryClient: any, queryKeys: (string | QueryKey)[][]) => {
+export const createInvalidationHandler = (queryClient: unknown, queryKeys: string[][]) => {
   return () => {
-    queryKeys.forEach((queryKey) => {
-      queryClient.invalidateQueries({ queryKey });
-    });
+    return Promise.all(
+      queryKeys.map((queryKey) =>
+        (queryClient as { invalidateQueries: (args: { queryKey: unknown }) => Promise<unknown> }).invalidateQueries({
+          queryKey,
+        }),
+      ),
+    );
   };
 };

@@ -1,15 +1,17 @@
-import { QUERY_KEYS, createInvalidationHandler, createStableQueryKey } from "./queryKeys";
+import { QUERY_KEYS, QueryKey, createInvalidationHandler, createStableQueryKey } from "./queryKeys";
 import { useFetch } from "@features/Auth";
+import { Project } from "@lib/types/project";
+import { Task } from "@lib/types/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 import { useMemo } from "react";
 
-export const useProjectsQuery = (filter: ObjectType = {}) => {
+export const useProjectsQuery = (filter: Record<string, unknown> = {}) => {
   const { fetch } = useFetch();
 
   // Create stable query key to prevent unnecessary refetches
-  const queryKey = createStableQueryKey([QUERY_KEYS.PROJECTS, "list"], filter);
+  const queryKey = createStableQueryKey([QUERY_KEYS.PROJECTS, "list" as QueryKey], filter);
 
   return useQuery({
     queryKey,
@@ -22,10 +24,10 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
           acc[key] = value;
         }
         return acc;
-      }, {} as ObjectType);
+      }, {} as Record<string, unknown>);
 
       if (Object.keys(validFilter).length > 0) {
-        url = `${url}?${new URLSearchParams(validFilter).toString()}`;
+        url = `${url}?${new URLSearchParams(validFilter as Record<string, string>).toString()}`;
       }
 
       const response = await fetch(url, { signal });
@@ -33,7 +35,7 @@ export const useProjectsQuery = (filter: ObjectType = {}) => {
         throw new BaseError(`Failed to fetch projects: ${response.status} ${response.statusText}`);
       }
 
-      const { data: projects = [] } = await response.json();
+      const { data: projects = [] } = (await response.json()) as { data: Project[] };
       return projects;
     },
   });
@@ -50,7 +52,7 @@ export const useProjectQuery = (projectId: string) => {
         throw new BaseError(`Failed to fetch project: ${response.status} ${response.statusText}`);
       }
 
-      const { data: project } = await response.json();
+      const { data: project } = (await response.json()) as { data: Project };
       return project;
     },
     enabled: !!projectId,
@@ -62,7 +64,7 @@ export const useCreateProjectMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (formData: ObjectType) => {
+    mutationFn: async (formData: Record<string, unknown>) => {
       const response = await fetch(`${BASE_URL}/api/projects`, {
         method: "POST",
         headers: {
@@ -75,7 +77,7 @@ export const useCreateProjectMutation = () => {
         throw new BaseError(`Failed to create project: ${response.status} ${response.statusText}`);
       }
 
-      return response.json();
+      return response.json() as Promise<{ data: Project }>;
     },
     onSuccess: createInvalidationHandler(queryClient, [
       [QUERY_KEYS.PROJECTS],
@@ -92,8 +94,8 @@ export const useUpdateProjectMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async ({ id, ...restBody }: Partial<ObjectType>) => {
-      const response = await fetch(`${BASE_URL}/api/projects/${id}`, {
+    mutationFn: async ({ id, ...restBody }: Partial<Record<string, unknown>>) => {
+      const response = await fetch(`${BASE_URL}/api/projects/${id as string}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -105,24 +107,24 @@ export const useUpdateProjectMutation = () => {
         throw new BaseError(`Failed to update project: ${response.status} ${response.statusText}`);
       }
 
-      return response.json();
+      return response.json() as Promise<{ data: Project }>;
     },
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS, "list"],
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.PROJECTS, "list" as QueryKey],
       });
-      queryClient.setQueryData([QUERY_KEYS.PROJECTS, "list"], (oldList: any[] = []) => {
+      queryClient.setQueryData([QUERY_KEYS.PROJECTS, "list"], (oldList: Project[] = []) => {
         if (!variables.id) return oldList;
         return oldList.map((project) => (project.id === variables.id ? { ...project, ...variables } : project));
       });
-      const projectIdForInvalidation = variables.id ? String(variables.id) : null;
+      const projectIdForInvalidation = variables.id ? String(variables.id as string) : null;
 
       if (projectIdForInvalidation) {
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.PROJECTS, "detail", projectIdForInvalidation],
         });
 
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.PROJECTS, "detail", projectIdForInvalidation, QUERY_KEYS.TASKS],
         });
       }
@@ -147,16 +149,16 @@ export const useDeleteProjectMutation = () => {
         throw new BaseError(`Failed to delete project: ${response.status} ${response.statusText}`);
       }
 
-      return response.json();
+      return response.json() as Promise<{ success: boolean }>;
     },
-    onSuccess: (data, projectId) => {
+    onSuccess: async (data, projectId) => {
       // Remove deleted project from cache
       queryClient.removeQueries({
         queryKey: [QUERY_KEYS.PROJECTS, "detail", projectId],
       });
 
       // Invalidate project lists
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.PROJECTS],
       });
     },
@@ -166,12 +168,16 @@ export const useDeleteProjectMutation = () => {
   });
 };
 
-export const useProjectTasks = (projectId: string, filter: ObjectType = {}) => {
+export const useProjectTasks = (projectId: string, filter: Record<string, unknown> = {}) => {
   const { fetch } = useFetch();
 
   // Create stable query key with filter
   const queryKey = useMemo(
-    () => createStableQueryKey([QUERY_KEYS.PROJECTS, "detail", projectId, QUERY_KEYS.TASKS], filter),
+    () =>
+      createStableQueryKey(
+        [QUERY_KEYS.PROJECTS, "detail" as QueryKey, projectId as QueryKey, QUERY_KEYS.TASKS],
+        filter,
+      ),
     [projectId, filter],
   );
 
@@ -186,10 +192,10 @@ export const useProjectTasks = (projectId: string, filter: ObjectType = {}) => {
           acc[key] = value;
         }
         return acc;
-      }, {} as ObjectType);
+      }, {} as Record<string, unknown>);
 
       if (Object.keys(validFilter).length > 0) {
-        url = `${url}?${new URLSearchParams(validFilter).toString()}`;
+        url = `${url}?${new URLSearchParams(validFilter as Record<string, string>).toString()}`;
       }
 
       const response = await fetch(url, { signal });
@@ -197,7 +203,7 @@ export const useProjectTasks = (projectId: string, filter: ObjectType = {}) => {
         throw new BaseError(`Failed to fetch project tasks: ${response.status} ${response.statusText}`);
       }
 
-      const { data: tasks } = await response.json();
+      const { data: tasks } = (await response.json()) as { data: Task[] };
       return tasks;
     },
     enabled: !!projectId,

@@ -24,7 +24,6 @@ import {
   markdownShortcutPlugin,
   toolbarPlugin,
 } from "@mdxeditor/editor";
-import "@mdxeditor/editor/style.css";
 import { EMPTY_STRING } from "lib/commons/constants/base";
 import { RefObject, memo, useCallback, useEffect, useMemo, useRef } from "react";
 
@@ -84,7 +83,7 @@ function BaseMarkdown({
         body: formData,
       });
       if (!response.ok) throw new Error("Unable to upload image");
-      const { data: uploadedImage } = await response.json();
+      const { data: uploadedImage } = (await response.json()) as { data: { Location: string } };
       return uploadedImage?.Location;
     },
     [fetch],
@@ -124,7 +123,7 @@ function BaseMarkdown({
   // Sync external ref more efficiently
   useEffect(() => {
     if (editorRef && localRef.current) {
-      (editorRef as any).current = localRef.current;
+      (editorRef as unknown as RefObject<MDXEditorMethods | null>).current = localRef.current;
     }
   }, [editorRef]);
 

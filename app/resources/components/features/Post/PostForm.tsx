@@ -3,6 +3,7 @@
 import ConfirmBox from "../../common/modals/ConfirmBox";
 import { useGlobal } from "../../common/providers/GlobalProvider";
 import { DynamicFormConfig } from "../../form/DynamicForm";
+import { Post } from "@features/Post/post";
 import { Button } from "@resources/components/common/Button";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@resources/queries/postQueries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,21 +26,11 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   const router = useRouter();
   const { notify } = useGlobal();
 
-  const {
-    mutateAsync: mutateCreatePost,
-    isPending: isCreating,
-    isSuccess: createSuccess,
-    isError: createError,
-  } = useCreatePost();
+  const { mutateAsync: mutateCreatePost, isSuccess: createSuccess, isError: createError } = useCreatePost();
 
-  const {
-    mutateAsync: mutateUpdatePost,
-    isPending: isUpdating,
-    isSuccess: updateSuccess,
-    isError: updateError,
-  } = useUpdatePost();
+  const { mutateAsync: mutateUpdatePost, isSuccess: updateSuccess, isError: updateError } = useUpdatePost();
 
-  const { mutateAsync: mutateDeletePost, isSuccess: deleteSuccess, isPending: isDeleting } = useDeletePost();
+  const { mutateAsync: mutateDeletePost, isPending: isDeleting } = useDeletePost();
 
   // States
   const [form, setForm] = useState<UseFormReturn | null>(null);
@@ -48,7 +39,6 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   // Constants
   const isSuccess = createSuccess || updateSuccess;
   const isError = createError || updateError;
-  const isPending = isCreating || isUpdating || isDeleting;
   const hasPost = !!post;
 
   const config: DynamicFormConfig = {
@@ -93,29 +83,37 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
     setForm,
   };
 
-  useEffect(() => {
+  // Handles post mutation side effects
+  const handlePostMutationEffect = useCallback(async () => {
     if (isSuccess) {
       notify("Post saved successfully", "success");
       if (post?.id) {
-        queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
+        await queryClient.invalidateQueries({ queryKey: ["post", post?.id] });
       }
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      await queryClient.invalidateQueries({ queryKey: ["posts"] });
       router.push("/dashboard/posts");
     } else if (isError) {
       notify("Failed to save post", "error");
     }
-  }, [hasPost, isError, isSuccess, notify, post?.id, queryClient, router]);
+  }, [isSuccess, isError, notify, post?.id, queryClient, router]);
+
+  useEffect(() => {
+    // Only call the effect if success or error state changes
+    if (isSuccess || isError) {
+      void handlePostMutationEffect();
+    }
+  }, [isSuccess, isError, handlePostMutationEffect]);
 
   useEffect(() => {
     if (form) {
       const subscription = form.watch((values, { name }) => {
         switch (name) {
           case "title":
-            const slug = transformTextToDashed(values.title);
+            const slug = transformTextToDashed(values.title as string);
             form.setValue("slug", slug);
             break;
           case "thumbnail":
-            if (isURLValid(values.thumbnail)) {
+            if (isURLValid(values.thumbnail as string)) {
               form.clearErrors("thumbnail");
             } else {
               form.setError("thumbnail", {
@@ -145,13 +143,17 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
     if (post?.id) {
       await mutateDeletePost(post.id);
       notify("Post deleted successfully", "success");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      await queryClient.invalidateQueries({ queryKey: ["posts"] });
       router.push("/dashboard/posts");
     }
   }, [mutateDeletePost, notify, post, queryClient, router]);
 
   const handlePostMutation = useCallback(
-    async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>, form?: UseFormReturn) => {
+    async (
+      formData: Record<string, unknown>,
+      mutationFn: (data: Record<string, unknown>) => Promise<unknown>,
+      form?: UseFormReturn,
+    ) => {
       try {
         if (form) {
           await form.trigger();
@@ -168,22 +170,22 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   );
 
   const createPost = useCallback(
-    async (formData: ObjectType) => {
-      await mutateCreatePost(formData);
+    async (formData: Record<string, unknown>) => {
+      await mutateCreatePost(formData as Post);
     },
     [mutateCreatePost],
   );
 
   const updatePost = useCallback(
-    async (formData: ObjectType) => {
+    async (formData: Record<string, unknown>) => {
       const postToUpdate = { id: post!.id, ...formData };
-      await mutateUpdatePost(postToUpdate);
+      await mutateUpdatePost(postToUpdate as Post);
     },
     [mutateUpdatePost, post],
   );
 
   const submit = useCallback(
-    async (formData: ObjectType) => {
+    async (formData: Record<string, unknown>) => {
       const mutationFn = hasPost ? updatePost : createPost;
       await handlePostMutation(formData, mutationFn);
     },
@@ -191,13 +193,14 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
   );
 
   const handleSubmit =
-    (willPublished: boolean = false) =>
-    async () => {
+    (willPublished: boolean = false): (() => Promise<void>) =>
+    async (): Promise<void> => {
+      if (!form) return;
       if (willPublished) {
-        queryClient.invalidateQueries({ queryKey: ["posts"] });
-        form?.setValue("publishedAt", new Date().toISOString());
+        await queryClient.invalidateQueries({ queryKey: ["posts"] });
+        form.setValue("publishedAt", new Date().toISOString());
       }
-      await form?.handleSubmit(submit as any)();
+      await form.handleSubmit(submit)();
     };
 
   return (
@@ -208,11 +211,11 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
         </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
-        <Button variant="outline" onClick={handleSubmit(false)}>
+        <Button variant="outline" onClick={void handleSubmit(false)}>
           {hasPost ? "Update Post" : "Save Draft"}
         </Button>
         {hasPost && !(post as unknown as Post)?.publishedAt && (
-          <Button onClick={handleSubmit(true)}>Save & Publish</Button>
+          <Button onClick={void handleSubmit(true)}>Save & Publish</Button>
         )}
         {hasPost && (
           <Button variant="destructive" disabled={isDeleting} onClick={toggleConfirm(true)} className="mt-1">
@@ -224,7 +227,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
         title="Delete Post"
         description="Are you sure you want to delete this post?"
         open={openConfirm}
-        onConfirm={deletePost}
+        onConfirm={void deletePost}
         onClose={toggleConfirm(false)}
       />
     </div>
