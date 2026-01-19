@@ -1,17 +1,13 @@
 "use client";
 
-import { Post } from "@features/Post/post";
+import { PostFormV2 } from "@app/resources/components/features/Post/PostFormV2";
+import { Post } from "@app/resources/types/post.types";
 import Loader from "@resources/components/common/Loader";
 import { usePostQuery } from "@resources/queries/postQueries";
 import { Suspense, lazy, use } from "react";
 
 // Replace dynamic imports with React lazy
 const PageContainer = lazy(() => import("@resources/components/features/Dashboard/PageContainer"));
-const PostForm = lazy(() =>
-  import("@resources/components/features/Post/PostForm").then((module) => ({
-    default: module.PostForm,
-  })),
-);
 
 interface PageProps {
   params: Promise<{
@@ -32,7 +28,7 @@ export default function Page(props: PageProps) {
             <Loader />
           ) : (
             <Suspense fallback={<Loader />}>
-              <PostForm post={post as Post} />
+              <PostFormV2 post={post as Post} />
             </Suspense>
           )}
         </div>

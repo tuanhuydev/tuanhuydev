@@ -10,11 +10,11 @@ import { Task } from "@lib/types/task";
 import { Button } from "@resources/components/common/Button";
 import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "@resources/queries/taskQueries";
+import { logService } from "@server/services/LogService";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowDownUp, Edit, Edit2, ListEnd, ListPlus, ListX, Trash2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Fragment, Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import LogService from "server/services/LogService";
 
 // Replace dynamic imports with React lazy
 const BaseMenu = lazy(() => import("@resources/components/content/BaseMenu"));
@@ -128,7 +128,7 @@ const useTaskActions = (
       notify("Task deleted successfully", "success");
       onClose();
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       notify("Failed to delete task", "error");
     }
   }, [deleteTaskMutation, notify, onClose, task?.id]);
@@ -144,7 +144,7 @@ const useTaskActions = (
         await updateTaskMutation({ ...task, sprintId });
         notify("Task moved to sprint successfully", "success");
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
         notify("Failed to move task to sprint", "error");
       }
     },
@@ -166,7 +166,7 @@ const useTaskActions = (
         } as Record<string, unknown>);
         notify("Sub-task created successfully", "success");
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
         notify("Failed to create sub-task", "error");
       } finally {
         await queryClient.invalidateQueries({ queryKey: ["tasks", task?.projectId] });
@@ -176,24 +176,20 @@ const useTaskActions = (
     [createTaskMutation, notify, queryClient, task?.id, task?.projectId],
   );
 
-  const handleConvertIntoSubTask = useCallback(
-    async (taskId: string) => {
-      if (!task) {
-        notify("Task is required", "error");
-        return;
-      }
-      try {
-        console.log("Convert task into sub-task:", taskId);
-        // await updateTaskMutation({ ...task, parentId: taskId });
-        notify("Task converted into sub-task successfully", "success");
-        await queryClient.invalidateQueries({ queryKey: ["tasks", task?.id, "subTasks"] });
-      } catch (error) {
-        LogService.log(error);
-        notify("Failed to convert task into sub-task", "error");
-      }
-    },
-    [notify, task, updateTaskMutation],
-  );
+  const handleConvertIntoSubTask = useCallback(async () => {
+    if (!task) {
+      notify("Task is required", "error");
+      return;
+    }
+    try {
+      // await updateTaskMutation({ ...task, parentId: taskId });
+      notify("Task converted into sub-task successfully", "success");
+      await queryClient.invalidateQueries({ queryKey: ["tasks", task?.id, "subTasks"] });
+    } catch (error) {
+      logService.log(error);
+      notify("Failed to convert task into sub-task", "error");
+    }
+  }, [notify, task, updateTaskMutation]);
 
   const handleConvertToTask = useCallback(async () => {
     try {
@@ -201,7 +197,7 @@ const useTaskActions = (
       notify("Task moved to sprint successfully", "success");
       await queryClient.invalidateQueries({ queryKey: ["tasks", task?.id, "subTasks"] });
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       notify("Failed to move task to sprint", "error");
     }
   }, [notify, queryClient, task, updateTaskMutation]);
@@ -271,25 +267,22 @@ export default function TaskFormTitle({
     setSprintIdToUpdate("");
   }, [handleMoveToSprint, sprintIdToUpdate, resetModals, notify]);
 
-  const handleConvertIntoSubTaskWithId = useCallback(
-    async (taskId: string) => {
-      if (!parentTaskIdToUpdate) {
-        notify("Please select a parent task", "error");
-        return;
-      }
+  const handleConvertIntoSubTaskWithId = useCallback(async () => {
+    if (!parentTaskIdToUpdate) {
+      notify("Please select a parent task", "error");
+      return;
+    }
 
-      try {
-        await handleConvertIntoSubTask(taskId);
-        notify("Task converted into sub-task successfully", "success");
-        resetModals();
-        setParentTaskIdToUpdate("");
-      } catch (error) {
-        LogService.log(error);
-        notify("Failed to convert task into sub-task", "error");
-      }
-    },
-    [handleConvertToTask, parentTaskIdToUpdate, resetModals, notify],
-  );
+    try {
+      await handleConvertIntoSubTask();
+      notify("Task converted into sub-task successfully", "success");
+      resetModals();
+      setParentTaskIdToUpdate("");
+    } catch (error) {
+      logService.log(error);
+      notify("Failed to convert task into sub-task", "error");
+    }
+  }, [handleConvertToTask, parentTaskIdToUpdate, resetModals, notify]);
 
   const handleDeleteWithModal = useCallback(async () => {
     await handleDelete();
@@ -464,7 +457,7 @@ export default function TaskFormTitle({
             <Button onClick={toggleModal("convertIntoSubTask", false)} variant="ghost">
               Cancel
             </Button>
-            <Button onClick={() => void handleConvertIntoSubTaskWithId(parentTaskIdToUpdate)}>Convert</Button>
+            <Button onClick={() => void handleConvertIntoSubTaskWithId()}>Convert</Button>
           </div>
         </BaseModal>
         {config && (

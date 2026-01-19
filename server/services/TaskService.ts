@@ -1,4 +1,4 @@
-import { CreateTaskDTO, UpdateTaskDTO } from "@server/dto/Task";
+import { CreateTaskDTO, UpdateTaskDTO } from "@server/dto/task.dto";
 import { TaskModel } from "@server/models/task.model";
 import { MongoTaskRepository, mongoTaskRepository } from "@server/repositories/MongoTaskRepository";
 
@@ -20,7 +20,6 @@ export class TaskService {
 
   async getTasks(params: Record<string, unknown>): Promise<TaskModel[]> {
     // TODO turn on params later
-    console.log("Params received in getTasks:", params);
     const tasks = await this.repo.findAll(params);
     return tasks;
   }

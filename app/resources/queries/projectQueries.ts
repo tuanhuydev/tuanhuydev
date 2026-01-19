@@ -109,7 +109,7 @@ export const useUpdateProjectMutation = () => {
 
       return response.json() as Promise<{ data: Project }>;
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.PROJECTS, "list" as QueryKey],
       });
@@ -151,7 +151,7 @@ export const useDeleteProjectMutation = () => {
 
       return response.json() as Promise<{ success: boolean }>;
     },
-    onSuccess: async (data, projectId) => {
+    onSuccess: async (_, projectId) => {
       // Remove deleted project from cache
       queryClient.removeQueries({
         queryKey: [QUERY_KEYS.PROJECTS, "detail", projectId],

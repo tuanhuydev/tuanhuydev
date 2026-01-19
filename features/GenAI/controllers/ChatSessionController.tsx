@@ -6,7 +6,7 @@ import UnauthenticatedError from "@lib/commons/errors/UnauthenticatedError";
 import Network from "@lib/utils/network";
 import { User } from "@server/models/User";
 import { AuthService, authService } from "@server/services/AuthService";
-import logService from "@server/services/LogService";
+import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
 
 interface RouteParams {

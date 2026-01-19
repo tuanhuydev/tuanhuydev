@@ -4,6 +4,7 @@ import Loader from "@resources/components/common/Loader";
 import { ThemeToggle } from "@resources/components/common/ThemeToggle";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
 import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
+import { logService } from "@server/services/LogService";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
@@ -11,7 +12,6 @@ import UnauthorizedError from "lib/commons/errors/UnauthorizedError";
 import importDynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import LogService from "server/services/LogService";
 
 const DynamicForm = importDynamic(() => import("@resources/components/form/DynamicForm"), {
   ssr: false,
@@ -68,9 +68,10 @@ export default function SignIn() {
         if (!data || !("accessToken" in data)) throw new UnauthorizedError("Invalid Credentials");
 
         await queryClient.setQueryData(["accessToken" as unknown as QueryKey], data.accessToken);
+        localStorage.setItem("accessToken", data.accessToken as string);
         router.push("/dashboard/home");
       } catch (error) {
-        LogService.log(error as BaseError);
+        logService.log(error as BaseError);
         notify((error as BaseError).message, "error");
       }
     },
@@ -79,14 +80,14 @@ export default function SignIn() {
 
   return (
     <div
-      className="bg-white dark:bg-slate-950 flex items-center justify-center w-screen h-screen relative"
+      className="relative flex h-screen w-screen items-center justify-center bg-white dark:bg-slate-950"
       data-testid="sign-in-page-testid">
-      <div className="absolute top-0 z-10 w-full flex justify-end p-4">
+      <div className="absolute top-0 z-10 flex w-full justify-end p-4">
         <ThemeToggle size="md" />
       </div>
 
-      <div className="h-fit w-96 drop-shadow-md bg-white rounded-md dark:bg-slate-800 px-3 pt-3 pb-5">
-        <h1 className="px-2 font-sans text-2xl font-bold my-3 dark:text-slate-100">Sign In</h1>
+      <div className="h-fit w-96 rounded-md bg-white px-3 pb-5 pt-3 drop-shadow-md dark:bg-slate-800">
+        <h1 className="my-3 px-2 font-sans text-2xl font-bold dark:text-slate-100">Sign In</h1>
         <DynamicForm config={signInFormConfig} onSubmit={submit} />
       </div>
     </div>

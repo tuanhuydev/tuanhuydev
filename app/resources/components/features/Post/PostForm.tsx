@@ -3,15 +3,15 @@
 import ConfirmBox from "../../common/modals/ConfirmBox";
 import { useGlobal } from "../../common/providers/GlobalProvider";
 import { DynamicFormConfig } from "../../form/DynamicForm";
-import { Post } from "@features/Post/post";
+import { Post } from "@app/resources/types/post.types";
 import { Button } from "@resources/components/common/Button";
 import { useCreatePost, useDeletePost, useUpdatePost } from "@resources/queries/postQueries";
+import { logService } from "@server/services/LogService";
 import { useQueryClient } from "@tanstack/react-query";
 import { isURLValid, transformTextToDashed } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import LogService from "server/services/LogService";
 
 // Replace dynamic import with React lazy
 const DynamicForm = lazy(() => import("../../form/DynamicForm"));
@@ -161,7 +161,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
         await mutationFn(formData);
         router.push("/dashboard/posts");
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
       } finally {
         form?.reset();
       }
@@ -171,7 +171,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
 
   const createPost = useCallback(
     async (formData: Record<string, unknown>) => {
-      await mutateCreatePost(formData as Post);
+      await mutateCreatePost(formData as unknown as Post);
     },
     [mutateCreatePost],
   );
@@ -207,7 +207,7 @@ export const PostForm: React.FC<PostFormProps> = ({ post }) => {
     <div className="grid grid-cols-12 gap-4 w-full">
       <div className="lg:col-span-10 col-span-12">
         <Suspense fallback={<div>Loading...</div>}>
-          <DynamicForm config={config} onSubmit={submit} mapValues={post} />
+          <DynamicForm config={config} onSubmit={submit} mapValues={post as unknown as Record<string, unknown>} />
         </Suspense>
       </div>
       <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">

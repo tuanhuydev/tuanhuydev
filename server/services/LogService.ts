@@ -1,6 +1,6 @@
 import { isDevelopmentEnv } from "@lib/commons/constants/base";
 
-class LogService {
+export class LogService {
   static #instance: LogService;
 
   static makeInstance() {
@@ -19,4 +19,4 @@ class LogService {
     }
   }
 }
-export default LogService.makeInstance();
+export const logService = LogService.makeInstance();

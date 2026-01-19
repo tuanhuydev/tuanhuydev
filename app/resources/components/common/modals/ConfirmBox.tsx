@@ -34,8 +34,8 @@ export default function ConfirmBox({
 
   return (
     <BaseModal open={open} onClose={onClose} title={title}>
-      {description && <p className=" mt-0 mb-4">{description}</p>}
-      <div className="flex gap-2 justify-end w-full self-end">
+      {description && <p className=" mb-4 mt-0">{description}</p>}
+      <div className="flex w-full justify-end gap-2 self-end">
         <Button variant="outline" onClick={cancel}>
           {cancelLabel}
         </Button>

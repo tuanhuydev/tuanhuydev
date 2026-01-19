@@ -1,18 +1,17 @@
-import { Permission } from "@features/Auth/hooks/useAuth";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
 import Network from "@lib/utils/network";
+import { CreateUserDTO } from "@server/dto/user.dto";
 import { User } from "@server/models/User";
+import { userRepository } from "@server/repositories/MongoUserRepository";
 import { authService } from "@server/services/AuthService";
+import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
-import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
 import { userPermissionRepository } from "server/repositories/MongoUserPermissionRepository";
-import MongoUserRepository from "server/repositories/MongoUserRepository";
-import LogService from "server/services/LogService";
 import { z } from "zod";
 
-class UserController {
+export class UserController {
   static #instance: UserController;
 
   static makeInstance() {
@@ -55,39 +54,36 @@ class UserController {
     const network = new Network(request);
     const body = await network.getBody();
     try {
-      const { password, permissionIds, roleId, ...restBody }: Record<string, unknown> = await this.validateStore(body);
+      const { password, ...restBody }: Record<string, unknown> = await this.validateStore(body);
 
       // Password processing
       delete restBody.confirmPassword;
       const hashPassword = await authService.hashPassword(password as string);
 
       // Create user
-      const newUser = await MongoUserRepository.createUser({
+      const newUser = await userRepository.create({
         ...restBody,
         password: hashPassword,
-      });
-      // if has roleId then assign it to userRoles
-      if (roleId) {
-        // Assign user to role in userRoles
-      }
-      if ((permissionIds as Array<Permission>)?.length) {
-        await Promise.all(
-          (permissionIds as Array<Permission>).map(async ({ rules }: Permission) => {
-            //create then assign to user
-            const permission = await MongoPermissionRepository.createPermission({ rules });
-            if (!permission) throw new BaseError("Unable to create permission");
+      } as CreateUserDTO);
 
-            await userPermissionRepository.createUserPermission({
-              userId: newUser.insertedId,
-              permissionId: permission.insertedId,
-            });
-          }),
-        );
-      }
+      // if ((permissionIds as Array<Permission>)?.length) {
+      //   await Promise.all(
+      //     (permissionIds as Array<Permission>).map(async ({ rules }: Permission) => {
+      //       //create then assign to user
+      //       const permission = await permissionRepository.create({ rules });
+      //       if (!permission) throw new BaseError("Unable to create permission");
+
+      //       await userPermissionRepository.createUserPermission({
+      //         userId: newUser.insertedId,
+      //         permissionId: permission.insertedId,
+      //       });
+      //     }),
+      //   );
+      // }
 
       return network.successResponse(newUser);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -97,7 +93,7 @@ class UserController {
     try {
       const params: Record<string, unknown> = network.extractSearchParams();
 
-      const users = await MongoUserRepository.getUsers(params);
+      const users = await userRepository.findAll(params);
       return network.successResponse(users);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -115,7 +111,7 @@ class UserController {
         if (!user) throw new NotFoundError("User not found");
         userId = user.id;
       }
-      const userById = await MongoUserRepository.getUser(userId);
+      const userById = await userRepository.findOne(userId);
       if (!userById) throw new NotFoundError("User not found");
       delete userById.password;
 
@@ -130,30 +126,30 @@ class UserController {
     if (!id || !body) throw new BadRequestError();
     const network = new Network(request);
     try {
-      const { permissionIds, id }: Record<string, unknown> = body;
+      const { id }: Record<string, unknown> = body;
 
-      const user = await MongoUserRepository.getUser(id as string);
+      const user = await userRepository.findOne(id as string);
       if (!user) throw new NotFoundError("User not found");
 
       // If there's existed permission, then create new permission
-      if ((permissionIds as Array<Permission>)?.length) {
-        await Promise.all(
-          (permissionIds as Array<Permission>).map(async ({ id, rules }: Permission) => {
-            if (!id) {
-              //create then assign to user
-              const permission = await MongoPermissionRepository.createPermission({ rules });
-              if (!permission) throw new BaseError("Unable to create permission");
+      // if ((permissionIds as Array<Permission>)?.length) {
+      //   await Promise.all(
+      //     (permissionIds as Array<Permission>).map(async ({ id, rules }: Permission) => {
+      //       if (!id) {
+      //         //create then assign to user
+      //         const permission = await permissionRepository.create({ rules });
+      //         if (!permission) throw new BaseError("Unable to create permission");
 
-              await userPermissionRepository.createUserPermission({
-                userId: user._id,
-                permissionId: permission.insertedId,
-              });
-            } else {
-              await MongoPermissionRepository.updatePermission(id, { rules });
-            }
-          }),
-        );
-      }
+      //         await userPermissionRepository.createUserPermission({
+      //           userId: user._id,
+      //           permissionId: permission.insertedId,
+      //         });
+      //       } else {
+      //         await permissionRepository.save(id, { rules });
+      //       }
+      //     }),
+      //   );
+      // }
       return network.successResponse(user);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -181,4 +177,4 @@ class UserController {
   }
 }
 
-export default UserController.makeInstance();
+export const userController = UserController.makeInstance();

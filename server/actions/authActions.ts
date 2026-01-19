@@ -1,23 +1,23 @@
 "use server";
 
 import BaseError from "@lib/commons/errors/BaseError";
+import { permissionRepository } from "@server/repositories/MongoPermissionRepository";
+import { userRepository } from "@server/repositories/MongoUserRepository";
 import { unstable_cache } from "next/cache";
 import { redirect, RedirectType } from "next/navigation";
-import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
-import MongoUserRepository from "server/repositories/MongoUserRepository";
 import { authService } from "server/services/AuthService";
-import logService from "server/services/LogService";
+import { logService } from "server/services/LogService";
 
 // Cache user permissions for 5 minutes to reduce database load
 const getCachedUserPermissions = unstable_cache(
   async (userId: string) => {
-    const user = await MongoUserRepository.getUser(userId);
+    const user = await userRepository.findOne(userId);
     if (!user) throw new BaseError("User not found");
 
     const { permissionId } = user;
     if (!permissionId) throw new BaseError("Permission not found");
 
-    const permission = await MongoPermissionRepository.getPermission(permissionId as string);
+    const permission = await permissionRepository.findOne(permissionId as string);
     if (!permission) throw new BaseError("Permission not found");
 
     const { rules = [] } = permission;

@@ -1,8 +1,8 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
-import { CreateTaskDTO } from "@server/dto/Task";
-import LogService from "@server/services/LogService";
+import { CreateTaskDTO } from "@server/dto/task.dto";
+import { logService } from "@server/services/LogService";
 import { taskService, TaskService } from "@server/services/TaskService";
 import { NextRequest } from "next/server";
 import { authService } from "server/services/AuthService";
@@ -38,7 +38,7 @@ export class TaskController {
       const newTask = await this.taskService.createTask(dto as unknown as CreateTaskDTO, currentUser.id);
       return network.successResponse(newTask);
     } catch (error) {
-      LogService.log((error as Error).message);
+      logService.log((error as Error).message);
       return network.failResponse(error as BaseError);
     }
   }
@@ -97,7 +97,7 @@ export class TaskController {
       const updated = await taskService.updateTask(id, body);
       return network.successResponse(updated);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }

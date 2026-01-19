@@ -3,7 +3,7 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
 import { GeminiService } from "@server/services/GeminiService";
-import logService from "@server/services/LogService";
+import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
 
 class AIController {

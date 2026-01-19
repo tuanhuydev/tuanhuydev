@@ -1,9 +1,9 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
+import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
 import MongoSprintRepository from "server/repositories/MongoSprintRepository";
-import LogService from "server/services/LogService";
 import { z } from "zod";
 
 export class SprintController {
@@ -20,7 +20,7 @@ export class SprintController {
       const sprints = await MongoSprintRepository.getSprints(filter);
       return network.successResponse(sprints);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -31,7 +31,7 @@ export class SprintController {
       const sprint = await MongoSprintRepository.getSprint(id as string);
       return network.successResponse(sprint);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -54,7 +54,7 @@ export class SprintController {
       const sprint = await MongoSprintRepository.createSprint(body as Record<string, unknown>);
       return network.successResponse(sprint);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -66,7 +66,7 @@ export class SprintController {
       const updatedSprint = await MongoSprintRepository.updateSprint(id as string, body as Record<string, unknown>);
       return network.successResponse(updatedSprint);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }
@@ -77,7 +77,7 @@ export class SprintController {
       await MongoSprintRepository.deleteSprint(id as string);
       return network.successResponse({ message: "Sprint deleted" });
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
       return network.failResponse(error as BaseError);
     }
   }

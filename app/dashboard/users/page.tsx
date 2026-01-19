@@ -49,7 +49,6 @@ export default function Page() {
     async (search: string) => {
       setFilter((prevFilter) => {
         if (search?.length) return { ...prevFilter, search };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { search: _, ...rest } = prevFilter;
         return rest;
       });
@@ -58,7 +57,6 @@ export default function Page() {
     [refetch],
   );
 
-  // Wrap performSearch so useDebounce receives a sync function
   const debouncedSearch = useDebounce((search: string) => {
     void performSearch(search);
   }, 500);

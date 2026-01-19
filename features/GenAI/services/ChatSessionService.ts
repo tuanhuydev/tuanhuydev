@@ -6,7 +6,7 @@ import { CreateChatSessionSchema } from "../schemas/ChatSessionSchema";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import { GeminiService } from "@server/services/GeminiService";
-import logService from "@server/services/LogService";
+import { logService } from "@server/services/LogService";
 import MongoService from "@server/services/MongoService";
 
 interface ChatSessionFilter {

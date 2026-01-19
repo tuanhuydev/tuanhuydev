@@ -1,6 +1,6 @@
 "use client";
 
-import { Post } from "@features/Post/post";
+import { Post } from "@app/resources/types/post.types";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +12,7 @@ export interface PostItemProps {
 
 export const PostItem: React.FC<PostItemProps> = ({ post, className }) => {
   const { title, slug, thumbnail = "", createdAt, publishedAt } = post;
-  const displayDate: Date = publishedAt || createdAt;
+  const displayDate: Date = new Date(publishedAt || createdAt);
 
   return (
     <Link

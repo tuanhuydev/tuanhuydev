@@ -111,7 +111,6 @@ class MongoChatSessionRepository {
       ...message,
       timestamp: new Date(),
     };
-    console.log("Adding message to chat session:", { sessionId, message: messageWithTimestamp });
     return this.table.updateOne(
       { _id: new Mongo.ObjectId(sessionId) },
       {
