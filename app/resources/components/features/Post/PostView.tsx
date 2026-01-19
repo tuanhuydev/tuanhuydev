@@ -2,7 +2,7 @@
 
 import WithCopy from "../../common/hocs/WithCopy";
 import BaseImage from "../../content/BaseImage";
-import { Post } from "@features/Post/post";
+import { Post } from "@app/resources/types/post.types";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
 import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import { ChevronLeft, Link as LinkIcon } from "lucide-react";

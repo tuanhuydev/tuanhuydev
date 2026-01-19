@@ -2,14 +2,15 @@ import { AUTH_URL, SALT_ROUNDS } from "@lib/commons/constants/base";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
 import { User } from "@lib/types/user";
+import { userRepository } from "@server/repositories/MongoUserRepository";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
-import MongoUserRepository from "server/repositories/MongoUserRepository";
 import { v4 as uuidv4 } from "uuid";
 
 export type TokenPayload = {
   accessToken: string;
 };
+
 export class AuthService {
   static #instance: AuthService;
 
@@ -34,7 +35,7 @@ export class AuthService {
   }
 
   async validateSignIn(email: string, password: string): Promise<User> {
-    const user = (await MongoUserRepository.getUserByEmail(email)) as User | null;
+    const user = (await userRepository.findOneByEmail(email)) as User | null;
     if (!user) throw new NotFoundError("Invalid user");
 
     if (!bcrypt.compareSync(password, user.password)) throw new BaseError("Invalid credential");

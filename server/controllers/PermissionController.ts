@@ -1,9 +1,9 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
+import { userRepository } from "@server/repositories/MongoUserRepository";
 import { NextRequest } from "next/server";
-import MongoPermissionRepository from "server/repositories/MongoPermissionRepository";
-import MongoUserRepository from "server/repositories/MongoUserRepository";
+import { permissionRepository } from "server/repositories/MongoPermissionRepository";
 
 export class PermissionController {
   static #instance: PermissionController;
@@ -14,7 +14,7 @@ export class PermissionController {
   async getAll(request: NextRequest) {
     const network = new Network(request);
     try {
-      const permissions = await MongoPermissionRepository.getPermissions();
+      const permissions = await permissionRepository.findAll();
       return network.successResponse(permissions);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -26,13 +26,13 @@ export class PermissionController {
     try {
       if (!id) throw new BadRequestError();
       let userId = id;
-      const user = await MongoUserRepository.getUser(userId);
+      const user = await userRepository.findOne(userId);
       if (!user) throw new BaseError("User not found");
 
       const { permissionId } = user as { permissionId?: string };
       if (!permissionId) throw new BaseError("Permission not found");
 
-      const permission = await MongoPermissionRepository.getPermission(permissionId);
+      const permission = await permissionRepository.findOne(permissionId);
       return network.successResponse(permission);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -42,4 +42,4 @@ export class PermissionController {
   async store() {}
 }
 
-export default PermissionController.makeInstance();
+export const permissionController = PermissionController.makeInstance();

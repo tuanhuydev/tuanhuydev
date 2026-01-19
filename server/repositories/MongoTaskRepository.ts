@@ -1,8 +1,8 @@
-import { CreateTaskDTO, UpdateTaskDTO } from "@server/dto/Task";
+import { CreateTaskDTO, UpdateTaskDTO } from "@server/dto/task.dto";
 import { TaskModel } from "@server/models/task.model";
 import { TaskDocument } from "@server/mongo/task.document";
+import MongoService from "@server/services/MongoService";
 import { Collection, ObjectId } from "mongodb";
-import MongoService from "server/services/MongoService";
 
 export class MongoTaskRepository {
   private static instance: MongoTaskRepository;

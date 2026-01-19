@@ -31,9 +31,8 @@ export class CommentController {
     }
   }
 
-  async createTaskComment(request: NextRequest, params: { taskId: string }) {
+  async createTaskComment(request: NextRequest) {
     const network = new Network(request);
-    console.log(network, params);
     return network.successResponse(null);
     // try {
     //   const { taskId } = params;

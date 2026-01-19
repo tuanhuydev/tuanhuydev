@@ -5,12 +5,12 @@ import { Card, CardContent } from "@resources/components/common/Card";
 import DynamicForm, { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@resources/queries/projectQueries";
 import { useUsersQuery } from "@resources/queries/userQueries";
+import { logService } from "@server/services/LogService";
 import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
 import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import LogService from "server/services/LogService";
 
 export interface ProjectFormProps {
   project?: Project;
@@ -45,7 +45,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         await mutationFn(formData);
         router.push("/dashboard/projects");
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
       } finally {
         if (form) form?.reset();
       }

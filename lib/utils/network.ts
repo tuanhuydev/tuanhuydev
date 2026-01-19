@@ -2,7 +2,7 @@ import { HTTP_CODE } from "@lib/commons/constants/httpCode";
 import BaseError from "@lib/commons/errors/BaseError";
 import { NextRequest, NextResponse } from "next/server";
 import qs from "qs";
-import LogService from "server/services/LogService";
+import { logService } from "server/services/LogService";
 
 interface ApiResponse<T = unknown> {
   success: boolean;
@@ -100,7 +100,7 @@ class Network {
   }
 
   failResponse = (error: BaseError): NextResponse => {
-    LogService.log(`[Server Error] ${(error as Error)?.message}`);
+    logService.log(`[Server Error] ${(error as Error)?.message}`);
     const { message, status = HTTP_CODE.INTERNAL_ERROR } = error;
     const options: Record<string, unknown> = {
       status,

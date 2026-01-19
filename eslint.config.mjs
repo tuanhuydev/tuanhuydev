@@ -39,6 +39,20 @@ export default [
       ...tseslint.configs.recommended.rules,
       ...tseslint.configs["recommended-type-checked"].rules,
       "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+       "@typescript-eslint/no-base-to-string": "off",
+       "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ]
     },
   },
   // React/Next/Prettier support

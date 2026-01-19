@@ -1,10 +1,11 @@
 import MongoService from "../services/MongoService";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
-import * as Mongo from "mongodb";
+import { CreateUserDTO, UpdateUserDTO } from "@server/dto/user.dto";
+import { BSON, Collection, ObjectId, Sort } from "mongodb";
 
 class MongoUserRepository {
   static #instance: MongoUserRepository;
-  table: Mongo.Collection<Mongo.BSON.Document>;
+  table: Collection<BSON.Document>;
 
   constructor() {
     this.table = MongoService.getDatabase().collection("users");
@@ -14,7 +15,7 @@ class MongoUserRepository {
     return MongoUserRepository.#instance ?? new MongoUserRepository();
   }
 
-  async getUsers(filter: Record<string, unknown> = {}) {
+  async findAll(filter: Record<string, unknown> = {}) {
     let defaultWhere: Record<string, unknown> = { deletedAt: null };
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
@@ -22,14 +23,17 @@ class MongoUserRepository {
 
     const { page, pageSize, orderBy = [{ field: "createdAt", direction: "desc" }], search = "" } = filter;
 
-    if ("search" in filter) {
-      defaultWhere = { ...defaultWhere, name: { $regex: search, $options: "i" } };
+    if (filter?.search) {
+      defaultWhere.name = {
+        $regex: search,
+        $options: "i",
+      };
     }
 
     let query = this.table.find(defaultWhere);
 
     if (orderBy) {
-      const sort: Mongo.Sort = {};
+      const sort: Sort = {};
       (orderBy as Array<{ field: string; direction: "asc" | "desc" }>).forEach((order) => {
         sort[order.field] = order.direction === "desc" ? -1 : 1;
       });
@@ -45,31 +49,31 @@ class MongoUserRepository {
     return query.toArray();
   }
 
-  async getUser(id: string) {
-    return this.table.findOne({ _id: new Mongo.ObjectId(id) });
+  async findOne(id: string) {
+    return this.table.findOne({ _id: new ObjectId(id) });
   }
 
-  async getUserByEmail(email: string): Promise<Mongo.BSON.Document | null> {
+  async findOneByEmail(email: string): Promise<BSON.Document | null> {
     return this.table.findOne({ email });
   }
 
-  async createUser(body: Record<string, unknown> = {}) {
+  async create(body: CreateUserDTO) {
     const { email } = body;
     if (!email) throw new BadRequestError("Email is required");
 
-    const existingUser = await this.getUserByEmail(email as string);
+    const existingUser = await this.findOneByEmail(email);
     if (existingUser) throw new BadRequestError("Email already exists");
 
     return this.table.insertOne(body);
   }
 
-  async updateUser(id: string, user: unknown) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: user as Record<string, unknown> });
+  async save(id: string, body: UpdateUserDTO) {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: body });
   }
 
-  async deleteUser(id: string) {
-    return this.table.deleteOne({ _id: new Mongo.ObjectId(id) });
+  async softDelete(id: string) {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: { deletedAt: new Date().toISOString() } });
   }
 }
 
-export default MongoUserRepository.makeInstance();
+export const userRepository = MongoUserRepository.makeInstance();

@@ -65,10 +65,11 @@
 
   // GitHub Copilot Configuration
   "github.copilot.enable": {
-    "*": true,
-    "yaml": false,
+    "*": false,
     "plaintext": false,
-    "markdown": false
+    "markdown": false,
+    "scminput": false,
+    "yaml": false
   },
   "github.copilot.chat.localeOverride": "en",
   "github.copilot.editor.enableCodeActions": true

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader } from "../../common/Card";
 import BaseImage from "../../content/BaseImage";
-import { Post } from "@features/Post/post";
+import { Post } from "@app/resources/types/post.types";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";

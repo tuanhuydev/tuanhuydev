@@ -12,9 +12,9 @@ import { useCurrentUserPermission } from "@resources/queries/permissionQueries";
 import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useUsersQuery } from "@resources/queries/userQueries";
 import { TaskStatusOptions, TaskTypeOptions } from "@resources/utils/constants";
+import { logService } from "@server/services/LogService";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
-import LogService from "server/services/LogService";
 
 // Replace dynamic imports with React lazy
 const TaskFormTitle = lazy(() => import("@resources/components/features/Task/TaskFormTitle"));
@@ -103,7 +103,7 @@ function TaskPage({
   }, []);
 
   const mutateTaskError = useCallback((error: Error) => {
-    LogService.log(error.message);
+    logService.log(error.message);
   }, []);
 
   const mutateTaskSuccess = useCallback(async () => {

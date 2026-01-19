@@ -2,9 +2,9 @@
 
 import { useGlobal } from "../common/providers/GlobalProvider";
 import { Button } from "@resources/components/common/Button";
+import { logService } from "@server/services/LogService";
 import { X } from "lucide-react";
 import React, { ChangeEvent, Fragment, useState } from "react";
-import LogService from "server/services/LogService";
 
 export default function BaseUpload() {
   const { notify } = useGlobal();
@@ -41,7 +41,7 @@ export default function BaseUpload() {
       setFiles([]);
       notify("Backup uploaded", "success");
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
     } finally {
       setUploading(false);
     }

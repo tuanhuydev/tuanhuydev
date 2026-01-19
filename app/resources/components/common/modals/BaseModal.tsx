@@ -12,23 +12,20 @@ export interface ConfirmBoxProps extends PropsWithChildren {
   prefix?: React.ReactNode;
 }
 
-const BaseModal = React.forwardRef(
-  ({ open, closable = false, title, children, onClose, className = "", prefix }: ConfirmBoxProps) => {
-    return (
-      <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <DialogContent className={className} hideCloseButton={!closable}>
-          <DialogHeader>
-            <div className="flex items-center gap-2">
-              {prefix && <div>{prefix}</div>}
-              {title && <DialogTitle>{title}</DialogTitle>}
-            </div>
-          </DialogHeader>
-          {children}
-        </DialogContent>
-      </Dialog>
-    );
-  },
-);
-BaseModal.displayName = "BaseModal";
+const BaseModal = ({ open, closable = false, title, children, onClose, className = "", prefix }: ConfirmBoxProps) => {
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent className={className} hideCloseButton={!closable}>
+        <DialogHeader>
+          <div className="flex items-center gap-2">
+            {prefix && <div>{prefix}</div>}
+            {title && <DialogTitle>{title}</DialogTitle>}
+          </div>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 export default BaseModal;

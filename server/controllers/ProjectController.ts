@@ -1,4 +1,4 @@
-import LogService from "../services/LogService";
+import { logService } from "../services/LogService";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
@@ -58,7 +58,7 @@ export class ProjectController {
       const newProject = await MongoProjectRepository.createProject(body);
       return network.successResponse(newProject);
     } catch (error) {
-      LogService.log((error as Error).message);
+      logService.log((error as Error).message);
       return network.failResponse(error as BaseError);
     }
   }
