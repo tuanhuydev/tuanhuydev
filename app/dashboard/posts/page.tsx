@@ -1,3 +1,4 @@
+import { Post } from "@app/resources/types/post.types";
 import { UrlParams } from "@lib/interfaces/shared";
 import Empty from "@resources/components/common/Empty";
 import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";

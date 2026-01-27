@@ -16,7 +16,7 @@ export interface DatePickerProps {
   placeholder?: string;
   error?: boolean;
   inputRef?: React.Ref<HTMLButtonElement>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
@@ -25,11 +25,11 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     ref,
   ) => {
     return (
-      <div ref={ref} className={className}>
+      <div ref={ref} className={className as string}>
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              ref={inputRef}
+              ref={inputRef as React.Ref<HTMLButtonElement>}
               variant="outline"
               className={cn(
                 // Layout
@@ -45,23 +45,23 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                 // Focus State
                 "focus:border-primary dark:focus:border-slate-500",
                 // Error state
-                error && "border-red-500 focus-visible:ring-red-500",
+                (error as boolean) && "border-red-500 focus-visible:ring-red-500",
                 // Hover
                 "hover:border-slate-400 dark:hover:border-slate-500",
               )}
-              disabled={disabled}
+              disabled={disabled as boolean}
               {...restProps}>
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {value ? format(value, "PPP") : <span>{placeholder}</span>}
+              {value ? format(value as Date, "PPP") : <span>{(placeholder as string) ?? ""}</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={value || undefined}
-              onSelect={onChange}
-              disabled={disabled}
-              initialFocus
+              selected={(value as Date) || undefined}
+              onSelect={onChange as (date: Date) => void}
+              disabled={disabled as boolean}
+              required
             />
           </PopoverContent>
         </Popover>

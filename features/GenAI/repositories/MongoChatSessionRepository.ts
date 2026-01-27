@@ -1,9 +1,16 @@
-import { CreateChatSessionDTO, UpdateChatSessionDTO } from "../dto/ChatSessionDTOs";
+import { UpdateChatSessionDTO } from "../dto/ChatSessionDTOs";
 import ChatSession from "../models/ChatSession";
 import * as Mongo from "mongodb";
 import MongoService from "server/services/MongoService";
 
-type ObjectType = Record<string, any>;
+type ChatSessionOrderBy = { field: string; direction: "asc" | "desc" };
+type ChatSessionFilter = {
+  page?: number;
+  pageSize?: number;
+  orderBy?: ChatSessionOrderBy[];
+  search?: string;
+  userId?: string;
+};
 
 class MongoChatSessionRepository {
   static #instance: MongoChatSessionRepository;
@@ -17,8 +24,8 @@ class MongoChatSessionRepository {
     return MongoChatSessionRepository.#instance ?? new MongoChatSessionRepository();
   }
 
-  async getChatSessions(filter: ObjectType = {}) {
-    let defaultWhere: ObjectType = { deletedAt: null };
+  async getChatSessions(filter: ChatSessionFilter = {}) {
+    let defaultWhere: Record<string, unknown> = { deletedAt: null };
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
     }
@@ -39,11 +46,12 @@ class MongoChatSessionRepository {
 
     // Apply sorting
     if (orderBy) {
-      const sort: ObjectType = {};
-      orderBy.forEach((order: any) => {
-        sort[order.field] = order.direction === "desc" ? -1 : 1;
+      const sort: Record<string, unknown> = {};
+      (orderBy as unknown[]).forEach((order: unknown) => {
+        sort[(order as { field: string; direction: string }).field] =
+          (order as { field: string; direction: string }).direction === "desc" ? -1 : 1;
       });
-      query = query.sort(sort);
+      query = query.sort(sort as Mongo.Sort);
     }
 
     // Apply pagination
@@ -65,10 +73,10 @@ class MongoChatSessionRepository {
       { _id: new Mongo.ObjectId(id), deletedAt: null },
       { projection: { name: 1 } },
     );
-    return session?.name;
+    return session?.name as string | undefined;
   }
 
-  async getChatSessionsByUserId(userId: string, filter: ObjectType = {}) {
+  async getChatSessionsByUserId(userId: string, filter: Record<string, unknown> = {}) {
     return this.getChatSessions({ ...filter, userId });
   }
 
@@ -103,11 +111,10 @@ class MongoChatSessionRepository {
       ...message,
       timestamp: new Date(),
     };
-    console.log("Adding message to chat session:", { sessionId, message: messageWithTimestamp });
     return this.table.updateOne(
       { _id: new Mongo.ObjectId(sessionId) },
       {
-        $push: { messages: messageWithTimestamp } as any,
+        $push: { messages: messageWithTimestamp } as unknown as Mongo.UpdateFilter<Mongo.BSON.Document>,
         $set: { updatedAt: new Date() },
       },
       options,

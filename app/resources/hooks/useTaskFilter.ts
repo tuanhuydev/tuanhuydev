@@ -68,8 +68,8 @@ export function useTaskFilter<T extends FilterType = FilterType>({
   // Clear search value
   const clearSearch = useCallback(() => {
     setSearchValue("");
-    const { search: _, ...rest } = filter as any;
-    const newFilter = rest as T;
+    const { ...rest } = filter;
+    const newFilter = rest;
     setFilter(newFilter);
     onFilterChange?.(newFilter);
   }, [filter, onFilterChange]);

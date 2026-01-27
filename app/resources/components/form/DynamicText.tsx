@@ -5,7 +5,7 @@ import Textarea from "./Fields/Textarea";
 import { Ref, forwardRef, memo } from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
-export interface DynamicTextProps extends UseControllerProps<any> {
+export interface DynamicTextProps extends UseControllerProps {
   type: "text" | "email" | "password" | "number" | "textarea";
   options?: {
     placeholder?: string;
@@ -14,25 +14,26 @@ export interface DynamicTextProps extends UseControllerProps<any> {
   };
   keyProp?: string;
   className?: string;
-  validate?: Record<string, any>;
+  validate?: Record<string, unknown>;
+  name: string;
 }
 
 const DynamicText = memo(
-  forwardRef<any, DynamicTextProps>(function DynamicText(
-    { type, options = { disabled: false }, keyProp, className = "w-full", validate = {}, ...restProps },
-    ref: Ref<any>,
+  forwardRef<HTMLInputElement, DynamicTextProps>(function DynamicText(
+    { type, options = { disabled: false }, keyProp, className = "w-full", ...restProps },
+    ref: Ref<HTMLInputElement>,
   ) {
     const { field, fieldState, formState } = useController(restProps);
     const { isSubmitting } = formState;
     const { invalid, error } = fieldState;
 
-    const { value = "", ...restField } = field;
+    const { value = "", ...restField } = field as { value?: string; [key: string]: unknown };
 
     const subElementProps = {
       ...restField,
       ...options,
       value,
-      ref,
+      ref: type === "textarea" ? undefined : ref,
       disabled: isSubmitting || options.disabled,
       error: invalid,
       helperText: error?.message,

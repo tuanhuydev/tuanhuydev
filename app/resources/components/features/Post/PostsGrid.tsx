@@ -1,8 +1,9 @@
 import { PostItem } from "./PostItem";
+import { Post } from "@app/resources/types/post.types";
 import React from "react";
 
 export interface PostsGridProps {
-  posts: ObjectType[];
+  posts: Post[];
   className?: string;
 }
 

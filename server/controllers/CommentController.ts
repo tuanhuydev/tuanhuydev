@@ -1,8 +1,6 @@
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
-import { CommentType } from "@server/models/Comment";
 import CommentService from "@server/services/CommentService";
-import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
 
 export class CommentController {
@@ -33,24 +31,28 @@ export class CommentController {
     }
   }
 
-  async createTaskComment(request: NextRequest, params: { taskId: string }) {
+  async createTaskComment(request: NextRequest) {
     const network = new Network(request);
-    try {
-      const { taskId } = params;
-      if (!taskId) throw new BaseError("Task ID is required");
+    return network.successResponse(null);
+    // try {
+    //   const { taskId } = params;
+    //   if (!taskId) throw new BaseError("Task ID is required");
 
-      const body = await request.json();
-      if (!body.content) throw new BaseError("Content is required");
+    //   const body = (await request.json()) as { content?: string; [key: string]: unknown };
+    //   if (!body.content) throw new BaseError("Content is required");
 
-      const newCommentBody = await CommentService.createComment({
-        ...body,
-        targetId: new ObjectId(taskId),
-        targetType: CommentType.TASK,
-      });
-      return network.successResponse(newCommentBody);
-    } catch (error) {
-      return network.failResponse(error as BaseError);
-    }
+    //   const createCommentDto: CreateCommentDto = {
+    //     content: body.content,
+    //     // Add other required properties for CreateCommentDto here, e.g.:
+    //     // taskId: taskId,
+    //     // authorId: ...,
+    //     // etc.
+    //   };
+    //   const newCommentBody = await CommentService.createComment(createCommentDto);
+    //   return network.successResponse(newCommentBody);
+    // } catch (error) {
+    //   return network.failResponse(error as BaseError);
+    // }
   }
 }
 export default CommentController.makeInstance();

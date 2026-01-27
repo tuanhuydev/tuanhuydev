@@ -2,9 +2,9 @@ import { HTTP_CODE } from "@lib/commons/constants/httpCode";
 import BaseError from "@lib/commons/errors/BaseError";
 import { NextRequest, NextResponse } from "next/server";
 import qs from "qs";
-import LogService from "server/services/LogService";
+import { logService } from "server/services/LogService";
 
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -20,9 +20,6 @@ interface ParsingConfig {
   dateKeys?: string[];
 }
 
-// Define ObjectType locally to avoid dependencies
-type ObjectType = Record<string, any>;
-
 class Network {
   private readonly req: NextRequest;
   private cookie?: string;
@@ -35,8 +32,8 @@ class Network {
     return new Network(req);
   }
 
-  async getBody(): Promise<any> {
-    return this.req.json();
+  async getBody(): Promise<unknown> {
+    return this.req.json() as Promise<unknown>;
   }
 
   extractSearchParams(config?: ParsingConfig): RequestParams {
@@ -50,7 +47,7 @@ class Network {
 
     const finalConfig = { ...defaultConfig, ...config };
     const params: RequestParams = {};
-    const parsedParams: ObjectType = qs.parse(searchParams.toString()) ?? {};
+    const parsedParams: Record<string, unknown> = qs.parse(searchParams.toString()) ?? {};
 
     Object.entries(parsedParams).forEach(([key, values]) => {
       if (finalConfig.numericKeys?.includes(key)) {
@@ -66,11 +63,11 @@ class Network {
     return params;
   }
 
-  setCookie(key: string, value: any): void {
-    this.cookie = `${key}=${value}`;
+  setCookie(key: string, value: unknown): void {
+    this.cookie = `${key}=${value as string}; Path=/; HttpOnly; SameSite=Strict`;
   }
 
-  private transformSingleItem(item: any): any {
+  private transformSingleItem(item: unknown): unknown {
     if (typeof item === "object" && item !== null && "_id" in item) {
       const { _id, ...rest } = item;
       return { id: _id, ...rest };
@@ -82,12 +79,12 @@ class Network {
     if (Array.isArray(data)) {
       return data.map((item) => this.transformSingleItem(item)) as T;
     }
-    return this.transformSingleItem(data);
+    return this.transformSingleItem(data as unknown) as T;
   }
 
   successResponse<T>(data: T): NextResponse {
     const formattedData = this.transformMongoData(data);
-    const options: Record<string, any> = {
+    const options: { status: number; headers: Record<string, string> } = {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -103,9 +100,9 @@ class Network {
   }
 
   failResponse = (error: BaseError): NextResponse => {
-    LogService.log(`[Server Error] ${(error as Error)?.message}`);
+    logService.log(`[Server Error] ${(error as Error)?.message}`);
     const { message, status = HTTP_CODE.INTERNAL_ERROR } = error;
-    const options: Record<string, any> = {
+    const options: Record<string, unknown> = {
       status,
       headers: {
         "Content-Type": "application/json",

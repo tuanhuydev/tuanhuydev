@@ -1,29 +1,16 @@
 "use server";
 
+import { PostJSON, PostModel } from "@server/models/post.model";
+import { postService } from "@server/services/PostService";
 import { redirect } from "next/navigation";
-import MongoPostRepository from "server/repositories/MongoPostRepository";
 
-const transformPost = (post: ObjectType): Post => {
-  const { _id, createdAt, updatedAt, ...restPost } = post;
-  return {
-    ...restPost,
-    id: String(_id),
-    createdAt: createdAt ? new Date(createdAt).toISOString() : new Date().toISOString(),
-    updatedAt: updatedAt ? new Date(updatedAt).toISOString() : new Date().toISOString(),
-  } as unknown as Post;
+export const getPosts = async (filter: Record<string, unknown> = {}): Promise<PostJSON[]> => {
+  const postModels: PostModel[] = (await postService.getAllPosts(filter)) ?? [];
+  return postModels.map((postModel) => postModel.toJSON());
 };
 
-export const getPosts = async (filter: ObjectType = {}): Promise<Post[]> => {
-  const posts = (await MongoPostRepository.getPosts(filter)) ?? [];
-  return posts.map(transformPost);
-};
-
-export const getPostBySlug = async (slug: string): Promise<Post> => {
-  const post = await MongoPostRepository.getPostBySlug(slug);
-  if (!post) return redirect("/");
-
-  return {
-    ...transformPost(post),
-    slug,
-  };
+export const getPostBySlug = async (slug: string): Promise<PostJSON> => {
+  const postModel = await postService.getPostBySlug(slug);
+  if (!postModel) return redirect("/");
+  return postModel.toJSON();
 };

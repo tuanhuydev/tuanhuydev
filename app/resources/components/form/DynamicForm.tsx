@@ -2,26 +2,20 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, ButtonProps } from "@resources/components/common/Button";
-import { Separator } from "@resources/components/common/Separator";
-import { ReactNode, Suspense, lazy, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { logService } from "@server/services/LogService";
+import { Suspense, lazy, memo, useEffect, useMemo, useImperativeHandle, forwardRef } from "react";
 import { Control, FieldValues, UseFormReturn, useForm } from "react-hook-form";
-import LogService from "server/services/LogService";
 import * as yup from "yup";
 
-// Optimized lazy loading with preloading
-const DynamicDatePicker = lazy(() =>
-  import("./DynamicDatePicker").then((module) => ({
-    default: module.DynamicDatePicker,
-  })),
-);
+// --- LAZY LOADED COMPONENTS ---
+const DynamicDatePicker = lazy(() => import("./DynamicDatePicker").then((m) => ({ default: m.DynamicDatePicker })));
 const DynamicMarkdown = lazy(() => import("./DynamicMarkdown"));
 const DynamicSelect = lazy(() => import("./DynamicSelect"));
 const DynamicTable = lazy(() => import("./DynamicTable"));
 const DynamicText = lazy(() => import("./DynamicText"));
 
-export type ObjectType = Record<string, any>;
-
-type FieldType =
+// --- TYPE DEFINITIONS ---
+export type FieldType =
   | "text"
   | "number"
   | "email"
@@ -38,36 +32,39 @@ export interface FieldValidation {
   max?: number | string;
   match?: string;
   multiple?: boolean;
+  [key: string]: unknown;
 }
+
+export type FieldOptions = {
+  placeholder?: string;
+  mode?: "multiple" | "single";
+  rows?: number;
+  format?: string;
+  size?: "small" | "large";
+  disabled?: boolean;
+  multiple?: boolean;
+  options?: Array<{ value: string; label: string }>;
+  className?: string;
+  columns?: Array<{
+    field: string;
+    headerName: string;
+    width?: number;
+    editable?: boolean;
+    type?: "text" | "select" | "number";
+    options?: Array<{ value: string | number; label: string }>;
+  }>;
+};
 
 export interface Field {
   name: string;
   type: FieldType;
   label?: string;
-  options?: {
-    placeholder?: string;
-    mode?: "multiple" | "single";
-    rows?: number;
-    format?: string;
-    size?: "small" | "large";
-    disabled?: boolean;
-    multiple?: boolean;
-    options?: Array<{ value: string; label: string }>;
-    className?: string;
-    // Table specific options
-    columns?: Array<{
-      config: {
-        field: string;
-        headerName: string;
-        width?: number;
-        [key: string]: any;
-      };
-      options: Array<{ value: string | number; label: string }>;
-    }>;
-  };
+  options?: FieldOptions;
   validate?: FieldValidation;
-  style?: ObjectType;
+  style?: Record<string, unknown>;
   className?: string;
+  // allow flexible props
+  [key: string]: unknown;
 }
 
 export interface FieldGroup {
@@ -88,78 +85,107 @@ export interface DynamicFormConfig {
 export interface DynamicFormProps {
   config: DynamicFormConfig;
   disabled?: boolean;
-  onSubmit: (formData: FieldValues, form?: UseFormReturn) => void | Promise<any>;
-  mapValues?: ObjectType;
+  onSubmit: (formData: FieldValues, form?: UseFormReturn) => void | Promise<unknown>;
+  mapValues?: Record<string, unknown>;
 }
 
-// Performance optimization: Create field validation schema
-const createFieldValidationSchema = (type: FieldType, validate: FieldValidation) => {
-  let schema: any = yup.string();
+// Expose these methods to the parent via Ref
+export interface DynamicFormHandle {
+  submit: () => void;
+  reset: UseFormReturn["reset"];
+  getForm: () => UseFormReturn;
+}
 
-  switch (type) {
-    case "email":
-      schema = yup.string().email("Invalid email format");
-      break;
-    case "number":
-      schema = yup.number().typeError("Must be a number");
-      break;
-    case "datepicker":
-      schema = yup.date().typeError("Invalid date");
-      break;
-    case "select":
-      schema = validate.multiple ? yup.array() : yup.mixed();
-      break;
-    case "table":
-      schema = yup.array().min(Number(validate.min) || 0);
-      break;
-    default:
-      schema = yup.string();
-  }
+// --- COMPONENT MAPPING ---
+const FIELD_COMPONENTS = {
+  select: DynamicSelect,
+  richeditor: DynamicMarkdown,
+  datepicker: DynamicDatePicker,
+  table: DynamicTable,
+  text: DynamicText,
+} as const;
 
-  if (validate.required) {
-    if (type === "select" && validate.multiple) {
-      schema = schema.min(1, "This field is required");
-    } else if (type === "table") {
-      schema = schema.min(Number(validate.min) || 1, "At least one item is required");
-    } else {
-      schema = schema.required("This field is required");
-    }
-  }
-
-  if (validate.min && type !== "table") {
-    if (type === "number") {
-      schema = schema.min(Number(validate.min), `Must be at least ${validate.min}`);
-    } else if (typeof validate.min === "string") {
-      schema = schema.min(yup.ref(validate.min), `Must be after ${validate.min}`);
-    } else {
-      schema = schema.min(Number(validate.min), `Must be at least ${validate.min} characters`);
-    }
-  }
-
-  if (validate.max) {
-    if (type === "number") {
-      schema = schema.max(Number(validate.max), `Must be at most ${validate.max}`);
-    } else if (typeof validate.max === "string") {
-      schema = schema.max(yup.ref(validate.max), `Must be before ${validate.max}`);
-    } else {
-      schema = schema.max(Number(validate.max), `Must be at most ${validate.max} characters`);
-    }
-  }
-
+// --- SCHEMA HELPERS ---
+const createStringSchema = (validate: FieldValidation): yup.StringSchema => {
+  let schema = yup.string();
+  if (validate.required) schema = schema.required("This field is required");
+  if (typeof validate.min === "number") schema = schema.min(validate.min, `Must be at least ${validate.min} chars`);
+  if (typeof validate.max === "number") schema = schema.max(validate.max, `Must be at most ${validate.max} chars`);
   return schema;
 };
 
-// Performance optimization: Check if fields is array or groups
+const createEmailSchema = (validate: FieldValidation): yup.StringSchema => {
+  let schema = yup.string().email("Invalid email format");
+  if (validate.required) schema = schema.required("This field is required");
+  return schema;
+};
+
+const createNumberSchema = (validate: FieldValidation): yup.NumberSchema => {
+  let schema = yup.number().typeError("Must be a number");
+  if (validate.required) schema = schema.required("This field is required");
+  if (typeof validate.min === "number") schema = schema.min(validate.min, `Min value is ${validate.min}`);
+  if (typeof validate.max === "number") schema = schema.max(validate.max, `Max value is ${validate.max}`);
+  return schema;
+};
+
+const createDateSchema = (validate: FieldValidation): yup.DateSchema => {
+  let schema = yup.date().typeError("Invalid date");
+  if (validate.required) schema = schema.required("This field is required");
+  if (typeof validate.min === "string") schema = schema.min(new Date(validate.min), `After ${validate.min}`);
+  if (typeof validate.max === "string") schema = schema.max(new Date(validate.max), `Before ${validate.max}`);
+  return schema;
+};
+
+const createSelectSchema = (validate: FieldValidation): yup.Schema => {
+  if (validate.multiple) {
+    let schema = yup.array();
+    if (validate.required) schema = schema.min(1, "Selection required");
+    return schema;
+  }
+  let schema = yup.mixed();
+  if (validate.required) schema = schema.required("Selection required");
+  return schema;
+};
+
+const createTableSchema = (validate: FieldValidation): yup.Schema => {
+  const minItems = typeof validate.min === "number" ? validate.min : 0;
+  let schema = yup.array().min(minItems);
+  if (validate.required) {
+    schema = schema.min(Math.max(minItems, 1), "At least one item required");
+  }
+  return schema;
+};
+
+const createFieldValidationSchema = (type: FieldType, validate: FieldValidation): yup.Schema => {
+  switch (type) {
+    case "email":
+      return createEmailSchema(validate);
+    case "number":
+      return createNumberSchema(validate);
+    case "datepicker":
+      return createDateSchema(validate);
+    case "select":
+      return createSelectSchema(validate);
+    case "table":
+      return createTableSchema(validate);
+    case "text":
+    case "password":
+    case "textarea":
+    case "richeditor":
+    default:
+      return createStringSchema(validate);
+  }
+};
+
 const isFields = (fields: Field[] | FieldGroup[]): fields is Field[] => {
   return Array.isArray(fields) && fields.length > 0 && "type" in fields[0];
 };
 
-// Performance optimization: Create schema with memoization
 const createSchemaFromFields = (fields: Field[] | FieldGroup[]) => {
-  const schema: ObjectType = {};
+  const schema: Record<string, yup.Schema> = {};
   const allFields = isFields(fields) ? fields : fields.flatMap((group) => group.fields);
 
-  allFields.forEach(({ name, validate, type }: Field) => {
+  allFields.forEach(({ name, validate, type }) => {
     if (validate) {
       schema[name] = createFieldValidationSchema(type, validate);
     }
@@ -168,159 +194,201 @@ const createSchemaFromFields = (fields: Field[] | FieldGroup[]) => {
   return yup.object(schema);
 };
 
-// Performance optimization: Render fields function
-const renderFields = (fields: Array<Field>, control: Control<any>) => {
-  return fields.map((field: Field) => {
-    const { name, type, options, ...restFieldProps } = field;
-    const elementProps = {
-      control,
-      name,
-      options: options as any,
-      keyProp: name,
-      ...restFieldProps,
-    };
+// --- SUB-COMPONENTS ---
+const FormField = memo(({ field, control }: { field: Field; control: Control<FieldValues> }) => {
+  const { name, type, options, label, className, ...rest } = field;
 
-    // Wrap each dynamic component in a Suspense boundary
-    const renderField = () => {
-      switch (type) {
-        case "select":
-          return <DynamicSelect {...elementProps} />;
-        case "richeditor":
-          return <DynamicMarkdown {...elementProps} />;
-        case "datepicker":
-          return <DynamicDatePicker {...elementProps} />;
-        case "table":
-          return <DynamicTable {...elementProps} />;
-        default:
-          return <DynamicText {...elementProps} type={type} />;
-      }
-    };
+  // Determine which component to render
+  const Component = FIELD_COMPONENTS[type as keyof typeof FIELD_COMPONENTS] || DynamicText;
 
+  // Calculate specific conditions
+  const isTextType = !["select", "richeditor", "datepicker", "table"].includes(type);
+
+  // PREPARE PROPS:
+  // We construct the props object BEFORE rendering to avoid the
+  // "complex type inference" crash in the Next.js build worker.
+  const componentProps: Record<string, unknown> = {
+    control,
+    name,
+    keyProp: name,
+    ...rest,
+  };
+
+  // Handle Options & Table Columns safely
+  if (type === "table") {
+    // Explicitly handle columns for table type
+    // We use FieldOptions['columns'] interface instead of `typeof options` to prevent recursion
+    const safeColumns: NonNullable<FieldOptions["columns"]> = options?.columns ?? [];
+
+    componentProps.options = {
+      ...(options ?? {}),
+      columns: safeColumns,
+    };
+    // If DynamicTable also needs 'columns' as a direct prop:
+    componentProps.columns = safeColumns;
+  } else {
+    // Pass standard options for other fields
+    componentProps.options = options;
+  }
+
+  // Handle Text Types
+  if (isTextType) {
+    componentProps.type = type;
+  }
+
+  return (
+    <div className={className || "w-full"}>
+      {label && (
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          {label}
+        </label>
+      )}
+      {/* We cast Component to 'any' here specifically to avoid TypeScript complaining 
+        about the union of incompatible props across different component types. 
+        The runtime logic above ensures the correct props are present.
+      */}
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      <Component {...(componentProps as any)} />
+    </div>
+  );
+});
+FormField.displayName = "FormField";
+
+/**
+ * Handles the Layout Logic
+ */
+const RenderFormContent = ({ config, control }: { config: DynamicFormConfig; control: Control<FieldValues> }) => {
+  const { fields } = config;
+
+  if (isFields(fields)) {
     return (
-      <Suspense key={name} fallback={<div className="p-2">Loading field...</div>}>
-        {renderField()}
-      </Suspense>
+      <div className="space-y-5">
+        {fields.map((f) => (
+          <FormField key={f.name} field={f} control={control} />
+        ))}
+      </div>
     );
-  });
+  }
+
+  const topSections = fields.slice(0, 2);
+  const bottomSections = fields.slice(2);
+
+  return (
+    <>
+      {topSections.length > 0 && (
+        <div className="flex flex-col lg:flex-row gap-0 lg:gap-8 mb-8">
+          {topSections.map((group, index) => (
+            <div key={group.name} className={`w-full ${index === 0 ? "lg:pr-4" : ""} lg:w-1/2`}>
+              <div className="mb-5">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{group.name}</h3>
+                <div className="mt-1.5 h-px bg-gradient-to-r from-gray-300 to-transparent dark:from-gray-700" />
+              </div>
+              <div className="flex flex-wrap gap-5">
+                {group.fields.map((f) => (
+                  <FormField key={f.name} field={f} control={control} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {bottomSections.map((group) => (
+        <div key={group.name} className="mb-8 last:mb-0">
+          <div className="mb-5">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{group.name}</h3>
+            <div className="mt-1.5 h-px bg-gradient-to-r from-gray-300 to-transparent dark:from-gray-700" />
+          </div>
+          <div className="flex flex-wrap gap-5">
+            {group.fields.map((f) => (
+              <FormField key={f.name} field={f} control={control} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
 };
 
-const DynamicForm = memo(function DynamicForm({ config, onSubmit, mapValues, disabled = false }: DynamicFormProps) {
-  // Memoize schema to prevent unnecessary recalculations
+// --- MAIN COMPONENT ---
+const DynamicForm = forwardRef<DynamicFormHandle, DynamicFormProps>(function DynamicForm(
+  { config, onSubmit, mapValues, disabled = false },
+  ref,
+) {
   const schema = useMemo(() => createSchemaFromFields(config.fields), [config.fields]);
 
-  // Hooks
   const form = useForm({
     resolver: yupResolver(schema),
-    mode: "onTouched", // Only validate after user interaction
-    defaultValues: {}, // Provide empty default values to prevent initial validation errors
+    mode: "onTouched",
+    defaultValues: {},
   });
 
-  // State
-  const [fieldNodes, setFieldNodes] = useState<ReactNode[]>([]);
-
-  // Constants
   const {
     handleSubmit,
     control,
-    setValue,
     reset,
     formState: { isSubmitting },
   } = form;
-  const { fields, submitProps = {} } = config;
-  const { allowDefault = true, ...restSubmitProps } = submitProps;
+  const { allowDefault = true, ...restSubmitProps } = config.submitProps || {};
 
-  // Performance optimization: Memoize field checking
-  const checkFieldsProps = useCallback(() => {
-    let fieldNodes: ReactNode[] = [];
-
-    if (isFields(fields)) {
-      fieldNodes = renderFields(fields, control);
-    } else {
-      fieldNodes = fields.map((group) => (
-        <div key={group.name} className="mb-4 flex-grow">
-          <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--mui-palette-text-primary)" }}>
-            {group.name}
-          </h3>
-          <div className="space-y-2 w-full">{renderFields(group.fields, control)}</div>
-        </div>
-      ));
+  const internalSubmit = async (data: FieldValues) => {
+    try {
+      await onSubmit(data, form);
+    } catch (error) {
+      logService.log(error);
     }
+  };
 
-    setFieldNodes(fieldNodes);
-  }, [fields, control]);
+  useImperativeHandle(ref, () => ({
+    submit: () => void handleSubmit(internalSubmit)(),
+    reset: (values) => reset(values),
+    getForm: () => form,
+  }));
 
-  // Memoize the setForm callback to prevent it from changing
-  const setFormCallback = useCallback(() => {
+  useEffect(() => {
     if (config.setForm) {
       config.setForm(form);
     }
-  }, [config, form]);
+  }, [config.setForm, form]);
 
-  // Set form reference for parent component (once)
-  useEffect(() => {
-    setFormCallback();
-    // Only run this effect when form or the callback changes
-  }, [setFormCallback]);
-
-  // Map initial values - add proper dependency check
   useEffect(() => {
     if (mapValues) {
       const initialValues = { ...mapValues };
+      const allFields = isFields(config.fields) ? config.fields : config.fields.flatMap((g) => g.fields);
 
-      // Convert date strings to Date objects for date picker fields
-      const allFields = isFields(config.fields) ? config.fields : config.fields.flatMap((group) => group.fields);
-      const dateFields = allFields.filter((field) => field.type === "datepicker");
-
-      dateFields.forEach((field) => {
-        const value = initialValues[field.name];
-        if (value && typeof value === "string") {
-          // Check if it's a valid date string
-          const date = new Date(value);
-          if (!isNaN(date.getTime())) {
-            initialValues[field.name] = date;
+      allFields
+        .filter((f) => f.type === "datepicker")
+        .forEach((f) => {
+          const val = initialValues[f.name];
+          if (typeof val === "string") {
+            const date = new Date(val);
+            if (!isNaN(date.getTime())) initialValues[f.name] = date;
           }
-        }
-      });
+        });
 
-      // Use reset instead of multiple setValue calls to avoid re-renders
       reset(initialValues);
     }
-  }, [mapValues, reset, config.fields]); // Only run when mapValues changes
-
-  // Check and render fields
-  useEffect(() => {
-    checkFieldsProps();
-  }, [checkFieldsProps]);
-
-  // Performance optimization: Memoize submit handler
-  const submit = useCallback(
-    async (formData: FieldValues) => {
-      try {
-        await onSubmit(formData, form);
-      } catch (error) {
-        LogService.log(error);
-      }
-    },
-    [onSubmit, form],
-  );
+  }, [mapValues, reset, config.fields]);
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit(submit)}>
-      <fieldset disabled={disabled || isSubmitting} className="border-none p-0 m-0">
-        <div className="flex flex-wrap">{fieldNodes}</div>
-      </fieldset>
+    <form className="flex flex-col h-full" onSubmit={handleSubmit(internalSubmit)}>
+      <Suspense fallback={<div className="p-8 w-full text-center text-gray-500 animate-pulse">Loading form...</div>}>
+        <fieldset disabled={disabled || isSubmitting} className="border-none p-0 m-0 w-full">
+          <RenderFormContent config={config} control={control} />
+        </fieldset>
+      </Suspense>
 
-      <Separator className="my-6 px-4" />
-
-      <div className="flex p-2">
-        {allowDefault && (
-          <Button {...restSubmitProps} type="submit" onClick={handleSubmit(submit)} disabled={disabled || isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </Button>
-        )}
+      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+          {allowDefault && (
+            <Button {...restSubmitProps} type="submit" disabled={disabled || isSubmitting} size="lg">
+              {isSubmitting ? "Submitting..." : mapValues?.id ? "Update" : "Submit"}
+            </Button>
+          )}
+        </div>
       </div>
     </form>
   );
 });
 
-export default DynamicForm;
+export default memo(DynamicForm);

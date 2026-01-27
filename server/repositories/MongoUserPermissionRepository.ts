@@ -1,11 +1,10 @@
-import MongoPermissionRepository from "./MongoPermissionRepository";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
-import * as Mongo from "mongodb";
+import { BSON, Collection, ObjectId } from "mongodb";
 import MongoService from "server/services/MongoService";
 
-class MongoUserPermissionRepository {
+export class MongoUserPermissionRepository {
   static #instance: MongoUserPermissionRepository;
-  private table: Mongo.Collection<Mongo.BSON.Document>;
+  private table: Collection<BSON.Document>;
 
   constructor() {
     this.table = MongoService.getDatabase().collection("userPermissions");
@@ -14,16 +13,16 @@ class MongoUserPermissionRepository {
     return MongoUserPermissionRepository.#instance ?? new MongoUserPermissionRepository();
   }
 
-  async createUserPermission(body: { userId: Mongo.ObjectId; permissionId: Mongo.ObjectId }) {
+  async createUserPermission(body: { userId: ObjectId; permissionId: ObjectId }) {
     return this.table.insertOne(body);
   }
 
   async updateUserPermission(
     userId: string,
     permissionId: string,
-    updatedPermission: { userId: Mongo.ObjectId; permissionId: Mongo.ObjectId },
+    updatedPermission: { userId: ObjectId; permissionId: ObjectId },
   ) {
-    const filter = { userId: new Mongo.ObjectId(userId), permissionId: new Mongo.ObjectId(permissionId) };
+    const filter = { userId: new ObjectId(userId), permissionId: new ObjectId(permissionId) };
     const update = { $set: updatedPermission };
     const result = await this.table.updateOne(filter, update);
 
@@ -32,15 +31,16 @@ class MongoUserPermissionRepository {
     }
   }
   async getUserPermissions(userId: string) {
-    const userPermissions = (await this.table.find({ userId: new Mongo.ObjectId(userId) }).toArray()) || {};
+    const userPermissions = (await this.table.find({ userId: new ObjectId(userId) }).toArray()) || {};
     if (!userPermissions?.length) throw new NotFoundError("User permissions not found");
 
-    const permissions = await Promise.all(
-      userPermissions
-        .flatMap((userPermission) => userPermission.permissionId)
-        .map((permissionId) => MongoPermissionRepository.getPermission(permissionId)),
-    );
-    return permissions;
+    // const permissions = await Promise.all(
+    //   userPermissions as Array<Record<string, Record<string, unknown>[]>>,
+    //     .flatMap((userPermission) => userPermission.permissionId)
+    //     .map((permissionId) => MongoPermissionRepository.getPermission(permissionId)),
+    // );
+    // return permissions;
+    return [];
   }
 }
-export default MongoUserPermissionRepository.makeInstance();
+export const userPermissionRepository = MongoUserPermissionRepository.makeInstance();

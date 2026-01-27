@@ -5,9 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const makeFieldMap = (fields: Array<Object>) => {
+export const makeFieldMap = (fields: Array<Record<string, unknown>>) => {
   const fieldMap = new Map();
-  fields.forEach(({ name, ...restFields }: any) => fieldMap.set(name[0], restFields));
+  fields.forEach(({ name, ...restFields }) => {
+    if (typeof name === "string" || Array.isArray(name)) {
+      fieldMap.set(Array.isArray(name) ? name[0] : name, restFields);
+    }
+  });
   return fieldMap;
 };
 

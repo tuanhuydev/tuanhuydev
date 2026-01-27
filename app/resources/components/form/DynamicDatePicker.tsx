@@ -2,16 +2,16 @@
 
 import DatePicker from "./Fields/DatePicker";
 import { forwardRef, memo, Ref } from "react";
-import { useController, UseControllerProps } from "react-hook-form";
+import { FieldValues, useController, UseControllerProps } from "react-hook-form";
 
-export interface DynamicDatePickerProps extends UseControllerProps<any> {
+export interface DynamicDatePickerProps extends UseControllerProps<FieldValues> {
   options?: {
     placeholder?: string;
     disabled?: boolean;
   };
   keyProp?: string;
   className?: string;
-  validate?: Record<string, any>;
+  validate?: Record<string, unknown>;
 }
 
 export const DynamicDatePicker = memo(
@@ -23,7 +23,17 @@ export const DynamicDatePicker = memo(
 
     const { isSubmitting } = formState;
     const { invalid, error } = fieldState;
-    const { onChange, value = null, ...restField } = field;
+    const {
+      onChange,
+      value = null,
+      ...restField
+    } = field as {
+      onChange: (value: unknown) => void;
+      value?: unknown;
+      name: string;
+      ref?: React.Ref<HTMLInputElement>;
+      [key: string]: unknown;
+    };
 
     const handleChange = (date: Date | null) => onChange(date);
 

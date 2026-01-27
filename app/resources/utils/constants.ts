@@ -38,7 +38,7 @@ export enum TaskTypeEnum {
   STORY = "STORY",
 }
 
-export const TaskType: ObjectType = {
+export const TaskType: Record<TaskTypeEnum, { icon: string; label: string; value: TaskTypeEnum }> = {
   [TaskTypeEnum.BUG]: {
     icon: bugImageSrc,
     label: "Bug",
@@ -61,9 +61,12 @@ export const TaskType: ObjectType = {
   },
 };
 
-export const TaskTypeOptions = Object.values(TaskType).map(({ label, value }) => ({ label, value }));
+export const TaskTypeOptions = Object.values(TaskType).map(({ label, value }) => ({
+  label,
+  value,
+}));
 
-const UserStatusType: ObjectType = {
+export const UserStatusType: Record<string, unknown> = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
   PENDING: "PENDING",

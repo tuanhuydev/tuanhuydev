@@ -1,3 +1,4 @@
+import { Post } from "@app/resources/types/post.types";
 import { PostItem } from "@resources/components/features/Post/PostItem";
 import { getPosts } from "server/actions/blogActions";
 
@@ -11,7 +12,7 @@ const getColumnClass = (index: number): string => {
 export default async function BlogSection() {
   let posts: Post[] = [];
   try {
-    posts = await getPosts({ page: 1, pageSize: 5, published: true });
+    posts = await getPosts({ page: 1, pageSize: 5, publishedAt: true });
   } catch (error) {
     console.error("Failed to fetch posts:", error);
   }

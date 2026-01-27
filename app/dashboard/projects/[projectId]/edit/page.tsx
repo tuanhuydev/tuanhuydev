@@ -1,3 +1,4 @@
+import { Project } from "@lib/types/project";
 import Loader from "@resources/components/common/Loader";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { redirect } from "next/navigation";
@@ -7,14 +8,19 @@ import { getProjectByIdAction } from "server/actions/projectActions";
 // Replace dynamic import with React lazy
 const ProjectForm = lazy(() => import("@resources/components/features/Project/ProjectForm"));
 
-export default async function Page(props: any) {
+interface PageProps {
+  params: Promise<{
+    projectId: string;
+  }>;
+}
+export default async function Page(props: PageProps) {
   const params = await props.params;
   const projectId: string | undefined = params?.projectId;
   if (!projectId) {
     return redirect("/dashboard/projects");
   }
 
-  const project: Project = await getProjectByIdAction(projectId);
+  const project = await getProjectByIdAction(projectId);
   return (
     <PageContainer title="Edit Project" goBack>
       <Suspense fallback={<Loader />}>

@@ -1,9 +1,9 @@
-import chatSessionService from "@features/GenAI/services/ChatSessionService";
+import { chatSessionService } from "@features/GenAI/services/ChatSessionService";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import Network from "@lib/utils/network";
 import { GeminiService } from "@server/services/GeminiService";
-import logService from "@server/services/LogService";
+import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
 
 class AIController {
@@ -22,7 +22,7 @@ class AIController {
     const network = new Network(request);
     try {
       const body = await network.getBody();
-      const { prompt, chatId } = body;
+      const { prompt, chatId } = body as { prompt: string; chatId?: string };
       logService.log("Received prompt:", { prompt, chatId });
 
       if (!prompt) {

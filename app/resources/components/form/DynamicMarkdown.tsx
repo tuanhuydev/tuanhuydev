@@ -2,7 +2,6 @@
 
 import Loader from "../common/Loader";
 import { Suspense, lazy, memo } from "react";
-import React from "react";
 import { UseControllerProps, useController } from "react-hook-form";
 
 // Optimized lazy loading with preloading
@@ -13,11 +12,12 @@ const BaseMarkdown = lazy(() =>
   }),
 );
 
-export interface DynamicMarkdownProps extends UseControllerProps<any> {
-  options?: Record<string, any>;
+export interface DynamicMarkdownProps extends UseControllerProps {
+  options?: Record<string, unknown>;
   keyProp?: string;
   className?: string;
-  value?: any;
+  value?: unknown;
+  name: string;
 }
 
 const DynamicMarkdown = memo(function DynamicMarkdown({
@@ -29,7 +29,7 @@ const DynamicMarkdown = memo(function DynamicMarkdown({
 }: DynamicMarkdownProps) {
   const { field, fieldState } = useController({ ...restProps, name });
   const { invalid, error } = fieldState;
-  const { ref, ...restField } = field;
+  const { ...restField } = field;
 
   return (
     <div className="p-2 self-stretch w-full flex flex-col">

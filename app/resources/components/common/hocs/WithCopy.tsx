@@ -13,7 +13,7 @@ export default memo(function WithCopy({ title = "Copy", content, children, toolt
   const [tooltipContent, setTooltipContent] = useState(title);
 
   const copy = useCallback(
-    async (e: any) => {
+    async (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation();
       setTooltipContent("Copied!");
       await navigator.clipboard.writeText(content);
@@ -32,7 +32,7 @@ export default memo(function WithCopy({ title = "Copy", content, children, toolt
   }, [title, tooltipContent]);
 
   return (
-    <div onClick={copy} className="cursor-pointer">
+    <div onClick={(e) => void copy(e)} className="cursor-pointer">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>

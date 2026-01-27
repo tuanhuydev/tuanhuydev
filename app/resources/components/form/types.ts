@@ -1,8 +1,5 @@
 // Type definitions for FormV2 components
 
-// Common type for object with string keys and any values
-export type ObjectType = { [key: string]: any };
-
 export interface FormFieldConfig {
   id: string;
   type: "text" | "textarea" | "select" | "date" | "markdown" | "table";
@@ -15,7 +12,7 @@ export interface FormFieldConfig {
     min?: number;
     max?: number;
     pattern?: RegExp;
-    custom?: (value: any) => string | undefined;
+    custom?: (value: unknown) => string | undefined;
   };
   gridSize?: {
     xs?: number;
@@ -29,7 +26,7 @@ export interface FormFieldConfig {
 }
 
 export interface FormValues {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface FormValidation {

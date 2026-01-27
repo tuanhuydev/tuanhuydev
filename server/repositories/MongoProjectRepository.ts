@@ -11,13 +11,13 @@ class MongoProjectRepository {
   static makeInstance() {
     return MongoProjectRepository.#instance ?? new MongoProjectRepository();
   }
-  async createProject(body: ObjectType) {
+  async createProject(body: Record<string, unknown>) {
     // TODO: Define model
     return this.table.insertOne(body);
   }
 
-  async getProjects(filter: ObjectType = {}) {
-    let defaultWhere: ObjectType = { deletedAt: null };
+  async getProjects(filter: Record<string, unknown> = {}) {
+    let defaultWhere: Record<string, unknown> = { deletedAt: null };
     //TODO: Make get filter abstract.
     if (!filter) {
       return this.table.find(defaultWhere).toArray();
@@ -32,17 +32,17 @@ class MongoProjectRepository {
     let query = this.table.find(defaultWhere);
 
     if (orderBy) {
-      const sort: ObjectType = {};
-      orderBy.forEach((order: any) => {
+      const sort: Record<string, unknown> = {};
+      (orderBy as Array<{ field: string; direction: string }>).forEach((order) => {
         sort[order.field] = order.direction === "desc" ? -1 : 1;
       });
-      query = query.sort(sort);
+      query = query.sort(sort as Mongo.Sort);
     }
 
     if (page && pageSize) {
-      query = query.skip((page - 1) * pageSize).limit(pageSize);
+      query = query.skip(((page as number) - 1) * (pageSize as number)).limit(pageSize as number);
     } else if (pageSize) {
-      query = query.limit(pageSize);
+      query = query.limit(pageSize as number);
     }
 
     return query.toArray();
@@ -52,7 +52,7 @@ class MongoProjectRepository {
     return this.table.findOne({ _id: new Mongo.ObjectId(id) });
   }
 
-  async updateProject(id: string, body: ObjectType) {
+  async updateProject(id: string, body: Record<string, unknown>) {
     return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
   }
   async deleteProject(id: string) {

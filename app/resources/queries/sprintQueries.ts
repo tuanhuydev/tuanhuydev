@@ -1,10 +1,11 @@
 import { QUERY_KEYS, createStableQueryKey } from "./queryKeys";
 import { useFetch } from "@features/Auth";
+import { Sprint } from "@lib/types/sprint";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
-export const useSprintQuery = (projectId: string, filter: ObjectType = {}) => {
+export const useSprintQuery = (projectId: string, filter: Record<string, unknown> = {}) => {
   const { fetch } = useFetch();
   const stableQueryKey = createStableQueryKey([], filter);
 
@@ -31,14 +32,14 @@ export const useSprintQuery = (projectId: string, filter: ObjectType = {}) => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch sprints: ${response.status} ${response.statusText}`);
       }
-      const { data: sprints = [] } = await response.json();
+      const { data: sprints = [] } = (await response.json()) as { data: Sprint[] };
       return sprints;
     },
   });
 };
 
 export type MutationParams = {
-  body: ObjectType;
+  body: Record<string, unknown>;
   method: "POST" | "PUT" | "DELETE";
 };
 
@@ -50,7 +51,7 @@ export const useMutateSprint = () => {
     mutationFn: async ({ body, method = "POST" }: MutationParams) => {
       let url = `${BASE_URL}/api/sprints`;
       if (body.id) {
-        url = `${url}/${body.id}`;
+        url = `${url}/${body.id as string}`;
       }
       const response = await fetch(url, {
         method,
@@ -63,14 +64,14 @@ export const useMutateSprint = () => {
         throw new BaseError(`Failed to mutate sprint: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { data: Sprint };
 
       // Invalidate all sprint-related queries
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SPRINTS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SPRINTS] });
 
       // If sprint belongs to a project, invalidate project sprints
       if (body.projectId) {
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.PROJECTS, body.projectId, QUERY_KEYS.SPRINTS],
         });
       }

@@ -14,7 +14,6 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
 const Textarea = memo(function Textarea({
   className = "",
   minRows = 4,
-  style,
   error = false,
   isSubmitting,
   helperText,

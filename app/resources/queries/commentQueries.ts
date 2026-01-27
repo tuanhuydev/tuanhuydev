@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useTaskComment = (taskId: string) => {
   const { fetch } = useFetch();
-  return useQuery<any, Error, Comment[]>({
+  return useQuery<unknown, Error, Comment[]>({
     queryKey: ["comments", taskId],
     queryFn: async () => {
       if (!taskId) return [];
@@ -13,9 +13,10 @@ export const useTaskComment = (taskId: string) => {
       if (!response.ok) {
         throw new Error("Failed to fetch comments");
       }
-      return response.json();
+      const { data } = (await response.json()) as { data: Comment[] };
+      return data;
     },
-    select: (data) => data.data,
+    enabled: !!taskId,
   });
 };
 
@@ -32,10 +33,10 @@ export const useMutateTaskComment = (taskId: string) => {
       if (!response.ok) {
         throw new Error("Failed to create comment");
       }
-      return response.json();
+      return response.json() as Promise<{ data: Comment }>;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", taskId] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["comments", taskId] });
     },
   });
 };

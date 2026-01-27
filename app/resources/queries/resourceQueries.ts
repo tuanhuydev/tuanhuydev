@@ -14,7 +14,7 @@ export const useCurrentUserResources = () => {
         throw new BaseError(`Failed to fetch resources: ${response.status} ${response.statusText}`);
       }
 
-      const { data: resources = [] } = await response.json();
+      const { data: resources = [] } = (await response.json()) as { data: Array<unknown> };
       return resources;
     },
   });
