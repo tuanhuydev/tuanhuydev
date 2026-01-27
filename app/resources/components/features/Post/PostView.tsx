@@ -2,27 +2,14 @@
 
 import WithCopy from "../../common/hocs/WithCopy";
 import BaseImage from "../../content/BaseImage";
+import { Post } from "@app/resources/types/post.types";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
-import { sourceCodeFont } from "@resources/font";
 import { BASE_URL, EMPTY_STRING } from "lib/commons/constants/base";
 import { ChevronLeft, Link as LinkIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { memo } from "react";
 
 // Optimized CSS variables and classes for better inheritance
-const elementClasses = "mx-0 my-1";
 const baseTextSizes = "text-sm lg:text-base";
-
-const language: Record<string, string> = {
-  txt: "text",
-  tsx: "typescript",
-  css: "css",
-  js: "javascript",
-  json: "json",
-  bash: "bash",
-  python: "python",
-};
 
 export interface PostViewProps {
   post: Post;

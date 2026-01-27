@@ -376,6 +376,8 @@ import { useState } from "react";
 
 // features/Landing/components/Navbar.tsx
 
+// features/Landing/components/Navbar.tsx
+
 export const Navbar = () => {
   const [state, setState] = useState();
   return <nav>...</nav>;
@@ -707,7 +709,7 @@ notify("Error message", "error");
 // Use shared types
 import type { Post, Project, Task } from "@lib/interfaces/model";
 
-// Avoid ObjectType, prefer specific types
+// Avoid Record<string, unknown>, prefer specific types
 const posts: Post[] = [];
 ```
 

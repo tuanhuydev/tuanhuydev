@@ -1,11 +1,10 @@
 import { NextRequest } from "next/server";
-import PostController from "server/controllers/PostController";
+import { postController } from "server/controllers/PostController";
 
 export async function GET(request: NextRequest) {
-  return PostController.getAll(request);
+  return postController.getAll(request);
 }
 
-export async function POST(request: NextRequest, props: any) {
-  const params = await props.params;
-  return PostController.store(request, params);
+export async function POST(request: NextRequest) {
+  return postController.store(request);
 }

@@ -2,6 +2,8 @@
 
 import Empty from "../../common/Empty";
 import Loader from "../../common/Loader";
+import { Sprint } from "@lib/types/sprint";
+import { Task } from "@lib/types/task";
 import { QUERY_KEYS } from "@resources/queries/queryKeys";
 import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useTodayTasks } from "@resources/queries/taskQueries";
@@ -11,7 +13,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 
 type TaskGroupType = {
-  [key: string]: ObjectType[];
+  [key: string]: Task[];
 };
 
 // Replace dynamic import with React lazy
@@ -21,7 +23,7 @@ export interface TaskListProps {
   tasks: Task[];
   projectId?: string;
   isLoading: boolean;
-  selectedTask: ObjectType | null;
+  selectedTask: Task | null;
   onSelectTask: (task: Task) => void;
 }
 
@@ -45,15 +47,15 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
 
     const taskGroups: TaskGroupType = { backlog: [] };
 
-    projectSprints?.forEach((sprint: ObjectType) => {
-      taskGroups[sprint.id] = [];
+    projectSprints?.forEach((sprint: Record<string, unknown>) => {
+      taskGroups[sprint.id as string] = [];
     });
 
-    tasks.forEach((task: ObjectType) => {
+    tasks.forEach((task: Record<string, unknown>) => {
       if (task?.sprintId) {
-        taskGroups[task.sprintId]?.push({ ...task, subTasks: [] });
+        taskGroups[task.sprintId as string]?.push({ ...task, subTasks: [] } as unknown as Task);
       } else {
-        taskGroups.backlog.push({ ...task, subTasks: [] });
+        taskGroups.backlog.push({ ...task, subTasks: [] } as unknown as Task);
       }
     });
 
@@ -62,7 +64,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
       groupedTasks[key] = sprintTasks.filter((task) => {
         if (task.parentId) {
           const parentTask = sprintTasks.find((t) => t.id === task.parentId);
-          parentTask?.subTasks.push(task);
+          (parentTask?.subTasks as Record<string, unknown>[])?.push(task);
           return false;
         }
         return true;
@@ -72,10 +74,10 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
     setTaskGroups(groupedTasks);
   }, [tasks, projectId, projectSprints]);
 
-  const addTaskToToday = async (task: ObjectType) => {
-    const taskExisted = todayTasks.some((todayTask: ObjectType) => todayTask.id === task.id);
+  const addTaskToToday = async (task: Task) => {
+    const taskExisted = todayTasks.some((todayTask: Task) => todayTask.id === task.id);
     const newTodayTasks = taskExisted
-      ? todayTasks.filter((todayTask: ObjectType) => todayTask?.id !== task.id)
+      ? todayTasks.filter((todayTask: Task) => todayTask?.id !== task.id)
       : [...todayTasks, task];
     await queryClient.setQueryData([QUERY_KEYS.TODAY_TASKS], newTodayTasks);
   };
@@ -95,7 +97,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const task = tasks[virtualRow.index];
             const isTaskActive = selectedTask?.id === task.id;
-            const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask?.id === task.id);
+            const isTaskToday = todayTasks.some((todayTask: Record<string, unknown>) => todayTask?.id === task.id);
             return (
               <div
                 key={task.id}
@@ -114,8 +116,10 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                   <TaskRow
                     task={task}
                     active={isTaskActive}
-                    onSelect={onSelectTask as any}
-                    onPin={addTaskToToday}
+                    onSelect={onSelectTask}
+                    onPin={(task) => {
+                      void addTaskToToday(task);
+                    }}
                     isToday={isTaskToday}
                   />
                 </Suspense>
@@ -140,10 +144,10 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
         let endDate = "";
 
         if (key !== "backlog") {
-          const currentSprint = projectSprints?.find((sprint: ObjectType) => sprint.id === key);
-          sprintName = currentSprint?.name ?? key;
-          startDate = currentSprint?.startDate ?? "";
-          endDate = currentSprint?.endDate ?? "";
+          const currentSprint = (projectSprints as Sprint[])?.find(({ id }) => id === key);
+          sprintName = (currentSprint?.name as string) ?? key;
+          startDate = currentSprint?.startDate ? String(currentSprint.startDate) : "";
+          endDate = currentSprint?.endDate ? String(currentSprint.endDate) : "";
         }
 
         return (
@@ -158,7 +162,7 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
             </div>
             {tasks.map((task) => {
               const isTaskActive = selectedTask?.id === task.id;
-              const isTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === task.id);
+              const isTaskToday = todayTasks.some((todayTask: Task) => todayTask.id === task.id);
               return (
                 <div key={task.id}>
                   <Suspense
@@ -168,16 +172,18 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                     <TaskRow
                       task={task}
                       active={isTaskActive}
-                      onSelect={onSelectTask as any}
-                      onPin={addTaskToToday}
+                      onSelect={onSelectTask}
+                      onPin={(task) => {
+                        void addTaskToToday(task);
+                      }}
                       isToday={isTaskToday}
                     />
                   </Suspense>
-                  {task.subTasks?.length > 0 && (
+                  {(task.subTasks as Task[])?.length > 0 && (
                     <div className="pl-3">
-                      {task.subTasks.map((subTask: ObjectType) => {
+                      {(task.subTasks as Task[]).map((subTask: Task) => {
                         const isSubTaskActive = selectedTask?.id === subTask.id;
-                        const isSubTaskToday = todayTasks.some((todayTask: ObjectType) => todayTask.id === subTask.id);
+                        const isSubTaskToday = todayTasks.some((todayTask: Task) => todayTask.id === subTask.id);
                         return (
                           <Suspense
                             fallback={
@@ -187,8 +193,10 @@ export default function TaskList({ tasks, projectId, onSelectTask, selectedTask,
                             <TaskRow
                               task={subTask}
                               active={isSubTaskActive}
-                              onSelect={onSelectTask as any}
-                              onPin={addTaskToToday}
+                              onSelect={onSelectTask}
+                              onPin={(task) => {
+                                void addTaskToToday(task);
+                              }}
                               isToday={isSubTaskToday}
                             />
                           </Suspense>

@@ -1,4 +1,5 @@
 import Badge from "../../common/Badge";
+import { Task } from "@lib/types/task";
 import { Button } from "@resources/components/common/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@resources/components/common/Tooltip";
 import { TaskStatus, TaskStatusEnum, TaskType, TaskTypeEnum } from "@resources/utils/constants";
@@ -7,27 +8,20 @@ import Image from "next/image";
 import React, { memo, useMemo } from "react";
 
 export interface TaskRowProps {
-  onSelect: (task: ObjectType) => void;
-  onPin?: (task: ObjectType) => void;
-  task: ObjectType;
+  onSelect: (task: Task) => void;
+  onPin?: (task: Task) => void;
+  task: Task;
   active: boolean;
   isToday?: boolean;
   showAssignee?: boolean;
 }
 
-const TaskRow = memo(function TaskRow({
-  task,
-  onSelect,
-  onPin,
-  active = false,
-  isToday = false,
-  showAssignee = false,
-}: TaskRowProps) {
-  const { id, title, type, status, assignee } = task;
+const TaskRow = memo(function TaskRow({ task, onSelect, onPin, active = false, isToday = false }: TaskRowProps) {
+  const { title, type } = task;
   const taskStatus = TaskStatus[status as TaskStatusEnum] || TaskStatus.TODO;
-  const taskType = TaskType[type as TaskTypeEnum] || TaskType.ISSUE;
+  const taskType = TaskType[type as unknown as TaskTypeEnum] || TaskType.ISSUE;
 
-  const selectTask = (event: { stopPropagation: () => void }) => {
+  const selectTask = () => {
     onSelect(task);
   };
   const pinTask = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -68,12 +62,12 @@ const TaskRow = memo(function TaskRow({
         <label className="text-sm font-normal text-slate-400 dark:text-slate-500">Status: </label>
         <Badge style={{ backgroundColor: taskStatus.color }}>{taskStatus.label}</Badge>
       </div>
-      {showAssignee && (
+      {/* {showAssignee && (
         <div className="flex items-center gap-3 shrink-0 w-56">
           <label className="text-sm font-normal text-slate-400 dark:text-slate-500">Assignee: </label>
           <span className="truncate">{assignee?.name ?? "Unassigned"}</span>
         </div>
-      )}
+      )} */}
       <div className="ml-auto flex justify-end">
         {onPin && (
           <Button variant="ghost" size="icon" onClick={pinTask}>

@@ -36,7 +36,7 @@ export class AuthApiService {
    */
   static async extractErrorMessage(response: Response): Promise<string> {
     try {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as { message?: string; error?: string };
       return errorData.message || errorData.error || response.statusText;
     } catch {
       return response.statusText;

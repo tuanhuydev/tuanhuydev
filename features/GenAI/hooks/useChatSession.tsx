@@ -34,15 +34,15 @@ export const useNewChatSession = ({ onMutate, onSuccess, onError }: NewChatSessi
         throw new Error("Failed to create chat session");
       }
 
-      return response.json();
+      return response.json() as Promise<{ id: string; name: string }>;
     },
     onMutate: async (prompt?: string) => {
       if (onMutate) {
         await onMutate(prompt);
       }
     },
-    onSuccess: (data: { id: string; name: string }, prompt?: string) => {
-      queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
+    onSuccess: async (data: { id: string; name: string }, prompt?: string) => {
+      await queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
 
       if (onSuccess) {
         onSuccess(data, prompt);
@@ -79,8 +79,8 @@ export const useDeleteChatSession = ({
         await onMutate(chatId);
       }
     },
-    onSuccess: (chatId: string) => {
-      queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
+    onSuccess: async (chatId: string) => {
+      await queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
 
       // If the deleted session was selected, reset to a default
       if (selectedId === chatId && setSelectedId) {

@@ -1,8 +1,9 @@
 "use client";
 
+import { ProjectStatus, ProjectType } from "@lib/interfaces/enums";
+import { Project } from "@lib/types/project";
 import Card, { CardContent, CardFooter, CardHeader } from "@resources/components/common/Card";
 import WithCopy from "@resources/components/common/hocs/WithCopy";
-import BaseLabel from "@resources/components/content/BaseLabel";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { SprintCard } from "@resources/components/features/Project/ProjectDetail/SprintCard";
 import { useProjectQuery } from "@resources/queries/projectQueries";
@@ -19,16 +20,22 @@ interface PageProps {
 
 export default function Page({ params }: PageProps) {
   const { projectId } = use(params);
-  const { data: project, isLoading } = useProjectQuery(projectId);
-  const {
-    name = "",
-    description = "",
-    startDate,
-    endDate,
-    clientName = "",
-    type,
-    status,
-  }: Project & { users: ObjectType[] } = project || {};
+  const defaultProject: Project & { users: string[] } = {
+    id: "",
+    name: "",
+    clientName: "",
+    description: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    type: ProjectType.POC,
+    status: ProjectStatus.PLAN,
+    users: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const { data: project = defaultProject } = useProjectQuery(projectId);
+  const { name, description, startDate, endDate, clientName, type, status }: Project & { users: string[] } =
+    project || defaultProject;
 
   const TitleByPercent = useMemo(() => {
     if (!startDate || !endDate) {

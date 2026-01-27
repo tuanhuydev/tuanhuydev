@@ -1,56 +1,37 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
-import { BaseController } from "@lib/interfaces/controller";
 import { makeSlug, transformTextToDashed } from "@lib/utils/helper";
 import Network from "@lib/utils/network";
+import { CreatePostDTO, createPostSchema, UpdatePostDTO } from "@server/dto/post.dto";
+import { PostJSON, PostModel } from "@server/models/post.model";
+import { authService, AuthService } from "@server/services/AuthService";
+import { postService } from "@server/services/PostService";
 import { NextRequest } from "next/server";
-import MongoPostRepository from "server/repositories/MongoPostRepository";
-import { ObjectSchema, object, string } from "yup";
-import { z } from "zod";
 
-export class PostController implements BaseController {
+export class PostController {
   public static instance: PostController;
-  #schema: ObjectSchema<any>;
 
-  static makeInstance() {
-    return PostController.instance ?? new PostController();
+  static makeInstance(authService: AuthService) {
+    return PostController.instance ?? new PostController(authService);
   }
 
-  constructor() {
-    this.#schema = object({
-      title: string().required(),
-      content: string().required(),
-    });
-  }
+  constructor(private readonly authService: AuthService) {}
 
-  async validateStoreRequest(body: any) {
-    try {
-      return this.#schema.validate(body);
-    } catch (error) {
-      throw new BadRequestError();
-    }
-  }
-
-  async store(request: NextRequest, params: ObjectType) {
+  async store(request: NextRequest) {
     const network = new Network(request);
     try {
-      const { assets = [], ...restBody } = await network.getBody();
-      const schema = z.object({
-        title: z.string(),
-        content: z.string(),
-        slug: z.string().nullable().optional(),
-        thumbnail: z.string().nullable().optional(),
-        publishedAt: z.string().nullable().optional(),
-      });
-      if (!schema.safeParse(restBody).success) throw new BadRequestError();
-      restBody.slug = makeSlug(restBody.slug);
+      // Validate request body
+      const body = (await network.getBody()) as CreatePostDTO;
+      const validation = createPostSchema.safeParse(body);
+      if (!validation.success) throw new BadRequestError(validation?.error.toString());
 
-      const newPost = await MongoPostRepository.createPost(restBody);
+      const currentUser = await this.authService.getCurrentUserProfile();
+      if (!currentUser) throw new BadRequestError("Unauthenticated user");
 
-      // Double asset handling
-      // await PostPrismaRepository.saveAssets(newPost.id, assets);
-
-      return network.successResponse(newPost);
+      body.authorId = currentUser.id;
+      body.slug = makeSlug(body.slug);
+      const newPost = (await postService.createPost(body)) as unknown as PostModel;
+      return network.successResponse(newPost.toJSON());
     } catch (error) {
       console.error(error);
       return network.failResponse(error as BaseError);
@@ -60,46 +41,52 @@ export class PostController implements BaseController {
   async getAll(request: NextRequest) {
     const network = new Network(request);
     try {
-      const params: ObjectType = network.extractSearchParams();
-      const posts = await MongoPostRepository.getPosts(params);
+      const params: Record<string, unknown> = network.extractSearchParams();
+      const postModels: PostModel[] = await postService.getAllPosts(params);
+
+      const posts: PostJSON[] = postModels.map((post: PostModel) => post.toJSON());
       return network.successResponse(posts);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
-  async getOne(request: NextRequest, { id }: any) {
+  async getOne(request: NextRequest, { id }: { id: string }) {
     const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
-      const postById = await MongoPostRepository.getPost(id);
-      return network.successResponse(postById);
+
+      const postById = await postService.getOnePost(id);
+      if (!postById) throw new BadRequestError("Post not found");
+
+      return network.successResponse(postById.toJSON());
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
-  async update(request: NextRequest, { id }: any) {
-    const body = await request.json();
-    if ("slug" in body) {
+  async update(request: NextRequest, { id }: { id: string }) {
+    const body = (await request.json()) as UpdatePostDTO;
+    if (body?.slug) {
       body.slug = transformTextToDashed(body.slug);
     }
     if (!id || !body) throw new BadRequestError();
+    console.log(body);
 
     const network = new Network(request);
     try {
-      const updated = await MongoPostRepository.updatePost(id, body);
+      const updated = await postService.updatePost(id, body);
       return network.successResponse(updated);
     } catch (error) {
       return network.failResponse(error as BaseError);
     }
   }
 
-  async delete(request: NextRequest, { id }: any) {
+  async delete(request: NextRequest, { id }: { id: string }) {
     if (!id) throw new BadRequestError();
     const network = new Network(request);
     try {
-      const deleted = await MongoPostRepository.deletePost(id);
+      const deleted = await postService.deletePost(id);
       return network.successResponse(deleted);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -107,4 +94,4 @@ export class PostController implements BaseController {
   }
 }
 
-export default PostController.makeInstance();
+export const postController = PostController.makeInstance(authService);

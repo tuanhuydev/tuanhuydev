@@ -37,7 +37,7 @@ class S3Service {
         params: {
           Bucket: this.#bucket,
           ACL: "public-read",
-          Key: `${location}/${(file as File).name}`,
+          Key: `${location}/${file.name}`,
           Body: file as Blob,
         },
       });

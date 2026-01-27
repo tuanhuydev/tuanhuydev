@@ -1,6 +1,5 @@
 "use client";
 
-import Loader from "../common/Loader";
 import { EMPTY_STRING } from "lib/commons/constants/base";
 import { isURLValid } from "lib/utils/helper";
 import { TriangleAlert } from "lucide-react";
@@ -22,7 +21,7 @@ const BaseImage = ({
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    setHasError(!isURLValid(src as string));
+    setHasError(!isURLValid(src));
   }, [src]);
   const shouldRenderImage = src && !hasError;
   return (

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 
-export const useStatusQuery = (filter: ObjectType = {}) => {
+export const useStatusQuery = (filter: Record<string, unknown> = {}) => {
   const { fetch } = useFetch();
   const stableQueryKey = createStableQueryKey([], filter);
 
@@ -16,7 +16,7 @@ export const useStatusQuery = (filter: ObjectType = {}) => {
         const params = new URLSearchParams();
         Object.entries(filter).forEach(([key, value]) => {
           if (value != null && value !== "") {
-            params.append(key, String(value));
+            params.append(key, value as string);
           }
         });
         if (params.toString()) {
@@ -27,7 +27,7 @@ export const useStatusQuery = (filter: ObjectType = {}) => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch status: ${response.status} ${response.statusText}`);
       }
-      const { data: status } = await response.json();
+      const { data: status } = (await response.json()) as { data: unknown };
       return status;
     },
   });
@@ -38,7 +38,7 @@ export const useCreateStatusMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: any) => {
+    mutationFn: async (params: unknown) => {
       const response = await fetch(`${BASE_URL}/api/status`, {
         method: "POST",
         headers: {
@@ -50,8 +50,8 @@ export const useCreateStatusMutation = () => {
         throw new BaseError(`Failed to create status: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      const result = (await response.json()) as { data: unknown };
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
       return result;
     },
   });
@@ -62,7 +62,7 @@ export const useUpdateStatusMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (params: any) => {
+    mutationFn: async (params: { id: string; [key: string]: unknown }) => {
       const response = await fetch(`${BASE_URL}/api/status/${params.id}`, {
         method: "PATCH",
         headers: {
@@ -74,8 +74,8 @@ export const useUpdateStatusMutation = () => {
         throw new BaseError(`Failed to update status: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      const result = (await response.json()) as { data: unknown };
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
       return result;
     },
   });
@@ -94,8 +94,8 @@ export const useDeleteStatusMutation = () => {
         throw new BaseError(`Failed to delete status: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
+      const result = (await response.json()) as { data: unknown };
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STATUS] });
       return result;
     },
   });

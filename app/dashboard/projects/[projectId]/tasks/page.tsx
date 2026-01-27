@@ -1,5 +1,6 @@
 "use client";
 
+import { Task } from "@lib/types/task";
 import { ErrorBoundary } from "@resources/components/common/ErrorBoundary";
 import Loader from "@resources/components/common/Loader";
 import { useTaskFilter } from "@resources/hooks/useTaskFilter";
@@ -22,17 +23,25 @@ export default function Page({ params }: PageProps) {
   const searchParams = useSearchParams();
   const taskId = searchParams.get("taskId");
 
-  const { filter, searchValue, handleSearch, handleFilterChange } = useTaskFilter({
+  const { filter, handleSearch, handleFilterChange } = useTaskFilter({
     onFilterChange: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects", projectId, "tasks"], exact: true });
+      void queryClient.invalidateQueries({ queryKey: ["projects", projectId, "tasks"], exact: true });
     },
   });
 
-  const { data: project } = useProjectQuery(projectId);
-  const { data: tasks = [], refetch: refetchTasks, isLoading } = useProjectTasks(projectId, filter);
+  const { data: project } = useProjectQuery(projectId) as { data: Record<string, unknown> | undefined };
+  const {
+    data: tasks = [],
+    refetch: refetchTasks,
+    isLoading,
+  } = useProjectTasks(projectId, filter as Record<string, unknown>) as {
+    data: Task[];
+    refetch: () => Promise<unknown>;
+    isLoading: boolean;
+  };
 
   useEffect(() => {
-    const searchTimeout = setTimeout(refetchTasks, 500);
+    const searchTimeout = setTimeout(() => void refetchTasks(), 500);
     return () => clearTimeout(searchTimeout);
   }, [filter, refetchTasks]);
 
@@ -40,8 +49,8 @@ export default function Page({ params }: PageProps) {
     <ErrorBoundary>
       <Suspense fallback={<Loader />}>
         <TaskPage
-          tasks={tasks}
-          project={project}
+          tasks={tasks as Record<string, unknown>[]}
+          project={project as Record<string, unknown>}
           selectedTaskId={taskId}
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}

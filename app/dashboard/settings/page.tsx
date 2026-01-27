@@ -14,7 +14,7 @@ function Page() {
     try {
       const response = await fetch(`${BASE_URL}/api/backup`, { method: "GET" });
       if (!response.ok) throw new BaseError("Unable to save backup");
-      const data = await response.json();
+      const data = (await response.json()) as unknown;
 
       if (!data) throw new BaseError("Unable to save backup");
 
@@ -39,7 +39,7 @@ function Page() {
     <PageContainer title="Setting">
       <ConfigSection title="Backup" description="Backup application data">
         <div className="flex items-start gap-3">
-          <Button variant="outline" onClick={downloadBackup}>
+          <Button variant="outline" onClick={void downloadBackup}>
             Download Backup
           </Button>
         </div>

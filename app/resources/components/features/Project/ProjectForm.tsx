@@ -1,25 +1,26 @@
 "use client";
 
+import { Project } from "@lib/types/project";
+import { Card, CardContent } from "@resources/components/common/Card";
 import DynamicForm, { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { useCreateProjectMutation, useUpdateProjectMutation } from "@resources/queries/projectQueries";
 import { useUsersQuery } from "@resources/queries/userQueries";
-import { useQueryClient } from "@tanstack/react-query";
+import { logService } from "@server/services/LogService";
 import { ProjectStatus, ProjectType } from "lib/interfaces/enums";
 import { toCapitalize } from "lib/utils/helper";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import LogService from "server/services/LogService";
 
 export interface ProjectFormProps {
-  project?: ObjectType;
+  project?: Project;
 }
 
 function createOptions<T extends string>(enumObj: Record<string, T>, formatter: (value: T) => string) {
   return Object.values(enumObj)
     .filter((value) => typeof value === "string")
     .map((value) => ({
-      label: formatter(value as T),
+      label: formatter(value),
       value,
     }));
 }
@@ -31,111 +32,149 @@ const projectStatusOptions = createOptions(ProjectStatus, toCapitalize);
 export default function ProjectForm({ project }: ProjectFormProps) {
   // Hooks
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const { data: users = [] } = useUsersQuery({ projectId: project?.id });
+  const { data: users = [] } = useUsersQuery({ projectId: project?.id } as Record<string, unknown>);
   const { mutateAsync: createProjectMutation } = useCreateProjectMutation();
   const { mutateAsync: updateProjectMutation } = useUpdateProjectMutation();
 
   // State
   const [form, setForm] = useState<UseFormReturn | null>(null);
 
-  const handleProjectMutation = async (formData: ObjectType, mutationFn: (data: ObjectType) => Promise<any>) => {
-    try {
-      await mutationFn(formData);
-      router.push("/dashboard/projects");
-    } catch (error) {
-      LogService.log(error);
-    } finally {
-      if (form) form?.reset();
-    }
-  };
+  const handleProjectMutation = useCallback(
+    async (formData: Record<string, unknown>, mutationFn: (data: Record<string, unknown>) => Promise<unknown>) => {
+      try {
+        await mutationFn(formData);
+        router.push("/dashboard/projects");
+      } catch (error) {
+        logService.log(error);
+      } finally {
+        if (form) form?.reset();
+      }
+    },
+    [router, form],
+  );
 
-  const onSubmit = async (formData: ObjectType) => {
-    const mutationFn = project?.id ? updateProjectMutation : createProjectMutation;
-    await handleProjectMutation(formData, mutationFn);
-  };
+  const onSubmit = useCallback(
+    async (formData: Record<string, unknown>) => {
+      const mutationFn = project?.id ? updateProjectMutation : createProjectMutation;
+      await handleProjectMutation(formData, mutationFn);
+    },
+    [project?.id, updateProjectMutation, createProjectMutation, handleProjectMutation],
+  );
 
   const config = useMemo((): DynamicFormConfig => {
-    const userOptions = (users as ObjectType[]).map((user: ObjectType) => ({ label: user.name, value: user.id }));
+    const userOptions = (users as Record<string, unknown>[]).map((user: Record<string, unknown>) => {
+      const userName = user.name;
+      const userId = user.id;
+      return {
+        label: typeof userName === "string" || typeof userName === "number" ? String(userName) : "",
+        value: typeof userId === "string" || typeof userId === "number" ? String(userId) : "",
+      };
+    });
     return {
       fields: [
         {
-          name: "name",
-          type: "text",
-          options: {
-            placeholder: "Project Name",
-          },
-          validate: { required: true },
+          name: "Basic Information",
+          fields: [
+            {
+              name: "name",
+              label: "Project Name",
+              type: "text",
+              options: {
+                placeholder: "Enter project name",
+              },
+              validate: { required: true },
+              className: "w-full lg:w-1/2 lg:pr-2.5",
+            },
+            {
+              name: "clientName",
+              label: "Client Name",
+              type: "text",
+              options: {
+                placeholder: "Enter client name",
+              },
+              validate: { required: true },
+              className: "w-full lg:w-1/2 lg:pl-2.5",
+            },
+            {
+              name: "description",
+              label: "Project Description",
+              type: "textarea",
+              options: { placeholder: "Enter a detailed description of the project", rows: 6 },
+              validate: { required: true },
+            },
+          ],
         },
         {
-          name: "startDate",
-          type: "datepicker",
-          options: {
-            placeholder: "Start Date",
-          },
-          validate: { required: true },
-          className: "w-1/2",
-        },
-        {
-          name: "endDate",
-          type: "datepicker",
-          options: {
-            placeholder: "End Date",
-          },
-          validate: { required: true, min: "startDate" },
-          className: "w-1/2",
-        },
-        {
-          name: "clientName",
-          type: "text",
-          options: {
-            placeholder: "Client Name",
-          },
-          validate: { required: true },
-        },
-        {
-          name: "users",
-          type: "select",
-          options: {
-            placeholder: "Select members...",
-            mode: "multiple",
-            options: userOptions,
-          },
-          validate: { required: true, multiple: true },
-        },
-        {
-          name: "type",
-          type: "select",
-          options: {
-            placeholder: "Select type...",
-            options: projectTypeOptions,
-          },
-          className: "w-1/2",
-          validate: { required: true },
-        },
-        {
-          name: "status",
-          type: "select",
-          options: {
-            placeholder: "Select status...",
-            options: projectStatusOptions,
-          },
-          validate: { required: true },
-          className: "w-1/2",
-        },
-        {
-          name: "description",
-          type: "textarea",
-          options: { placeholder: "Project Description" },
-          validate: { required: true },
+          name: "Project Configuration",
+          fields: [
+            {
+              name: "type",
+              label: "Project Type",
+              type: "select",
+              options: {
+                placeholder: "Select project type",
+                options: projectTypeOptions,
+              },
+              validate: { required: true },
+              className: "w-full lg:w-1/2 lg:pr-2.5",
+            },
+            {
+              name: "status",
+              label: "Status",
+              type: "select",
+              options: {
+                placeholder: "Select status",
+                options: projectStatusOptions,
+              },
+              validate: { required: true },
+              className: "w-full lg:w-1/2 lg:pl-2.5",
+            },
+            {
+              name: "startDate",
+              label: "Start Date",
+              type: "datepicker",
+              options: {
+                placeholder: "Select start date",
+              },
+              validate: { required: true },
+              className: "w-full lg:w-1/2 lg:pr-2.5",
+            },
+            {
+              name: "endDate",
+              label: "End Date",
+              type: "datepicker",
+              options: {
+                placeholder: "Select end date",
+              },
+              validate: { required: true, min: "startDate" },
+              className: "w-full lg:w-1/2 lg:pl-2.5",
+            },
+            {
+              name: "users",
+              label: "Team Members",
+              type: "select",
+              options: {
+                placeholder: "Select team members",
+                mode: "multiple",
+                options: userOptions,
+              },
+              validate: { required: true, multiple: true },
+            },
+          ],
         },
       ],
       submitProps: {
-        className: "ml-auto mr-2",
+        className: "w-full sm:w-auto sm:ml-auto",
       },
       setForm,
     };
   }, [users]);
 
-  return <DynamicForm config={config} onSubmit={onSubmit} mapValues={project} />;
+  return (
+    <Card className="w-full lg:w-3/4">
+      <CardContent className="px-6 py-4 sm:px-8">
+        <DynamicForm config={config} onSubmit={onSubmit} mapValues={project as unknown as Record<string, unknown>} />
+      </CardContent>
+    </Card>
+  );
 }

@@ -1,12 +1,16 @@
+import { permissionController } from "@server/controllers/PermissionController";
+import { userController } from "@server/controllers/UserController";
 import { NextRequest } from "next/server";
-import PermissionController from "server/controllers/PermissionController";
-import UserController from "server/controllers/UserController";
 
-export async function GET(request: NextRequest, props: any) {
-  const params = await props.params;
-  return UserController.getUserPermissions(request, params);
+interface RouteParams {
+  params: Promise<{ id: string }>;
 }
 
-export async function PUT(request: NextRequest, { params }: any) {
-  return PermissionController.getAll(request);
+export async function GET(request: NextRequest, props: RouteParams) {
+  const params = await props.params;
+  return userController.getUserPermissions(request, params);
+}
+
+export async function PUT(request: NextRequest) {
+  return permissionController.getAll(request);
 }

@@ -1,10 +1,11 @@
 "use client";
 
+import { Task } from "@lib/types/task";
 import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@resources/queries/taskQueries";
+import { logService } from "@server/services/LogService";
 import { Suspense, lazy, useCallback, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
-import LogService from "server/services/LogService";
 
 const DynamicForm = lazy(() => import("@resources/components/form/DynamicForm"));
 
@@ -25,12 +26,12 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   const creating = isCreating || isUpdating;
   const isSuccess = isCreateSuccess || isUpdateSuccess;
   const createTaskMutation = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       try {
         const newTaskBody = { ...formData, projectId };
         await mutateCrateTask(newTaskBody);
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
       } finally {
         form?.reset();
       }
@@ -39,11 +40,11 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   );
 
   const updateTaskMutation = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       try {
-        await mutateUpdateTask(formData);
+        await mutateUpdateTask(formData as Partial<Task>);
       } catch (error) {
-        LogService.log(error);
+        logService.log(error);
       } finally {
         form?.reset();
       }
@@ -52,21 +53,21 @@ export default function TaskForm({ task, projectId, onDone, config }: TaskFormPr
   );
 
   const handleTaskMutation = async (
-    formData: ObjectType,
-    mutationFn: (data: ObjectType) => Promise<any>,
+    formData: Record<string, unknown>,
+    mutationFn: (data: Record<string, unknown>) => Promise<unknown>,
     form?: UseFormReturn,
   ) => {
     try {
       await mutationFn(formData);
     } catch (error) {
-      LogService.log(error);
+      logService.log(error);
     } finally {
       if (form) form?.reset();
     }
   };
 
   const onSubmit = useCallback(
-    async (formData: ObjectType, form?: UseFormReturn) => {
+    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
       const mutationFn = task ? updateTaskMutation : createTaskMutation;
       await handleTaskMutation(formData, mutationFn, form);
     },

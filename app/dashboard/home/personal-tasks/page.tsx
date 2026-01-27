@@ -18,14 +18,16 @@ export default function Page() {
   const searchParams = useSearchParams();
   const taskId = searchParams.get("taskId") ?? null;
 
-  const { filter, searchValue, handleSearch, handleFilterChange, setFilter } = useTaskFilter<FilterMyTasksType>({
+  const { filter, handleSearch, handleFilterChange } = useTaskFilter<FilterMyTasksType>({
     initialFilter: { projectId: null } as FilterMyTasksType,
   });
 
   const { data: tasks = [], refetch: refetchTasks, isLoading: isTasksLoading } = useCurrentUserTasks(filter);
 
   useEffect(() => {
-    const searchTimeout = setTimeout(refetchTasks, 500);
+    const searchTimeout = setTimeout(() => {
+      void refetchTasks();
+    }, 500);
     return () => clearTimeout(searchTimeout);
   }, [filter, refetchTasks]);
 

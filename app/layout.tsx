@@ -2,6 +2,7 @@ import { ErrorBoundary } from "./resources/components/common/ErrorBoundary";
 import Loader from "./resources/components/common/Loader";
 import ThemeScript from "./resources/components/layout/ThemeScript";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { sourceCodeFont } from "@resources/font";
 import "@resources/styles/globals.scss";
 import { Analytics } from "@vercel/analytics/next";
@@ -23,7 +24,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <ThemeScript />
         <ErrorBoundary>
           <Suspense fallback={<Loader />}>
-            <QueryProvider>{children}</QueryProvider>
+            <TooltipProvider>
+              <QueryProvider>{children}</QueryProvider>
+            </TooltipProvider>
           </Suspense>
         </ErrorBoundary>
         {isDevelopmentEnv && <SpeedInsights />}

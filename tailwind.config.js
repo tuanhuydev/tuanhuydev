@@ -4,11 +4,15 @@ module.exports = {
   theme: {
     extend: {
       textColor: ["active"],
+
+      fontSize: {
+        base: ["14px", { lineHeight: "1.5" }],
+      },
       height: {
         "screen-d": "100dvh",
       },
       minHeight: {
-        "1/2": "half",
+        "1/2": "50%",
       },
       colors: {
         primary: {

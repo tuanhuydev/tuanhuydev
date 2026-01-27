@@ -1,9 +1,10 @@
-import * as Mongo from "mongodb";
+import { CreatePermissionDTO, UpdatePermissionDTO } from "@server/dto/permission.dto";
+import { BSON, Collection, InsertOneResult, ObjectId, UpdateResult, WithId } from "mongodb";
 import MongoService from "server/services/MongoService";
 
-class MongoPermissionRepository {
+export class MongoPermissionRepository {
   static #instance: MongoPermissionRepository;
-  private table: Mongo.Collection<Mongo.BSON.Document>;
+  private table: Collection<BSON.Document>;
 
   constructor() {
     this.table = MongoService.getDatabase().collection("permissions");
@@ -11,25 +12,26 @@ class MongoPermissionRepository {
   static makeInstance() {
     return MongoPermissionRepository.#instance ?? new MongoPermissionRepository();
   }
-  async getPermissions() {
+
+  async findAll(): Promise<WithId<BSON.Document>[]> {
     return this.table.find().toArray();
   }
-  async getPermission(id: string) {
-    return this.table.findOne({ _id: new Mongo.ObjectId(id) });
+
+  async findOne(id: string): Promise<BSON.Document | null> {
+    return this.table.findOne({ _id: new ObjectId(id) });
   }
 
-  async createPermission(body: any): Promise<Mongo.InsertOneResult<Mongo.BSON.Document>> {
-    body.createdAt = new Date().toISOString();
-    body.updatedAt = new Date().toISOString();
-    body.deletedAt = null;
+  async create(body: CreatePermissionDTO): Promise<InsertOneResult<BSON.Document>> {
     return this.table.insertOne(body);
   }
 
-  async updatePermission(id: string, body: ObjectType) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
+  async save(id: string, body: UpdatePermissionDTO): Promise<UpdateResult<BSON.Document>> {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: body });
   }
-  async deletePermission(id: string) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: { deletedAt: new Date().toISOString() } });
+
+  async softDelete(id: string) {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: { deletedAt: new Date().toISOString() } });
   }
 }
-export default MongoPermissionRepository.makeInstance();
+
+export const permissionRepository = MongoPermissionRepository.makeInstance();

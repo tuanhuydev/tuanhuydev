@@ -1,5 +1,6 @@
-import { QUERY_KEYS, createStableQueryKey } from "./queryKeys";
+import { QUERY_KEYS } from "./queryKeys";
 import { useFetch } from "@features/Auth";
+import { Task } from "@lib/types/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
@@ -22,7 +23,7 @@ export const useSubTasks = (taskId: string | undefined) => {
       if (!response.ok) {
         throw new BaseError(`Failed to fetch subtasks: ${response.status} ${response.statusText}`);
       }
-      const { data: subTasks = [] } = await response.json();
+      const { data: subTasks = [] } = (await response.json()) as { data: Task[] };
       return subTasks;
     },
     enabled: !!taskId,
@@ -32,9 +33,9 @@ export const useSubTasks = (taskId: string | undefined) => {
 export const useUpdateTodayTasks = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (updatedTasks: ObjectType[]) => {
+    mutationFn: async (updatedTasks: Record<string, unknown>[]) => {
       localStorage.setItem("todayTasks", JSON.stringify(updatedTasks));
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODAY_TASKS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODAY_TASKS] });
     },
   });
 };
@@ -44,7 +45,7 @@ export const useCreateTaskMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async (data: ObjectType) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       const response = await fetch(`${BASE_URL}/api/tasks`, {
         method: "POST",
         headers: {
@@ -56,14 +57,14 @@ export const useCreateTaskMutation = () => {
         throw new BaseError(`Failed to create task: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { data: Task };
 
       // Invalidate all task-related queries
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
 
       // If task belongs to a project, invalidate project tasks
       if (data.projectId) {
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.PROJECTS, "detail", data.projectId, QUERY_KEYS.TASKS],
         });
       }
@@ -78,7 +79,7 @@ export const useUpdateTaskMutation = () => {
   const { fetch } = useFetch();
 
   return useMutation({
-    mutationFn: async ({ id, ...restTask }: ObjectType) => {
+    mutationFn: async ({ id, ...restTask }: Partial<Task>) => {
       const response = await fetch(`${BASE_URL}/api/tasks/${id}`, {
         method: "PATCH",
         headers: {
@@ -90,14 +91,14 @@ export const useUpdateTaskMutation = () => {
         throw new BaseError(`Failed to update task: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { data: Task };
 
       // Invalidate all task-related queries
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
 
       // If task belongs to a project, invalidate project tasks
       if (restTask.projectId) {
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.PROJECTS, "detail", restTask.projectId, QUERY_KEYS.TASKS],
         });
       }
@@ -120,13 +121,13 @@ export const useDeleteTaskMutation = () => {
         throw new BaseError(`Failed to delete task: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { success: boolean };
 
       // Invalidate all task-related queries
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
 
       // Invalidate project tasks (we don't know which project, so invalidate all)
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.PROJECTS],
         predicate: (query) => {
           const queryKey = query.queryKey as string[];

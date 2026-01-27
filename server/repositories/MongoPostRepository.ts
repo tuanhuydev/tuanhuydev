@@ -1,9 +1,11 @@
-import * as Mongo from "mongodb";
+import { CreatePostDTO } from "@server/dto/post.dto";
+import { PostDocument } from "@server/mongo/post.document";
+import { BSON, Collection, Filter, ObjectId, Sort, UpdateResult } from "mongodb";
 import MongoService from "server/services/MongoService";
 
-class MongoPostRepository {
+export class MongoPostRepository {
   static #instance: MongoPostRepository;
-  private table: Mongo.Collection<Mongo.BSON.Document>;
+  private table: Collection<BSON.Document>;
 
   constructor() {
     this.table = MongoService.getDatabase().collection("posts");
@@ -11,62 +13,77 @@ class MongoPostRepository {
   static makeInstance() {
     return MongoPostRepository.#instance ?? new MongoPostRepository();
   }
-  async getPosts(filter: ObjectType = {}) {
-    let defaultWhere: ObjectType = { deletedAt: null };
-    if (!filter) {
-      return this.table.find(defaultWhere).toArray();
+
+  async findAll(params: Record<string, unknown> = {}): Promise<PostDocument[]> {
+    let filter: Filter<BSON.Document> = { deletedAt: null };
+
+    if (params?.search) {
+      filter.title = { $regex: params.search as string, $options: "i" };
     }
-    if ("search" in filter) {
-      defaultWhere = { ...defaultWhere, title: { $regex: filter.search, $options: "i" } };
+    if (params?.publishedAt === true) {
+      filter.publishedAt = { $ne: null };
     }
-    if ("published" in filter) {
-      defaultWhere = { ...defaultWhere, publishedAt: { $ne: null } };
+    if (params?.exclude && Array.isArray(params.exclude)) {
+      filter._id = { $nin: params.exclude.map((id) => new ObjectId(id as string)) };
     }
-    if ("exclude" in filter && Array.isArray(filter.exclude)) {
-      defaultWhere = { ...defaultWhere, _id: { $nin: filter.exclude.map((id) => new Mongo.ObjectId(id as string)) } };
-    }
-    let query = this.table.find(defaultWhere);
+
+    let query = this.table.find(filter);
 
     // Handle sorting
-    let sortOption: ObjectType = { createdAt: "desc" };
-    if ("sortBy" in filter && filter.sortBy) {
-      const sortBy = filter.sortBy as string;
-      const sortOrder = "sortOrder" in filter && filter.sortOrder ? filter.sortOrder : "desc";
+    let sortOption: Record<string, unknown> = { createdAt: "desc" };
+    const defaultSortBy: string = "createdAt";
+    const defaultSortOrder: string = "desc";
+    if (params?.sortBy) {
+      const sortBy = (params.sortBy as string) ?? defaultSortBy;
+      const sortOrder = params?.sortOrder ?? defaultSortOrder;
       sortOption = { [sortBy]: sortOrder };
     }
 
-    if ("page" in filter && "pageSize" in filter) {
-      const page = Number(filter.page);
-      const pageSize = Number(filter.pageSize);
+    if (params?.page && params?.pageSize) {
+      const page = Number(params.page);
+      const pageSize = Number(params.pageSize);
+      if (isNaN(page) || isNaN(pageSize) || page < 1 || pageSize < 1) {
+        throw new Error("Invalid pagination parameters");
+      }
       const skip = (page - 1) * pageSize;
       const limit = pageSize;
-      query.sort(sortOption).skip(skip).limit(limit);
+      query
+        .sort(sortOption as Sort)
+        .skip(skip)
+        .limit(limit);
     } else {
-      // Apply sorting even without pagination
-      query.sort(sortOption);
+      query.sort(sortOption as Sort);
     }
 
-    return query.toArray();
+    return query.toArray() as Promise<BSON.Document[]> as Promise<PostDocument[]>;
   }
 
-  async getPost(id: string) {
-    return this.table.findOne({ _id: new Mongo.ObjectId(id) });
+  async findOne(id: string): Promise<PostDocument | null> {
+    return this.table.findOne({ _id: new ObjectId(id) }) as Promise<PostDocument | null>;
   }
 
-  async getPostBySlug(slug: string) {
+  async findOneBySlug(slug: string) {
     return this.table.findOne({ slug });
   }
 
-  async createPost(body: ObjectType) {
-    body.createdAt = new Date().toISOString();
-    return this.table.insertOne(body);
+  async create(body: CreatePostDTO) {
+    const now = new Date().toISOString();
+    const bodyWithTimestamps = {
+      ...body,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+    };
+    return this.table.insertOne(bodyWithTimestamps);
   }
 
-  async updatePost(id: string, body: ObjectType) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: body });
+  async save(id: string, body: Record<string, unknown>): Promise<UpdateResult<BSON.Document>> {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: body });
   }
-  async deletePost(id: string) {
-    return this.table.updateOne({ _id: new Mongo.ObjectId(id) }, { $set: { deletedAt: new Date().toISOString() } });
+
+  async softDelete(id: string) {
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: { deletedAt: new Date().toISOString() } });
   }
 }
-export default MongoPostRepository.makeInstance();
+
+export const postRepository = MongoPostRepository.makeInstance();
