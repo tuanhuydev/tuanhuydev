@@ -1,5 +1,7 @@
 "use client";
 
+import { AdBanner, parseAdBannerSyntax } from "../common/MDXEditor/nodes/AdBannerNode";
+import { Mermaid } from "../common/Mermaid";
 import { useTheme } from "@resources/hooks/useTheme";
 import Image from "next/image";
 import { JSX, memo, useMemo } from "react";
@@ -14,7 +16,6 @@ import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";
 import scss from "react-syntax-highlighter/dist/esm/languages/hljs/scss";
 import typescript from "react-syntax-highlighter/dist/esm/languages/hljs/typescript";
 import { darcula, docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 // 1. Register Languages
@@ -60,6 +61,11 @@ const createBaseComponents = (darkMode: boolean): Components => ({
       );
     }
 
+    // Handle mermaid diagrams
+    if (match[1] === 'mermaid') {
+      return <Mermaid chart={String(children).replace(/\n$/, "").trim()} />;
+    }
+
     return (
       <SyntaxHighlighter
         PreTag="div"
@@ -92,7 +98,38 @@ const createBaseComponents = (darkMode: boolean): Components => ({
   ),
   h6: createHeading("h6", "text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mt-2 mb-1 leading-normal"),
 
-  p: createBlock("p", "my-3 text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300"),
+  p: ({ children, ...props }) => {
+    // Check if paragraph contains ad-banner syntax
+    try {
+      // Convert children to string - handle arrays and nested elements
+      let textContent = "";
+      if (typeof children === "string") {
+        textContent = children;
+      } else if (Array.isArray(children)) {
+        textContent = children.filter((c) => typeof c === "string").join("");
+      }
+
+      const adBannerMatch = /\[ad-banner\s+[^\]]+\]/.exec(textContent);
+
+      if (adBannerMatch) {
+        const fullMatch = adBannerMatch[0];
+
+        // Use shared parser
+        const { imgUrl, link, alt, description } = parseAdBannerSyntax(fullMatch);
+
+        return <AdBanner imgUrl={imgUrl} link={link} alt={alt} description={description} />;
+      }
+    } catch (error) {
+      console.error("Failed to parse ad-banner in paragraph:", error, "Children:", children);
+      // Fall through to render normal paragraph
+    }
+
+    return (
+      <p {...props} className="my-3 text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300">
+        {children}
+      </p>
+    );
+  },
   ul: createBlock(
     "ul",
     "list-disc pl-5 sm:pl-6 my-3 space-y-1.5 text-sm sm:text-base text-gray-700 dark:text-gray-300",
@@ -112,13 +149,13 @@ const createBaseComponents = (darkMode: boolean): Components => ({
     return <pre className="rounded-lg overflow-auto my-3 sm:my-4">{children}</pre>;
   },
 
-  a: ({ node: _node, ...props }) => (
+  a: ({ node: _node, children, ...props }) => (
     <a
       {...props}
       target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-2 transition-colors cursor-pointer"
-    />
+      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-2 transition-colors cursor-pointer">
+      {children}
+    </a>
   ),
 
   blockquote: ({ node: _node, ...props }) => (
@@ -178,7 +215,7 @@ const MarkdownRenderer = ({ content, className, components }: MarkdownRendererPr
 
   return (
     <div className={className}>
-      <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} components={memoizedComponents}>
+      <Markdown remarkPlugins={[remarkGfm]} components={memoizedComponents}>
         {content}
       </Markdown>
     </div>

@@ -89,7 +89,6 @@ export default function PostView({ post }: PostViewProps) {
             <WithCopy content={`https://tuanhuy.dev/posts/${post.slug}`} title="Share">
               <button className="inline-flex items-center gap-2 rounded-full bg-stone-900 dark:bg-slate-50 text-slate-50 dark:text-stone-900 text-sm uppercase font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-shadow">
                 <LinkIcon className="w-4 h-4" />
-                Share Article
               </button>
             </WithCopy>
           </div>
