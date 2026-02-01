@@ -1,4 +1,4 @@
-import { Input } from "../common/Input";
+import { Textarea } from "../common/Textarea";
 import {
   Control,
   Controller,
@@ -9,28 +9,22 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 
-export enum InputType {
-  TEXT = "text",
-  EMAIL = "email",
-  PASSWORD = "password",
-  NUMBER = "number",
-  TEXTAREA = "textarea",
-}
-export interface FormInputProps<TFieldValues extends FieldValues> {
-  type: InputType;
+export interface FormTextareaProps<TFieldValues extends FieldValues> {
   label?: string;
   name: Path<TFieldValues>;
   control: Control<TFieldValues>;
+  placeholder?: string;
+  rows?: number;
   className?: string;
   [key: string]: unknown;
 }
-export const FormInput = <TFieldValues extends FieldValues>({
-  type,
+
+export const FormTextarea = <TFieldValues extends FieldValues>({
   label,
   control,
   className,
   ...restProps
-}: FormInputProps<TFieldValues>) => {
+}: FormTextareaProps<TFieldValues>) => {
   const render = ({
     field,
     fieldState,
@@ -50,9 +44,8 @@ export const FormInput = <TFieldValues extends FieldValues>({
             {label}
           </label>
         )}
-        <Input
+        <Textarea
           disabled={isDisabled}
-          type={type}
           className={hasError ? "border-red-500 dark:border-red-500" : ""}
           {...field}
           {...restProps}

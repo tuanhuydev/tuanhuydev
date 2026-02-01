@@ -4,14 +4,11 @@ export const QUERY_KEYS = {
   SHOW_MOBILE_HAMBURGER: "showMobileHamburger",
 
   // Data entities
-  PROJECTS: "projects",
   TASKS: "tasks",
   USERS: "users",
   COMMENTS: "comments",
   POSTS: "posts",
-  PERMISSIONS: "permissions",
   RESOURCES: "resources",
-  SPRINTS: "sprints",
   STATUS: "status",
 
   // Special queries

@@ -55,6 +55,9 @@ export const useCreatePost = () => {
 };
 
 export const useUpdatePost = () => {
+  const { notify } = useGlobal();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (post: Partial<Post>) => {
       const response = await fetch(`${BASE_URL}/api/posts/${post?.id}`, {
@@ -64,6 +67,13 @@ export const useUpdatePost = () => {
       if (!response.ok) throw new Error(response.statusText);
       const { data } = (await response.json()) as { data: Post };
       return data;
+    },
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: ["posts"] });
+      notify("Post updated successfully", "success");
+    },
+    onError() {
+      notify("Failed to save post", "error");
     },
   });
 };

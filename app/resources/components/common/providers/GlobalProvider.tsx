@@ -23,9 +23,16 @@ const GlobalProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const notify = useCallback(
     (message: string, severity: ToastSeverity = "info") => {
+      const variantMap = {
+        success: "success",
+        error: "error",
+        warning: "destructive",
+        info: "default",
+      } as const;
+
       toast({
         description: message,
-        variant: severity === "error" ? "destructive" : "default",
+        variant: variantMap[severity],
       });
     },
     [toast],
