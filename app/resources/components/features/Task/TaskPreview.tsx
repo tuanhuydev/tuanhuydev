@@ -32,8 +32,8 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
   const taskStatus = TaskStatus.TODO;
 
   const selectSubTask = (subTask: Record<string, unknown>) => () => {
-    if (!subTask.id || typeof window === undefined) return;
-    window.open(` ${window.location.href}?taskId=${subTask.id as string}`, "_blank");
+    if (!subTask.id || typeof window === "undefined") return;
+    window.open(`${window.location.href}?taskId=${subTask.id as string}`, "_blank");
   };
 
   const submitComment = async (formData: CommentForm) => {

@@ -20,6 +20,7 @@ function Page() {
 
       // Create blob from posts
       const postBlob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      if (typeof window === "undefined") return;
       const url = window.URL.createObjectURL(postBlob);
 
       // Make hidden download element

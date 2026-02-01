@@ -75,7 +75,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </details>
           )}
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => typeof window !== "undefined" && window.location.reload()}
             className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
             Reload Page
           </button>
