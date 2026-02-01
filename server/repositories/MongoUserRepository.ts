@@ -33,11 +33,11 @@ class MongoUserRepository {
     let query = this.table.find(defaultWhere);
 
     if (orderBy) {
-      const sort: Sort = {};
+      const sort: Record<string, unknown> = {};
       (orderBy as Array<{ field: string; direction: "asc" | "desc" }>).forEach((order) => {
         sort[order.field] = order.direction === "desc" ? -1 : 1;
       });
-      query = query.sort(sort);
+      query = query.sort(sort as Sort);
     }
 
     if (page && pageSize) {
