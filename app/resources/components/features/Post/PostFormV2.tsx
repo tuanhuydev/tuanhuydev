@@ -54,7 +54,6 @@ export const PostFormV2: React.FC<PostFormProps> = ({ post }) => {
   );
 
   const handleDelete = useCallback(async () => {
-    console.log(post);
     if (post?.id) {
       await mutateDeletePost(post.id);
       router.push("/dashboard/posts");

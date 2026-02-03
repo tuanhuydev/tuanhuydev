@@ -104,7 +104,12 @@ export const useFetch = () => {
 
         // Handle different types of errors
         if (!response.ok) {
-          if (response.status === HTTP_CODE.UNAUTHORIZED_ERROR) {
+          // Treat 401, 403, and 404 on user endpoints as unauthorized
+          const isAuthEndpoint = url.includes("/users/me") || url.includes("/permissions");
+          if (
+            response.status === HTTP_CODE.UNAUTHORIZED_ERROR ||
+            (isAuthEndpoint && (response.status === 403 || response.status === 404))
+          ) {
             throw new UnauthorizedError("Session expired or invalid");
           }
 
@@ -118,7 +123,7 @@ export const useFetch = () => {
         // Handle unauthorized errors by signing out
         if (error instanceof UnauthorizedError) {
           console.warn("Unauthorized access detected, signing out user");
-          await signOut(); // Don't await to avoid blocking the current request
+          void signOut(); // Don't await to avoid blocking
         }
         throw error;
       }

@@ -1,51 +1,21 @@
 "use client";
 
-import Loader from "@resources/components/common/Loader";
+import { Button } from "@resources/components/common/Button";
 import { ThemeToggle } from "@resources/components/common/ThemeToggle";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
-import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
+import { FormInput, InputType } from "@resources/components/formV2/FormInput";
 import { logService } from "@server/services/LogService";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 import UnauthorizedError from "lib/commons/errors/UnauthorizedError";
-import importDynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import { useForm } from "react-hook-form";
 
-const DynamicForm = importDynamic(() => import("@resources/components/form/DynamicForm"), {
-  ssr: false,
-  loading: () => <Loader />,
-});
-
-const signInFormConfig: DynamicFormConfig = {
-  fields: [
-    {
-      name: "email",
-      type: "email",
-      options: {
-        size: "small",
-        placeholder: "Email",
-      },
-      validate: {
-        required: true,
-      },
-    },
-    {
-      name: "password",
-      type: "password",
-      options: {
-        size: "small",
-        placeholder: "Password",
-      },
-      validate: {
-        required: true,
-      },
-    },
-  ],
-  submitProps: {
-    className: "w-full",
-  },
+type SignInFormData = {
+  email: string;
+  password: string;
 };
 
 export default function SignIn() {
@@ -54,8 +24,19 @@ export default function SignIn() {
   const router = useRouter();
   const { notify } = useGlobal();
 
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
   const submit = useCallback(
-    async (formData: unknown) => {
+    async (formData: SignInFormData) => {
       try {
         const response = await fetch(`${BASE_URL}/api/auth/sign-in`, {
           method: "POST",
@@ -86,9 +67,24 @@ export default function SignIn() {
         <ThemeToggle size="md" />
       </div>
 
-      <div className="h-fit w-96 rounded-md bg-white px-3 pb-5 pt-3 drop-shadow-md dark:bg-slate-800">
-        <h1 className="my-3 px-2 font-sans text-2xl font-bold dark:text-slate-100">Sign In</h1>
-        <DynamicForm config={signInFormConfig} onSubmit={submit} />
+      <div className="h-fit w-96 rounded-md bg-white px-6 pb-6 pt-5 drop-shadow-md dark:bg-slate-800">
+        <h1 className="mb-6 font-sans text-2xl font-bold dark:text-slate-100">Sign In</h1>
+
+        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+          <FormInput label="Email" name="email" type={InputType.EMAIL} control={control} placeholder="Email" />
+
+          <FormInput
+            label="Password"
+            name="password"
+            type={InputType.PASSWORD}
+            control={control}
+            placeholder="Password"
+          />
+
+          <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
       </div>
     </div>
   );

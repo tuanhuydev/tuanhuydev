@@ -1,25 +1,6 @@
-import { QUERY_KEYS } from "./queryKeys";
-import { useFetch } from "@features/Auth";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
-
-export const usePermissions = () => {
-  const { fetch } = useFetch();
-  return useQuery({
-    queryKey: [QUERY_KEYS.PERMISSIONS],
-    queryFn: async ({ signal }) => {
-      const response = await fetch(`${BASE_URL}/api/permissions`, { signal });
-      if (!response.ok) {
-        throw new BaseError(`Failed to fetch permissions: ${response.status} ${response.statusText}`);
-      }
-      const { data: permissions = [] } = (await response.json()) as { data: string[] };
-      return permissions;
-    },
-    staleTime: 10 * 60 * 1000, // 10 minutes - permissions don't change often
-    gcTime: 30 * 60 * 1000, // 30 minutes
-  });
-};
 
 export const useSignOut = () => {
   const queryClient = useQueryClient();
