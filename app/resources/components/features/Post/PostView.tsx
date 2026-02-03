@@ -1,6 +1,7 @@
 import WithCopy from "../../common/hocs/WithCopy";
 import BaseImage from "../../content/BaseImage";
 import { Post } from "@app/resources/types/post.types";
+import { BASE_URL } from "@lib/commons/constants/base";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
 import { LinkIcon, Calendar, Clock, ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -86,10 +87,9 @@ export default function PostView({ post }: PostViewProps) {
                 year: "numeric",
               })}
             </p>
-            <WithCopy content={`https://tuanhuy.dev/posts/${post.slug}`} title="Share">
+            <WithCopy content={`${BASE_URL}/posts/${post.slug}`} title="Share">
               <button className="inline-flex items-center gap-2 rounded-full bg-stone-900 dark:bg-slate-50 text-slate-50 dark:text-stone-900 text-sm uppercase font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-shadow">
                 <LinkIcon className="w-4 h-4" />
-                Share Article
               </button>
             </WithCopy>
           </div>

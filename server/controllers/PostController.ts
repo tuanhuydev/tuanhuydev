@@ -71,7 +71,6 @@ export class PostController {
       body.slug = transformTextToDashed(body.slug);
     }
     if (!id || !body) throw new BadRequestError();
-    console.log(body);
 
     const network = new Network(request);
     try {

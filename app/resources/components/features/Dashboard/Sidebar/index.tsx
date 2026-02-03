@@ -6,17 +6,12 @@ import { Button } from "@resources/components/common/Button";
 import { useMobileSidebar } from "@resources/queries/metaQueries";
 import { QUERY_KEYS } from "@resources/queries/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
-import { UserPermissions } from "lib/commons/constants/permissions";
 import { CircleArrowRight, FileText, Home, Settings } from "lucide-react";
 import { FC, useCallback, useEffect, useState } from "react";
 
 const LargeScreenSize: number = 924;
 
-export interface SidebarProps {
-  permissions: string[];
-}
-
-const Sidebar: FC<SidebarProps> = () => {
+const Sidebar: FC = () => {
   const queryClient = useQueryClient();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true); // Default to open on desktop
   const { data: openMobile } = useMobileSidebar();
@@ -55,38 +50,19 @@ const Sidebar: FC<SidebarProps> = () => {
       path: "/dashboard/home",
       id: "Home",
     },
-  ];
-
-  const permissionMap = {
-    // [UserPermissions.VIEW_PROJECT]: {
-    //   label: "Manage Projects",
-    //   icon: <LayoutGrid className="h-4 w-4" />,
-    //   path: "/dashboard/projects",
-    //   id: UserPermissions.VIEW_PROJECT,
-    // },
-    [UserPermissions.VIEW_POST]: {
+    {
       label: "Manage Posts",
       icon: <FileText className="h-4 w-4" />,
       path: "/dashboard/posts",
-      id: UserPermissions.VIEW_POST,
+      id: "posts",
     },
-    // [UserPermissions.VIEW_USER]: {
-    //   label: "Manage Users",
-    //   icon: <User className="h-4 w-4" />,
-    //   path: "/dashboard/users",
-    //   id: UserPermissions.VIEW_USER,
-    // },
-    [UserPermissions.VIEW_SETTING]: {
+    {
       label: "Settings",
       icon: <Settings className="h-4 w-4" />,
       path: "/dashboard/settings",
-      id: UserPermissions.VIEW_SETTING,
+      id: "settings",
     },
-  };
-
-  Object.values(permissionMap).forEach((key) => {
-    routes.push(key);
-  });
+  ];
 
   return (
     <div

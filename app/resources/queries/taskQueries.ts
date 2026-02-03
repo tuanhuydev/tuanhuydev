@@ -62,13 +62,6 @@ export const useCreateTaskMutation = () => {
       // Invalidate all task-related queries
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
 
-      // If task belongs to a project, invalidate project tasks
-      if (data.projectId) {
-        await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.PROJECTS, "detail", data.projectId, QUERY_KEYS.TASKS],
-        });
-      }
-
       return result;
     },
   });
@@ -96,13 +89,6 @@ export const useUpdateTaskMutation = () => {
       // Invalidate all task-related queries
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
 
-      // If task belongs to a project, invalidate project tasks
-      if (restTask.projectId) {
-        await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.PROJECTS, "detail", restTask.projectId, QUERY_KEYS.TASKS],
-        });
-      }
-
       return result;
     },
   });
@@ -125,15 +111,6 @@ export const useDeleteTaskMutation = () => {
 
       // Invalidate all task-related queries
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TASKS] });
-
-      // Invalidate project tasks (we don't know which project, so invalidate all)
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.PROJECTS],
-        predicate: (query) => {
-          const queryKey = query.queryKey as string[];
-          return queryKey.includes(QUERY_KEYS.TASKS);
-        },
-      });
 
       return result;
     },

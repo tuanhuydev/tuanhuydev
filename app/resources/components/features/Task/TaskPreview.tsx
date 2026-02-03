@@ -3,7 +3,6 @@
 import { CommentForm } from "../../content/CommentForm";
 import { CommentRow } from "../../content/CommentRow";
 import TaskRow from "./TaskRow";
-import { Sprint } from "@lib/types/sprint";
 import { Task } from "@lib/types/task";
 import Badge from "@resources/components/common/Badge";
 import BaseLabel from "@resources/components/content/BaseLabel";
@@ -20,9 +19,8 @@ const ReactMarkdown = lazy(() => import("react-markdown"));
 export interface TaskPreviewProps {
   task: Task | null;
   assignee?: SelectOption<string> | null;
-  sprint?: Sprint;
 }
-export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps) {
+export default function TaskPreview({ task, assignee }: TaskPreviewProps) {
   const { data: subTasks = [] } = useSubTasks(task?.id || ("" as string));
   const { data: comments = [] as Comment[] } = useTaskComment(task?.id as string);
   const { mutateAsync } = useMutateTaskComment(task?.id || "");
@@ -68,12 +66,6 @@ export default function TaskPreview({ task, assignee, sprint }: TaskPreviewProps
           <div className="flex items-center gap-3">
             <BaseLabel className="w-[72px]">Assignee</BaseLabel>
             <span className="text-foreground">{assignee.label}</span>
-          </div>
-        )}
-        {sprint && (
-          <div className="flex items-center gap-3">
-            <BaseLabel className="w-[72px]">Sprint:</BaseLabel>
-            <span className="text-foreground">{sprint.name}</span>
           </div>
         )}
       </div>

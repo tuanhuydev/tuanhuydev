@@ -28,8 +28,6 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
 
   const { email, name } = currentUser as { email?: string; name?: string };
 
-  // State - removed anchorEl and popoverOpen states as they're handled by Popover component
-
   const signOut = useCallback(async () => {
     await signUserOut();
     queryClient.removeQueries();
@@ -99,7 +97,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
               variant="ghost"
               size="sm"
               className="w-full text-left text-xs justify-start hover:text-red-600 dark:hover:text-red-400"
-              onClick={void signOut}>
+              onClick={signOut}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign out
             </Button>
