@@ -1,4 +1,4 @@
-import { Input } from "../common/Input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../common/Select";
 import {
   Control,
   Controller,
@@ -9,28 +9,29 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 
-export enum InputType {
-  TEXT = "text",
-  EMAIL = "email",
-  PASSWORD = "password",
-  NUMBER = "number",
-  TEXTAREA = "textarea",
+export interface SelectOption {
+  value: string;
+  label: string;
 }
-export interface FormInputProps<TFieldValues extends FieldValues> {
-  type: InputType;
+
+export interface FormSelectProps<TFieldValues extends FieldValues> {
   label?: string;
   name: Path<TFieldValues>;
   control: Control<TFieldValues>;
+  placeholder?: string;
+  options: SelectOption[];
   className?: string;
   [key: string]: unknown;
 }
-export const FormInput = <TFieldValues extends FieldValues>({
-  type,
+
+export const FormSelect = <TFieldValues extends FieldValues>({
   label,
   control,
+  placeholder = "Select an option",
+  options,
   className,
   ...restProps
-}: FormInputProps<TFieldValues>) => {
+}: FormSelectProps<TFieldValues>) => {
   const render = ({
     field,
     fieldState,
@@ -50,13 +51,20 @@ export const FormInput = <TFieldValues extends FieldValues>({
             {label}
           </label>
         )}
-        <Input
-          disabled={isDisabled}
-          type={type}
-          className={hasError ? "border-red-500 dark:border-red-500" : ""}
-          {...field}
-          {...restProps}
-        />
+        <Select disabled={isDisabled} onValueChange={field.onChange} value={field.value}>
+          <SelectTrigger className={hasError ? "border-red-500 dark:border-red-500" : ""}>
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldState.error?.message}</p>}
       </div>
     );

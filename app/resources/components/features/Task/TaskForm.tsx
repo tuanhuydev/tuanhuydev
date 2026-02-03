@@ -1,86 +1,92 @@
 "use client";
 
 import { Task } from "@lib/types/task";
-import { DynamicFormConfig } from "@resources/components/form/DynamicForm";
+import { Button } from "@resources/components/common/Button";
+import { FormInput, InputType } from "@resources/components/formV2/FormInput";
+import { FormTextarea } from "@resources/components/formV2/FormTextarea";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "@resources/queries/taskQueries";
 import { logService } from "@server/services/LogService";
-import { Suspense, lazy, useCallback, useEffect } from "react";
-import { UseFormReturn } from "react-hook-form";
-
-const DynamicForm = lazy(() => import("@resources/components/form/DynamicForm"));
+import { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 export interface TaskFormProps {
   task?: Task;
-  config: DynamicFormConfig;
   onDone?: () => void;
   onError?: (error: Error) => void;
   projectId?: number;
 }
 
-export default function TaskForm({ task, projectId, onDone, config }: TaskFormProps) {
+type TaskFormData = {
+  title: string;
+  description: string;
+  type: string;
+};
+
+export default function TaskForm({ task, projectId, onDone }: TaskFormProps) {
   // Hooks
   const { mutateAsync: mutateCrateTask, isPending: isCreating, isSuccess: isCreateSuccess } = useCreateTaskMutation();
   const { mutateAsync: mutateUpdateTask, isPending: isUpdating, isSuccess: isUpdateSuccess } = useUpdateTaskMutation();
 
+  const { control, handleSubmit, reset } = useForm<TaskFormData>({
+    defaultValues: {
+      title: task?.title || "",
+      description: task?.description || "",
+      type: task?.type || "STORY",
+    },
+  });
+
   // Constants
   const creating = isCreating || isUpdating;
   const isSuccess = isCreateSuccess || isUpdateSuccess;
-  const createTaskMutation = useCallback(
-    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
-      try {
-        const newTaskBody = { ...formData, projectId };
-        await mutateCrateTask(newTaskBody);
-      } catch (error) {
-        logService.log(error);
-      } finally {
-        form?.reset();
-      }
-    },
-    [mutateCrateTask, projectId],
-  );
-
-  const updateTaskMutation = useCallback(
-    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
-      try {
-        await mutateUpdateTask(formData as Partial<Task>);
-      } catch (error) {
-        logService.log(error);
-      } finally {
-        form?.reset();
-      }
-    },
-    [mutateUpdateTask],
-  );
-
-  const handleTaskMutation = async (
-    formData: Record<string, unknown>,
-    mutationFn: (data: Record<string, unknown>) => Promise<unknown>,
-    form?: UseFormReturn,
-  ) => {
-    try {
-      await mutationFn(formData);
-    } catch (error) {
-      logService.log(error);
-    } finally {
-      if (form) form?.reset();
-    }
-  };
 
   const onSubmit = useCallback(
-    async (formData: Record<string, unknown>, form?: UseFormReturn) => {
-      const mutationFn = task ? updateTaskMutation : createTaskMutation;
-      await handleTaskMutation(formData, mutationFn, form);
+    async (formData: TaskFormData) => {
+      try {
+        if (task) {
+          await mutateUpdateTask({ ...task, ...formData } as Partial<Task>);
+        } else {
+          const newTaskBody = { ...formData, projectId };
+          await mutateCrateTask(newTaskBody);
+        }
+        reset();
+      } catch (error) {
+        logService.log(error);
+      }
     },
-    [createTaskMutation, task, updateTaskMutation],
+    [mutateCrateTask, mutateUpdateTask, projectId, reset, task],
   );
+
+  useEffect(() => {
+    if (task) {
+      reset({
+        title: task.title || "",
+        description: task.description || "",
+        type: task.type || "STORY",
+      });
+    }
+  }, [task, reset]);
 
   useEffect(() => {
     if (isSuccess && onDone) onDone();
   }, [isSuccess, onDone]);
 
   return (
-    <Suspense fallback={<div>Loading form...</div>}>
-      <DynamicForm disabled={creating} config={config} mapValues={task} onSubmit={onSubmit} />
-    </Suspense>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
+      <FormInput label="Title" name="title" type={InputType.TEXT} control={control} placeholder="Task title" />
+
+      <FormTextarea label="Description" name="description" control={control} placeholder="Task description" rows={4} />
+
+      <FormInput
+        label="Type"
+        name="type"
+        type={InputType.TEXT}
+        control={control}
+        placeholder="STORY, BUG, ISSUE, EPIC"
+      />
+
+      <Button type="submit" disabled={creating} className="w-full">
+        {creating ? (task ? "Updating..." : "Creating...") : task ? "Update Task" : "Create Task"}
+      </Button>
+    </form>
   );
 }

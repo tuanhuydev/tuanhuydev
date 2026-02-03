@@ -8,7 +8,6 @@ import { userRepository } from "@server/repositories/MongoUserRepository";
 import { authService } from "@server/services/AuthService";
 import { logService } from "@server/services/LogService";
 import { NextRequest } from "next/server";
-import { userPermissionRepository } from "server/repositories/MongoUserPermissionRepository";
 import { z } from "zod";
 
 export class UserController {
@@ -169,7 +168,8 @@ export class UserController {
         userId = user.id;
       }
 
-      const userPermissions = await userPermissionRepository.getUserPermissions(userId);
+      // Permissions removed - return empty array for now
+      const userPermissions: unknown[] = [];
       return network.successResponse(userPermissions);
     } catch (error) {
       return network.failResponse(error as BaseError);

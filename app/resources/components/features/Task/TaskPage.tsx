@@ -7,11 +7,7 @@ import Loader from "@resources/components/common/Loader";
 import PageFilter from "@resources/components/common/PageFilter";
 import { VisuallyHidden } from "@resources/components/common/VisuallyHidden";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
-import { DynamicFormConfig, Field } from "@resources/components/form/DynamicForm";
-import { useCurrentUserPermission } from "@resources/queries/permissionQueries";
-import { useSprintQuery } from "@resources/queries/sprintQueries";
 import { useUsersQuery } from "@resources/queries/userQueries";
-import { TaskStatusOptions, TaskTypeOptions } from "@resources/utils/constants";
 import { logService } from "@server/services/LogService";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
@@ -48,8 +44,6 @@ function TaskPage({
   // Hooks
   const queryClient = useQueryClient();
   const { data: users = [] } = useUsersQuery();
-  const { data: sprints = [] } = useSprintQuery(project?.id as string);
-  const { data: permissions = [] } = useCurrentUserPermission();
 
   // States
   const [meta, setMeta] = useState({
@@ -62,12 +56,7 @@ function TaskPage({
   const { selectedTask, openDrawer, mode } = meta;
   const isEditMode = mode === COMPONENT_MODE.EDIT;
 
-  const allowCreateTask = project?.id
-    ? (permissions as Array<Record<string, unknown>>).some((permission: Record<string, unknown> = {}) => {
-        const { action = "", resourceId = "", type = "" } = permission;
-        return action === "create" && type === "task" && ["*", project?.id].includes(resourceId);
-      })
-    : true;
+  const allowCreateTask = true;
 
   const projectUsers = useMemo(() => {
     const { users: projectUserIds = [] } = project;
@@ -111,64 +100,11 @@ function TaskPage({
     setMeta((prevState) => ({ ...prevState, openDrawer: false }));
   }, [queryClient]);
 
-  const TaskFormConfig = useMemo((): DynamicFormConfig => {
-    const fields: Field[] = [
-      {
-        name: "title",
-        type: "text",
-        options: { placeholder: "Task Title" },
-        validate: { required: true },
-      },
-      {
-        name: "type",
-        type: "select",
-        options: {
-          placeholder: "Task Type for example: Bug, Feature, etc.",
-          options: TaskTypeOptions,
-        },
-      },
-      {
-        name: "storyPoint",
-        type: "number",
-        options: { placeholder: "Story Point" },
-      },
-      {
-        name: "status",
-        type: "select",
-        options: {
-          placeholder: "Select Status",
-          options: TaskStatusOptions,
-        },
-        validate: { required: true },
-      },
-      {
-        name: "description",
-        type: "richeditor",
-        className: "min-h-[25rem]",
-        options: { placeholder: "Task Description" },
-        validate: { required: true },
-      },
-    ];
-    if (project?.id) {
-      fields.splice(2, 0, {
-        name: "assigneeId",
-        type: "select",
-        options: {
-          placeholder: "Assignee",
-          options: projectUsers,
-        },
-        validate: { required: true },
-      });
-    }
-    return { fields };
-  }, [project?.id, projectUsers]);
-
   const RenderTaskDetails = useMemo(() => {
     if (isEditMode) {
       return (
         <TaskForm
           projectId={project?.id as number}
-          config={TaskFormConfig}
           onDone={() => void mutateTaskSuccess()}
           onError={mutateTaskError}
           task={selectedTask as Task | undefined}
@@ -178,18 +114,8 @@ function TaskPage({
     const projectUser = projectUsers.find(
       ({ value: userId }: SelectOption<string>) => userId === selectedTask?.assigneeId,
     );
-    const taskSprint = sprints?.find(({ id }: Record<string, unknown>) => id === selectedTask?.sprintId);
-    return <TaskPreview task={selectedTask} assignee={projectUser} sprint={taskSprint} />;
-  }, [
-    isEditMode,
-    projectUsers,
-    sprints,
-    selectedTask,
-    project?.id,
-    TaskFormConfig,
-    mutateTaskSuccess,
-    mutateTaskError,
-  ]);
+    return <TaskPreview task={selectedTask} assignee={projectUser} />;
+  }, [isEditMode, projectUsers, selectedTask, project?.id, mutateTaskSuccess, mutateTaskError]);
 
   const onSelectTask = useCallback((task: Task) => {
     setMeta((prevState) => ({
@@ -235,7 +161,6 @@ function TaskPage({
               <TaskFormTitle
                 task={selectedTask as unknown as Partial<Task>}
                 allowSubTask={!!selectedTask && allowSubTasks}
-                config={TaskFormConfig}
                 mode={mode as "VIEW" | "EDIT"}
                 allowEditTask={!!selectedTask}
                 onClose={toggleDrawer(false)}

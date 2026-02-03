@@ -1,6 +1,5 @@
 // Typography replaced with Tailwind classes
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@resources/components/common/Tooltip";
-import { UserPermissions } from "lib/commons/constants/permissions";
 import { isPathActive } from "lib/utils/helper";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,7 +22,7 @@ export default function Item({ label, icon, path, id }: ItemProps) {
 
   const itemElement = useMemo(
     () => (
-      <Link href={path} key={path} prefetch={false} className={id === UserPermissions.VIEW_SETTING ? "mt-auto" : ""}>
+      <Link href={path} key={path} prefetch={false} className={id === "settings" ? "mt-auto" : ""}>
         <li
           className={`ease-in duration-200 font-sans rounded-sm mb-1 dark:text-slate-300  cursor-pointer py-2 px-3 hover:bg-primary hover:text-slate-50 dark:hover:bg-slate-600 dark:hover:text-slate-50 ${activeClass}`}>
           <div className="capitalize flex items-center gap-2 min-w-0">

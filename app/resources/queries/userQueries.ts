@@ -55,28 +55,11 @@ export const useCurrentUserTasks = (filter = {}) => {
   });
 };
 
-export const useProjectUsers = (projectId: string) => {
-  const { fetch } = useFetch();
-  return useQuery<User[]>({
-    queryKey: [QUERY_KEYS.PROJECTS, projectId, QUERY_KEYS.USERS],
-    queryFn: async ({ signal }) => {
-      const response = await fetch(`${BASE_URL}/api/projects/${projectId}/users`, { signal });
-      if (!response.ok) {
-        throw new BaseError(`Failed to fetch project users: ${response.status} ${response.statusText}`);
-      }
-      const { data: users = [] } = (await response.json()) as { data: User[] };
-      return users;
-    },
-    enabled: !!projectId,
-  });
-};
-
 export const useCurrentUser = () => {
   const { fetch } = useFetch();
 
   return useQuery<User>({
     queryKey: [QUERY_KEYS.CURRENT_USER],
-    enabled: false,
     queryFn: async ({ signal }) => {
       const response = await fetch(`${BASE_URL}/api/users/me`, { signal });
       if (!response.ok) {
@@ -85,6 +68,7 @@ export const useCurrentUser = () => {
       const { data: currentUser } = (await response.json()) as { data: User };
       return currentUser;
     },
+    retry: false, // Don't retry auth failures
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
   });
@@ -139,13 +123,6 @@ export const useUpdateUserDetail = () => {
       // Invalidate users queries
       void queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USERS] }); // Invalidate current user if updating self
       void queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CURRENT_USER] });
-
-      // Invalidate user permissions
-      if (user.id) {
-        void queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.PERMISSIONS, "user", user.id],
-        });
-      }
 
       return result;
     },

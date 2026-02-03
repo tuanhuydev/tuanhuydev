@@ -1,6 +1,6 @@
 import Card from "@resources/components/common/Card";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
-import { Bot, CheckSquare, DollarSign } from "lucide-react";
+import { CheckSquare, DollarSign } from "lucide-react";
 import Link from "next/link";
 
 export default async function Page() {
@@ -9,19 +9,13 @@ export default async function Page() {
       title: "Personal Tasks",
       description: "Organize and track your daily tasks",
       icon: CheckSquare,
-      href: "/dashboard/apps/personal-tasks",
-    },
-    {
-      title: "AI Chat",
-      description: "Chat with AI assistant",
-      icon: Bot,
-      href: "/dashboard/apps/chat",
+      href: "/dashboard/home/personal-tasks",
     },
     {
       title: "Budtr",
       description: "Manage budget and expenses",
       icon: DollarSign,
-      href: "/dashboard/apps/budtr",
+      href: "/dashboard/home/budtr",
     },
   ];
 
