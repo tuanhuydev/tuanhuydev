@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM --platform=linux/amd64 node:25.4.0-alpine AS deps
+FROM --platform=linux/amd64 node:25.6.1-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 # Rebuild the source code only when needed
-FROM --platform=linux/amd64 node:25.4.0-alpine AS builder
+FROM --platform=linux/amd64 node:25.6.1-alpine AS builder
 
 WORKDIR /app
 
@@ -26,7 +26,7 @@ RUN --mount=type=secret,id=DATABASE_URL echo "DATABASE_URL=$(cat /run/secrets/DA
 RUN npm run build
 
 # Production image, copy all the files and run next
-FROM --platform=linux/amd64 node:25.4.0-alpine AS runner
+FROM --platform=linux/amd64 node:25.6.1-alpine AS runner
 WORKDIR /app
 
 # Map environment
