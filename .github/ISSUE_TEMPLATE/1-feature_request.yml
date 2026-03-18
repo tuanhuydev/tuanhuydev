@@ -1,0 +1,36 @@
+name: Feature Request
+description: Suggest an idea or improvement.
+title: "[Feature]: "
+labels: ["feature"]
+assignees:
+  - tuanhuydev
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing your feature idea!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What problem or limitation are you facing?
+      placeholder: Describe the problem...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen?
+      placeholder: Describe your proposed solution...
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any extra details, examples, or mockups.
+      placeholder: Any additional context...
+    validations:
+      required: false
