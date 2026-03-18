@@ -4,7 +4,6 @@ title: "[Feature]: "
 labels: ["feature"]
 assignees:
   - tuanhuydev
-type: feature
 body:
   - type: markdown
     attributes:
