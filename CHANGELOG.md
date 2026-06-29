@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/tuanhuydev/tuanhuydev/compare/v2.1.0...v3.0.0) (2026-06-29)
+
+
+### Features
+
+* **241:** sprint should be in active order ([9ab536a](https://github.com/tuanhuydev/tuanhuydev/commit/9ab536a43efa013bf032d3220f09b437c1a080bb))
+* **252:** convert task into sub-task ([0f2985f](https://github.com/tuanhuydev/tuanhuydev/commit/0f2985f545f109bc0ecb3a2425eb8762e1d142c0))
+* **ai:** setup basic generative chat ([4f37033](https://github.com/tuanhuydev/tuanhuydev/commit/4f370337ad8affbf98da58dd8338da4518bc6f86))
+* **app:** remove mui and re-optimize landing page ([132d5d0](https://github.com/tuanhuydev/tuanhuydev/commit/132d5d0ba5c3cf64a6ea154b8615c4077537f978))
+* **app:** upgrade to next 16 ([9ccd396](https://github.com/tuanhuydev/tuanhuydev/commit/9ccd396e64b5f4f76b31e6826dc4cb77ad838921))
+* **comment:** integrate task comment ([0930513](https://github.com/tuanhuydev/tuanhuydev/commit/0930513978fcf6353f02917c708aab54b6e2cfe2))
+* **comment:** task comment ([683917a](https://github.com/tuanhuydev/tuanhuydev/commit/683917a21bfe4eda8280cc075ae388e4d42d80a4))
+* **form:** new dynamic form and small background util ([cde1f1d](https://github.com/tuanhuydev/tuanhuydev/commit/cde1f1d0263cf4e1c31e95c680e874e569dc1ce3))
+* **github:** setup issue template ([4686466](https://github.com/tuanhuydev/tuanhuydev/commit/468646685892cb504cc1e3e2cec2eaf0139fc631))
+* **landing:** new landing page ([cc6e650](https://github.com/tuanhuydev/tuanhuydev/commit/cc6e6509e281f2705484d36615db48cec5e8c221))
+* **model:** integrate gemini into api ([ad43791](https://github.com/tuanhuydev/tuanhuydev/commit/ad437915c3adb4e55737af1d88fd51e88bf64615))
+* **model:** integrate gemini into api ([e27d318](https://github.com/tuanhuydev/tuanhuydev/commit/e27d318a0f2f2dfbd66f4185f510c1a4f52c7d2b))
+* **task:** task story point ([a404d67](https://github.com/tuanhuydev/tuanhuydev/commit/a404d6761823f3e48942bcf47d3090ffd39b3b85))
+
+
+### Bug Fixes
+
+* **app:** next 16 linter ([deb84cb](https://github.com/tuanhuydev/tuanhuydev/commit/deb84cb03b9537a9c2ecbfc89927e53c8504c481))
+* **component:** migrate client-side to server-side ([63f2741](https://github.com/tuanhuydev/tuanhuydev/commit/63f2741e02bc9a7f500bf8f5f53cd2521713f460))
+* Dockerfile to reduce vulnerabilities ([b416bec](https://github.com/tuanhuydev/tuanhuydev/commit/b416becafbade4ef5752c4120b5187b2c8b36384))
+* Dockerfile to reduce vulnerabilities ([6443931](https://github.com/tuanhuydev/tuanhuydev/commit/64439317ef7f273a4283775635f811adc8980882))
+* Dockerfile to reduce vulnerabilities ([8d307e7](https://github.com/tuanhuydev/tuanhuydev/commit/8d307e7316de0e5bf5e1309d18caf77151e34229))
+* **input:** disabled color match text color ([988449e](https://github.com/tuanhuydev/tuanhuydev/commit/988449ec5a48e302cffbc9d11d278fd8ef575196))
+* **modal:** increase zindex of modal ([076b996](https://github.com/tuanhuydev/tuanhuydev/commit/076b9969c2c4c11d2759f4bedcc6ac4a47224846))
+* package.json & package-lock.json to reduce vulnerabilities ([18334ab](https://github.com/tuanhuydev/tuanhuydev/commit/18334abd0df9fecae0e837cc9182bdfe976e1ca0))
+* package.json & package-lock.json to reduce vulnerabilities ([b3ec922](https://github.com/tuanhuydev/tuanhuydev/commit/b3ec922c1da9cc38419c135859f616d722f4a85b))
+* package.json & package-lock.json to reduce vulnerabilities ([174dbc0](https://github.com/tuanhuydev/tuanhuydev/commit/174dbc05d50fd3661a7c02a766f81ca81ebb0284))
+* package.json & package-lock.json to reduce vulnerabilities ([99dfa18](https://github.com/tuanhuydev/tuanhuydev/commit/99dfa1843040d88fa56d9f404316f0bc8bba23b0))
+* **post:** re-organize post structure ([2c8c08c](https://github.com/tuanhuydev/tuanhuydev/commit/2c8c08c0e411a7bbb577b5e6d4beb15c06398036))
+* **project:** tasks and sub-tasks are not sync ([a01586e](https://github.com/tuanhuydev/tuanhuydev/commit/a01586e8df39a9b77adb8304bc1772ef9118fd1b))
+* **queries:** enhance structure ([686be1f](https://github.com/tuanhuydev/tuanhuydev/commit/686be1f2c7023431747e13d9ea0dad15b36e3985))
+* upgrade @next/bundle-analyzer from 15.3.1 to 15.5.7 ([7b4e21d](https://github.com/tuanhuydev/tuanhuydev/commit/7b4e21d5189fe1b94706e796065db670418095e8))
+* upgrade @next/bundle-analyzer from 16.1.0 to 16.1.3 ([357b8f3](https://github.com/tuanhuydev/tuanhuydev/commit/357b8f37e107e7d4fccbc756c12b81df264183d6))
+* upgrade @next/third-parties from 15.3.1 to 15.5.7 ([e8cce8f](https://github.com/tuanhuydev/tuanhuydev/commit/e8cce8f5de59a75b69f8f3a5a078c058a70cae21))
+* upgrade framer-motion from 12.6.2 to 12.23.26 ([9fd2409](https://github.com/tuanhuydev/tuanhuydev/commit/9fd240903e09757893814491a2cbb6ebde1f43a8))
+* upgrade lucide-react from 0.556.0 to 0.562.0 ([145a525](https://github.com/tuanhuydev/tuanhuydev/commit/145a525b48167202ffd1145d789833e7be9c642d))
+* upgrade mongodb from 6.15.0 to 6.21.0 ([2e31ee3](https://github.com/tuanhuydev/tuanhuydev/commit/2e31ee3fb9f755187aae5bc7d753b1f45733f4b0))
+* upgrade zod from 3.24.2 to 3.25.76 ([7cea231](https://github.com/tuanhuydev/tuanhuydev/commit/7cea23186977ad15ba95b2497b239e83298b49bd))
+
 ## [2.1.0](https://github.com/tuanhuydev/tuanhuydev/compare/v2.0.0...v2.1.0) (2025-04-10)
 
 ### Features

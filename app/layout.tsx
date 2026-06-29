@@ -8,8 +8,14 @@ import "@resources/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { isDevelopmentEnv } from "lib/commons/constants/base";
-import { type Viewport } from "next";
+import { type Metadata, type Viewport } from "next";
 import { PropsWithChildren, Suspense } from "react";
+
+export const metadata: Metadata = {
+  verification: {
+    google: "gYd2c34ZXyS2chY0g_MILlCnSJ5DyhRb2VEwm4ilqRk",
+  },
+};
 
 export const runtime = "nodejs";
 
