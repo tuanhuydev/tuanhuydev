@@ -1,5 +1,6 @@
 import { PostsScrollFadeObserver } from "./components/PostsScrollFadeObserver";
 import SiteFooter from "./components/SiteFooter";
+import ThemeToggle from "./components/ThemeToggle";
 import styles from "./posts.module.css";
 import { PostJSON } from "@server/models/post.model";
 import { format } from "date-fns";
@@ -26,6 +27,7 @@ export default async function PostsPage() {
         <Link className={styles.navLogo} href="/">
           tuanhuydev
         </Link>
+        <ThemeToggle className={styles.navToggle} />
         <Link className={styles.navCta} href="/#contact">
           Contact
         </Link>

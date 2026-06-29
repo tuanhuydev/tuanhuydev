@@ -1,5 +1,6 @@
 import { PostObservers } from "./components/PostObservers";
 import SiteFooter from "./components/SiteFooter";
+import ThemeToggle from "./components/ThemeToggle";
 import styles from "./post.module.css";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
 import { PostJSON } from "@server/models/post.model";
@@ -36,6 +37,7 @@ export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) 
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
+        <ThemeToggle className={styles.navToggle} />
         <Link className={styles.navCta} href="/#contact">
           Contact
         </Link>

@@ -1,5 +1,5 @@
 .footer {
-  border-top: 1px solid var(--lp-border, #e6e5e1);
+  border-top: 1px solid var(--site-border);
   padding: 28px 80px;
   max-width: 1280px;
   margin: 0 auto;
@@ -12,7 +12,7 @@
 
 .footerCopy {
   font-size: 13px;
-  color: var(--lp-fg-3, #a3a3a3);
+  color: var(--site-fg-3);
   margin: 0;
 }
 
@@ -23,31 +23,15 @@
 
 .footerLinks a {
   font-size: 13px;
-  color: var(--lp-fg-3, #a3a3a3);
+  color: var(--site-fg-3);
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .footerLinks a:hover {
-  color: var(--lp-fg, #0d0d0d);
+  color: var(--site-fg);
 }
 
-/* Dark mode for non-landing pages (Tailwind dark class) */
-:global(.dark) .footer {
-  border-top-color: #374151;
-}
-
-:global(.dark) .footerCopy {
-  color: #9ca3af;
-}
-
-:global(.dark) .footerLinks a {
-  color: #9ca3af;
-}
-
-:global(.dark) .footerLinks a:hover {
-  color: #f9fafb;
-}
 
 @media (max-width: 1023px) {
   .footer {
