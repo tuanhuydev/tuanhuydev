@@ -16,10 +16,6 @@ interface UseTaskFilterReturn<T extends FilterType = FilterType> {
   clearSearch: () => void;
 }
 
-/**
- * Shared hook for managing task filter state with debounced search
- * Eliminates code duplication across task pages
- */
 export function useTaskFilter<T extends FilterType = FilterType>({
   initialFilter = {} as T,
   onFilterChange,
@@ -28,7 +24,6 @@ export function useTaskFilter<T extends FilterType = FilterType>({
   const [filter, setFilter] = useState<T>(initialFilter);
   const [searchValue, setSearchValue] = useState("");
 
-  // Debounced search handler that updates the filter
   const updateSearchFilter = useCallback(
     (search: string) => {
       setFilter((prevFilter) => {
@@ -45,17 +40,15 @@ export function useTaskFilter<T extends FilterType = FilterType>({
 
   const debouncedSearchUpdate = useDebounce(updateSearchFilter, debounceDelay);
 
-  // Handle search input with immediate UI update and debounced filter update
   const handleSearch = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const search = event.target.value;
-      setSearchValue(search); // Update UI immediately
-      debouncedSearchUpdate(search); // Debounce the filter update
+      setSearchValue(search);
+      debouncedSearchUpdate(search);
     },
     [debouncedSearchUpdate],
   );
 
-  // Handle filter changes (e.g., status, project selection)
   const handleFilterChange = useCallback(
     (newFilter: Partial<T>) => {
       const updatedFilter = { ...filter, ...newFilter } as T;
@@ -65,7 +58,6 @@ export function useTaskFilter<T extends FilterType = FilterType>({
     [filter, onFilterChange],
   );
 
-  // Clear search value
   const clearSearch = useCallback(() => {
     setSearchValue("");
     const { ...rest } = filter;

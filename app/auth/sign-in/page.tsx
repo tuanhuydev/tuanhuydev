@@ -5,7 +5,6 @@ import { ThemeToggle } from "@resources/components/common/ThemeToggle";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
 import { FormInput, InputType } from "@resources/components/formV2/FormInput";
 import { logService } from "@server/services/LogService";
-import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { BASE_URL } from "lib/commons/constants/base";
 import BaseError from "lib/commons/errors/BaseError";
 import UnauthorizedError from "lib/commons/errors/UnauthorizedError";
@@ -19,8 +18,6 @@ type SignInFormData = {
 };
 
 export default function SignIn() {
-  // Hooks
-  const queryClient = useQueryClient();
   const router = useRouter();
   const { notify } = useGlobal();
 
@@ -29,10 +26,7 @@ export default function SignIn() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<SignInFormData>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const submit = useCallback(
@@ -48,15 +42,14 @@ export default function SignIn() {
         const { data = {} } = (await response.json()) as { data?: { accessToken: string } };
         if (!data || !("accessToken" in data)) throw new UnauthorizedError("Invalid Credentials");
 
-        await queryClient.setQueryData(["accessToken" as unknown as QueryKey], data.accessToken);
         localStorage.setItem("accessToken", data.accessToken as string);
-        router.push("/dashboard/home");
+        router.push("/dashboard/posts");
       } catch (error) {
         logService.log(error as BaseError);
         notify((error as BaseError).message, "error");
       }
     },
-    [notify, queryClient, router],
+    [notify, router],
   );
 
   return (
@@ -72,7 +65,6 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit(submit)} className="space-y-4">
           <FormInput label="Email" name="email" type={InputType.EMAIL} control={control} placeholder="Email" />
-
           <FormInput
             label="Password"
             name="password"
@@ -80,7 +72,6 @@ export default function SignIn() {
             control={control}
             placeholder="Password"
           />
-
           <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>

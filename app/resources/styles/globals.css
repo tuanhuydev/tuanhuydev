@@ -76,22 +76,19 @@ body {
 
 html {
   scroll-behavior: smooth !important;
+}
 
-  /* Track */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 button,
@@ -108,6 +105,7 @@ input:-webkit-autofill:active,
 input:-internal-autofill-selected {
   color: #030712 !important;
 }
+
 input:-webkit-autofill {
   -webkit-text-fill-color: theme("colors.slate.500") !important;
   -webkit-box-shadow: 0 0 0 1rem transparent inset !important;
@@ -118,7 +116,6 @@ input:-webkit-autofill {
   z-index: 2000 !important;
 }
 
-/* PostView code block styling for better dark mode support */
 .markdown-content pre {
   font-family: "Fira Code", "Courier New", monospace;
   font-weight: 400;

@@ -1,76 +1,43 @@
 "use client";
 
-import Group, { GroupProps } from "./Group";
 import Item, { ItemProps } from "./Item";
+import { useSidebar } from "../SidebarContext";
 import { Button } from "@resources/components/common/Button";
-import { useMobileSidebar } from "@resources/queries/metaQueries";
-import { QUERY_KEYS } from "@resources/queries/queryKeys";
-import { useQueryClient } from "@tanstack/react-query";
-import { CircleArrowRight, FileText, Home, Settings } from "lucide-react";
+import { CircleArrowRight, FileText } from "lucide-react";
 import { FC, useCallback, useEffect, useState } from "react";
 
-const LargeScreenSize: number = 924;
+const LargeScreenSize = 924;
 
 const Sidebar: FC = () => {
-  const queryClient = useQueryClient();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true); // Default to open on desktop
-  const { data: openMobile } = useMobileSidebar();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { mobileOpen, toggleMobile } = useSidebar();
 
-  // Handle Resize Events
   useEffect(() => {
     const handleResize = () => {
-      const isMobile = window.innerWidth < LargeScreenSize;
-      // If switching to desktop, ensure mobile menu state is cleared
-      if (!isMobile) {
-        queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], false);
-      }
+      if (window.innerWidth >= LargeScreenSize && mobileOpen) toggleMobile();
     };
-
-    // Run once on mount
-    handleResize();
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [queryClient]);
+  }, [mobileOpen, toggleMobile]);
 
   const toggleSidebar = useCallback(() => {
-    const isMobile = window.innerWidth < LargeScreenSize;
-
-    if (isMobile) {
-      queryClient.setQueryData([QUERY_KEYS.SHOW_MOBILE_HAMBURGER], !openMobile);
+    if (window.innerWidth < LargeScreenSize) {
+      toggleMobile();
     } else {
-      setSidebarOpen((prev) => !prev);
+      setSidebarOpen((p) => !p);
     }
-  }, [openMobile, queryClient]);
+  }, [toggleMobile]);
 
-  const routes: Array<ItemProps> = [
-    {
-      label: "Home",
-      icon: <Home className="h-4 w-4" />,
-      path: "/dashboard/home",
-      id: "Home",
-    },
-    {
-      label: "Manage Posts",
-      icon: <FileText className="h-4 w-4" />,
-      path: "/dashboard/posts",
-      id: "posts",
-    },
-    {
-      label: "Settings",
-      icon: <Settings className="h-4 w-4" />,
-      path: "/dashboard/settings",
-      id: "settings",
-    },
+  const routes: ItemProps[] = [
+    { label: "Posts", icon: <FileText className="h-4 w-4" />, path: "/dashboard/posts", id: "posts" },
   ];
 
   return (
     <div
       className={`${
-        !openMobile ? "-translate-x-[110%] lg:translate-x-0" : "translate-x-0"
+        !mobileOpen ? "-translate-x-[110%] lg:translate-x-0" : "translate-x-0"
       } fixed z-10 flex h-full flex-col border-0 bg-slate-50 p-2 drop-shadow-md transition-transform duration-300 ease-in dark:border-r dark:border-solid dark:border-slate-800 dark:bg-slate-800 lg:relative`}>
       <div className="flex h-14 items-center justify-center truncate">
-        {/* SVG Logo */}
         <svg
           width="32"
           height="32"
@@ -88,17 +55,18 @@ const Sidebar: FC = () => {
         variant="ghost"
         size="icon"
         onClick={toggleSidebar}>
-        <CircleArrowRight className={`h-4 w-4 transition-transform duration-300 ${sidebarOpen ? "rotate-180" : ""}`} />
+        <CircleArrowRight
+          className={`h-4 w-4 transition-transform duration-300 ${sidebarOpen ? "rotate-180" : ""}`}
+        />
       </Button>
 
       <ul
         className={`${
           sidebarOpen ? "w-[12.25rem]" : "w-[2.4rem]"
         } m-0 flex grow list-none flex-col overflow-x-hidden p-0 duration-150 ease-in`}>
-        {routes.map((route) => {
-          const isGroup = "children" in route && Array.isArray(route.children) && route.children.length > 0;
-          return isGroup ? <Group {...(route as GroupProps)} key={route.id} /> : <Item {...route} key={route.id} />;
-        })}
+        {routes.map((route) => (
+          <Item {...route} key={route.id} />
+        ))}
       </ul>
     </div>
   );

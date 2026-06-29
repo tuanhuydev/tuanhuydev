@@ -2,8 +2,7 @@
 
 import { useFetch } from "./useFetch";
 import { BASE_URL } from "@lib/commons/constants/base";
-import BaseError from "@lib/commons/errors/BaseError";
-import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 
 export interface User {
   id: string;
@@ -14,52 +13,38 @@ export interface User {
   deletedAt: Date | string | null;
 }
 
-/**
- * Comprehensive authentication hook that provides user state and auth utilities
- */
 export const useAuth = () => {
-  const { fetch, signOut, isSigningOut } = useFetch();
+  const { fetch, signOut } = useFetch();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userError, setUserError] = useState<Error | null>(null);
 
-  // Current user query
-  const {
-    data: currentUser,
-    isLoading: isLoadingUser,
-    error: userError,
-    refetch: refetchUser,
-  } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async ({ signal }) => {
-      const response = await fetch(`${BASE_URL}/api/users/me`, { signal });
-      if (!response.ok) {
-        const error = new BaseError(`Failed to fetch current user: ${response.status} ${response.statusText}`);
-        throw error;
-      }
-      const { data: user = {} } = (await response.json()) as { data: User };
-      return user as User;
-    },
-    retry: false, // Don't retry auth failures
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-  });
+  const fetchUser = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/api/users/me`);
+      const { data } = (await response.json()) as { data: User };
+      setCurrentUser(data);
+      setUserError(null);
+    } catch (error) {
+      setUserError(error as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetch]);
 
-  // Computed state
-  const isAuthenticated = !!currentUser && !userError;
-  const isLoading = isLoadingUser;
+  useEffect(() => {
+    void fetchUser();
+  }, [fetchUser]);
 
   return {
-    // User state
     currentUser,
-    isAuthenticated,
+    isAuthenticated: !!currentUser && !userError,
     isLoading,
-    isSigningOut,
-
-    // Errors
     userError,
-
-    // Methods
     fetch,
     signOut,
-    refetchUser,
+    refetchUser: fetchUser,
   };
 };
 
