@@ -59,6 +59,32 @@
   }
 }
 
+/* ── Site color tokens ── */
+:root {
+  --site-bg: #ffffff;
+  --site-bg-soft: #f0f7f9;
+  --site-fg: #0d0d0d;
+  --site-fg-2: #525252;
+  --site-fg-3: #a3a3a3;
+  --site-border: #e6e5e1;
+  --site-primary: #172733;
+  --site-primary-600: #244050;
+  --site-primary-tint: #eef1f3;
+  --site-green: #1f8a5b;
+}
+
+.dark {
+  --site-bg: #0d1117;
+  --site-bg-soft: #161b22;
+  --site-fg: #e6edf3;
+  --site-fg-2: #c9d1d9;
+  --site-fg-3: #8b949e;
+  --site-border: #30363d;
+  --site-primary: #c8956c;
+  --site-primary-600: #b8845c;
+  --site-primary-tint: #2d1f14;
+}
+
 * {
   box-sizing: border-box;
 }

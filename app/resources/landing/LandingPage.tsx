@@ -1,5 +1,6 @@
 import BlogSection from "./components/BlogSection";
 import { ScrollFadeObserver } from "./components/ScrollFadeObserver";
+import ThemeToggle from "./components/ThemeToggle";
 import styles from "./landing.module.css";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -32,6 +33,7 @@ export default function LandingPage() {
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
+        <ThemeToggle className={styles.navToggle} />
         <Link className={styles.navCta} href="#contact">
           Contact
         </Link>
