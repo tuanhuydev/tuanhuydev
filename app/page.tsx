@@ -57,15 +57,15 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-const HomePageContent = ({ children }: { children: React.ReactNode }) => {
+const LandingPageWrapper = ({ children }: { children: React.ReactNode }) => {
   return <Transition>{children}</Transition>;
 };
 
 export default function Home() {
   return (
-    <HomePageContent>
+    <LandingPageWrapper>
       <LandingPage />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-    </HomePageContent>
+    </LandingPageWrapper>
   );
 }

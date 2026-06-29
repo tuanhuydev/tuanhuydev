@@ -1,34 +1,30 @@
 import { Post } from "@app/resources/types/post.types";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Transition from "@resources/components/common/Transition";
-import PostView from "@resources/components/features/Post/PostView";
-import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
+import PostDetailPage from "@resources/landing/PostDetailPage";
+import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
 
 export const revalidate = 60;
 export const dynamicParams = true;
 
-interface MetaDataParams {
-  params: Promise<{
-    slug: string;
-  }>;
+interface PageParams {
+  params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata(props: MetaDataParams, parent: ResolvingMetadata): Promise<Metadata> {
-  const params = await props.params;
-  const { slug } = params;
+export async function generateMetadata(props: PageParams, parent: ResolvingMetadata): Promise<Metadata> {
+  const { slug } = await props.params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
 
   const previousImages = (await parent).openGraph?.images || [];
   const currentPostURL = new URL(`${BASE_URL}/posts/${slug}`);
 
-  // Extract a clean description from content (remove HTML tags)
   const cleanDescription =
     post.content
-      .replace(/<[^>]*>/g, "") // Remove HTML tags
-      .replace(/\s+/g, " ") // Replace multiple spaces with single space
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
       .trim()
       .slice(0, 155) + (post.content.length > 155 ? "..." : "");
 
@@ -70,7 +66,7 @@ export async function generateMetadata(props: MetaDataParams, parent: ResolvingM
       publishedTime: post.publishedAt
         ? new Date(post.publishedAt).toISOString()
         : new Date(post.createdAt).toISOString(),
-      modifiedTime: post.updatedAt ? new Date(post.updatedAt).toISOString() : new Date(post.createdAt).toISOString(),
+      modifiedTime: new Date(post.updatedAt).toISOString(),
       section: "Technology",
       tags: ["web development", "programming", "technology"],
     },
@@ -81,41 +77,36 @@ export async function generateMetadata(props: MetaDataParams, parent: ResolvingM
       images: [post.thumbnail ?? "/assets/images/preview.png"],
       creator: "@tuanhuydev",
     },
-    alternates: {
-      canonical: currentPostURL,
-    },
+    alternates: { canonical: currentPostURL },
   };
 }
 
 export async function generateStaticParams() {
   try {
     const posts: Post[] = await getPosts({ published: true });
-    return posts.map((post) => ({
-      slug: String(post.slug),
-    }));
-  } catch (error) {
-    console.error("Failed to fetch posts:", error);
+    return posts.map((post) => ({ slug: String(post.slug) }));
+  } catch {
     return [];
   }
 }
 
-interface PageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
+export default async function Page(props: PageParams) {
+  const { slug } = await props.params;
 
-export default async function Page(props: PageProps) {
-  const params = await props.params;
-  const { slug } = params;
+  const [post, allPosts] = await Promise.all([
+    getPostBySlug(slug),
+    getPosts({ publishedAt: true, sortBy: "publishedAt", sortOrder: "desc" }),
+  ]);
 
-  const post = await getPostBySlug(slug);
   if (!post) return <h1>Not Found</h1>;
 
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
+  const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+
   return (
-    <Transition>
-      <PostView post={post} />
+    <>
+      <PostDetailPage post={post} nextPost={nextPost} />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
-    </Transition>
+    </>
   );
 }

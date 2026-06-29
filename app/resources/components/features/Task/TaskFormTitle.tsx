@@ -177,11 +177,7 @@ export default function TaskFormTitle({
 
   // Task Actions
   const handleCloseCallback = useCallback(() => onClose(false), [onClose]);
-  const { handleDelete, handleCreateSubTask, handleConvertToTask, isCreateSuccess } = useTaskActions(
-    task,
-    notify,
-    handleCloseCallback,
-  );
+  const { handleDelete, handleConvertToTask, isCreateSuccess } = useTaskActions(task, notify, handleCloseCallback);
 
   // Constants
   const isViewMode = mode === TASK_FORM_MODE.VIEW;

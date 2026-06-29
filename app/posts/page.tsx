@@ -1,41 +1,29 @@
-import PostsGrid from "../resources/components/features/Post/PostsGrid";
-import { Navbar } from "@features/Landing/components/Navbar";
-import BentoGrid from "@resources/components/features/Post/BentoGrid";
-import { Footer } from "@resources/landing/components/Footer";
-import { getPosts } from "@server/actions/blogActions";
+import PostsPage from "@resources/landing/PostsPage";
+import { Metadata } from "next";
 
-export const dynamic = "force-dynamic"; // Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
-export const revalidate = 3600; // Revalidate every hour
-
-const Page = async () => {
-  const posts = await getPosts({ publishedAt: true, sortBy: "publishedAt", sortOrder: "desc" });
-
-  return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 px-4">
-      <Navbar />
-      <div className="w-full grow lg:w-4/5 lg:w-4xl mx-auto pt-32 flex flex-col">
-        <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Recent Posts</h2>
-
-        {/* Feature Posts Bento Grid */}
-        {posts && posts.length > 0 && (
-          <div className="mb-12">
-            <BentoGrid featurePosts={posts.slice(0, 3)} className="mb-8" />
-          </div>
-        )}
-
-        {/* Rest of Posts in Masonry Grid */}
-        {posts && posts.length > 3 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">More Posts</h2>
-            <PostsGrid posts={posts.slice(3)} />
-          </div>
-        )}
-
-        <Footer />
-      </div>
-    </main>
-  );
+export const metadata: Metadata = {
+  title: "Posts | tuanhuydev",
+  description: "Thoughts on software engineering, career growth, and building things that matter.",
+  openGraph: {
+    title: "Posts | tuanhuydev",
+    description: "Thoughts on software engineering, career growth, and building things that matter.",
+    url: "https://tuanhuy.dev/posts",
+    siteName: "tuanhuydev",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Posts | tuanhuydev",
+    description: "Thoughts on software engineering, career growth, and building things that matter.",
+  },
+  alternates: { canonical: "https://tuanhuy.dev/posts" },
+  robots: { index: true, follow: true },
 };
 
-export default Page;
+export default function Page() {
+  return <PostsPage />;
+}
