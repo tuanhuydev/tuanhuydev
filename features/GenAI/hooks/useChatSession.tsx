@@ -1,7 +1,6 @@
 import { useFetch } from "@features/Auth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
-// Types for hook options
 export interface NewChatSessionOptions {
   onMutate?: (prompt?: string) => void | Promise<void>;
   onSuccess?: (data: { id: string; name: string }, prompt?: string) => void;
@@ -18,43 +17,34 @@ export interface DeleteChatSessionOptions {
 
 export const useNewChatSession = ({ onMutate, onSuccess, onError }: NewChatSessionOptions = {}) => {
   const { fetch: authFetch } = useFetch();
-  const queryClient = useQueryClient();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation({
-    mutationFn: async (prompt?: string) => {
-      const response = await authFetch("/api/ai/chats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create chat session");
-      }
-
-      return response.json() as Promise<{ id: string; name: string }>;
-    },
-    onMutate: async (prompt?: string) => {
-      if (onMutate) {
-        await onMutate(prompt);
-      }
-    },
-    onSuccess: async (data: { id: string; name: string }, prompt?: string) => {
-      await queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
-
-      if (onSuccess) {
-        onSuccess(data, prompt);
+  const mutateAsync = useCallback(
+    async (prompt?: string) => {
+      setIsPending(true);
+      try {
+        if (onMutate) await onMutate(prompt);
+        const response = await authFetch("/api/ai/chats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+        if (!response.ok) throw new Error("Failed to create chat session");
+        const data = (await response.json()) as { id: string; name: string };
+        onSuccess?.(data, prompt);
+        return data;
+      } catch (error) {
+        console.error("Error creating chat session:", error);
+        onError?.(error as Error, prompt);
+        throw error;
+      } finally {
+        setIsPending(false);
       }
     },
-    onError: (error: Error, prompt?: string) => {
-      console.error("Error creating chat session:", error);
-      if (onError) {
-        onError(error, prompt);
-      }
-    },
-  });
+    [authFetch, onMutate, onSuccess, onError],
+  );
+
+  return { mutateAsync, isPending };
 };
 
 export const useDeleteChatSession = ({
@@ -65,37 +55,27 @@ export const useDeleteChatSession = ({
   setSelectedId,
 }: DeleteChatSessionOptions = {}) => {
   const { fetch: authFetch } = useFetch();
-  const queryClient = useQueryClient();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation({
-    mutationFn: async (chatId: string) => {
-      await authFetch(`/api/ai/chats/${chatId}`, {
-        method: "DELETE",
-      });
-      return chatId;
-    },
-    onMutate: async (chatId: string) => {
-      if (onMutate) {
-        await onMutate(chatId);
+  const mutateAsync = useCallback(
+    async (chatId: string) => {
+      setIsPending(true);
+      try {
+        if (onMutate) await onMutate(chatId);
+        await authFetch(`/api/ai/chats/${chatId}`, { method: "DELETE" });
+        if (selectedId === chatId && setSelectedId) setSelectedId("new");
+        onSuccess?.(chatId);
+        return chatId;
+      } catch (error) {
+        console.error("Error deleting chat session:", error);
+        onError?.(error as Error, chatId);
+        throw error;
+      } finally {
+        setIsPending(false);
       }
     },
-    onSuccess: async (chatId: string) => {
-      await queryClient.invalidateQueries({ queryKey: ["ai", "chats"] });
+    [authFetch, onMutate, onSuccess, onError, selectedId, setSelectedId],
+  );
 
-      // If the deleted session was selected, reset to a default
-      if (selectedId === chatId && setSelectedId) {
-        setSelectedId("new");
-      }
-
-      if (onSuccess) {
-        onSuccess(chatId);
-      }
-    },
-    onError: (error: Error, chatId: string) => {
-      console.error("Error deleting chat session:", error);
-      if (onError) {
-        onError(error, chatId);
-      }
-    },
-  });
+  return { mutateAsync, isPending };
 };

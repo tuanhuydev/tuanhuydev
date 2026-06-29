@@ -4,138 +4,85 @@ import AuthApiService from "../services/AuthApiService";
 import { HTTP_CODE } from "@lib/commons/constants/httpCode";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 
-/**
- * Enhanced authenticated fetch hook with improved error handling and token management
- */
+const getAccessToken = (): string | null => {
+  try {
+    return localStorage.getItem("accessToken");
+  } catch {
+    return null;
+  }
+};
+
+const clearAccessToken = (): void => {
+  try {
+    localStorage.removeItem("accessToken");
+  } catch {
+    // ignore
+  }
+};
+
 export const useFetch = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const isSigningOutRef = useRef(false);
 
-  /**
-   * Sign out user and clean up auth state
-   */
   const signOut = useCallback(async () => {
-    if (isSigningOutRef.current) {
-      return; // Prevent multiple simultaneous signouts
-    }
-
+    if (isSigningOutRef.current) return;
     try {
       isSigningOutRef.current = true;
-
-      // Call API to sign out
       await AuthApiService.signOut();
-
-      // Clear only auth-related queries to preserve non-sensitive data
-      await queryClient.cancelQueries();
-      queryClient.removeQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0] as string;
-          return ["accessToken", "currentUser", "permissions", "userPermissions"].includes(key);
-        },
-      });
-
-      // Navigate to sign in
-      router.replace("/auth/sign-in");
     } catch (error) {
       console.error("Sign out error:", error);
-      // Even if API call fails, still clean up client state
-      queryClient.clear();
-      router.replace("/auth/sign-in");
     } finally {
+      clearAccessToken();
       isSigningOutRef.current = false;
+      router.replace("/auth/sign-in");
     }
-  }, [queryClient, router]);
+  }, [router]);
 
-  /**
-   * Enhanced fetch with authentication and better error handling
-   */
   const fetchWithAuth = useCallback(
     async (url: string, options: RequestInit = {}): Promise<Response> => {
-      // Prevent requests during sign out process
-      if (isSigningOutRef.current) {
-        throw new Error("Authentication in progress, please wait");
+      if (isSigningOutRef.current) throw new Error("Authentication in progress, please wait");
+
+      const accessToken = getAccessToken();
+
+      if (!accessToken || !AuthApiService.isValidTokenFormat(accessToken)) {
+        void signOut();
+        throw new UnauthorizedError("Access token is missing or invalid");
       }
 
-      try {
-        const accessToken = queryClient.getQueryData<string>(["accessToken"]);
+      const method = options.method?.toUpperCase();
+      const hasBody = options.body !== undefined;
+      const needsContentType = hasBody && ["POST", "PUT", "PATCH"].includes(method ?? "GET");
 
-        if (!accessToken) {
-          const error = new UnauthorizedError("Access token is missing");
-          console.warn("No access token found, signing out user");
-          await signOut(); // Sign out immediately for missing token
-          throw error;
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${accessToken}`,
+        ...(needsContentType ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers as Record<string, string>),
+      };
+
+      const response = await fetch(url, { ...options, headers });
+
+      if (!response.ok) {
+        const isAuthEndpoint = url.includes("/users/me") || url.includes("/permissions");
+        if (
+          response.status === HTTP_CODE.UNAUTHORIZED_ERROR ||
+          (isAuthEndpoint && (response.status === 403 || response.status === 404))
+        ) {
+          void signOut();
+          throw new UnauthorizedError("Session expired or invalid");
         }
-
-        if (!AuthApiService.isValidTokenFormat(accessToken)) {
-          const error = new UnauthorizedError("Invalid token format");
-          console.warn("Invalid token format detected, signing out user");
-          await signOut(); // Sign out immediately for invalid token
-          throw error;
-        }
-
-        // Prepare headers with authentication
-        const defaultHeaders: Record<string, string> = {
-          Authorization: `Bearer ${accessToken}`,
-        };
-
-        // Add Content-Type for requests with body (POST, PUT, PATCH)
-        const hasBody = options.body !== undefined;
-        const method = options.method?.toUpperCase();
-        const needsContentType = hasBody && ["POST", "PUT", "PATCH"].includes(method || "GET");
-
-        if (needsContentType && !(options.headers as Record<string, string>)?.["Content-Type"]) {
-          defaultHeaders["Content-Type"] = "application/json";
-        }
-
-        const updatedOptions: RequestInit = {
-          ...options,
-          headers: {
-            ...defaultHeaders,
-            ...options.headers,
-          },
-        };
-
-        const response = await fetch(url, updatedOptions);
-
-        // Handle different types of errors
-        if (!response.ok) {
-          // Treat 401, 403, and 404 on user endpoints as unauthorized
-          const isAuthEndpoint = url.includes("/users/me") || url.includes("/permissions");
-          if (
-            response.status === HTTP_CODE.UNAUTHORIZED_ERROR ||
-            (isAuthEndpoint && (response.status === 403 || response.status === 404))
-          ) {
-            throw new UnauthorizedError("Session expired or invalid");
-          }
-
-          // Try to extract meaningful error message
-          const errorMessage = await AuthApiService.extractErrorMessage(response);
-          throw new BaseError(errorMessage);
-        }
-
-        return response;
-      } catch (error) {
-        // Handle unauthorized errors by signing out
-        if (error instanceof UnauthorizedError) {
-          console.warn("Unauthorized access detected, signing out user");
-          void signOut(); // Don't await to avoid blocking
-        }
-        throw error;
+        const errorMessage = await AuthApiService.extractErrorMessage(response);
+        throw new BaseError(errorMessage);
       }
+
+      return response;
     },
-    [queryClient, signOut],
+    [signOut],
   );
 
-  return {
-    fetch: fetchWithAuth,
-    signOut,
-    isSigningOut: isSigningOutRef.current,
-  };
+  return { fetch: fetchWithAuth, signOut };
 };
 
 export default useFetch;

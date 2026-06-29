@@ -36,6 +36,5 @@ export * from "./modals/BaseModal";
 export { default as ConfirmBox } from "./modals/ConfirmBox";
 export type { ConfirmBoxProps } from "./modals/ConfirmBox";
 export * from "./providers/GlobalProvider";
-export * from "./providers/QueryProvider";
 export * from "./providers/ThemeProvider";
 export { withSearchFilter } from "./withSearchFilter";

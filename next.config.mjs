@@ -9,7 +9,7 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   pageExtensions: ["js", "jsx", "ts", "tsx"],
-  transpilePackages: ["@mdxeditor/editor", "date-fns"],
+  transpilePackages: ["date-fns"],
   turbopack: {
     resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
   },
@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: "/dashboard",
-        destination: "/dashboard/home", // Matched parameters can be used in the destination
+        destination: "/dashboard/posts",
         permanent: true,
       },
     ];

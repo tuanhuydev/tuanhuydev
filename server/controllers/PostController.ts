@@ -6,6 +6,7 @@ import { CreatePostDTO, createPostSchema, UpdatePostDTO } from "@server/dto/post
 import { PostJSON, PostModel } from "@server/models/post.model";
 import { authService, AuthService } from "@server/services/AuthService";
 import { postService } from "@server/services/PostService";
+import { revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 
 export class PostController {
@@ -31,6 +32,7 @@ export class PostController {
       body.authorId = currentUser.id;
       body.slug = makeSlug(body.slug);
       const newPost = (await postService.createPost(body)) as unknown as PostModel;
+      revalidateTag("posts", "max");
       return network.successResponse(newPost.toJSON());
     } catch (error) {
       console.error(error);
@@ -75,6 +77,7 @@ export class PostController {
     const network = new Network(request);
     try {
       const updated = await postService.updatePost(id, body);
+      revalidateTag("posts", "max");
       return network.successResponse(updated);
     } catch (error) {
       return network.failResponse(error as BaseError);
@@ -86,6 +89,7 @@ export class PostController {
     const network = new Network(request);
     try {
       const deleted = await postService.deletePost(id);
+      revalidateTag("posts", "max");
       return network.successResponse(deleted);
     } catch (error) {
       return network.failResponse(error as BaseError);
