@@ -161,12 +161,6 @@ export class UserController {
     const network = new Network(request);
     try {
       if (!id) throw new BadRequestError();
-      let userId: string = id;
-      if (id === "me") {
-        const user: User | null = await authService.getCurrentUserProfile();
-        if (!user) throw new NotFoundError("User not found");
-        userId = user.id;
-      }
 
       // Permissions removed - return empty array for now
       const userPermissions: unknown[] = [];
