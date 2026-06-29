@@ -5,7 +5,6 @@ import Loader from "../../common/Loader";
 import { Task } from "@lib/types/task";
 import { QUERY_KEYS } from "@resources/queries/queryKeys";
 import { useTodayTasks } from "@resources/queries/taskQueries";
-import { formatDate } from "@resources/utils/helper";
 import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
@@ -25,10 +24,10 @@ export interface TaskListProps {
   onSelectTask: (task: Task) => void;
 }
 
-export default function TaskList({ tasks, projectId, onSelectTask, selectedTask, isLoading = false }: TaskListProps) {
+export default function TaskList({ tasks, onSelectTask, selectedTask, isLoading = false }: TaskListProps) {
   const queryClient = useQueryClient();
   const parentRef = useRef<HTMLDivElement>(null);
-  const [taskGroups, setTaskGroups] = useState<TaskGroupType>({ backlog: [] });
+  const [_, setTaskGroups] = useState<TaskGroupType>({ backlog: [] });
   const { data: todayTasks = [] } = useTodayTasks();
 
   // Virtual scrolling for non-project tasks

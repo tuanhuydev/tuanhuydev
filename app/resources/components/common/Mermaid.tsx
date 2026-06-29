@@ -99,38 +99,50 @@ export function Mermaid({ chart, className = "" }: MermaidProps) {
   }
 
   return (
-    <div className={`my-4 relative ${className}`}>
+    <div className={`my-6 relative ${className}`}>
       {/* Zoom Controls */}
-      <div className="absolute top-2 right-2 z-10 flex gap-1 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 p-1">
+      <div
+        className="absolute top-3 right-3 z-10 flex gap-0.5 p-1 rounded-lg"
+        style={{ background: "rgba(255,255,255,0.9)", border: "1px solid #e6e5e1", backdropFilter: "blur(8px)" }}>
         <button
           onClick={handleZoomIn}
-          className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+          className="p-1.5 rounded transition-colors"
+          style={{ color: "#525252" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f7f9")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           title="Zoom In"
           aria-label="Zoom In">
-          <ZoomIn className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+          <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+          className="p-1.5 rounded transition-colors"
+          style={{ color: "#525252" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f7f9")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           title="Zoom Out"
           aria-label="Zoom Out">
-          <ZoomOut className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+          <ZoomOut className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+          className="p-1.5 rounded transition-colors"
+          style={{ color: "#525252" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f7f9")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           title="Reset"
           aria-label="Reset Zoom">
-          <RotateCcw className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {/* Diagram Container */}
       <div
         ref={containerRef}
-        className={`p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden ${
+        className={`p-6 rounded-2xl overflow-hidden ${
           isDragging ? "cursor-grabbing" : zoom > 1 ? "cursor-grab" : "cursor-default"
         }`}
+        style={{ background: "#f0f7f9", border: "1px solid #e6e5e1" }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -147,7 +159,9 @@ export function Mermaid({ chart, className = "" }: MermaidProps) {
 
       {/* Zoom Indicator */}
       {zoom !== 1 && (
-        <div className="absolute bottom-2 right-2 bg-slate-900/75 dark:bg-slate-100/75 text-white dark:text-slate-900 text-xs px-2 py-1 rounded">
+        <div
+          className="absolute bottom-3 right-3 text-xs px-2 py-1 rounded-md"
+          style={{ background: "#172733", color: "#ffffff" }}>
           {Math.round(zoom * 100)}%
         </div>
       )}

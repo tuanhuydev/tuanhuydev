@@ -148,92 +148,48 @@ interface AdBannerProps {
 
 export function AdBanner({ imgUrl, link, alt, description }: AdBannerProps) {
   const [imageError, setImageError] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const placeholderUrl =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2393c5fd;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%233b82f6;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='300' height='100' fill='url(%23grad)'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' font-weight='600' fill='white'%3EAd Image%3C/text%3E%3C/svg%3E";
 
   return (
     <div className="my-6 w-full" contentEditable={false}>
-      {/* Ad Banner */}
       <a
         href={link}
         target="_blank"
         rel="noopener noreferrer sponsored"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="group relative block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-amber-400 dark:border-amber-500"
-        style={{
-          background: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
-        }}>
-        {/* Gradient Border Effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 opacity-50 group-hover:opacity-75 transition-opacity duration-300 blur-md -z-10" />
-
-        {/* Content Container - Flex Layout - Fixed Height */}
-        <div className="relative bg-white dark:bg-slate-900 m-[2px] rounded-md overflow-hidden flex flex-row h-[100px]">
-          <div className="absolute top-2 left-2 z-20">
-            <span className="text-[10px] font-bold text-amber-300 dark:text-amber-100 uppercase tracking-wider px-2 py-1 bg-amber-100 dark:bg-amber-500 rounded-full shadow-md">
-              ⭐ Ad
-            </span>
-          </div>
-
-          <div className="relative w-[140px] flex-shrink-0 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
-            {isHovered && (
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-            )}
-
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+        className="group flex items-center gap-4 rounded-2xl border border-[#e6e5e1] bg-white hover:border-[#172733] transition-colors duration-150 overflow-hidden"
+        style={{ textDecoration: "none" }}>
+        {/* Thumbnail */}
+        <div className="relative w-24 h-20 flex-shrink-0 bg-[#f0f7f9] rounded-lg overflow-hidden sm:w-32 sm:h-24 ml-3">
+          {imgUrl && !imageError ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={imageError || !imgUrl ? placeholderUrl : imgUrl}
+              src={imgUrl}
               alt={alt || "Ad image"}
               onError={() => setImageError(true)}
-              className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
+              className="w-full h-full object-cover !my-0"
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[#a3a3a3] text-xs font-medium">Ad</div>
+          )}
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 min-w-0 py-4 pr-5">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border"
+              style={{ color: "#a3a3a3", borderColor: "#e6e5e1" }}>
+              Ad
+            </span>
           </div>
+          {alt && <p className="text-sm font-semibold leading-snug text-[#0d0d0d] line-clamp-1 mb-1">{alt}</p>}
+          {description && <p className="text-xs leading-relaxed text-[#525252] line-clamp-2">{description}</p>}
+        </div>
 
-          <div className="relative flex-1 px-3 py-2 flex flex-col justify-between bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 min-w-0">
-            <div className="absolute top-0 right-0 w-20 h-20 opacity-10 dark:opacity-5">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-xl" />
-            </div>
-
-            <div className="relative z-10 pr-6">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1 line-clamp-1">
-                {alt || "Featured Advertisement"}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                {description || "Discover amazing products and services. Click to learn more!"}
-              </p>
-            </div>
-
-            {/* Learn More Button */}
-            <div className="relative z-10 flex items-center">
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-500 dark:bg-amber-500 dark:hover:bg-amber-700 text-white text-xs font-semibold rounded-md transition-colors duration-200 shadow-sm group-hover:shadow-md">
-                Learn More
-                <svg
-                  className="w-3 h-3 transition-transform group-hover:translate-x-0.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </div>
-          </div>
+        {/* Arrow */}
+        <div className="pr-5 text-[#a3a3a3] text-lg flex-shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#172733]">
+          ↗
         </div>
       </a>
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
     </div>
   );
 }
