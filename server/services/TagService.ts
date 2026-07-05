@@ -48,8 +48,8 @@ export class TagService {
 
   async deleteTag(id: string): Promise<UpdateResult<BSON.Document>> {
     const deleted = await this.repository.softDelete(id);
-    if (!deleted) {
-      throw new Error("Failed to delete tag");
+    if (deleted.matchedCount === 0) {
+      throw new Error("Tag not found");
     }
     return deleted;
   }
