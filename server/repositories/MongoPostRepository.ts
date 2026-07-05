@@ -33,7 +33,7 @@ export class MongoPostRepository {
       filter.seriesId = new ObjectId(params.seriesId as string);
     }
     if (params?.tagId) {
-      filter.tagIds = new ObjectId(params.tagId as string);
+      filter.tagIds = { $in: [new ObjectId(params.tagId as string)] };
     }
 
     let query = this.table.find(filter);
