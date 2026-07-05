@@ -1,6 +1,5 @@
+import type { ISODateString } from "@lib/types";
 import { TagDocument } from "@server/mongo/tag.document";
-
-type ISODateString = string;
 
 type TagConstructorInput = {
   name: string;

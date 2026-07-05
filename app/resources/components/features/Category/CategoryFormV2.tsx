@@ -5,6 +5,7 @@ import styles from "../../formV2/EntityForm.module.css";
 import { FormInput, InputType } from "../../formV2/FormInput";
 import { FormTextarea } from "../../formV2/FormTextarea";
 import { Category } from "@app/resources/types/category.types";
+import { getAuthHeaders } from "@lib/utils/apiClient";
 import { transformTextToDashed } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
@@ -22,14 +23,6 @@ export type CategoryFormData = {
   slug: string;
   description: string;
 };
-
-function getAuthHeaders(): Record<string, string> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 export const CategoryFormV2: React.FC<CategoryFormProps> = ({ category }) => {
   const router = useRouter();

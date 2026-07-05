@@ -1,18 +1,6 @@
-import { ISODateString } from "./common.types";
-
-export interface Post {
-  id?: string;
-  title: string;
-  content: string;
-  thumbnail?: string;
-  publishedAt: ISODateString | null;
-  createdAt: ISODateString;
-  updatedAt: ISODateString;
-  deletedAt: ISODateString | null;
-  slug: string;
-  authorId: string | null;
-  assets: string[];
-  categoryId: string | null;
-  seriesId: string | null;
-  tagIds: string[];
-}
+/**
+ * Post entity type for client-side use.
+ * This is the serialised shape returned by server actions.
+ * Single source of truth: server/models/post.model.ts
+ */
+export type { PostJSON as Post } from "@server/models/post.model";

@@ -5,7 +5,6 @@ import { CodeHighlightPlugin } from "./plugins/CodeHighlightPlugin";
 import { ImportMarkdownPlugin } from "./plugins/ImportMarkdownPlugin";
 import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 import { theme } from "./theme";
-import { cn } from "@app/resources/utils/helper";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
@@ -20,6 +19,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HeadingNode } from "@lexical/rich-text";
+import { cn } from "@lib/utils/helper";
 import { EditorState } from "lexical";
 import { ChangeEventHandler, useState } from "react";
 

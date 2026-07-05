@@ -2,7 +2,7 @@ import { AUTH_URL, isProductionEnv } from "@lib/commons/constants/base";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
-import Network from "@lib/utils/network";
+import Network from "@server/utils/network";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { ObjectSchema, object, string } from "yup";

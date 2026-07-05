@@ -1,6 +1,5 @@
 import styles from "../../dashboard.module.css";
 import { CategoryFormV2 } from "@app/resources/components/features/Category/CategoryFormV2";
-import { Category } from "@app/resources/types/category.types";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { notFound } from "next/navigation";
 import { getCategoryById } from "server/actions/categoryActions";
@@ -18,7 +17,7 @@ export default async function Page(props: PageProps) {
   return (
     <PageContainer title="Edit Category" goBack="/dashboard/categories">
       <div className={styles.editWrap}>
-        <CategoryFormV2 category={category as Category} />
+        <CategoryFormV2 category={category} />
       </div>
     </PageContainer>
   );

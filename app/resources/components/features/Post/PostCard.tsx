@@ -7,8 +7,8 @@ import { Post } from "@app/resources/types/post.types";
 import clsx from "clsx";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
-import { useRouter } from "next/navigation";
-import React, { memo, useCallback, useMemo, type JSX } from "react";
+import Link from "next/link";
+import React, { memo, useMemo, type JSX } from "react";
 
 export interface PostCardProps {
   post: Post;
@@ -16,13 +16,7 @@ export interface PostCardProps {
 }
 
 const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
-  const router = useRouter();
-
   const { title, thumbnail = "", publishedAt, createdAt } = post;
-
-  const navigateProjectEdit = useCallback(() => {
-    router.push(`/dashboard/posts/${post.id}`);
-  }, [post, router]);
 
   const Status: JSX.Element = useMemo(() => {
     const isPublished = !!publishedAt;
@@ -34,7 +28,9 @@ const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
   }, [publishedAt]);
 
   return (
-    <Card className={styles.card} onClick={navigateProjectEdit}>
+    <Card className={styles.card}>
+      {/* Card overlay link — covers the whole card except nested actions */}
+      <Link href={`/dashboard/posts/${post.id}`} className={styles.cardOverlay} aria-label={`Edit post: ${title}`} />
       <div className={styles.thumbnail}>
         {thumbnail && <BaseImage src={thumbnail} alt={title} fill className={styles.thumbnailImg} />}
       </div>

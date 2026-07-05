@@ -1,6 +1,5 @@
 import styles from "../../dashboard.module.css";
 import { PostFormV2 } from "@app/resources/components/features/Post/PostFormV2";
-import { Post } from "@app/resources/types/post.types";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { notFound } from "next/navigation";
 import { getPostById } from "server/actions/blogActions";
@@ -27,7 +26,7 @@ export default async function Page(props: PageProps) {
     <PageContainer title="Edit Post" goBack="/dashboard/posts">
       <div className={styles.editWrap}>
         <PostFormV2
-          post={post as Post}
+          post={post}
           categories={categories.map((category) => ({ value: category.id ?? "", label: category.name }))}
           series={series.map((item) => ({ value: item.id ?? "", label: item.name }))}
           tags={tags.map((tag) => ({ value: tag.id ?? "", label: tag.name }))}

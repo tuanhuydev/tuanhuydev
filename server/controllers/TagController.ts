@@ -2,11 +2,11 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import { transformTextToDashed } from "@lib/utils/helper";
-import Network from "@lib/utils/network";
 import { CreateTagDTO, createTagSchema, UpdateTagDTO } from "@server/dto/tag.dto";
 import { TagJSON, TagModel } from "@server/models/tag.model";
 import { authService, AuthService } from "@server/services/AuthService";
 import { tagService } from "@server/services/TagService";
+import Network from "@server/utils/network";
 import { revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 

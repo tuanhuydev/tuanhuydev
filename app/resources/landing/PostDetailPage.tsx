@@ -1,8 +1,10 @@
+import MarkdownRenderer from "../components/content/MarkdownRenderer";
+import PublicPostCard from "../components/content/PublicPostCard";
 import { PostObservers } from "./components/PostObservers";
 import SiteFooter from "./components/SiteFooter";
 import ThemeToggle from "./components/ThemeToggle";
 import styles from "./post.module.css";
-import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
+import { readingTime } from "@lib/utils/helper";
 import { CategoryJSON } from "@server/models/category.model";
 import { PostJSON } from "@server/models/post.model";
 import { SeriesJSON } from "@server/models/series.model";
@@ -15,11 +17,6 @@ interface PostDetailPageProps {
   category?: CategoryJSON | null;
   series?: SeriesJSON | null;
   relatedPosts?: PostJSON[];
-}
-
-function readingTime(content: string): string {
-  const words = content.split(/\s+/).length;
-  return `${Math.ceil(words / 200)} min read`;
 }
 
 export default function PostDetailPage({ post, category, series, relatedPosts = [] }: PostDetailPageProps) {
@@ -42,7 +39,7 @@ export default function PostDetailPage({ post, category, series, relatedPosts = 
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
-        <ThemeToggle className={styles.navToggle} />
+        <ThemeToggle />
         <Link className={styles.navCta} href="/#contact">
           Contact
         </Link>
@@ -128,13 +125,7 @@ export default function PostDetailPage({ post, category, series, relatedPosts = 
             <p className={styles.suggestedLabel}>Keep reading</p>
             <div className={styles.suggestedGrid}>
               {relatedPosts.map((relatedPost) => (
-                <Link key={relatedPost.slug} className={styles.suggestedCard} href={`/posts/${relatedPost.slug}`}>
-                  <p className={styles.suggestedDate}>
-                    {format(new Date(relatedPost.publishedAt || relatedPost.createdAt), "MMM dd, yyyy")}
-                  </p>
-                  <p className={styles.suggestedTitle}>{relatedPost.title}</p>
-                  <span className={styles.suggestedArrow}>↗</span>
-                </Link>
+                <PublicPostCard key={relatedPost.slug} post={relatedPost} />
               ))}
             </div>
           </div>
