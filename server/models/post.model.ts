@@ -13,6 +13,9 @@ type PostConstructorInput = {
   slug: string;
   authorId: string | null;
   assets?: string[];
+  categoryId?: string | null;
+  seriesId?: string | null;
+  tagIds?: string[];
 };
 
 export type PostJSON = {
@@ -27,6 +30,9 @@ export type PostJSON = {
   slug: string;
   authorId: string | null;
   assets: string[];
+  categoryId: string | null;
+  seriesId: string | null;
+  tagIds: string[];
 };
 
 export class PostModel {
@@ -42,6 +48,9 @@ export class PostModel {
   public slug: string;
   public authorId: string | null;
   public assets: string[];
+  public categoryId: string | null;
+  public seriesId: string | null;
+  public tagIds: string[];
 
   constructor(input: PostConstructorInput, _id?: string) {
     this._id = _id;
@@ -54,6 +63,9 @@ export class PostModel {
     this.slug = input.slug;
     this.authorId = input.authorId;
     this.assets = input.assets ?? [];
+    this.categoryId = input.categoryId ?? null;
+    this.seriesId = input.seriesId ?? null;
+    this.tagIds = input.tagIds ?? [];
 
     this.createdAt = input.createdAt ?? new Date().toISOString();
     this.updatedAt = input.updatedAt ?? new Date().toISOString();
@@ -70,6 +82,9 @@ export class PostModel {
         slug: doc.slug,
         authorId: doc?.authorId && doc?.authorId?.toHexString ? doc.authorId.toHexString() : null,
         assets: doc.assets,
+        categoryId: doc?.categoryId && doc?.categoryId?.toHexString ? doc.categoryId.toHexString() : null,
+        seriesId: doc?.seriesId && doc?.seriesId?.toHexString ? doc.seriesId.toHexString() : null,
+        tagIds: Array.isArray(doc?.tagIds) ? doc.tagIds.map((tagId) => tagId.toHexString()) : [],
         createdAt: doc.createdAt,
         deletedAt: doc.deletedAt,
         updatedAt: doc.updatedAt,
@@ -91,6 +106,9 @@ export class PostModel {
       slug: this.slug,
       authorId: this.authorId,
       assets: this.assets,
+      categoryId: this.categoryId,
+      seriesId: this.seriesId,
+      tagIds: this.tagIds,
     };
   }
 

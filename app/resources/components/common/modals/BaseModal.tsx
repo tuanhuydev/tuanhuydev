@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./BaseModal.module.css";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@resources/components/common/Dialog";
 import React, { PropsWithChildren } from "react";
 
@@ -17,7 +18,7 @@ const BaseModal = ({ open, closable = false, title, children, onClose, className
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className={className} hideCloseButton={!closable}>
         <DialogHeader>
-          <div className="flex items-center gap-2">
+          <div className={styles.titleRow}>
             {prefix && <div>{prefix}</div>}
             {title && <DialogTitle>{title}</DialogTitle>}
           </div>

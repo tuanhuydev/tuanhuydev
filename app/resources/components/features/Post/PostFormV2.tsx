@@ -2,18 +2,28 @@
 
 import ConfirmBox from "../../common/modals/ConfirmBox";
 import { FormInput, InputType } from "../../formV2/FormInput";
+import { FormMultiSelect } from "../../formV2/FormMultiSelect";
 import { FormRichText } from "../../formV2/FormRichText";
+import { FormSelect, SelectOption } from "../../formV2/FormSelect";
+import styles from "./PostFormV2.module.css";
 import { Post } from "@app/resources/types/post.types";
 import { transformTextToDashed } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
+import { MultiSelectOption } from "@resources/components/common/MultiSelect";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
 import { BASE_URL } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+const NO_CATEGORY = "none";
+const NO_SERIES = "none";
+
 export interface PostFormProps {
   post?: Post;
+  categories?: SelectOption[];
+  series?: SelectOption[];
+  tags?: MultiSelectOption[];
 }
 
 export type PostFormData = {
@@ -22,6 +32,9 @@ export type PostFormData = {
   thumbnail: string;
   content: string;
   publishedAt?: string;
+  categoryId: string;
+  seriesId: string;
+  tagIds: string[];
 };
 
 function getAuthHeaders(): Record<string, string> {
@@ -32,11 +45,27 @@ function getAuthHeaders(): Record<string, string> {
   };
 }
 
-export const PostFormV2: React.FC<PostFormProps> = ({ post }) => {
+function serializePostForm(formData: PostFormData) {
+  return {
+    ...formData,
+    categoryId: formData.categoryId === NO_CATEGORY ? null : formData.categoryId,
+    seriesId: formData.seriesId === NO_SERIES ? null : formData.seriesId,
+  };
+}
+
+export const PostFormV2: React.FC<PostFormProps> = ({ post, categories = [], series = [], tags = [] }) => {
   const router = useRouter();
   const { notify } = useGlobal();
-  const { control, handleSubmit, watch, setValue, reset } = useForm({
-    defaultValues: { title: "", slug: "", thumbnail: "", content: "" },
+  const { control, handleSubmit, watch, setValue, reset } = useForm<PostFormData>({
+    defaultValues: {
+      title: "",
+      slug: "",
+      thumbnail: "",
+      content: "",
+      categoryId: NO_CATEGORY,
+      seriesId: NO_SERIES,
+      tagIds: [],
+    },
   });
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -51,17 +80,26 @@ export const PostFormV2: React.FC<PostFormProps> = ({ post }) => {
 
   useEffect(() => {
     if (post) {
-      reset({ title: post.title ?? "", slug: post.slug ?? "", thumbnail: post.thumbnail ?? "", content: post.content ?? "" });
+      reset({
+        title: post.title ?? "",
+        slug: post.slug ?? "",
+        thumbnail: post.thumbnail ?? "",
+        content: post.content ?? "",
+        categoryId: post.categoryId ?? NO_CATEGORY,
+        seriesId: post.seriesId ?? NO_SERIES,
+        tagIds: post.tagIds ?? [],
+      });
     }
   }, [post, reset]);
 
   const submit = async (formData: PostFormData): Promise<void> => {
+    const payload = serializePostForm(formData);
     try {
       if (hasPost && post?.id) {
         const res = await fetch(`${BASE_URL}/api/posts/${post.id}`, {
           method: "PATCH",
           headers: getAuthHeaders(),
-          body: JSON.stringify({ ...post, ...formData }),
+          body: JSON.stringify({ ...post, ...payload }),
         });
         if (!res.ok) throw new Error("Failed to update post");
         notify("Post updated successfully", "success");
@@ -70,7 +108,7 @@ export const PostFormV2: React.FC<PostFormProps> = ({ post }) => {
         const res = await fetch(`${BASE_URL}/api/posts`, {
           method: "POST",
           headers: getAuthHeaders(),
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error("Failed to save post");
         notify("Post saved successfully", "success");
@@ -106,31 +144,61 @@ export const PostFormV2: React.FC<PostFormProps> = ({ post }) => {
     }
   }, [post?.id, notify, router]);
 
+  const categoryOptions: SelectOption[] = [{ value: NO_CATEGORY, label: "No category" }, ...categories];
+  const seriesOptions: SelectOption[] = [{ value: NO_SERIES, label: "No series" }, ...series];
+
   return (
-    <div className="grid grid-cols-12 gap-4 w-full">
-      <div className="lg:col-span-10 col-span-12">
-        <div className="mb-3">
-          <FormInput label="title" name="title" placeholder="How to build a solution" type={InputType.TEXT} control={control} />
+    <div className={styles.grid}>
+      <div className={styles.main}>
+        <div className={styles.field}>
+          <FormInput
+            label="title"
+            name="title"
+            placeholder="How to build a solution"
+            type={InputType.TEXT}
+            control={control}
+          />
         </div>
-        <div className="mb-3">
-          <FormInput label="slug" name="slug" placeholder="how-to-build-a-solution" type={InputType.TEXT} control={control} />
+        <div className={styles.field}>
+          <FormInput
+            label="slug"
+            name="slug"
+            placeholder="how-to-build-a-solution"
+            type={InputType.TEXT}
+            control={control}
+          />
         </div>
-        <div className="mb-3">
-          <FormInput label="thumbnail" name="thumbnail" placeholder="https://..." type={InputType.TEXT} control={control} />
+        <div className={styles.field}>
+          <FormInput
+            label="thumbnail"
+            name="thumbnail"
+            placeholder="https://..."
+            type={InputType.TEXT}
+            control={control}
+          />
         </div>
-        <div className="mb-3">
+        <div className={styles.twoCol}>
+          <FormSelect label="category" name="categoryId" control={control} options={categoryOptions} />
+          <FormSelect label="series" name="seriesId" control={control} options={seriesOptions} />
+        </div>
+        <div className={styles.field}>
+          <FormMultiSelect label="tags" name="tagIds" control={control} options={tags} placeholder="Select tags..." />
+        </div>
+        <div className={styles.field}>
           <FormRichText control={control} name="content" label="Content" placeholder="Content detail" />
         </div>
       </div>
-      <div className="lg:col-span-2 col-span-12 flex flex-col gap-3 p-2">
+      <div className={styles.actions}>
         <Button variant="outline" type="submit" onClick={handleSubmit(submit)}>
           {hasPost ? "Update Post" : "Save Draft"}
         </Button>
-        {hasPost && !post?.publishedAt && (
-          <Button onClick={handleSubmit(handlePublish)}>Save & Publish</Button>
-        )}
+        {hasPost && !post?.publishedAt && <Button onClick={handleSubmit(handlePublish)}>Save & Publish</Button>}
         {hasPost && (
-          <Button variant="destructive" disabled={isDeleting} onClick={() => setOpenConfirm(true)} className="mt-1">
+          <Button
+            variant="destructive"
+            disabled={isDeleting}
+            onClick={() => setOpenConfirm(true)}
+            className={styles.deleteButton}>
             Delete Post
           </Button>
         )}

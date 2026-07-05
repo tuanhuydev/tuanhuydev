@@ -1,5 +1,6 @@
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
+import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import { makeSlug, transformTextToDashed } from "@lib/utils/helper";
 import Network from "@lib/utils/network";
 import { CreatePostDTO, createPostSchema, UpdatePostDTO } from "@server/dto/post.dto";
@@ -27,7 +28,7 @@ export class PostController {
       if (!validation.success) throw new BadRequestError(validation?.error.toString());
 
       const currentUser = await this.authService.getCurrentUserProfile();
-      if (!currentUser) throw new BadRequestError("Unauthenticated user");
+      if (!currentUser) throw new UnauthorizedError("Unauthenticated user");
 
       body.authorId = currentUser.id;
       body.slug = makeSlug(body.slug);
@@ -76,6 +77,9 @@ export class PostController {
 
     const network = new Network(request);
     try {
+      const currentUser = await this.authService.getCurrentUserProfile();
+      if (!currentUser) throw new UnauthorizedError("Unauthenticated user");
+
       const updated = await postService.updatePost(id, body);
       revalidateTag("posts", "max");
       return network.successResponse(updated);
@@ -88,6 +92,9 @@ export class PostController {
     if (!id) throw new BadRequestError();
     const network = new Network(request);
     try {
+      const currentUser = await this.authService.getCurrentUserProfile();
+      if (!currentUser) throw new UnauthorizedError("Unauthenticated user");
+
       const deleted = await postService.deletePost(id);
       revalidateTag("posts", "max");
       return network.successResponse(deleted);

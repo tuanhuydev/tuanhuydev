@@ -16,8 +16,25 @@ export function PostsScrollFadeObserver() {
       },
       { threshold: 0.1 },
     );
-    document.querySelectorAll(`.${styles.fade}`).forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    const observeAll = () => {
+      document.querySelectorAll(`.${styles.fade}:not(.${styles.in})`).forEach((el) => io.observe(el));
+    };
+
+    // Elements present at mount time
+    observeAll();
+
+    // Re-scan whenever the DOM changes (e.g. clicking a category/series
+    // filter triggers a client-side transition that swaps in new post
+    // cards this effect never sees otherwise, leaving them at opacity: 0
+    // forever even though they're still interactive/hoverable)
+    const mo = new MutationObserver(observeAll);
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, []);
   return null;
 }

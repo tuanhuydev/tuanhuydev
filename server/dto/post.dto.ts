@@ -8,6 +8,9 @@ export const createPostSchema = z.object({
   publishedAt: z.string().nullable().optional(),
   authorId: z.string().nullable().optional(),
   assets: z.array(z.string()).optional(),
+  categoryId: z.string().nullable().optional(),
+  seriesId: z.string().nullable().optional(),
+  tagIds: z.array(z.string()).optional(),
 });
 
 export type CreatePostDTO = z.infer<typeof createPostSchema>;

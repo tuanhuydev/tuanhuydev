@@ -1,4 +1,5 @@
 import BaseModal from "./BaseModal";
+import styles from "./ConfirmBox.module.css";
 import { Button } from "@resources/components/common/Button";
 import { PropsWithChildren } from "react";
 
@@ -34,8 +35,8 @@ export default function ConfirmBox({
 
   return (
     <BaseModal open={open} onClose={onClose} title={title}>
-      {description && <p className=" mb-4 mt-0">{description}</p>}
-      <div className="flex w-full justify-end gap-2 self-end">
+      {description && <p className={styles.description}>{description}</p>}
+      <div className={styles.actions}>
         <Button variant="outline" onClick={cancel}>
           {cancelLabel}
         </Button>

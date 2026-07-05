@@ -16,8 +16,24 @@ export function ScrollFadeObserver() {
       },
       { threshold: 0.1 },
     );
-    document.querySelectorAll(`.${styles.fade}`).forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    const observeAll = () => {
+      document.querySelectorAll(`.${styles.fade}:not(.${styles.in})`).forEach((el) => io.observe(el));
+    };
+
+    // Elements present at mount time
+    observeAll();
+
+    // Re-scan whenever the DOM changes (e.g. client-side route/query
+    // transitions swap in new nodes that this effect never sees otherwise,
+    // leaving them permanently at opacity: 0)
+    const mo = new MutationObserver(observeAll);
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, []);
   return null;
 }

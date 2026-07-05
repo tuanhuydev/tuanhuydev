@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 206 38% 14.5%;
     --primary-foreground: 210 40% 98%;
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 47.4% 11.2%;
+    --ring: 206 38% 14.5%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -32,7 +32,7 @@
   }
 
   .dark {
-    --primary: 210 40% 98%;
+    --primary: 27 46% 60.4%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -50,7 +50,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 8%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 27 46% 60.4%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;

@@ -50,20 +50,12 @@ export default function Page() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Ways to contribute</h2>
           <div className={styles.grid}>
-            <a
-              href="https://www.buymeacoffee.com/tuanhuydev"
-              target="_blank"
-              rel="noreferrer"
-              className={styles.card}>
+            <a href="https://www.buymeacoffee.com/tuanhuydev" target="_blank" rel="noreferrer" className={styles.card}>
               <div className={styles.cardTitle}>Buy Me a Coffee</div>
               <div className={styles.cardSub}>A quick way to say thanks ☕</div>
             </a>
 
-            <a
-              href="https://github.com/sponsors/tuanhuydev"
-              target="_blank"
-              rel="noreferrer"
-              className={styles.card}>
+            <a href="https://github.com/sponsors/tuanhuydev" target="_blank" rel="noreferrer" className={styles.card}>
               <div className={styles.cardTitle}>GitHub Sponsors</div>
               <div className={styles.cardSub}>Sponsor monthly to support ongoing work</div>
             </a>

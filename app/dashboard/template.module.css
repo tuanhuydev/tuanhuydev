@@ -1,0 +1,41 @@
+.shell {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.inner {
+  display: flex;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(64px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content {
+  background-color: hsl(var(--background));
+  padding: 0.75rem 1.25rem;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .content {
+    animation: fadeIn 0.25s ease-in;
+  }
+}
