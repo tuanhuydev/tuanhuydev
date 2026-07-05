@@ -8,10 +8,7 @@ export type { FormTextareaProps } from "./FormTextarea";
 export { FormSelect } from "./FormSelect";
 export type { FormSelectProps, SelectOption } from "./FormSelect";
 
-export { FormDatePicker } from "./FormDatePicker";
-export type { FormDatePickerProps } from "./FormDatePicker";
-
-export { FormRadio } from "./FormRadio";
-export type { FormRadioProps, RadioOption } from "./FormRadio";
-
 export { FormRichText } from "./FormRichText";
+
+export { FormMultiSelect } from "./FormMultiSelect";
+export type { FormMultiSelectProps } from "./FormMultiSelect";

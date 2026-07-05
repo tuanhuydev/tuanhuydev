@@ -8,6 +8,9 @@ export type PostDocument = {
   slug: string;
   authorId: ObjectId | null;
   assets: string[];
+  categoryId?: ObjectId | null;
+  seriesId?: ObjectId | null;
+  tagIds?: ObjectId[];
 
   createdAt: string;
   updatedAt: string;

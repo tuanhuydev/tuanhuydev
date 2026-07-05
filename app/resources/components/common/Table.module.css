@@ -1,0 +1,63 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  caption-side: bottom;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.header tr {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.body tr:last-child {
+  border-bottom: 0;
+}
+
+.footer {
+  border-top: 1px solid hsl(var(--border));
+  background-color: hsl(var(--muted) / 0.5);
+  font-weight: 500;
+}
+
+.footer tr:last-child {
+  border-bottom: 0;
+}
+
+.row {
+  border-bottom: 1px solid hsl(var(--border));
+  transition: background-color 0.15s;
+}
+
+.row:hover {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+.row[data-state="selected"] {
+  background-color: hsl(var(--muted));
+}
+
+.head {
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+
+.cell {
+  padding: 0.5rem;
+  vertical-align: middle;
+}
+
+.caption {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}

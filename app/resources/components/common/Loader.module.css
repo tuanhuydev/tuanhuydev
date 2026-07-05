@@ -1,0 +1,33 @@
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinWrap {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spinWrap {
+    animation: spin 1s linear infinite;
+  }
+}
+
+.circle {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 9999px;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-top-color: transparent;
+}
+
+.dark {
+  border-color: hsl(var(--primary));
+}
+
+.light {
+  border-color: hsl(var(--primary-foreground));
+}

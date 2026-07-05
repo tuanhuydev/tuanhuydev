@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./PageFilter.module.css";
 import { Button } from "@resources/components/common/Button";
 import { Input } from "@resources/components/common/Input";
 import { PlusCircle, Search } from "lucide-react";
@@ -23,14 +24,14 @@ export default function PageFilter({
   value = "",
 }: PageFilterProps) {
   return (
-    <div className="flex gap-2 items-center mb-6">
-      <div className="relative grow">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground dark:text-slate-400" />
-        <Input onChange={onSearch} value={value} placeholder={searchPlaceholder} className="pl-10" />
+    <div className={styles.row}>
+      <div className={styles.searchWrap}>
+        <Search className={styles.searchIcon} />
+        <Input onChange={onSearch} value={value} placeholder={searchPlaceholder} className={styles.searchInput} />
       </div>
       {allowCreate && (
-        <Button onClick={onNew} className="flex-shrink-0">
-          <PlusCircle className="w-4 h-4 mr-1" />
+        <Button onClick={onNew} className={styles.createButton}>
+          <PlusCircle className={styles.createIcon} />
           {createLabel}
         </Button>
       )}

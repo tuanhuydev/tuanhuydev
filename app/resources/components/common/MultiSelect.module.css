@@ -1,0 +1,177 @@
+.wrapper {
+  width: 100%;
+}
+
+.trigger {
+  display: flex;
+  height: auto;
+  min-height: 2.25rem;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(var(--input));
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: border-color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .trigger {
+    font-size: 0.875rem;
+  }
+}
+
+.triggerEmpty {
+  color: hsl(var(--muted-foreground));
+}
+
+.trigger:hover {
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.trigger:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.triggerError {
+  border-color: hsl(var(--destructive));
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  flex: 1;
+  min-height: 1.25rem;
+}
+
+.badge {
+  margin: 0 0.25rem 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+}
+
+.removeButton {
+  margin-left: 0.25rem;
+  border-radius: 9999px;
+  outline: none;
+}
+
+.removeButton:focus {
+  box-shadow: 0 0 0 2px hsl(var(--ring));
+}
+
+.removeIcon {
+  height: 0.75rem;
+  width: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.chevron {
+  height: 1rem;
+  width: 1rem;
+  opacity: 0.5;
+}
+
+.popoverContent {
+  width: 100%;
+  padding: 0;
+}
+
+.optionList {
+  max-height: 16rem;
+  overflow: auto;
+  padding: 0.25rem;
+}
+
+.emptyMessage {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.option {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+  border-radius: 0.125rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.option:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.optionSelected {
+  background-color: hsl(var(--accent));
+}
+
+.optionInner {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+  display: flex;
+  height: 1rem;
+  width: 1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  border: 1px solid hsl(var(--primary));
+}
+
+.checkboxChecked {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.checkboxUnchecked {
+  opacity: 0.5;
+}
+
+.checkboxUnchecked svg {
+  visibility: hidden;
+}
+
+.checkIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: hsl(var(--destructive));
+  margin-top: 0.25rem;
+  margin-left: 0.875rem;
+}

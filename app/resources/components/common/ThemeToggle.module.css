@@ -1,0 +1,59 @@
+.skeleton {
+  border-radius: 9999px;
+  background-color: hsl(var(--muted));
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button {
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border: none;
+  background-color: transparent;
+  display: flex;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: hsl(var(--muted));
+}
+
+.sizeSm {
+  padding: 0.25rem;
+}
+
+.sizeMd {
+  padding: 0.5rem;
+}
+
+.sizeLg {
+  padding: 0.75rem;
+}
+
+.icon {
+  fill: hsl(var(--primary));
+}
+
+.label {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}

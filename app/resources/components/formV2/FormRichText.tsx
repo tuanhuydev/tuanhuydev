@@ -1,4 +1,5 @@
 import { MDXEditor } from "../common/MDXEditor";
+import styles from "./FormRichText.module.css";
 import {
   Control,
   Controller,
@@ -37,8 +38,8 @@ export const FormRichText = <TFieldValues extends FieldValues>({
     };
 
     return (
-      <div className="container">
-        {label && <label className="text-sm text-slate-700 capitalize mb-2">{label}</label>}
+      <div className={styles.wrapper}>
+        {label && <label className={styles.label}>{label}</label>}
         <MDXEditor value={field.value} disabled={isDisabled} onChange={handleChange} />
       </div>
     );

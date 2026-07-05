@@ -4,7 +4,11 @@ import PostDetailPage from "@resources/landing/PostDetailPage";
 import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
+import { getCategories } from "server/actions/categoryActions";
+import { getAllSeries } from "server/actions/seriesActions";
+import { getTags } from "server/actions/tagActions";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -16,7 +20,11 @@ interface PageParams {
 export async function generateMetadata(props: PageParams, parent: ResolvingMetadata): Promise<Metadata> {
   const { slug } = await props.params;
   const post = await getPostBySlug(slug);
-  if (!post) return {};
+  if (!post || !post.publishedAt) return {};
+
+  const [categories, tags] = await Promise.all([getCategories(), getTags()]);
+  const category = categories.find((c) => c.id === post.categoryId);
+  const postTags = tags.filter((tag) => post.tagIds?.includes(tag.id ?? ""));
 
   const previousImages = (await parent).openGraph?.images || [];
   const currentPostURL = new URL(`${BASE_URL}/posts/${slug}`);
@@ -28,11 +36,15 @@ export async function generateMetadata(props: PageParams, parent: ResolvingMetad
       .trim()
       .slice(0, 155) + (post.content.length > 155 ? "..." : "");
 
+  const keywordList = [post.title, "tuanhuydev", category?.name, ...postTags.map((tag) => tag.name)].filter(
+    Boolean,
+  ) as string[];
+
   return {
     title: `${post.title} | tuanhuydev`,
     metadataBase: new URL(BASE_URL),
     description: cleanDescription,
-    keywords: `${post.title}, tuanhuydev, blog, web development, programming`,
+    keywords: keywordList.join(", "),
     authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
     creator: "Huy Nguyen Tuan",
     publisher: "tuanhuydev",
@@ -67,8 +79,8 @@ export async function generateMetadata(props: PageParams, parent: ResolvingMetad
         ? new Date(post.publishedAt).toISOString()
         : new Date(post.createdAt).toISOString(),
       modifiedTime: new Date(post.updatedAt).toISOString(),
-      section: "Technology",
-      tags: ["web development", "programming", "technology"],
+      section: category?.name ?? "Technology",
+      tags: postTags.length ? postTags.map((tag) => tag.name) : ["web development", "programming", "technology"],
     },
     twitter: {
       card: "summary_large_image",
@@ -83,29 +95,76 @@ export async function generateMetadata(props: PageParams, parent: ResolvingMetad
 
 export async function generateStaticParams() {
   try {
-    const posts: Post[] = await getPosts({ published: true });
+    const posts: Post[] = await getPosts({ publishedAt: true });
     return posts.map((post) => ({ slug: String(post.slug) }));
   } catch {
     return [];
   }
 }
 
+function pickRelatedPosts(current: Post, candidates: Post[], limit: number): Post[] {
+  const pool = candidates.filter((candidate) => candidate.slug !== current.slug);
+
+  const byCategory = current.categoryId ? pool.filter((candidate) => candidate.categoryId === current.categoryId) : [];
+  const bySeries = current.seriesId ? pool.filter((candidate) => candidate.seriesId === current.seriesId) : [];
+
+  const related: Post[] = [];
+  const seen = new Set<string>();
+  const addAll = (list: Post[]) => {
+    for (const candidate of list) {
+      if (related.length >= limit) break;
+      if (seen.has(candidate.slug)) continue;
+      seen.add(candidate.slug);
+      related.push(candidate);
+    }
+  };
+
+  addAll(byCategory);
+  addAll(bySeries);
+  addAll(pool);
+
+  return related.slice(0, limit);
+}
+
 export default async function Page(props: PageParams) {
   const { slug } = await props.params;
 
-  const [post, allPosts] = await Promise.all([
+  const [post, allPosts, categories, series] = await Promise.all([
     getPostBySlug(slug),
     getPosts({ publishedAt: true, sortBy: "publishedAt", sortOrder: "desc" }),
+    getCategories(),
+    getAllSeries(),
   ]);
 
-  if (!post) return <h1>Not Found</h1>;
+  if (!post || !post.publishedAt) notFound();
 
-  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
-  const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const category = categories.find((c) => c.id === post.categoryId) ?? null;
+  const postSeries = series.find((s) => s.id === post.seriesId) ?? null;
+  const relatedPosts = pickRelatedPosts(post as Post, allPosts as Post[], 3);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.content
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 200),
+    image: post.thumbnail ? [post.thumbnail] : undefined,
+    datePublished: post.publishedAt ? new Date(post.publishedAt).toISOString() : new Date(post.createdAt).toISOString(),
+    dateModified: new Date(post.updatedAt).toISOString(),
+    author: { "@type": "Person", name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" },
+    publisher: { "@type": "Organization", name: "tuanhuydev", url: BASE_URL },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${slug}` },
+    articleSection: category?.name,
+    keywords: category?.name,
+  };
 
   return (
     <>
-      <PostDetailPage post={post} nextPost={nextPost} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <PostDetailPage post={post} category={category} series={postSeries} relatedPosts={relatedPosts} />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </>
   );

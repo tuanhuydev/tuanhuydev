@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./SignIn.module.css";
 import { Button } from "@resources/components/common/Button";
 import { ThemeToggle } from "@resources/components/common/ThemeToggle";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
@@ -53,17 +54,15 @@ export default function SignIn() {
   );
 
   return (
-    <div
-      className="relative flex h-screen w-screen items-center justify-center bg-white dark:bg-slate-950"
-      data-testid="sign-in-page-testid">
-      <div className="absolute top-0 z-10 flex w-full justify-end p-4">
+    <div className={styles.page} data-testid="sign-in-page-testid">
+      <div className={styles.themeToggleRow}>
         <ThemeToggle size="md" />
       </div>
 
-      <div className="h-fit w-96 rounded-md bg-white px-6 pb-6 pt-5 drop-shadow-md dark:bg-slate-800">
-        <h1 className="mb-6 font-sans text-2xl font-bold dark:text-slate-100">Sign In</h1>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Sign In</h1>
 
-        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+        <form onSubmit={handleSubmit(submit)} className={styles.form}>
           <FormInput label="Email" name="email" type={InputType.EMAIL} control={control} placeholder="Email" />
           <FormInput
             label="Password"
@@ -72,7 +71,7 @@ export default function SignIn() {
             control={control}
             placeholder="Password"
           />
-          <Button type="submit" className="w-full mt-6" disabled={isSubmitting}>
+          <Button type="submit" className={styles.submit} disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
         </form>

@@ -115,6 +115,22 @@
   color: var(--site-fg-3);
 }
 
+.clearFilter {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--site-primary);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--site-border);
+  border-radius: 100px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.clearFilter:hover {
+  border-color: var(--site-primary);
+  background: var(--site-primary-tint);
+}
+
 /* ── MAIN CONTENT ── */
 .content {
   max-width: var(--max);
@@ -122,35 +138,73 @@
   padding: 72px var(--px) 120px;
 }
 
-/* ── FEATURED POST ── */
-.featuredLink {
-  display: block;
-  text-decoration: none;
+/* ── BENTO HERO ── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, minmax(160px, auto));
+  gap: 16px;
   margin-bottom: 24px;
 }
 
-.featuredCard {
-  position: relative;
-  background: var(--site-primary);
+/* Both a category and a series tile are available */
+.bentoBothTiles {
+  grid-template-areas:
+    "featured featured post2 catTile"
+    "featured featured post3 seriesTile";
+}
+
+/* Only a category tile is available */
+.bentoCategoryOnly {
+  grid-template-areas:
+    "featured featured post2 post2"
+    "featured featured post3 catTile";
+}
+
+/* Only a series tile is available */
+.bentoSeriesOnly {
+  grid-template-areas:
+    "featured featured post2 post2"
+    "featured featured post3 seriesTile";
+}
+
+/* No tiles available — post2/post3 each take the full side column */
+.bentoNoTiles {
+  grid-template-areas:
+    "featured featured post2 post2"
+    "featured featured post3 post3";
+}
+
+.bentoCell {
+  display: flex;
+  text-decoration: none;
   border-radius: 20px;
-  padding: 64px;
+}
+
+.bentoFeatured {
+  grid-area: featured;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--site-primary);
+  padding: 40px;
   overflow: hidden;
   transition: background 0.15s;
 }
 
-.featuredLink:hover .featuredCard {
-  background: var(--site-primary-600);
-}
-
-.featuredCard::before {
-  content: '';
+.bentoFeatured::before {
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at 80% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 
-.featuredBadge {
+.bentoFeatured:hover {
+  background: var(--site-primary-600);
+}
+
+.bentoBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -162,54 +216,179 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 40px;
+  align-self: flex-start;
 }
 
-.featuredBadgeDot {
+.bentoBadgeDot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
 }
 
-.featuredInner {
+.bentoFeaturedBody {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 40px;
+  gap: 24px;
+  margin-top: 40px;
 }
 
-.featuredBody {
-  flex: 1;
-}
-
-.featuredDate {
+.bentoFeaturedDate {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.04em;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
-.featuredTitle {
-  font-size: clamp(28px, 3.5vw, 48px);
+.bentoFeaturedTitle {
+  font-size: clamp(24px, 2.6vw, 36px);
   font-weight: 700;
   letter-spacing: -0.025em;
-  line-height: 1.15;
+  line-height: 1.18;
   color: #ffffff;
-  max-width: 640px;
 }
 
-.featuredArrow {
-  font-size: 48px;
+.bentoArrow {
+  align-self: flex-end;
+  font-size: 32px;
   color: rgba(255, 255, 255, 0.25);
   line-height: 1;
   flex-shrink: 0;
   transition: color 0.15s, transform 0.2s;
 }
 
-.featuredLink:hover .featuredArrow {
+.bentoFeatured:hover .bentoArrow {
   color: rgba(255, 255, 255, 0.6);
   transform: translate(6px, -6px);
+}
+
+.bentoPost {
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--site-border);
+  padding: 24px;
+  transition: border-color 0.15s, transform 0.2s;
+  background: var(--site-bg);
+}
+
+.bentoPost:hover {
+  border-color: var(--site-primary);
+  transform: translateY(-3px);
+}
+
+.bentoPost2 {
+  grid-area: post2;
+}
+
+.bentoPost3 {
+  grid-area: post3;
+}
+
+.bentoPostDate {
+  font-size: 11px;
+  color: var(--site-fg-3);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.bentoPostTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--site-fg);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.bentoTile {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px;
+  border-radius: 16px;
+  transition: transform 0.2s;
+}
+
+.bentoTile:hover {
+  transform: translateY(-3px);
+}
+
+.bentoCategoryTile {
+  grid-area: catTile;
+  background: var(--site-bg-soft);
+}
+
+.bentoSeriesTile {
+  grid-area: seriesTile;
+  background: var(--site-primary-tint);
+}
+
+.bentoTileLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--site-fg-3);
+}
+
+.bentoTileName {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--site-fg);
+  line-height: 1.3;
+}
+
+.bentoTileCount {
+  font-size: 12px;
+  color: var(--site-fg-2);
+}
+
+/* ── SERIES SHOWCASE ── */
+.seriesSection {
+  margin-top: 56px;
+}
+
+.seriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.seriesCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px;
+  border: 1px solid var(--site-border);
+  border-radius: var(--r);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.2s;
+  background: var(--site-bg);
+}
+
+.seriesCard:hover {
+  border-color: var(--site-primary);
+  transform: translateY(-3px);
+}
+
+.seriesCardName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--site-fg);
+  letter-spacing: -0.01em;
+}
+
+.seriesCardDesc {
+  font-size: 13px;
+  color: var(--site-fg-2);
+  line-height: 1.5;
+}
+
+.seriesCardCount {
+  font-size: 12px;
+  color: var(--site-fg-3);
+  margin-top: 4px;
 }
 
 /* ── GRID LABEL ── */
@@ -246,11 +425,26 @@
   transform: translateY(-3px);
 }
 
+.postCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.postCategory {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--site-primary);
+}
+
 .postDate {
   font-size: 12px;
   color: var(--site-fg-3);
   letter-spacing: 0.04em;
-  margin-bottom: 14px;
 }
 
 .postTitle {
@@ -282,40 +476,6 @@
   font-size: 16px;
 }
 
-/* ── FOOTER ── */
-.footer {
-  border-top: 1px solid var(--site-border);
-  padding: 28px var(--px);
-  max-width: var(--max);
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.footerCopy {
-  font-size: 13px;
-  color: var(--site-fg-3);
-}
-
-.footerLinks {
-  display: flex;
-  gap: 24px;
-}
-
-.footerLinks a {
-  font-size: 13px;
-  color: var(--site-fg-3);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.footerLinks a:hover {
-  color: var(--site-fg);
-}
-
 /* ── SCROLL FADE ── */
 .fade {
   opacity: 0;
@@ -326,6 +486,14 @@
 .in {
   opacity: 1;
   transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ════════════════════════════════════════════
@@ -350,8 +518,39 @@
     padding: 56px var(--px) 96px;
   }
 
-  .featuredCard {
-    padding: 48px;
+  .bento {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bentoBothTiles {
+    grid-template-areas:
+      "featured featured"
+      "post2 post3"
+      "catTile seriesTile";
+  }
+
+  .bentoCategoryOnly {
+    grid-template-areas:
+      "featured featured"
+      "post2 post3"
+      "catTile catTile";
+  }
+
+  .bentoSeriesOnly {
+    grid-template-areas:
+      "featured featured"
+      "post2 post3"
+      "seriesTile seriesTile";
+  }
+
+  .bentoNoTiles {
+    grid-template-areas:
+      "featured featured"
+      "post2 post3";
+  }
+
+  .bentoFeatured {
+    padding: 32px;
   }
 
   .postsGrid {
@@ -394,23 +593,39 @@
     padding: 40px var(--px) 72px;
   }
 
-  .featuredCard {
-    padding: 32px 24px;
+  .bento {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "featured"
+      "post2"
+      "post3"
+      "catTile"
+      "seriesTile";
+    margin-bottom: 16px;
+  }
+
+  .bentoFeatured {
+    padding: 28px 24px;
     border-radius: 16px;
   }
 
-  .featuredBadge {
-    margin-bottom: 28px;
-  }
-
-  .featuredInner {
+  .bentoFeaturedBody {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .featuredArrow {
-    font-size: 32px;
+  .bentoArrow {
+    align-self: flex-end;
+    font-size: 24px;
+  }
+
+  .seriesSection {
+    margin-top: 40px;
+  }
+
+  .seriesGrid {
+    grid-template-columns: 1fr;
   }
 
   .gridLabel {
@@ -424,11 +639,5 @@
 
   .postCard {
     padding: 20px;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
   }
 }

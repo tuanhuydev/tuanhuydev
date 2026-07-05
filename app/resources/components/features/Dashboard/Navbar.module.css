@@ -1,0 +1,121 @@
+.bar {
+  padding-top: 0.5rem;
+  padding-bottom: 0.75rem;
+  color: hsl(var(--foreground));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.start {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-grow: 1;
+  color: hsl(var(--foreground));
+}
+
+@media (max-width: 639px) {
+  .start {
+    max-width: 20rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .start {
+    max-width: 24rem;
+  }
+}
+
+@media (max-width: 1279px) {
+  .start {
+    max-width: 36rem;
+  }
+}
+
+.mobileMenuButton {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .mobileMenuButton {
+    display: none;
+  }
+}
+
+.title {
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.end {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.popoverContent {
+  width: 16rem;
+  padding: 0.75rem;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.userAvatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: hsl(var(--muted));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--muted-foreground));
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 1rem;
+  color: hsl(var(--foreground));
+  margin: 0;
+}
+
+.userEmail {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.signOutButton {
+  width: 100%;
+  text-align: left;
+  font-size: 0.75rem;
+  justify-content: flex-start;
+}
+
+.signOutButton:hover {
+  color: hsl(0 84% 60%);
+}
+
+.icon {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.iconSm {
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.5rem;
+}
