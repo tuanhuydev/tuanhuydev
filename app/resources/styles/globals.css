@@ -89,6 +89,38 @@
   box-sizing: border-box;
 }
 
+/* ── Typography scale tokens ── */
+:root {
+  /* Type sizes — use these instead of hardcoding px values in component CSS */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+
+  /* Leading */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Spacing scale — extend Tailwind with named tokens used in site chrome */
+  --space-page-x: clamp(1rem, 5vw, 4rem);
+  --space-section-y: clamp(3rem, 8vw, 6rem);
+
+  /* Z-index layers */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* Hide read-only editor overlays (lexical/MDX) */
 .sp-read-only {
   display: none !important;
 }

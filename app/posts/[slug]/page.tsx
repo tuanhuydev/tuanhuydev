@@ -1,8 +1,7 @@
 import { Post } from "@app/resources/types/post.types";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import PostDetailPage from "@resources/landing/PostDetailPage";
-import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
-import { BASE_URL } from "lib/commons/constants/base";
+import { GOOGLE_ANALYTIC, BASE_URL } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
@@ -140,7 +139,7 @@ export default async function Page(props: PageParams) {
 
   const category = categories.find((c) => c.id === post.categoryId) ?? null;
   const postSeries = series.find((s) => s.id === post.seriesId) ?? null;
-  const relatedPosts = pickRelatedPosts(post as Post, allPosts as Post[], 3);
+  const relatedPosts = pickRelatedPosts(post, allPosts, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",

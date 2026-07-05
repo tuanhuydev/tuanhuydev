@@ -2,6 +2,7 @@ import { PostObservers } from "./components/PostObservers";
 import SiteFooter from "./components/SiteFooter";
 import ThemeToggle from "./components/ThemeToggle";
 import styles from "./post.module.css";
+import { readingTime } from "@lib/utils/helper";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
 import { CategoryJSON } from "@server/models/category.model";
 import { PostJSON } from "@server/models/post.model";
@@ -15,11 +16,6 @@ interface PostDetailPageProps {
   category?: CategoryJSON | null;
   series?: SeriesJSON | null;
   relatedPosts?: PostJSON[];
-}
-
-function readingTime(content: string): string {
-  const words = content.split(/\s+/).length;
-  return `${Math.ceil(words / 200)} min read`;
 }
 
 export default function PostDetailPage({ post, category, series, relatedPosts = [] }: PostDetailPageProps) {
@@ -42,7 +38,7 @@ export default function PostDetailPage({ post, category, series, relatedPosts = 
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
-        <ThemeToggle className={styles.navToggle} />
+        <ThemeToggle />
         <Link className={styles.navCta} href="/#contact">
           Contact
         </Link>

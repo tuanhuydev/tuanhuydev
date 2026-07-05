@@ -2,6 +2,7 @@ import { PostsScrollFadeObserver } from "./components/PostsScrollFadeObserver";
 import SiteFooter from "./components/SiteFooter";
 import ThemeToggle from "./components/ThemeToggle";
 import styles from "./posts.module.css";
+import PublicPostCard from "@resources/components/content/PublicPostCard";
 import { CategoryJSON } from "@server/models/category.model";
 import { PostJSON } from "@server/models/post.model";
 import { SeriesJSON } from "@server/models/series.model";
@@ -99,7 +100,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         <Link className={styles.navLogo} href="/">
           tuanhuydev
         </Link>
-        <ThemeToggle className={styles.navToggle} />
+        <ThemeToggle />
         <Link className={styles.navCta} href="/#contact">
           Contact
         </Link>
@@ -232,20 +233,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                   {gridPosts.map((post, i) => {
                     const postCategory = post.categoryId ? categoryMap.get(post.categoryId) : null;
                     return (
-                      <Link
+                      <PublicPostCard
                         key={post.slug}
-                        className={`${styles.postCard} ${styles.fade}`}
-                        href={`/posts/${post.slug}`}
-                        style={{ transitionDelay: `${(i % 3) * 0.06}s` }}>
-                        <div className={styles.postCardMeta}>
-                          {postCategory && <span className={styles.postCategory}>{postCategory.name}</span>}
-                          <p className={styles.postDate}>
-                            {format(new Date(post.publishedAt || post.createdAt), "MMM dd, yyyy")}
-                          </p>
-                        </div>
-                        <p className={styles.postTitle}>{post.title}</p>
-                        <span className={styles.postArrow}>↗</span>
-                      </Link>
+                        post={post}
+                        category={postCategory?.name ?? null}
+                        className={styles.fade}
+                        transitionDelay={`${(i % 3) * 0.06}s`}
+                      />
                     );
                   })}
                 </div>
