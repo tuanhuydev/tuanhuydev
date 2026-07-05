@@ -1,4 +1,6 @@
 import { Textarea } from "../common/Textarea";
+import fieldStyles from "./FormField.module.css";
+import clsx from "clsx";
 import {
   Control,
   Controller,
@@ -38,19 +40,15 @@ export const FormTextarea = <TFieldValues extends FieldValues>({
     const hasError = !!fieldState.error;
 
     return (
-      <div className={className || "w-full"}>
-        {label && (
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 capitalize">
-            {label}
-          </label>
-        )}
+      <div className={className || fieldStyles.wrapper}>
+        {label && <label className={fieldStyles.label}>{label}</label>}
         <Textarea
           disabled={isDisabled}
-          className={hasError ? "border-red-500 dark:border-red-500" : ""}
+          className={clsx(hasError && fieldStyles.fieldError)}
           {...field}
           {...restProps}
         />
-        {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldState.error?.message}</p>}
+        {hasError && <p className={fieldStyles.error}>{fieldState.error?.message}</p>}
       </div>
     );
   };

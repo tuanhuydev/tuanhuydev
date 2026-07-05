@@ -3,14 +3,18 @@ import SiteFooter from "./components/SiteFooter";
 import ThemeToggle from "./components/ThemeToggle";
 import styles from "./post.module.css";
 import MarkdownRenderer from "@resources/components/content/MarkdownRenderer";
+import { CategoryJSON } from "@server/models/category.model";
 import { PostJSON } from "@server/models/post.model";
+import { SeriesJSON } from "@server/models/series.model";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
 interface PostDetailPageProps {
   post: PostJSON;
-  nextPost?: PostJSON | null;
+  category?: CategoryJSON | null;
+  series?: SeriesJSON | null;
+  relatedPosts?: PostJSON[];
 }
 
 function readingTime(content: string): string {
@@ -18,11 +22,12 @@ function readingTime(content: string): string {
   return `${Math.ceil(words / 200)} min read`;
 }
 
-export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) {
+export default function PostDetailPage({ post, category, series, relatedPosts = [] }: PostDetailPageProps) {
   const date = new Date(post.publishedAt || post.createdAt);
   const formattedDate = format(date, "MMMM d, yyyy");
   const updatedDate = format(new Date(post.updatedAt), "MMM d, yyyy");
   const minutes = readingTime(post.content);
+  const categoryLabel = category?.name ?? "Technology";
 
   return (
     <div className={styles.page}>
@@ -63,7 +68,13 @@ export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) 
               />
               <div className={styles.heroCardOverlay} />
               <div className={styles.heroCardMeta}>
-                <span className={styles.tagChip}>Technology</span>
+                {category ? (
+                  <Link className={styles.tagChip} href={`/posts?category=${category.slug}`}>
+                    {categoryLabel}
+                  </Link>
+                ) : (
+                  <span className={styles.tagChip}>{categoryLabel}</span>
+                )}
                 <span className={styles.metaTextInv}>{formattedDate}</span>
                 <span className={styles.metaDotInv} />
                 <span className={styles.metaTextInv}>{minutes}</span>
@@ -72,7 +83,13 @@ export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) 
           ) : (
             <div className={styles.heroCardPlaceholder}>
               <div className={styles.heroCardMeta}>
-                <span className={styles.tagChip}>Technology</span>
+                {category ? (
+                  <Link className={styles.tagChip} href={`/posts?category=${category.slug}`}>
+                    {categoryLabel}
+                  </Link>
+                ) : (
+                  <span className={styles.tagChip}>{categoryLabel}</span>
+                )}
                 <span className={styles.metaTextInv}>{formattedDate}</span>
                 <span className={styles.metaDotInv} />
                 <span className={styles.metaTextInv}>{minutes}</span>
@@ -82,6 +99,11 @@ export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) 
 
           {/* Title below card */}
           <div className={styles.postTitleWrap}>
+            {series && (
+              <Link className={styles.seriesChip} href={`/posts?series=${series.slug}`}>
+                Part of <strong>{series.name}</strong>
+              </Link>
+            )}
             <h1 className={styles.postTitle}>{post.title}</h1>
           </div>
         </header>
@@ -100,16 +122,21 @@ export default function PostDetailPage({ post, nextPost }: PostDetailPageProps) 
           </div>
         </div>
 
-        {/* ── NEXT POST ── */}
-        {nextPost && (
-          <div className={`${styles.nextWrap} ${styles.fade}`}>
-            <Link className={styles.nextCard} href={`/posts/${nextPost.slug}`}>
-              <div>
-                <div className={styles.nextLabel}>Next post</div>
-                <div className={styles.nextTitle}>{nextPost.title}</div>
-              </div>
-              <span className={styles.nextArrow}>↗</span>
-            </Link>
+        {/* ── SUGGESTED POSTS ── */}
+        {relatedPosts.length > 0 && (
+          <div className={`${styles.suggestedWrap} ${styles.fade}`}>
+            <p className={styles.suggestedLabel}>Keep reading</p>
+            <div className={styles.suggestedGrid}>
+              {relatedPosts.map((relatedPost) => (
+                <Link key={relatedPost.slug} className={styles.suggestedCard} href={`/posts/${relatedPost.slug}`}>
+                  <p className={styles.suggestedDate}>
+                    {format(new Date(relatedPost.publishedAt || relatedPost.createdAt), "MMM dd, yyyy")}
+                  </p>
+                  <p className={styles.suggestedTitle}>{relatedPost.title}</p>
+                  <span className={styles.suggestedArrow}>↗</span>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </article>

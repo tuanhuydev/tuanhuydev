@@ -15,6 +15,6 @@ export async function PATCH(request: NextRequest, props: RouteParams) {
   return userController.update(request, params);
 }
 
-export async function DELETE() {
-  return userController.delete();
+export async function DELETE(request: NextRequest) {
+  return userController.delete(request);
 }

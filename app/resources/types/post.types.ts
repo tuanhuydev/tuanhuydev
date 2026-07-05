@@ -12,4 +12,7 @@ export interface Post {
   slug: string;
   authorId: string | null;
   assets: string[];
+  categoryId: string | null;
+  seriesId: string | null;
+  tagIds: string[];
 }

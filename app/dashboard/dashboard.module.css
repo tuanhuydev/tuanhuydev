@@ -1,0 +1,29 @@
+.editWrap {
+  flex-grow: 1;
+  height: 100%;
+  padding-top: 0.5rem;
+}
+
+.listBody {
+  flex-grow: 1;
+  overflow: auto;
+  padding-bottom: 0.75rem;
+}
+
+.cardGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rowClickable {
+  cursor: pointer;
+}
+
+.clamp1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}

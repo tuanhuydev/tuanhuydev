@@ -1,8 +1,9 @@
 "use client";
 
 import { Badge } from "./Badge";
+import styles from "./MultiSelect.module.css";
 import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
-import { cn } from "@resources/utils/helper";
+import clsx from "clsx";
 import { Check, ChevronDown, X } from "lucide-react";
 import * as React from "react";
 
@@ -59,7 +60,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     );
 
     return (
-      <div className={cn("w-full", className)}>
+      <div className={clsx(styles.wrapper, className)}>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <button
@@ -68,41 +69,15 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               role="combobox"
               aria-expanded={open}
               disabled={disabled}
-              className={cn(
-                // Layout - match Select
-                "flex h-auto min-h-9 w-full items-center justify-between whitespace-nowrap",
-                // Border & Radius - match Select
-                "rounded-md border border-slate-300 dark:border-slate-600",
-                // Background - match Select
-                "bg-white dark:bg-slate-800",
-                // Text - match Select
-                "text-base text-gray-900 dark:text-gray-100 md:text-sm",
-                // Placeholder - match Select
-                !selected.length && "text-slate-400 dark:text-slate-500",
-                // Padding & Shadow - match Select
-                "px-3 py-2 shadow-sm",
-                // Hover State - match Select (removed unnecessary hover from button variant)
-                "hover:border-slate-400 dark:hover:border-slate-500",
-                // Focus State - match Select
-                "outline-none focus:border-primary dark:focus:border-slate-500",
-                // Transitions - match Select
-                "transition-colors duration-200",
-                // Disabled State - match Select
-                "disabled:cursor-not-allowed disabled:opacity-50",
-                // Error state
-                error && "border-red-500",
-              )}>
-              <div className="flex flex-wrap gap-1 flex-1 min-h-5">
+              className={clsx(styles.trigger, !selected.length && styles.triggerEmpty, error && styles.triggerError)}>
+              <div className={styles.badgeRow}>
                 {selectedOptions.length > 0 ? (
                   selectedOptions.map((option) => (
-                    <Badge
-                      key={option.value}
-                      variant="secondary"
-                      className="mr-1 mb-1 flex items-center gap-1 px-2 py-0.5">
+                    <Badge key={option.value} variant="secondary" className={styles.badge}>
                       {option.label}
                       <button
                         type="button"
-                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        className={styles.removeButton}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             handleRemove(option.value, e as unknown as React.MouseEvent);
@@ -113,39 +88,36 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                           e.stopPropagation();
                         }}
                         onClick={(e) => handleRemove(option.value, e)}>
-                        <X className="h-3 w-3 text-muted-foreground" />
+                        <X className={styles.removeIcon} />
                       </button>
                     </Badge>
                   ))
                 ) : (
-                  <span className="line-clamp-1">{placeholder}</span>
+                  <span className={styles.placeholder}>{placeholder}</span>
                 )}
               </div>
-              <ChevronDown className="h-4 w-4 opacity-50" />
+              <ChevronDown className={styles.chevron} />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-full p-0" align="start">
-            <div className="max-h-64 overflow-auto p-1">
+          <PopoverContent className={styles.popoverContent} align="start">
+            <div className={styles.optionList}>
               {options.length === 0 ? (
-                <div className="py-6 text-center text-sm text-muted-foreground">No options available</div>
+                <div className={styles.emptyMessage}>No options available</div>
               ) : (
                 options.map((option) => {
                   const isSelected = selected.includes(option.value);
                   return (
                     <div
                       key={option.value}
-                      className={cn(
-                        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                        isSelected && "bg-accent",
-                      )}
+                      className={clsx(styles.option, isSelected && styles.optionSelected)}
                       onClick={() => handleSelect(option.value)}>
-                      <div className="flex items-center flex-1">
+                      <div className={styles.optionInner}>
                         <div
-                          className={cn(
-                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                            isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible",
+                          className={clsx(
+                            styles.checkbox,
+                            isSelected ? styles.checkboxChecked : styles.checkboxUnchecked,
                           )}>
-                          <Check className="h-4 w-4" />
+                          <Check className={styles.checkIcon} />
                         </div>
                         <span>{option.label}</span>
                       </div>
@@ -156,7 +128,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             </div>
           </PopoverContent>
         </Popover>
-        {error && <p className="text-xs text-red-500 mt-1 mx-3.5">{error}</p>}
+        {error && <p className={styles.error}>{error}</p>}
       </div>
     );
   },

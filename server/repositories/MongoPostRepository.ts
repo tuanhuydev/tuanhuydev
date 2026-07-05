@@ -26,6 +26,15 @@ export class MongoPostRepository {
     if (params?.exclude && Array.isArray(params.exclude)) {
       filter._id = { $nin: params.exclude.map((id) => new ObjectId(id as string)) };
     }
+    if (params?.categoryId) {
+      filter.categoryId = new ObjectId(params.categoryId as string);
+    }
+    if (params?.seriesId) {
+      filter.seriesId = new ObjectId(params.seriesId as string);
+    }
+    if (params?.tagId) {
+      filter.tagIds = { $in: [new ObjectId(params.tagId as string)] };
+    }
 
     let query = this.table.find(filter);
 
@@ -70,6 +79,7 @@ export class MongoPostRepository {
     const now = new Date().toISOString();
     const bodyWithTimestamps = {
       ...body,
+      ...this.castRelationIds(body),
       createdAt: now,
       updatedAt: now,
       deletedAt: null,
@@ -78,7 +88,21 @@ export class MongoPostRepository {
   }
 
   async save(id: string, body: Record<string, unknown>): Promise<UpdateResult<BSON.Document>> {
-    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: body });
+    return this.table.updateOne({ _id: new ObjectId(id) }, { $set: { ...body, ...this.castRelationIds(body) } });
+  }
+
+  private castRelationIds(body: Record<string, unknown>): Record<string, unknown> {
+    const cast: Record<string, unknown> = {};
+    if ("categoryId" in body) {
+      cast.categoryId = body.categoryId ? new ObjectId(body.categoryId as string) : null;
+    }
+    if ("seriesId" in body) {
+      cast.seriesId = body.seriesId ? new ObjectId(body.seriesId as string) : null;
+    }
+    if ("tagIds" in body) {
+      cast.tagIds = Array.isArray(body.tagIds) ? body.tagIds.map((tagId) => new ObjectId(tagId as string)) : [];
+    }
+    return cast;
   }
 
   async softDelete(id: string) {

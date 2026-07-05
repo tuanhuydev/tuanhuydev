@@ -2,9 +2,9 @@
 
 import { PostJSON, PostModel } from "@server/models/post.model";
 import { postService } from "@server/services/PostService";
+import { unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { unstable_cache } from "next/cache";
 
 const fetchPosts = unstable_cache(
   async (filter: Record<string, unknown> = {}): Promise<PostJSON[]> => {

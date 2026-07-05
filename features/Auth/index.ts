@@ -1,6 +1,5 @@
 // Auth hooks
 export { useFetch } from "./hooks/useFetch";
-export { useAuth } from "./hooks/useAuth";
 
 // Auth services
 export { default as AuthApiService } from "./services/AuthApiService";

@@ -2,7 +2,9 @@
 
 import { Card, CardContent, CardHeader } from "../../common/Card";
 import BaseImage from "../../content/BaseImage";
+import styles from "./PostCard.module.css";
 import { Post } from "@app/resources/types/post.types";
+import clsx from "clsx";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "lib/commons/constants/base";
 import { useRouter } from "next/navigation";
@@ -24,32 +26,27 @@ const PostCard = memo(function PostCard({ post, actions }: PostCardProps) {
 
   const Status: JSX.Element = useMemo(() => {
     const isPublished = !!publishedAt;
-    const color = isPublished ? "bg-green-100 text-green-400" : "bg-amber-100 text-amber-400";
     const content = isPublished ? "published" : "draft";
 
     return (
-      <div color={color} className={`text-xs py-1 px-3 rounded-md capitalize ${color}`}>
-        {content}
-      </div>
+      <div className={clsx(styles.status, isPublished ? styles.statusPublished : styles.statusDraft)}>{content}</div>
     );
   }, [publishedAt]);
 
   return (
-    <Card className="w-full md:w-[18rem] cursor-pointer" onClick={navigateProjectEdit}>
-      <div className="relative w-full h-40 overflow-hidden rounded-t-xl bg-slate-100 dark:bg-slate-700">
-        {thumbnail && <BaseImage src={thumbnail} alt={title} fill className="object-cover" />}
+    <Card className={styles.card} onClick={navigateProjectEdit}>
+      <div className={styles.thumbnail}>
+        {thumbnail && <BaseImage src={thumbnail} alt={title} fill className={styles.thumbnailImg} />}
       </div>
       <CardHeader>
-        <h3 className="font-semibold text-lg line-clamp-2">{title}</h3>
+        <h3 className={styles.title}>{title}</h3>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-nowrap items-center justify-between">
-          <div className="text-sm font-medium text-primary dark:text-slate-50">
-            {createdAt ? format(new Date(createdAt), DATE_FORMAT) : "-"}
-          </div>
+        <div className={styles.footerRow}>
+          <div className={styles.date}>{createdAt ? format(new Date(createdAt), DATE_FORMAT) : "-"}</div>
           {Status}
         </div>
-        {actions && <div className="mt-3 flex gap-3 justify-end">{actions}</div>}
+        {actions && <div className={styles.actions}>{actions}</div>}
       </CardContent>
     </Card>
   );

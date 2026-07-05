@@ -1,4 +1,5 @@
 import Navbar from "./Navbar";
+import styles from "./PageContainer.module.css";
 import { PropsWithChildren } from "react";
 
 export interface PageContainerProps extends PropsWithChildren {
@@ -13,9 +14,9 @@ export default function PageContainer({ title, goBack, children }: PageContainer
     goBackLink: typeof goBack === "string" ? goBack : undefined,
   };
   return (
-    <div className="flex flex-col h-full">
+    <div className={styles.container}>
       <Navbar {...navbarProps} />
-      <div className="flex flex-col overflow-auto flex-grow">{children}</div>
+      <div className={styles.body}>{children}</div>
     </div>
   );
 }

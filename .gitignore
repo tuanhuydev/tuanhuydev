@@ -41,3 +41,6 @@ next-env.d.ts
 
 # Environment
 .env
+
+# Claude Code agent worktrees (ephemeral)
+.claude/worktrees/

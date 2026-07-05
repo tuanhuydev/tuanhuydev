@@ -1,0 +1,11 @@
+.wrapper {
+  width: 100%;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+  display: block;
+}
