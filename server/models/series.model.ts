@@ -1,6 +1,5 @@
+import type { ISODateString } from "@lib/types";
 import { SeriesDocument } from "@server/mongo/series.document";
-
-type ISODateString = string;
 
 type SeriesConstructorInput = {
   name: string;

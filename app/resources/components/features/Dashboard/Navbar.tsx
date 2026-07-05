@@ -71,7 +71,7 @@ const Navbar = ({ title, goBack = false, goBackLink, startComponent, endComponen
 
   const renderEnd = endComponent ?? (
     <Fragment>
-      <ThemeToggle size="sm" />
+      <ThemeToggle size="sm" className={styles.navToggle} />
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="icon">

@@ -2,11 +2,11 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import { transformTextToDashed } from "@lib/utils/helper";
-import Network from "@lib/utils/network";
 import { CreateCategoryDTO, createCategorySchema, UpdateCategoryDTO } from "@server/dto/category.dto";
 import { CategoryJSON, CategoryModel } from "@server/models/category.model";
 import { authService, AuthService } from "@server/services/AuthService";
 import { categoryService } from "@server/services/CategoryService";
+import Network from "@server/utils/network";
 import { revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 

@@ -4,6 +4,7 @@ import ConfirmBox from "../../common/modals/ConfirmBox";
 import styles from "../../formV2/EntityForm.module.css";
 import { FormInput, InputType } from "../../formV2/FormInput";
 import { Tag } from "@app/resources/types/tag.types";
+import { getAuthHeaders } from "@lib/utils/apiClient";
 import { transformTextToDashed } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
@@ -20,14 +21,6 @@ export type TagFormData = {
   name: string;
   slug: string;
 };
-
-function getAuthHeaders(): Record<string, string> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 export const TagFormV2: React.FC<TagFormProps> = ({ tag }) => {
   const router = useRouter();

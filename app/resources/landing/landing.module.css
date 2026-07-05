@@ -15,21 +15,6 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-.navToggle {
-  color: var(--site-fg-3);
-  transition: color 0.15s, background 0.15s;
-  border-radius: 100px;
-}
-
-.navToggle:hover {
-  color: var(--site-fg);
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:global(.dark) .navToggle:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
 /* ── NAV ── */
 .nav {
   position: fixed;

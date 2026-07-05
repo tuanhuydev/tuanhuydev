@@ -2,12 +2,12 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import NotFoundError from "@lib/commons/errors/NotFoundError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
-import Network from "@lib/utils/network";
 import { CreateUserDTO } from "@server/dto/user.dto";
 import { User } from "@server/models/User";
 import { userRepository } from "@server/repositories/MongoUserRepository";
 import { authService } from "@server/services/AuthService";
 import { logService } from "@server/services/LogService";
+import Network from "@server/utils/network";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
