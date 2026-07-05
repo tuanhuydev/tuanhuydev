@@ -1,11 +1,5 @@
-import { ISODateString } from "./common.types";
-
-export interface Series {
-  id?: string;
-  name: string;
-  slug: string;
-  description?: string;
-  createdAt: ISODateString;
-  updatedAt: ISODateString;
-  deletedAt: ISODateString | null;
-}
+/**
+ * Series entity type for client-side use.
+ * Single source of truth: server/models/series.model.ts
+ */
+export type { SeriesJSON as Series } from "@server/models/series.model";

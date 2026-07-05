@@ -7,6 +7,7 @@ import { FormRichText } from "../../formV2/FormRichText";
 import { FormSelect, SelectOption } from "../../formV2/FormSelect";
 import styles from "./PostFormV2.module.css";
 import { Post } from "@app/resources/types/post.types";
+import { getAuthHeaders } from "@lib/utils/apiClient";
 import { transformTextToDashed } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
 import { MultiSelectOption } from "@resources/components/common/MultiSelect";
@@ -36,14 +37,6 @@ export type PostFormData = {
   seriesId: string;
   tagIds: string[];
 };
-
-function getAuthHeaders(): Record<string, string> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 function serializePostForm(formData: PostFormData) {
   return {

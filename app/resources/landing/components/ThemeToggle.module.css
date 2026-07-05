@@ -1,0 +1,14 @@
+.button {
+  color: var(--site-fg-3);
+  transition: color 0.15s, background 0.15s;
+  border-radius: 100px;
+}
+
+.button:hover {
+  color: var(--site-fg);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}

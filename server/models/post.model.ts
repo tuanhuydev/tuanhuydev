@@ -1,6 +1,5 @@
+import type { ISODateString } from "@lib/types";
 import { PostDocument } from "@server/mongo/post.document";
-
-type ISODateString = string;
 
 type PostConstructorInput = {
   title: string;

@@ -1,6 +1,5 @@
 import styles from "../../dashboard.module.css";
 import { TagFormV2 } from "@app/resources/components/features/Tag/TagFormV2";
-import { Tag } from "@app/resources/types/tag.types";
 import PageContainer from "@resources/components/features/Dashboard/PageContainer";
 import { notFound } from "next/navigation";
 import { getTagById } from "server/actions/tagActions";
@@ -18,7 +17,7 @@ export default async function Page(props: PageProps) {
   return (
     <PageContainer title="Edit Tag" goBack="/dashboard/tags">
       <div className={styles.editWrap}>
-        <TagFormV2 tag={tag as Tag} />
+        <TagFormV2 tag={tag} />
       </div>
     </PageContainer>
   );

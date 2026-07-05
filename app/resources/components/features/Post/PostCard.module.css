@@ -1,6 +1,15 @@
 .card {
+  position: relative;
   width: 100%;
   cursor: pointer;
+}
+
+/* Full-card link overlay — sits above card background, below nested actions */
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
 }
 
 @media (min-width: 768px) {

@@ -21,7 +21,10 @@
 }
 
 .searchInput {
-  padding-left: 2.5rem;
+  /* Override Input's shorthand padding so the icon doesn't overlap the text.
+     !important is required here because CSS Modules class order in the bundle
+     can cause the `padding` shorthand in Input.module.css to win otherwise. */
+  padding-left: 2.5rem !important;
 }
 
 .createButton {

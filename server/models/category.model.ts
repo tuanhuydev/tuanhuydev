@@ -1,6 +1,5 @@
+import type { ISODateString } from "@lib/types";
 import { CategoryDocument } from "@server/mongo/category.document";
-
-type ISODateString = string;
 
 type CategoryConstructorInput = {
   name: string;
