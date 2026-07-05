@@ -1,0 +1,22 @@
+.wrapper {
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.25rem;
+  text-transform: capitalize;
+}
+
+.error {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: hsl(var(--destructive));
+}
+
+.fieldError {
+  border-color: hsl(var(--destructive)) !important;
+}

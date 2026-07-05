@@ -1,4 +1,4 @@
-import { AUTH_URL } from "@lib/commons/constants/base";
+import { AUTH_URL, isProductionEnv } from "@lib/commons/constants/base";
 import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
@@ -43,7 +43,11 @@ class AuthController {
       const { accessToken } = (await signInResponse.json()) as { accessToken: string };
       if (!accessToken) throw new UnauthorizedError("Authenticate Failed");
 
-      (await cookies()).set("jwt", accessToken, { sameSite: "strict", httpOnly: true });
+      (await cookies()).set("jwt", accessToken, {
+        sameSite: "strict",
+        httpOnly: true,
+        secure: isProductionEnv,
+      });
       return network.successResponse({ accessToken });
     } catch (error) {
       console.error(error);

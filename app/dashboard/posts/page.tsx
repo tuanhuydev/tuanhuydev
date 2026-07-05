@@ -1,3 +1,4 @@
+import styles from "../dashboard.module.css";
 import { Post } from "@app/resources/types/post.types";
 import { UrlParams } from "@lib/interfaces/shared";
 import Empty from "@resources/components/common/Empty";
@@ -17,7 +18,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Url
     if (!posts.length) return <Empty />;
 
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.cardGrid}>
         {posts.map((post: Post) => (
           <ErrorBoundary key={post.id}>
             <Suspense fallback={<Loader />}>
@@ -32,7 +33,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Url
   return (
     <PageContainer title="Posts">
       <PostsFilter searchPlaceholder="Find your post" createLabel="New post" />
-      <div className="grow overflow-auto pb-3">{RenderPosts()}</div>
+      <div className={styles.listBody}>{RenderPosts()}</div>
     </PageContainer>
   );
 }

@@ -182,6 +182,12 @@
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+a.tagChip:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .metaTextInv {
@@ -215,6 +221,29 @@
   margin: 44px auto 0;
 }
 
+.seriesChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--site-fg-2);
+  background: var(--site-primary-tint);
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.seriesChip strong {
+  color: var(--site-fg);
+  font-weight: 600;
+}
+
+.seriesChip:hover {
+  background: var(--site-border);
+}
+
 .postTitle {
   font-size: clamp(38px, 5vw, 60px);
   font-weight: 700;
@@ -222,12 +251,6 @@
   line-height: 1.04;
   color: var(--site-fg);
   margin-bottom: 20px;
-}
-
-.postLede {
-  font-size: 19px;
-  line-height: 1.6;
-  color: #525252;
 }
 
 /* ── PROSE BODY ── */
@@ -397,89 +420,70 @@
   margin-top: 3px;
 }
 
-/* ── NEXT POST ── */
-.nextWrap {
-  max-width: var(--read);
-  margin: 28px auto 0;
+/* ── SUGGESTED POSTS ── */
+.suggestedWrap {
+  max-width: var(--max);
+  margin: 88px auto 0;
+  padding: 0 var(--px);
 }
 
-.nextCard {
+.suggestedLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--site-fg-3);
+  margin-bottom: 20px;
+}
+
+.suggestedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.suggestedCard {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 28px 32px;
+  flex-direction: column;
+  padding: 28px;
   border: 1px solid var(--site-border);
-  border-radius: 16px;
+  border-radius: var(--r);
   text-decoration: none;
   transition: border-color 0.15s, transform 0.2s;
+  background: var(--site-bg);
 }
 
-.nextCard:hover {
+.suggestedCard:hover {
   border-color: var(--site-primary);
   transform: translateY(-3px);
 }
 
-.nextLabel {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.suggestedDate {
+  font-size: 12px;
   color: var(--site-fg-3);
-  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
 }
 
-.nextTitle {
-  font-size: 18px;
+.suggestedTitle {
+  font-size: 16px;
   font-weight: 600;
   color: var(--site-fg);
+  line-height: 1.42;
   letter-spacing: -0.01em;
+  flex: 1;
+  margin-bottom: 24px;
 }
 
-.nextArrow {
-  font-size: 22px;
+.suggestedArrow {
+  font-size: 16px;
   color: var(--site-fg-3);
   transition: transform 0.15s, color 0.15s;
-  flex-shrink: 0;
 }
 
-.nextCard:hover .nextArrow {
+.suggestedCard:hover .suggestedArrow {
   transform: translate(3px, -3px);
   color: var(--site-primary);
-}
-
-/* ── FOOTER ── */
-.footer {
-  border-top: 1px solid var(--site-border);
-  padding: 28px var(--px);
-  max-width: var(--max);
-  margin: 80px auto 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.footerCopy {
-  font-size: 13px;
-  color: var(--site-fg-3);
-}
-
-.footerLinks {
-  display: flex;
-  gap: 24px;
-}
-
-.footerLinks a {
-  font-size: 13px;
-  color: var(--site-fg-3);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.footerLinks a:hover {
-  color: var(--site-fg);
 }
 
 /* ── SCROLL FADE ── */
@@ -529,8 +533,8 @@
     max-width: 100%;
   }
 
-  .nextWrap {
-    max-width: 100%;
+  .suggestedGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .postTitle {
@@ -591,10 +595,6 @@
     margin-bottom: 14px;
   }
 
-  .postLede {
-    font-size: 16px;
-  }
-
   .prose {
     margin-top: 40px;
   }
@@ -628,18 +628,16 @@
     flex-wrap: wrap;
   }
 
-  .nextCard {
-    padding: 20px 22px;
+  .suggestedWrap {
+    margin-top: 56px;
   }
 
-  .nextTitle {
-    font-size: 15px;
+  .suggestedGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
-  .footer {
-    margin-top: 48px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+  .suggestedCard {
+    padding: 20px;
   }
 }

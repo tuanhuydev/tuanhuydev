@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./ErrorBoundary.module.css";
 import { Component, ReactNode } from "react";
 
 interface ErrorBoundaryProps {
@@ -48,10 +49,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <div className="flex flex-col items-center justify-center min-h-[200px] p-6 text-center">
-          <div className="text-red-500 dark:text-red-400 mb-4">
+        <div className={styles.wrap}>
+          <div className={styles.iconWrap}>
             <svg
-              className="w-16 h-16 mx-auto"
+              className={styles.icon}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -64,19 +65,17 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">Something went wrong</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            We&apos;re sorry for the inconvenience. Please try refreshing the page.
-          </p>
+          <h3 className={styles.title}>Something went wrong</h3>
+          <p className={styles.description}>We&apos;re sorry for the inconvenience. Please try refreshing the page.</p>
           {process.env.NODE_ENV === "development" && this.state.error && (
-            <details className="text-left text-xs text-muted-foreground bg-muted p-4 rounded-md max-w-lg">
-              <summary className="cursor-pointer font-medium mb-2">Error details (dev only)</summary>
-              <pre className="whitespace-pre-wrap">{this.state.error.toString()}</pre>
+            <details className={styles.details}>
+              <summary className={styles.summary}>Error details (dev only)</summary>
+              <pre className={styles.pre}>{this.state.error.toString()}</pre>
             </details>
           )}
           <button
             onClick={() => typeof window !== "undefined" && window.location.reload()}
-            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
+            className={styles.reloadButton}>
             Reload Page
           </button>
         </div>

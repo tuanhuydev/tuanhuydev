@@ -1,3 +1,4 @@
+import { BASE_URL } from "@lib/commons/constants/base";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -12,10 +13,16 @@ export function proxy(request: NextRequest) {
     },
   });
 
-  // Set CORS headers for API routes
+  // Set CORS headers for API routes. Scoped to the app's own origin rather
+  // than "*" — these endpoints accept credentials (Authorization/cookies)
+  // and a wildcard origin let any third-party site script-call them directly
+  // from a victim's browser.
   if (request.nextUrl.pathname.startsWith("/api")) {
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    const origin = request.headers.get("origin");
+    if (origin === BASE_URL) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+    }
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   }
 

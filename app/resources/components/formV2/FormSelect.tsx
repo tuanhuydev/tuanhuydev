@@ -1,4 +1,6 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../common/Select";
+import fieldStyles from "./FormField.module.css";
+import clsx from "clsx";
 import {
   Control,
   Controller,
@@ -45,14 +47,10 @@ export const FormSelect = <TFieldValues extends FieldValues>({
     const hasError = !!fieldState.error;
 
     return (
-      <div className={className || "w-full"}>
-        {label && (
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 capitalize">
-            {label}
-          </label>
-        )}
+      <div className={className || fieldStyles.wrapper}>
+        {label && <label className={fieldStyles.label}>{label}</label>}
         <Select disabled={isDisabled} onValueChange={field.onChange} value={field.value}>
-          <SelectTrigger className={hasError ? "border-red-500 dark:border-red-500" : ""}>
+          <SelectTrigger className={clsx(hasError && fieldStyles.fieldError)}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
@@ -65,7 +63,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
             </SelectGroup>
           </SelectContent>
         </Select>
-        {hasError && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldState.error?.message}</p>}
+        {hasError && <p className={fieldStyles.error}>{fieldState.error?.message}</p>}
       </div>
     );
   };

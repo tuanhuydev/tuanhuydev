@@ -1,16 +1,15 @@
-import { SidebarProvider } from "@resources/components/features/Dashboard/SidebarContext";
+import styles from "./template.module.css";
 import Sidebar from "@resources/components/features/Dashboard/Sidebar";
+import { SidebarProvider } from "@resources/components/features/Dashboard/SidebarContext";
 import { PropsWithChildren } from "react";
 
 export default function DashboardTemplate({ children }: PropsWithChildren) {
   return (
     <SidebarProvider>
-      <div className="w-full h-screen overflow-hidden flex justify-center flex-nowrap">
-        <div className="flex w-full relative overflow-hidden">
+      <div className={styles.shell}>
+        <div className={styles.inner}>
           <Sidebar />
-          <div className="motion-safe:animate-fadeIn bg-slate-50 dark:bg-gray-950 py-3 px-5 h-full flex grow flex-col">
-            {children}
-          </div>
+          <div className={styles.content}>{children}</div>
         </div>
       </div>
     </SidebarProvider>

@@ -1,0 +1,43 @@
+.item {
+  transition: background-color 0.2s ease-in, color 0.2s ease-in;
+  font-family: inherit;
+  border-radius: 9999px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.item:hover {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.active {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.settingsLink {
+  margin-top: auto;
+}
+
+.row {
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.iconSlot {
+  flex-shrink: 0;
+  min-width: 1rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
