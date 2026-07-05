@@ -12,6 +12,33 @@ import { type Metadata, type Viewport } from "next";
 import { PropsWithChildren, Suspense } from "react";
 
 export const metadata: Metadata = {
+  title: {
+    default: "tuanhuydev - Fullstack Software Engineer",
+    template: "%s | tuanhuydev",
+  },
+  description:
+    "Huy Nguyen Tuan's personal site. Fullstack engineer from Vietnam sharing posts on web development, React, Next.js, and software craft.",
+  metadataBase: new URL("https://tuanhuy.dev"),
+  authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
+  creator: "Huy Nguyen Tuan",
+  openGraph: {
+    siteName: "tuanhuydev",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@tuanhuydev",
+    site: "@tuanhuydev",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   verification: {
     google: "gYd2c34ZXyS2chY0g_MILlCnSJ5DyhRb2VEwm4ilqRk",
   },

@@ -1,11 +1,5 @@
-import { ISODateString } from "./common.types";
-
-export interface Category {
-  id?: string;
-  name: string;
-  slug: string;
-  description?: string;
-  createdAt: ISODateString;
-  updatedAt: ISODateString;
-  deletedAt: ISODateString | null;
-}
+/**
+ * Category entity type for client-side use.
+ * Single source of truth: server/models/category.model.ts
+ */
+export type { CategoryJSON as Category } from "@server/models/category.model";

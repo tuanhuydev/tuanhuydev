@@ -33,7 +33,7 @@ export default function LandingPage() {
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
-        <ThemeToggle className={styles.navToggle} />
+        <ThemeToggle />
         <Link className={styles.navCta} href="#contact">
           Contact
         </Link>

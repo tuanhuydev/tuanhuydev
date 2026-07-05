@@ -5,6 +5,7 @@ import styles from "../../formV2/EntityForm.module.css";
 import { FormInput, InputType } from "../../formV2/FormInput";
 import { FormTextarea } from "../../formV2/FormTextarea";
 import { Series } from "@app/resources/types/series.types";
+import { getAuthHeaders } from "@lib/utils/apiClient";
 import { transformTextToDashed } from "@lib/utils/helper";
 import { Button } from "@resources/components/common/Button";
 import { useGlobal } from "@resources/components/common/providers/GlobalProvider";
@@ -22,14 +23,6 @@ export type SeriesFormData = {
   slug: string;
   description: string;
 };
-
-function getAuthHeaders(): Record<string, string> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
 
 export const SeriesFormV2: React.FC<SeriesFormProps> = ({ series }) => {
   const router = useRouter();

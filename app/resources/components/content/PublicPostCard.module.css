@@ -1,0 +1,73 @@
+/* ── Public-facing post card used across landing & posts pages ── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border: 1px solid var(--site-border);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.2s;
+  background: var(--site-bg);
+}
+
+.card:hover {
+  border-color: var(--site-primary);
+  transform: translateY(-3px);
+}
+
+/* Meta row: category badge + date (category is optional) */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--site-primary);
+}
+
+.date {
+  font-size: 12px;
+  color: var(--site-fg-3);
+  letter-spacing: 0.04em;
+  margin-bottom: 14px; /* used when no category meta row */
+}
+
+/* Reset margin when date is nested inside .meta */
+.meta .date {
+  margin-bottom: 0;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--site-fg);
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.arrow {
+  font-size: 16px;
+  color: var(--site-fg-3);
+  transition: transform 0.15s, color 0.15s;
+}
+
+.card:hover .arrow {
+  transform: translate(3px, -3px);
+  color: var(--site-primary);
+}
+
+@media (max-width: 639px) {
+  .card {
+    padding: 20px;
+  }
+}

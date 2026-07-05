@@ -1,12 +1,9 @@
 "use client";
 
+import styles from "./ThemeToggle.module.css";
 import { useTheme } from "@resources/hooks/useTheme";
 
-interface ThemeToggleProps {
-  className?: string;
-}
-
-export default function ThemeToggle({ className }: ThemeToggleProps) {
+export default function ThemeToggle() {
   const { darkMode, toggleTheme, isLoading } = useTheme();
 
   if (isLoading) return <span style={{ width: 34, height: 34, display: "inline-block", flexShrink: 0 }} />;
@@ -15,18 +12,16 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
     <button
       onClick={toggleTheme}
       aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-      className={className}
+      className={styles.button}
       style={{
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         width: 34,
         height: 34,
-        borderRadius: "100px",
         border: "none",
         background: "transparent",
         cursor: "pointer",
-        color: "inherit",
         padding: 0,
         flexShrink: 0,
       }}>

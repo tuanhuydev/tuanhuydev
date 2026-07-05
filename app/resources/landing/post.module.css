@@ -13,21 +13,6 @@
   background: rgba(13, 17, 23, 0.9);
 }
 
-.navToggle {
-  color: var(--site-fg-3);
-  transition: color 0.15s, background 0.15s;
-  border-radius: 100px;
-}
-
-.navToggle:hover {
-  color: var(--site-fg);
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:global(.dark) .navToggle:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
 /* ── READING PROGRESS BAR ── */
 .progress {
   position: fixed;
@@ -442,50 +427,6 @@ a.tagChip:hover {
   gap: 16px;
 }
 
-.suggestedCard {
-  display: flex;
-  flex-direction: column;
-  padding: 28px;
-  border: 1px solid var(--site-border);
-  border-radius: var(--r);
-  text-decoration: none;
-  transition: border-color 0.15s, transform 0.2s;
-  background: var(--site-bg);
-}
-
-.suggestedCard:hover {
-  border-color: var(--site-primary);
-  transform: translateY(-3px);
-}
-
-.suggestedDate {
-  font-size: 12px;
-  color: var(--site-fg-3);
-  letter-spacing: 0.04em;
-  margin-bottom: 14px;
-}
-
-.suggestedTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--site-fg);
-  line-height: 1.42;
-  letter-spacing: -0.01em;
-  flex: 1;
-  margin-bottom: 24px;
-}
-
-.suggestedArrow {
-  font-size: 16px;
-  color: var(--site-fg-3);
-  transition: transform 0.15s, color 0.15s;
-}
-
-.suggestedCard:hover .suggestedArrow {
-  transform: translate(3px, -3px);
-  color: var(--site-primary);
-}
-
 /* ── SCROLL FADE ── */
 .fade {
   opacity: 0;
@@ -635,9 +576,5 @@ a.tagChip:hover {
   .suggestedGrid {
     grid-template-columns: 1fr;
     gap: 12px;
-  }
-
-  .suggestedCard {
-    padding: 20px;
   }
 }

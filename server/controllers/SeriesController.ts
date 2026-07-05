@@ -2,11 +2,11 @@ import BadRequestError from "@lib/commons/errors/BadRequestError";
 import BaseError from "@lib/commons/errors/BaseError";
 import UnauthorizedError from "@lib/commons/errors/UnauthorizedError";
 import { transformTextToDashed } from "@lib/utils/helper";
-import Network from "@lib/utils/network";
 import { CreateSeriesDTO, createSeriesSchema, UpdateSeriesDTO } from "@server/dto/series.dto";
 import { SeriesJSON, SeriesModel } from "@server/models/series.model";
 import { authService, AuthService } from "@server/services/AuthService";
 import { seriesService } from "@server/services/SeriesService";
+import Network from "@server/utils/network";
 import { revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 
