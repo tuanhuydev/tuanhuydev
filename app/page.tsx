@@ -1,7 +1,6 @@
 import Transition from "./resources/components/common/Transition";
 import LandingPage from "./resources/landing/LandingPage";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata } from "next";
 
 // Use dynamic rendering only when necessary
@@ -64,7 +63,6 @@ export default function Home() {
   return (
     <LandingPageWrapper>
       <LandingPage />
-      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </LandingPageWrapper>
   );
 }
