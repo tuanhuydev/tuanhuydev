@@ -1,14 +1,20 @@
 import { ErrorBoundary } from "./resources/components/common/ErrorBoundary";
 import Loader from "./resources/components/common/Loader";
 import ThemeProvider from "./resources/components/common/providers/ThemeProvider";
-import { GoogleTagManager } from "@next/third-parties/google";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { sourceCodeFont, spaceGrotesk } from "@resources/font";
 import "@resources/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { BASE_URL, GOOGLE_SITE_VERIFICATION, isDevelopmentEnv } from "lib/commons/constants/base";
+import {
+  BASE_URL,
+  GOOGLE_ANALYTIC,
+  GOOGLE_SITE_VERIFICATION,
+  GOOGLE_TAG,
+  isDevelopmentEnv,
+} from "lib/commons/constants/base";
 import { type Metadata, type Viewport } from "next";
+import Script from "next/script";
 import { PropsWithChildren, Suspense } from "react";
 
 const personLinkingData = {
@@ -89,7 +95,20 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         </ThemeProvider>
         {isDevelopmentEnv && <SpeedInsights />}
         <Analytics />
-        <GoogleTagManager gtmId="G-19W3TP7JLT" />
+        {GOOGLE_TAG && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_TAG}`} strategy="afterInteractive" />
+            <Script id="google-tag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GOOGLE_TAG}');
+                ${GOOGLE_ANALYTIC && GOOGLE_ANALYTIC !== GOOGLE_TAG ? `gtag('config', '${GOOGLE_ANALYTIC}');` : ""}
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

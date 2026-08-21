@@ -1,7 +1,6 @@
 import { Post } from "@app/resources/types/post.types";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import PostDetailPage from "@resources/landing/PostDetailPage";
-import { GOOGLE_ANALYTIC, BASE_URL } from "lib/commons/constants/base";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getPosts } from "server/actions/blogActions";
@@ -163,7 +162,6 @@ export default async function Page(props: PageParams) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLinkingData) }} />
       <PostDetailPage post={post} category={category} series={postSeries} relatedPosts={relatedPosts} />
-      {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </>
   );
 }
