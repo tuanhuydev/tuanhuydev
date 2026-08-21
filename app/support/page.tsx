@@ -1,5 +1,6 @@
 import SiteFooter from "@resources/landing/components/SiteFooter";
 import styles from "@resources/landing/subpage.module.css";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Support Me | tuanhuydev",
     description: "Support my open-source and content work via donation or sponsorship.",
-    url: "https://tuanhuydev.com/support",
+    url: `${BASE_URL}/support`,
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     title: "Support Me | tuanhuydev",
     description: "Support my open-source and content work via donation or sponsorship.",
   },
-  alternates: { canonical: "https://tuanhuydev.com/support" },
+  alternates: { canonical: `${BASE_URL}/support` },
 };
 
 export const dynamic = "force-static";
