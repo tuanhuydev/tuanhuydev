@@ -1,7 +1,7 @@
 import Transition from "./resources/components/common/Transition";
 import LandingPage from "./resources/landing/LandingPage";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { GOOGLE_ANALYTIC } from "lib/commons/constants/base";
+import { BASE_URL, GOOGLE_ANALYTIC } from "lib/commons/constants/base";
 import { Metadata } from "next";
 
 // Use dynamic rendering only when necessary
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "tuanhuydev - Fullstack Software Engineer",
     description:
       "🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
-    url: "https://tuanhuy.dev",
+    url: BASE_URL,
     siteName: "tuanhuydev",
     images: [
       {
@@ -38,7 +38,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    nocache: true,
     googleBot: {
       index: true,
       follow: true,
@@ -51,10 +50,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon-16x16.png",
   },
-  metadataBase: new URL("https://tuanhuy.dev"),
   keywords: "#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS",
   manifest: "/site.webmanifest",
   category: "technology",
+  alternates: { canonical: BASE_URL },
 };
 
 const LandingPageWrapper = ({ children }: { children: React.ReactNode }) => {

@@ -1,0 +1,18 @@
+# tuanhuydev
+
+> Personal site of Huy Nguyen Tuan, a fullstack software engineer based in Vietnam, working across Node.js backends and React frontends.
+
+Huy writes about web development, micro frontends, AI in development, and code reviews.
+
+## Pages
+
+- [Home](https://tuanhuydev.com/): introduction, skills, and experience
+- [Posts](https://tuanhuydev.com/posts): technical blog, sorted by newest first
+- [Support](https://tuanhuydev.com/support): ways to support Huy's open-source work
+- [Privacy & Terms](https://tuanhuydev.com/privacy)
+
+## Contact
+
+- Email: tuanhuydev@gmail.com
+- GitHub: https://github.com/tuanhuydev
+- LinkedIn: https://www.linkedin.com/in/tuanhuydev

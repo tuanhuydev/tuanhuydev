@@ -7,9 +7,27 @@ import { sourceCodeFont, spaceGrotesk } from "@resources/font";
 import "@resources/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { isDevelopmentEnv } from "lib/commons/constants/base";
+import { BASE_URL, GOOGLE_SITE_VERIFICATION, isDevelopmentEnv } from "lib/commons/constants/base";
 import { type Metadata, type Viewport } from "next";
 import { PropsWithChildren, Suspense } from "react";
+
+const personLinkingData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Huy Nguyen Tuan",
+  alternateName: "tuanhuydev",
+  url: BASE_URL,
+  jobTitle: "Fullstack Software Engineer",
+  email: "mailto:tuanhuydev@gmail.com",
+  sameAs: ["https://github.com/tuanhuydev", "https://www.linkedin.com/in/tuanhuydev"],
+};
+
+const websiteLinkingData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "tuanhuydev",
+  url: BASE_URL,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -18,8 +36,8 @@ export const metadata: Metadata = {
   },
   description:
     "Huy Nguyen Tuan's personal site. Fullstack engineer from Vietnam sharing posts on web development, React, Next.js, and software craft.",
-  metadataBase: new URL("https://tuanhuy.dev"),
-  authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
+  metadataBase: new URL(BASE_URL),
+  authors: [{ name: "Huy Nguyen Tuan", url: BASE_URL }],
   creator: "Huy Nguyen Tuan",
   openGraph: {
     siteName: "tuanhuydev",
@@ -39,9 +57,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  verification: {
-    google: "gYd2c34ZXyS2chY0g_MILlCnSJ5DyhRb2VEwm4ilqRk",
-  },
+  ...(GOOGLE_SITE_VERIFICATION && { verification: { google: GOOGLE_SITE_VERIFICATION } }),
 };
 
 export const runtime = "nodejs";
@@ -59,7 +75,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       className={`${sourceCodeFont.className} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
       data-scroll-behavior="smooth">
-      <head />
+      <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLinkingData) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLinkingData) }} />
+      </head>
       <body>
         <ThemeProvider>
           <ErrorBoundary>
