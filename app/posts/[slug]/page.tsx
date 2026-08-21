@@ -41,10 +41,9 @@ export async function generateMetadata(props: PageParams, parent: ResolvingMetad
 
   return {
     title: `${post.title} | tuanhuydev`,
-    metadataBase: new URL(BASE_URL),
     description: cleanDescription,
     keywords: keywordList.join(", "),
-    authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
+    authors: [{ name: "Huy Nguyen Tuan", url: BASE_URL }],
     creator: "Huy Nguyen Tuan",
     publisher: "tuanhuydev",
     robots: {
@@ -141,7 +140,7 @@ export default async function Page(props: PageParams) {
   const postSeries = series.find((s) => s.id === post.seriesId) ?? null;
   const relatedPosts = pickRelatedPosts(post, allPosts, 3);
 
-  const jsonLd = {
+  const blogPostingLinkingData = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
@@ -153,7 +152,7 @@ export default async function Page(props: PageParams) {
     image: post.thumbnail ? [post.thumbnail] : undefined,
     datePublished: post.publishedAt ? new Date(post.publishedAt).toISOString() : new Date(post.createdAt).toISOString(),
     dateModified: new Date(post.updatedAt).toISOString(),
-    author: { "@type": "Person", name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" },
+    author: { "@type": "Person", name: "Huy Nguyen Tuan", url: BASE_URL },
     publisher: { "@type": "Organization", name: "tuanhuydev", url: BASE_URL },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/posts/${slug}` },
     articleSection: category?.name,
@@ -162,7 +161,7 @@ export default async function Page(props: PageParams) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLinkingData) }} />
       <PostDetailPage post={post} category={category} series={postSeries} relatedPosts={relatedPosts} />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </>
