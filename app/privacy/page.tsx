@@ -1,5 +1,6 @@
 import SiteFooter from "@resources/landing/components/SiteFooter";
 import styles from "@resources/landing/subpage.module.css";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Privacy Policy & Terms of Service | tuanhuydev",
     description: "Learn how tuanhuydev.com collects, uses, and protects your information.",
-    url: "https://tuanhuy.dev/privacy",
+    url: `${BASE_URL}/privacy`,
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy & Terms of Service | tuanhuydev",
     description: "Learn how tuanhuydev.com collects, uses, and protects your information.",
   },
-  alternates: { canonical: "https://tuanhuy.dev/privacy" },
+  alternates: { canonical: `${BASE_URL}/privacy` },
 };
 
 export const dynamic = "force-static";

@@ -1,4 +1,5 @@
 import PostsPage from "@resources/landing/PostsPage";
+import { BASE_URL } from "lib/commons/constants/base";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Posts | tuanhuydev",
     description: "Thoughts on software engineering, career growth, and building things that matter.",
-    url: "https://tuanhuy.dev/posts",
+    url: `${BASE_URL}/posts`,
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     title: "Posts | tuanhuydev",
     description: "Thoughts on software engineering, career growth, and building things that matter.",
   },
-  alternates: { canonical: "https://tuanhuy.dev/posts" },
+  alternates: { canonical: `${BASE_URL}/posts` },
   robots: { index: true, follow: true },
 };
 

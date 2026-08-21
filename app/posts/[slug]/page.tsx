@@ -30,10 +30,9 @@ export async function generateMetadata(props: PageParams, parent: ResolvingMetad
 
   return {
     title: `${post.title} | tuanhuydev`,
-    metadataBase: new URL(BASE_URL),
     description: cleanDescription,
     keywords: `${post.title}, tuanhuydev, blog, web development, programming`,
-    authors: [{ name: "Huy Nguyen Tuan", url: "https://tuanhuy.dev" }],
+    authors: [{ name: "Huy Nguyen Tuan", url: BASE_URL }],
     creator: "Huy Nguyen Tuan",
     publisher: "tuanhuydev",
     robots: {
@@ -103,8 +102,21 @@ export default async function Page(props: PageParams) {
   const currentIndex = allPosts.findIndex((p) => p.slug === slug);
   const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
+  const blogPostingLinkingData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    url: `${BASE_URL}/posts/${slug}`,
+    image: post.thumbnail ?? `${BASE_URL}/assets/images/preview.png`,
+    datePublished: post.publishedAt ? new Date(post.publishedAt).toISOString() : new Date(post.createdAt).toISOString(),
+    dateModified: new Date(post.updatedAt).toISOString(),
+    author: { "@type": "Person", name: "Huy Nguyen Tuan", url: BASE_URL },
+    publisher: { "@type": "Organization", name: "tuanhuydev", url: BASE_URL },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLinkingData) }} />
       <PostDetailPage post={post} nextPost={nextPost} />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </>
