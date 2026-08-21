@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Privacy Policy & Terms of Service | tuanhuydev",
     description: "Learn how tuanhuydev.com collects, uses, and protects your information.",
-    url: "https://tuanhuy.dev/privacy",
+    url: "https://tuanhuydev.com/privacy",
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy & Terms of Service | tuanhuydev",
     description: "Learn how tuanhuydev.com collects, uses, and protects your information.",
   },
-  alternates: { canonical: "https://tuanhuy.dev/privacy" },
+  alternates: { canonical: "https://tuanhuydev.com/privacy" },
 };
 
 export const dynamic = "force-static";

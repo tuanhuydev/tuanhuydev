@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "tuanhuydev - Fullstack Software Engineer",
     description:
       "🚀 tuanhuydev is Huy Nguyen Tuan's personal website. He is a passionate, full-stack developer from Viet Nam ready to contribute to your business's success.",
-    url: "https://tuanhuy.dev",
+    url: "https://tuanhuydev.com",
     siteName: "tuanhuydev",
     images: [
       {
@@ -51,10 +51,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon-16x16.png",
   },
-  metadataBase: new URL("https://tuanhuy.dev"),
   keywords: "#WebDevelopment, #FullStack, #React, #Next.js, #Node.js, #AWS",
   manifest: "/site.webmanifest",
   category: "technology",
+  alternates: { canonical: "https://tuanhuydev.com" },
 };
 
 const LandingPageWrapper = ({ children }: { children: React.ReactNode }) => {

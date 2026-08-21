@@ -19,6 +19,7 @@ export const isDevelopmentEnv: boolean = process.env.NODE_ENV === "development";
 export const GOOGLE_ADSENSE: string = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE ?? EMPTY_STRING;
 export const GOOGLE_TAG: string = process.env.NEXT_PUBLIC_GOOGLE_TAG ?? EMPTY_STRING;
 export const GOOGLE_ANALYTIC: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTIC ?? EMPTY_STRING;
+export const GOOGLE_SITE_VERIFICATION: string = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? EMPTY_STRING;
 export const BASE_URL = (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000").replace(/\/$/, ""); // Replace splash at the end
 
 export const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? EMPTY_STRING;

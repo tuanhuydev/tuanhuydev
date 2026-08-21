@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Posts | tuanhuydev",
     description: "Thoughts on software engineering, career growth, and building things that matter.",
-    url: "https://tuanhuy.dev/posts",
+    url: "https://tuanhuydev.com/posts",
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Posts | tuanhuydev",
     description: "Thoughts on software engineering, career growth, and building things that matter.",
   },
-  alternates: { canonical: "https://tuanhuy.dev/posts" },
+  alternates: { canonical: "https://tuanhuydev.com/posts" },
   robots: { index: true, follow: true },
 };
 

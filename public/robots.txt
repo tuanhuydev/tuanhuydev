@@ -35,5 +35,5 @@ Allow: /privacy/
 # Crawl delay to be respectful
 Crawl-delay: 1
 
-Sitemap: https://www.tuanhuy.dev/sitemap.xml
-Host: https://www.tuanhuy.dev
+Sitemap: https://tuanhuydev.com/sitemap.xml
+Host: https://tuanhuydev.com

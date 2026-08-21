@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Support Me | tuanhuydev",
     description: "Support my open-source and content work via donation or sponsorship.",
-    url: "https://tuanhuy.dev/support",
+    url: "https://tuanhuydev.com/support",
     siteName: "tuanhuydev",
     locale: "en_US",
     type: "website",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Support Me | tuanhuydev",
     description: "Support my open-source and content work via donation or sponsorship.",
   },
-  alternates: { canonical: "https://tuanhuy.dev/support" },
+  alternates: { canonical: "https://tuanhuydev.com/support" },
 };
 
 export const dynamic = "force-static";
