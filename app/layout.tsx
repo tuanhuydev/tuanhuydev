@@ -11,7 +11,7 @@ import { BASE_URL, GOOGLE_SITE_VERIFICATION, isDevelopmentEnv } from "lib/common
 import { type Metadata, type Viewport } from "next";
 import { PropsWithChildren, Suspense } from "react";
 
-const personJsonLd = {
+const personLinkingData = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Huy Nguyen Tuan",
@@ -22,7 +22,7 @@ const personJsonLd = {
   sameAs: ["https://github.com/tuanhuydev", "https://www.linkedin.com/in/tuanhuydev"],
 };
 
-const websiteJsonLd = {
+const websiteLinkingData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "tuanhuydev",
@@ -50,8 +50,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       suppressHydrationWarning
       data-scroll-behavior="smooth">
       <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLinkingData) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLinkingData) }} />
       </head>
       <body>
         <ThemeProvider>

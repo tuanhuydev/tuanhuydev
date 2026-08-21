@@ -102,7 +102,7 @@ export default async function Page(props: PageParams) {
   const currentIndex = allPosts.findIndex((p) => p.slug === slug);
   const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
-  const blogPostingJsonLd = {
+  const blogPostingLinkingData = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
@@ -116,7 +116,7 @@ export default async function Page(props: PageParams) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingLinkingData) }} />
       <PostDetailPage post={post} nextPost={nextPost} />
       {GOOGLE_ANALYTIC && <GoogleAnalytics gaId={GOOGLE_ANALYTIC} />}
     </>
