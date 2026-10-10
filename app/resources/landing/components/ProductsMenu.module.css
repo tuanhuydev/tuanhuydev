@@ -1,0 +1,75 @@
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.chevron {
+  transition: transform 0.15s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* The panel sits below the nav pill. Its top padding bridges the gap so hover is not lost on the way down. */
+.panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  min-width: 230px;
+  padding-top: 18px;
+  z-index: 110;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 18px 0 0;
+  background: var(--site-bg);
+  border: 1px solid var(--site-border);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px;
+  padding: 10px 14px;
+  color: var(--site-fg);
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 0.15s;
+}
+
+.panel .item:first-child {
+  margin-top: 6px;
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--site-primary-tint);
+  outline: none;
+}
+
+.itemName {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.itemDescription {
+  font-size: 12px;
+  color: var(--site-fg-3);
+}
