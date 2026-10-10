@@ -24,6 +24,9 @@ export const BASE_URL = (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000"
 
 export const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL ?? EMPTY_STRING;
 
+// S2 (the study system) is a separate site on its own subdomain
+export const S2_URL = (process.env.NEXT_PUBLIC_S2_URL ?? "https://s2.tuanhuydev.com").replace(/\/$/, "");
+
 export const POST_STATUS = {
   PUBLISHED: "PUBLISHED",
   DRAFT: "DRAFT",

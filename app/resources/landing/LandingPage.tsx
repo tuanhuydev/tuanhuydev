@@ -1,4 +1,5 @@
 import BlogSection from "./components/BlogSection";
+import ProductsMenu from "./components/ProductsMenu";
 import { ScrollFadeObserver } from "./components/ScrollFadeObserver";
 import ThemeToggle from "./components/ThemeToggle";
 import styles from "./landing.module.css";
@@ -27,9 +28,7 @@ export default function LandingPage() {
         <Link className={styles.navLink} href="#skills">
           Skills
         </Link>
-        <Link className={styles.navLink} href="#experience">
-          Experience
-        </Link>
+        <ProductsMenu />
         <Link className={styles.navLink} href="/posts">
           Posts
         </Link>
