@@ -13,7 +13,10 @@ interface Product {
 }
 
 // S2 is its own site on a subdomain, so its link is absolute (see NEXT_PUBLIC_S2_URL).
-const products: Product[] = [{ name: "S2", description: "Study system. Learn by doing.", href: S2_URL }];
+const products: Product[] = [
+  { name: "One Doc", description: "Local-first document editor.", href: "/products/one-doc" },
+  { name: "S2", description: "Study system. Learn by doing.", href: S2_URL },
+];
 
 /** "Products" dropdown for the landing nav. Opens on hover, click or keyboard; closes on Escape or outside focus. */
 export default function ProductsMenu() {
