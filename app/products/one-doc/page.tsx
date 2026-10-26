@@ -97,9 +97,6 @@ export default function OneDocPage() {
           </a>
         </div>
         <ThemeToggle />
-        <a className={styles.navCta} href="#download">
-          Download
-        </a>
       </nav>
 
       <main id="main">

@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 8px 8px 24px;
+  padding: 8px 12px 8px 24px;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px);
   border: 1px solid var(--site-border);
@@ -111,29 +111,6 @@
 
 :global(.dark) .navLink:hover {
   background: rgba(255, 255, 255, 0.06);
-}
-
-.navCta {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 24px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--site-primary);
-  text-decoration: none;
-  border-radius: 100px;
-  transition: background 0.15s;
-}
-
-:global(.dark) .navCta {
-  color: #0d1117;
-}
-
-.navCta:hover {
-  background: var(--site-primary-600);
 }
 
 /* ── BUTTONS / BADGES ── */
@@ -1201,6 +1178,10 @@
     display: none;
   }
 
+  .brand {
+    margin-right: auto;
+  }
+
   .nav {
     padding-left: 20px;
   }
@@ -1253,10 +1234,6 @@
   .brand {
     font-size: 16px;
     padding-right: 12px;
-  }
-
-  .navCta {
-    padding: 0 16px;
   }
 
   .tools .chip:nth-child(n + 9) {
