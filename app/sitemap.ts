@@ -25,6 +25,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.9,
       },
       {
+        url: `${BASE_URL}/products/one-doc`,
+        lastModified: currentDate,
+        changeFrequency: "monthly",
+        priority: 0.8,
+      },
+      {
         url: `${BASE_URL}/privacy`,
         lastModified: currentDate,
         changeFrequency: "monthly",
