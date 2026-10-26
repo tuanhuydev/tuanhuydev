@@ -263,8 +263,7 @@
   line-height: 1.5;
 }
 
-.fine code,
-.dl code {
+.fine code {
   font-family: ui-monospace, Menlo, monospace;
   background: rgba(127, 127, 127, 0.18);
   padding: 2px 7px;
@@ -1060,96 +1059,6 @@
   border: 2px solid var(--od-warning);
 }
 
-/* ── DOWNLOAD ── */
-.dl {
-  background: var(--od-dark);
-  color: #fff;
-  border-radius: 16px;
-  padding: 64px 32px;
-  text-align: center;
-}
-
-.dl h2 {
-  color: #fff;
-  font-size: clamp(26px, 3.4vw, 38px);
-  letter-spacing: -0.02em;
-  margin: 0 0 12px;
-  font-weight: 600;
-}
-
-.dl p {
-  color: #d1d5db;
-  max-width: 56ch;
-  margin: 0 auto;
-  line-height: 1.6;
-  font-size: 17px;
-}
-
-.dl .fine {
-  color: #d1d5db;
-}
-
-.plats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 16px;
-  max-width: 880px;
-  margin: 40px auto 8px;
-  text-align: left;
-}
-
-.plat {
-  background: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  transition: border-color 0.2s, transform 0.2s;
-}
-
-.plat:hover {
-  border-color: #9ca3af;
-  transform: translateY(-2px);
-}
-
-.plat svg {
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.plat h3 {
-  margin: 0;
-  font-size: 20px;
-  color: #fff;
-  font-weight: 600;
-}
-
-.arch {
-  font-size: 13px;
-  font-weight: 600;
-  color: #bfd4f6;
-}
-
-.plat p {
-  margin: 0 0 16px;
-  font-size: 15px;
-  color: #d1d5db;
-  flex: 1;
-}
-
-.plat .btn {
-  width: 100%;
-  background: #fff;
-  color: #111827;
-}
-
-.plat .btn:hover {
-  background: #f3f4f6;
-}
-
 /* ── REVEAL ── */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes rise {
@@ -1210,10 +1119,6 @@
 
   .cta .btn {
     flex: 1 1 100%;
-  }
-
-  .dl {
-    padding: 48px 20px;
   }
 
   .split {
