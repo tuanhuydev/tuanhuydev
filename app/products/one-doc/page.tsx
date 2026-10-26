@@ -97,9 +97,6 @@ export default function OneDocPage() {
           </a>
         </div>
         <ThemeToggle />
-        <a className={styles.navCta} href="#download">
-          Download
-        </a>
       </nav>
 
       <main id="main">
@@ -592,48 +589,6 @@ export default function OneDocPage() {
                 </ul>
                 <p className={styles.fine}>Direction, not a promise of dates.</p>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── DOWNLOAD ── */}
-        <section className={styles.anchor} id="download" aria-labelledby="dl-h">
-          <div className={styles.wrap}>
-            <div className={styles.dl}>
-              <h2 id="dl-h">Download One Doc 1.0.0</h2>
-              <p>Free direct download. No account needed. Pick the build for your machine.</p>
-              <div className={styles.plats}>
-                <div className={styles.plat}>
-                  <MacIcon size={26} />
-                  <h3>macOS</h3>
-                  <span className={styles.arch}>Apple Silicon (M1 and later)</span>
-                  <p>For Macs with an M-series chip.</p>
-                  <a className={`${styles.btn}`} href={downloads.macArm}>
-                    Download .dmg
-                  </a>
-                </div>
-                <div className={styles.plat}>
-                  <MacIcon size={26} />
-                  <h3>macOS</h3>
-                  <span className={styles.arch}>Intel (x64)</span>
-                  <p>For older Macs with an Intel processor.</p>
-                  <a className={`${styles.btn}`} href={downloads.macX64}>
-                    Download .dmg
-                  </a>
-                </div>
-                <div className={styles.plat}>
-                  <WindowsIcon size={26} />
-                  <h3>Windows</h3>
-                  <span className={styles.arch}>64-bit (x64)</span>
-                  <p>Windows installer for 64-bit PCs.</p>
-                  <a className={`${styles.btn}`} href={downloads.windows}>
-                    Download .exe
-                  </a>
-                </div>
-              </div>
-              <p className={styles.fine}>
-                Documents are saved as <code>.odx</code>. In active development, so keep backups.
-              </p>
             </div>
           </div>
         </section>
